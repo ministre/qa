@@ -1,0 +1,4 @@
+.idea/
+qa/settings/local.py
+qa/__pycache__/
+qa/settings/__pycache__/
