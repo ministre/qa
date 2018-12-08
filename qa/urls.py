@@ -7,5 +7,5 @@ urlpatterns = [
 ]
 
 urlpatterns += i18n_patterns(
-    path('', include('device.urls')), prefix_default_language=False
+    path('', include('device.urls'))
 )
