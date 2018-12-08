@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quality Assurance</title>
+    {% load static %}
+    <link href="{% static 'foundation-6.5.1-custom/css/foundation.css' %}" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<script src="{% static 'foundation-6.5.1-custom/js/vendor/jquery.js' %}"></script>
+
+<div class="top-bar">
+    <div class="top-bar-left">
+        <ul class="dropdown menu" data-dropdown-menu>
+            <li class="menu-text">Quality Assurance</li>
+            <li>
+                <a href="#">Devices</a>
+                <ul class="menu vertical">
+                    <li><a href="#">Device types</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<br>
+<div class="grid-container fluid">
+    {% block content %}
+</div>
+
+{% endblock %}
+</body>
+
+<script src="{% static 'foundation-6.5.1-custom/js/vendor/what-input.js' %}"></script>
+<script src="{% static 'foundation-6.5.1-custom/js/vendor/foundation.js' %}"></script>
+<script src="{% static 'foundation-6.5.1-custom/js/app.js' %}"></script>
+</html>

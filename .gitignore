@@ -1,4 +1,10 @@
+### Django ###
+*.log
+*.pot
+*.pyc
 .idea/
 qa/settings/local.py
+qa/settings/static/
 qa/__pycache__/
 qa/settings/__pycache__/
+**/migrations/*
