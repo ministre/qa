@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+{% load static i18n %}
+<html lang="{{ request.LANGUAGE_CODE }}">
 <head>
     <meta charset="UTF-8">
     <title>Quality Assurance</title>
-    {% load static %}
     <link href="{% static 'foundation-6.5.1-custom/css/foundation.css' %}" rel="stylesheet" type="text/css">
 </head>
 
@@ -15,9 +15,9 @@
         <ul class="dropdown menu" data-dropdown-menu>
             <li class="menu-text">Quality Assurance</li>
             <li>
-                <a href="#">Devices</a>
+                <a href="/">{% trans "Devices" %}</a>
                 <ul class="menu vertical">
-                    <li><a href="#">Device types</a></li>
+                    <li><a href="/type/">{% trans "Device types" %}</a></li>
                 </ul>
             </li>
         </ul>

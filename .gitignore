@@ -1,10 +1,20 @@
-### Django ###
+# Django
 *.log
 *.pot
-*.pyc
 .idea/
 qa/settings/local.py
 qa/settings/static/
-qa/__pycache__/
-qa/settings/__pycache__/
 **/migrations/*
+
+# Byte-compiled / optimized / DLL files
+*.py[cod]
+*$py.class
+
+# Translations
+*.mo
+
+# dotenv
+.env
+
+# C extensions
+*.so
