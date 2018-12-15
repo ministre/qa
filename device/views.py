@@ -1,7 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from device.models import DeviceType
 from .forms import DeviceTypeForm
-from django.http import HttpResponseRedirect
 
 
 def device_type_list(request):
@@ -14,25 +13,19 @@ def device_type_add(request):
         form = DeviceTypeForm(request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect('..')
+            return redirect('device_type_list')
     else:
         form = DeviceTypeForm()
         return render(request, 'device/device_type_add.html', {'form': form})
 
 
-def device_type_edit(request, device_type_id):
-    if request.method == 'POST':
-        form = DeviceTypeForm(request.POST)
-        if form.is_valid():
-            device_type = DeviceType.objects.get(id=device_type_id)
-            device_type.tag = request.POST['tag']
-            device_type.desc = request.POST['desc']
-            device_type.save()
-            return HttpResponseRedirect('..')
-    else:
-        device_type = DeviceType.objects.get(id=device_type_id)
-        form = DeviceTypeForm(initial={'tag': device_type.tag, 'desc': device_type.desc})
-        return render(request, 'device/device_type_edit.html', {'form': form, 'device_type': device_type})
+def device_type_edit(request, pk):
+    instance = get_object_or_404(DeviceType, pk=pk)
+    form = DeviceTypeForm(request.POST or None, instance=instance)
+    if form.is_valid():
+        form.save()
+        return redirect('device_type_list')
+    return render(request, 'device/device_type_edit.html', {'form': form})
 
 
 def device_list(request):
