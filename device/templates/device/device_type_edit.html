@@ -1,0 +1,17 @@
+{% extends "device/wrapper.html" %}
+
+{% load i18n %}
+
+{% block content %}
+
+<p><a href=".." class="exit-off-canvas">&laquo; {% trans "Back" %}</a></p>
+
+<h4>{% trans "Edit device type" %}</h4>
+
+<form method="post" action="">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value='{% trans "Edit" %}' class="button small rounded" />
+</form>
+
+{% endblock %}
