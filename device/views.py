@@ -28,5 +28,10 @@ def device_type_edit(request, pk):
     return render(request, 'device/device_type_edit.html', {'form': form})
 
 
+def device_type_delete(request, pk):
+    DeviceType.objects.get(pk=pk).delete()
+    return redirect('device_type_list')
+
+
 def device_list(request):
     return render(request, 'device/device_list.html')
