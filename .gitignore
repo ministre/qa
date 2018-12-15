@@ -15,6 +15,7 @@ qa/settings/static/
 
 # dotenv
 .env
+myvenv/*
 
 # C extensions
 *.so
