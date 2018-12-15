@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <title>Quality Assurance</title>
     <link href="{% static 'foundation-6.5.1-custom/css/foundation.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'DataTables/datatables.css' %}" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
@@ -30,7 +31,7 @@
         {% if language.code != LANGUAGE_CODE %}
         <a href="/{{ language.code }}">{{ language.code }}</a>
         {%endif %}
-        {% endfor %}&nbsp;
+        {% endfor %}
     </div>
 </div>
 

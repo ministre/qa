@@ -1,8 +1,10 @@
 from django.shortcuts import render
+from device.models import DeviceType
 
 
-def type_list(request):
-    return render(request, 'device/type_list.html')
+def device_type_list(request):
+    return render(request, 'device/device_type_list.html',
+                  {'device_types': DeviceType.objects.all()})
 
 
 def device_list(request):
