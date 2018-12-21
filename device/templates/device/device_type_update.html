@@ -11,7 +11,7 @@
 <form method="post" action="">
     {% csrf_token %}
     {{ form }}
-    <input type="submit" value='{% trans "Edit" %}' class="button small rounded" />
+    <input type="submit" value='{% trans "Update" %}' class="button small rounded" />
     <a href="delete/" class="button small alert rounded">{% trans "Delete" %}</a>
 </form>
 

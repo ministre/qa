@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-09 00:29+0300\n"
+"POT-Creation-Date: 2018-12-21 23:55+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,11 +24,73 @@ msgstr ""
 msgid "Device list"
 msgstr "Список устройств"
 
-#: .\device\templates\device\type_list.html:7
-#: .\device\templates\device\wrapper.html:20
+#: .\device\templates\device\device_type_create.html:7
+#: .\device\templates\device\device_type_delete.html:7
+#: .\device\templates\device\device_type_update.html:7
+msgid "Back"
+msgstr "Назад"
+
+#: .\device\templates\device\device_type_create.html:9
+#, fuzzy
+#| msgid "Device types"
+msgid "New device type"
+msgstr "Новый тип устройств"
+
+#: .\device\templates\device\device_type_create.html:14
+#: .\device\templates\device\device_type_list.html:9
+msgid "Create"
+msgstr "Создать"
+
+#: .\device\templates\device\device_type_delete.html:11
+msgid "Are you sure you want to delete"
+msgstr "Вы уверены что хотите удалить"
+
+#: .\device\templates\device\device_type_delete.html:12
+msgid "Confirm"
+msgstr "Да"
+
+#: .\device\templates\device\device_type_list.html:7
+#: .\device\templates\device\wrapper.html:22
 msgid "Device types"
 msgstr "Типы устройств"
 
-#: .\device\templates\device\wrapper.html:18
+#: .\device\templates\device\device_type_list.html:15
+#: .\device\templates\device\device_type_list.html:31
+msgid "Tag"
+msgstr "Тег"
+
+#: .\device\templates\device\device_type_list.html:16
+#: .\device\templates\device\device_type_list.html:32
+msgid "Description"
+msgstr "Описание"
+
+#: .\device\templates\device\device_type_update.html:9
+#, fuzzy
+#| msgid "Device types"
+msgid "Edit device type"
+msgstr "Редактировать тип устройств"
+
+#: .\device\templates\device\device_type_update.html:14
+msgid "Update"
+msgstr "Обновить"
+
+#: .\device\templates\device\device_type_update.html:15
+msgid "Delete"
+msgstr "Удалить"
+
+#: .\device\templates\device\wrapper.html:20
 msgid "Devices"
 msgstr "Устройства"
+
+#: .\qa\settings\base.py:128
+msgid "English"
+msgstr "Английский"
+
+#: .\qa\settings\base.py:129
+msgid "Russian"
+msgstr "Русский"
+
+#, fuzzy
+#~| msgid "Device types"
+#~ msgid "Delete device type"
+#~ msgstr "Удалить тип устройств"

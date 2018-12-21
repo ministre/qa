@@ -1,36 +1,41 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render
 from device.models import DeviceType
 from .forms import DeviceTypeForm
+from django.views.generic import ListView, DeleteView
+from django.views.generic.edit import CreateView, UpdateView
+from django.urls import reverse
 
 
-def device_type_list(request):
-    return render(request, 'device/device_type_list.html',
-                  {'device_types': DeviceType.objects.all()})
+class DeviceTypeListView(ListView):
+    context_object_name = 'device_types'
+    queryset = DeviceType.objects.all()
+    template_name = 'device/device_type_list.html'
 
 
-def device_type_add(request):
-    if request.method == 'POST':
-        form = DeviceTypeForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('device_type_list')
-    else:
-        form = DeviceTypeForm()
-        return render(request, 'device/device_type_add.html', {'form': form})
+class DeviceTypeCreate(CreateView):
+    model = DeviceType
+    form_class = DeviceTypeForm
+    template_name = 'device/device_type_create.html'
+
+    def get_success_url(self):
+        return reverse('device_type_list')
 
 
-def device_type_edit(request, pk):
-    instance = get_object_or_404(DeviceType, pk=pk)
-    form = DeviceTypeForm(request.POST or None, instance=instance)
-    if form.is_valid():
-        form.save()
-        return redirect('device_type_list')
-    return render(request, 'device/device_type_edit.html', {'form': form})
+class DeviceTypeUpdate(UpdateView):
+    model = DeviceType
+    form_class = DeviceTypeForm
+    template_name = 'device/device_type_update.html'
+
+    def get_success_url(self):
+        return reverse('device_type_list')
 
 
-def device_type_delete(request, pk):
-    DeviceType.objects.get(pk=pk).delete()
-    return redirect('device_type_list')
+class DeviceTypeDelete(DeleteView):
+    model = DeviceType
+    template_name = 'device/device_type_delete.html'
+
+    def get_success_url(self):
+        return reverse('device_type_list')
 
 
 def device_list(request):
