@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from device.models import DeviceType, CustomField
-from .forms import DeviceTypeForm, CustomFieldForm
+from device.models import CustomField, DeviceType, Device
+from .forms import CustomFieldForm, DeviceTypeForm, DeviceForm
 from django.views.generic import ListView, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
 from django.urls import reverse
@@ -70,5 +70,33 @@ class DeviceTypeDelete(DeleteView):
         return reverse('type_list')
 
 
-def device_list(request):
-    return render(request, 'device/device_list.html')
+class DeviceListView(ListView):
+    context_object_name = 'devices'
+    queryset = Device.objects.all()
+    template_name = 'device/device_list.html'
+
+
+class DeviceCreate(CreateView):
+    model = Device
+    form_class = DeviceForm
+    template_name = 'device/device_create.html'
+
+    def get_success_url(self):
+        return reverse('device_list')
+
+
+class DeviceUpdate(UpdateView):
+    model = Device
+    form_class = DeviceForm
+    template_name = 'device/device_update.html'
+
+    def get_success_url(self):
+        return reverse('device_list')
+
+
+class DeviceDelete(DeleteView):
+    model = Device
+    template_name = 'device/device_delete.html'
+
+    def get_success_url(self):
+        return reverse('device_list')

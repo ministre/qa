@@ -1,0 +1,15 @@
+{% extends "device/wrapper.html" %}
+
+{% load i18n %}
+
+{% block content %}
+
+<p><a href=".." class="exit-off-canvas">&laquo; {% trans "Back" %}</a></p>
+
+<form method="post">
+    {% csrf_token %}
+    <p>{% trans "Are you sure you want to delete" %} "{{ object }}"?</p>
+    <input type="submit" value='{% trans "Confirm" %}' class="button small alert rounded" />
+</form>
+
+{% endblock %}
