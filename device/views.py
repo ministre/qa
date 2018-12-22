@@ -32,7 +32,7 @@ class CustomFieldUpdate(UpdateView):
 
 class CustomFieldDelete(DeleteView):
     model = CustomField
-    template_name = 'device/custom_field_delete.html'
+    template_name = 'device/delete.html'
 
     def get_success_url(self):
         return reverse('custom_field_list')
@@ -64,7 +64,7 @@ class DeviceTypeUpdate(UpdateView):
 
 class DeviceTypeDelete(DeleteView):
     model = DeviceType
-    template_name = 'device/type_delete.html'
+    template_name = 'device/delete.html'
 
     def get_success_url(self):
         return reverse('type_list')
@@ -96,7 +96,7 @@ class DeviceUpdate(UpdateView):
 
 class DeviceDelete(DeleteView):
     model = Device
-    template_name = 'device/device_delete.html'
+    template_name = 'device/delete.html'
 
     def get_success_url(self):
         return reverse('device_list')
