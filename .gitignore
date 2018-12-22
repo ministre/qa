@@ -5,6 +5,7 @@
 qa/settings/local.py
 qa/settings/static/
 **/migrations/*
+qa/media/device/*
 
 # Byte-compiled / optimized / DLL files
 *.py[cod]
@@ -19,3 +20,5 @@ myvenv/*
 
 # C extensions
 *.so
+
+
