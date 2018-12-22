@@ -14,4 +14,8 @@ urlpatterns = [
     path('device/create/', views.DeviceCreate.as_view(), name='device_create'),
     path('device/<int:pk>/', views.DeviceUpdate.as_view(), name='device_update'),
     path('device/<int:pk>/delete/', views.DeviceDelete.as_view(), name='device_delete'),
+    path('photo/', views.DevicePhotoListView.as_view(), name='photo_list'),
+    path('photo/create/', views.DevicePhotoCreate.as_view(), name='photo_create'),
+    path('photo/<int:pk>/', views.DevicePhotoUpdate.as_view(), name='photo_update'),
+    path('photo/<int:pk>/delete/', views.DevicePhotoDelete.as_view(), name='photo_delete'),
 ]

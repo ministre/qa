@@ -1,0 +1,18 @@
+{% extends "device/wrapper.html" %}
+
+{% load i18n %}
+
+{% block content %}
+
+<p><a href=".." class="exit-off-canvas">&laquo; {% trans "Back" %}</a></p>
+
+<h4>{% trans "Update device photo" %}</h4>
+
+<form method="post" action="" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value='{% trans "Update" %}' class="button small rounded" />
+    <a href="delete/" class="button small alert rounded">{% trans "Delete" %}</a>
+</form>
+
+{% endblock %}

@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from device.models import CustomField, DeviceType, Device
-from .forms import CustomFieldForm, DeviceTypeForm, DeviceForm
+from device.models import CustomField, DeviceType, Device, DevicePhoto
+from .forms import CustomFieldForm, DeviceTypeForm, DeviceForm, DevicePhotoForm
 from django.views.generic import ListView, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
 from django.urls import reverse
@@ -100,3 +100,35 @@ class DeviceDelete(DeleteView):
 
     def get_success_url(self):
         return reverse('device_list')
+
+
+class DevicePhotoListView(ListView):
+    context_object_name = 'photos'
+    queryset = DevicePhoto.objects.all()
+    template_name = 'device/photo_list.html'
+
+
+class DevicePhotoCreate(CreateView):
+    model = DevicePhoto
+    form_class = DevicePhotoForm
+    template_name = 'device/photo_create.html'
+
+    def get_success_url(self):
+        return reverse('photo_list')
+
+
+class DevicePhotoUpdate(UpdateView):
+    model = DevicePhoto
+    form_class = DevicePhotoForm
+    template_name = 'device/photo_update.html'
+
+    def get_success_url(self):
+        return reverse('photo_list')
+
+
+class DevicePhotoDelete(DeleteView):
+    model = DevicePhoto
+    template_name = 'device/delete.html'
+
+    def get_success_url(self):
+        return reverse('photo_list')
