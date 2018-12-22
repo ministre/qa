@@ -7,5 +7,6 @@ urlpatterns = [
 ]
 
 urlpatterns += i18n_patterns(
-    path('', include('device.urls'))
+    path('', include('device.urls')),
+    path('device/', include('device.urls')),
 )

@@ -1,41 +1,73 @@
 from django.shortcuts import render
-from device.models import DeviceType
-from .forms import DeviceTypeForm
+from device.models import DeviceType, CustomField
+from .forms import DeviceTypeForm, CustomFieldForm
 from django.views.generic import ListView, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
 from django.urls import reverse
 
 
+class CustomFieldListView(ListView):
+    context_object_name = 'custom_fields'
+    queryset = CustomField.objects.all()
+    template_name = 'device/custom_field_list.html'
+
+
+class CustomFieldCreate(CreateView):
+    model = CustomField
+    form_class = CustomFieldForm
+    template_name = 'device/custom_field_create.html'
+
+    def get_success_url(self):
+        return reverse('custom_field_list')
+
+
+class CustomFieldUpdate(UpdateView):
+    model = CustomField
+    form_class = CustomFieldForm
+    template_name = 'device/custom_field_update.html'
+
+    def get_success_url(self):
+        return reverse('custom_field_list')
+
+
+class CustomFieldDelete(DeleteView):
+    model = CustomField
+    template_name = 'device/custom_field_delete.html'
+
+    def get_success_url(self):
+        return reverse('custom_field_list')
+
+
 class DeviceTypeListView(ListView):
     context_object_name = 'device_types'
     queryset = DeviceType.objects.all()
-    template_name = 'device/device_type_list.html'
+    template_name = 'device/type_list.html'
 
 
 class DeviceTypeCreate(CreateView):
     model = DeviceType
     form_class = DeviceTypeForm
-    template_name = 'device/device_type_create.html'
+    template_name = 'device/type_create.html'
 
     def get_success_url(self):
-        return reverse('device_type_list')
+        return reverse('type_list')
 
 
 class DeviceTypeUpdate(UpdateView):
     model = DeviceType
     form_class = DeviceTypeForm
-    template_name = 'device/device_type_update.html'
+    template_name = 'device/type_update.html'
 
     def get_success_url(self):
-        return reverse('device_type_list')
+        return reverse('type_list')
 
 
 class DeviceTypeDelete(DeleteView):
     model = DeviceType
-    template_name = 'device/device_type_delete.html'
+    template_name = 'device/type_delete.html'
 
     def get_success_url(self):
-        return reverse('device_type_list')
+        return reverse('type_list')
 
 
 def device_list(request):

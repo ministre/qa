@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from device.models import DeviceType
+from device.models import DeviceType, CustomField
 
 
 class DeviceTypeForm(ModelForm):
@@ -10,3 +10,12 @@ class DeviceTypeForm(ModelForm):
             'desc': 'Description',
         }
         fields = ['tag', 'desc']
+
+
+class CustomFieldForm(ModelForm):
+    class Meta:
+        model = CustomField
+        labels = {
+            'name': 'Name',
+        }
+        fields = ['name']
