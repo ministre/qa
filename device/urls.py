@@ -18,4 +18,12 @@ urlpatterns = [
     path('photo/create/', views.DevicePhotoCreate.as_view(), name='photo_create'),
     path('photo/<int:pk>/', views.DevicePhotoUpdate.as_view(), name='photo_update'),
     path('photo/<int:pk>/delete/', views.DevicePhotoDelete.as_view(), name='photo_delete'),
+    path('button/', views.ButtonListView.as_view(), name='button_list'),
+    path('button/create/', views.ButtonCreate.as_view(), name='button_create'),
+    path('button/<int:pk>/', views.ButtonUpdate.as_view(), name='button_update'),
+    path('button/<int:pk>/delete/', views.ButtonDelete.as_view(), name='button_delete'),
+    path('led/', views.LedListView.as_view(), name='led_list'),
+    path('led/create/', views.LedCreate.as_view(), name='led_create'),
+    path('led/<int:pk>/', views.LedUpdate.as_view(), name='led_update'),
+    path('led/<int:pk>/delete/', views.LedDelete.as_view(), name='led_delete'),
 ]

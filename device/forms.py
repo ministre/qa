@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from device.models import DeviceType, CustomField, Device, DevicePhoto
+from device.models import DeviceType, CustomField, Device, DevicePhoto, Button, Led
 
 
 class CustomFieldForm(ModelForm):
@@ -43,3 +43,21 @@ class DevicePhotoForm(ModelForm):
             'desc': 'Description',
         }
         fields = ['device', 'photo', 'desc']
+
+
+class ButtonForm(ModelForm):
+    class Meta:
+        model = Button
+        labels = {
+            'name': 'Name',
+        }
+        fields = ['name']
+
+
+class LedForm(ModelForm):
+    class Meta:
+        model = Led
+        labels = {
+            'name': 'Name',
+        }
+        fields = ['name']

@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from device.models import CustomField, DeviceType, Device, DevicePhoto
-from .forms import CustomFieldForm, DeviceTypeForm, DeviceForm, DevicePhotoForm
+from device.models import CustomField, DeviceType, Device, DevicePhoto, Button, Led
+from .forms import CustomFieldForm, DeviceTypeForm, DeviceForm, DevicePhotoForm, ButtonForm, LedForm
 from django.views.generic import ListView, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
 from django.urls import reverse
@@ -132,3 +132,67 @@ class DevicePhotoDelete(DeleteView):
 
     def get_success_url(self):
         return reverse('photo_list')
+
+
+class ButtonListView(ListView):
+    context_object_name = 'buttons'
+    queryset = Button.objects.all()
+    template_name = 'device/button_list.html'
+
+
+class ButtonCreate(CreateView):
+    model = Button
+    form_class = ButtonForm
+    template_name = 'device/button_create.html'
+
+    def get_success_url(self):
+        return reverse('button_list')
+
+
+class ButtonUpdate(UpdateView):
+    model = Button
+    form_class = ButtonForm
+    template_name = 'device/button_update.html'
+
+    def get_success_url(self):
+        return reverse('button_list')
+
+
+class ButtonDelete(DeleteView):
+    model = Button
+    template_name = 'device/delete.html'
+
+    def get_success_url(self):
+        return reverse('button_list')
+
+
+class LedListView(ListView):
+    context_object_name = 'leds'
+    queryset = Led.objects.all()
+    template_name = 'device/led_list.html'
+
+
+class LedCreate(CreateView):
+    model = Led
+    form_class = LedForm
+    template_name = 'device/led_create.html'
+
+    def get_success_url(self):
+        return reverse('led_list')
+
+
+class LedUpdate(UpdateView):
+    model = Led
+    form_class = LedForm
+    template_name = 'device/led_update.html'
+
+    def get_success_url(self):
+        return reverse('led_list')
+
+
+class LedDelete(DeleteView):
+    model = Led
+    template_name = 'device/delete.html'
+
+    def get_success_url(self):
+        return reverse('led_list')
