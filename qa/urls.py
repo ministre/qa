@@ -11,5 +11,6 @@ urlpatterns = [
 
 urlpatterns += i18n_patterns(
     path('', include('device.urls')),
+    path('auth/', include('django.contrib.auth.urls')),
     path('device/', include('device.urls')),
 )
