@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-20 20:20+0300\n"
+"POT-Creation-Date: 2019-01-20 20:55+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -81,7 +81,7 @@ msgstr "Фото"
 #: .\device\templates\device\button_update.html:7
 #: .\device\templates\device\custom_field_create.html:7
 #: .\device\templates\device\custom_field_update.html:7
-#: .\device\templates\device\delete.html:7
+#: .\device\templates\device\delete.html:11
 #: .\device\templates\device\device_create.html:7
 #: .\device\templates\device\device_update.html:7
 #: .\device\templates\device\led_create.html:7
@@ -147,11 +147,11 @@ msgstr "Добавление настраиваемого поля"
 msgid "Update custom field"
 msgstr "Редактирование настраиваемого поля"
 
-#: .\device\templates\device\delete.html:11
+#: .\device\templates\device\delete.html:9
 msgid "Are you sure you want to delete"
 msgstr "Вы уверены, что хотите удалить"
 
-#: .\device\templates\device\delete.html:12
+#: .\device\templates\device\delete.html:10
 msgid "Confirm"
 msgstr "Да"
 
@@ -212,15 +212,11 @@ msgstr "Типы устройств"
 msgid "Update device type"
 msgstr "Редактирование типа устройств"
 
-#: .\device\templates\device\wrapper.html:51
-msgid "Change language"
-msgstr "Сменить язык"
-
-#: .\device\templates\device\wrapper.html:54
+#: .\device\templates\device\wrapper.html:53
 msgid "Sign out"
 msgstr "Выйти"
 
-#: .\device\templates\device\wrapper.html:56
+#: .\device\templates\device\wrapper.html:55
 #: .\device\templates\registration\login.html:32
 msgid "Sign in"
 msgstr "Войти"
