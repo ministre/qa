@@ -144,8 +144,6 @@ msgstr "Аппаратная версия"
 
 #: .\device\templates\device\device_list.html:18
 #: .\device\templates\device\device_list.html:38
-#, fuzzy
-#| msgid "Types"
 msgid "Type"
 msgstr "Тип"
 

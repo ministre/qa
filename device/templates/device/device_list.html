@@ -43,6 +43,7 @@
 <script>
   $(document).ready(function() {
       var table = $('#devices').DataTable( {
+          "language": { "url": "{% static '/DataTables/i18n/Russian.json' %}" },
           "order": [[ 0, "desc" ]]
       } );
 
