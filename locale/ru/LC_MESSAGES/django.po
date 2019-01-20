@@ -177,7 +177,7 @@ msgstr "Новый тип устройства"
 #: .\device\templates\device\photo_list.html:7
 #: .\device\templates\device\wrapper.html:26
 msgid "Photos"
-msgstr "Фото"
+msgstr "Фото устройств"
 
 #: .\device\templates\device\photo_list.html:16
 #: .\device\templates\device\photo_list.html:32

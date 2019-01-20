@@ -37,6 +37,9 @@
 <script>
   $(document).ready(function() {
       var table = $('#device_types').DataTable( {
+      {% if LANGUAGE_CODE == 'ru' %}
+          "language": { "url": "{% static '/DataTables/i18n/Russian.json' %}" },
+      {% endif %}
           "order": [[ 0, "desc" ]]
       } );
 
