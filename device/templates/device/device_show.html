@@ -1,0 +1,16 @@
+{% extends "device/wrapper.html" %}
+
+{% load i18n %}
+
+{% block content %}
+
+<p><a href="/" class="exit-off-canvas">&laquo; {% trans "Back" %}</a></p>
+
+<div class="callout secondary">
+  <h5>{{ device.vendor }} {{ device.model }}</h5>
+  <p>Аппаратная версия: {{ device.hw }}<br>
+  Тип устройства: {{ device.type }}</p>
+  <a href="/device/{{ device.id }}/">Редактировать</a>
+</div>
+
+{% endblock %}

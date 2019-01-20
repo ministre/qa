@@ -6,6 +6,7 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404
 
 
 @method_decorator(login_required, name='dispatch')
@@ -114,6 +115,12 @@ class DeviceDelete(DeleteView):
 
     def get_success_url(self):
         return reverse('device_list')
+
+
+@login_required
+def device_show(request, pk):
+    device = get_object_or_404(Device, pk=pk)
+    return render(request, 'device/device_show.html', {'device': device})
 
 
 @method_decorator(login_required, name='dispatch')
