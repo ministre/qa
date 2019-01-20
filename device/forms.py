@@ -7,7 +7,7 @@ class CustomFieldForm(ModelForm):
     class Meta:
         model = CustomField
         labels = {
-            'name': 'Name',
+            'name': _('Name'),
         }
         fields = ['name']
 
@@ -50,7 +50,7 @@ class ButtonForm(ModelForm):
     class Meta:
         model = Button
         labels = {
-            'name': 'Name',
+            'name': _('Name'),
         }
         fields = ['name']
 
@@ -59,6 +59,6 @@ class LedForm(ModelForm):
     class Meta:
         model = Led
         labels = {
-            'name': 'Name',
+            'name': _('Name'),
         }
         fields = ['name']

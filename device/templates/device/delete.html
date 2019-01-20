@@ -4,12 +4,11 @@
 
 {% block content %}
 
-<p><a href=".." class="exit-off-canvas">&laquo; {% trans "Back" %}</a></p>
-
 <form method="post">
     {% csrf_token %}
-    <p>{% trans "Are you sure you want to delete" %} "{{ object }}"?</p>
-    <input type="submit" value='{% trans "Confirm" %}' class="button small alert rounded" />
+    <p>{% trans "Are you sure you want to delete" %} "<b>{{ object }}</b>"?</p>
+    <input type="submit" value='{% trans "Confirm" %}' class="button alert" />
+    <a href=".." class="button">{% trans "Back" %}</a>
 </form>
 
 {% endblock %}

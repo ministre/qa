@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-20 20:05+0300\n"
+"POT-Creation-Date: 2019-01-20 20:20+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,6 +19,16 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: .\device\forms.py:10 .\device\forms.py:53 .\device\forms.py:62
+#: .\device\templates\device\button_list.html:15
+#: .\device\templates\device\button_list.html:29
+#: .\device\templates\device\custom_field_list.html:15
+#: .\device\templates\device\custom_field_list.html:29
+#: .\device\templates\device\led_list.html:15
+#: .\device\templates\device\led_list.html:29
+msgid "Name"
+msgstr "Название"
 
 #: .\device\forms.py:19 .\device\templates\device\type_list.html:15
 #: .\device\templates\device\type_list.html:31
@@ -85,7 +95,7 @@ msgstr "Назад"
 
 #: .\device\templates\device\button_create.html:9
 msgid "New button"
-msgstr "Новая кнопка"
+msgstr "Добавление кнопки"
 
 #: .\device\templates\device\button_create.html:14
 #: .\device\templates\device\button_list.html:9
@@ -107,20 +117,9 @@ msgstr "Добавить"
 msgid "Buttons"
 msgstr "Кнопки"
 
-#: .\device\templates\device\button_list.html:15
-#: .\device\templates\device\button_list.html:29
-#: .\device\templates\device\custom_field_list.html:15
-#: .\device\templates\device\custom_field_list.html:29
-#: .\device\templates\device\led_list.html:15
-#: .\device\templates\device\led_list.html:29
-msgid "Name"
-msgstr "Имя"
-
 #: .\device\templates\device\button_update.html:9
-#, fuzzy
-#| msgid "Update"
 msgid "Update button"
-msgstr "Редактировать"
+msgstr "Редактирование кнопки"
 
 #: .\device\templates\device\button_update.html:14
 #: .\device\templates\device\custom_field_update.html:14
@@ -142,15 +141,15 @@ msgstr "Удалить"
 
 #: .\device\templates\device\custom_field_create.html:9
 msgid "New custom field"
-msgstr "Новое настраиваемое поле"
+msgstr "Добавление настраиваемого поля"
 
 #: .\device\templates\device\custom_field_update.html:9
 msgid "Update custom field"
-msgstr "Редактировать настраиваемое поле"
+msgstr "Редактирование настраиваемого поля"
 
 #: .\device\templates\device\delete.html:11
 msgid "Are you sure you want to delete"
-msgstr "Удалить"
+msgstr "Вы уверены, что хотите удалить"
 
 #: .\device\templates\device\delete.html:12
 msgid "Confirm"
@@ -171,14 +170,12 @@ msgid "HW"
 msgstr "Аппаратная версия"
 
 #: .\device\templates\device\device_update.html:9
-#, fuzzy
-#| msgid "Update device type"
 msgid "Update device"
-msgstr "Редактировать тип устройств"
+msgstr "Редактирование устройства"
 
 #: .\device\templates\device\led_create.html:9
 msgid "New led"
-msgstr "Добавить индикатор"
+msgstr "Добавление индикатора"
 
 #: .\device\templates\device\led_list.html:7
 #: .\device\templates\device\wrapper.html:28
@@ -186,10 +183,8 @@ msgid "Leds"
 msgstr "Индикаторы"
 
 #: .\device\templates\device\led_update.html:9
-#, fuzzy
-#| msgid "Update"
 msgid "Update led"
-msgstr "Редактировать"
+msgstr "Редактирование индикатора"
 
 #: .\device\templates\device\photo_create.html:9
 msgid "New device photo"
@@ -201,10 +196,8 @@ msgid "Photos"
 msgstr "Фото устройств"
 
 #: .\device\templates\device\photo_update.html:9
-#, fuzzy
-#| msgid "Update device type"
 msgid "Update device photo"
-msgstr "Редактировать тип устройств"
+msgstr "Редактирование фото устройства"
 
 #: .\device\templates\device\type_create.html:9
 msgid "New device type"
@@ -217,7 +210,7 @@ msgstr "Типы устройств"
 
 #: .\device\templates\device\type_update.html:9
 msgid "Update device type"
-msgstr "Редактировать тип устройств"
+msgstr "Редактирование типа устройств"
 
 #: .\device\templates\device\wrapper.html:51
 msgid "Change language"
