@@ -4,14 +4,18 @@ from .forms import CustomFieldForm, DeviceTypeForm, DeviceForm, DevicePhotoForm,
 from django.views.generic import ListView, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
 from django.urls import reverse
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 
 
+@method_decorator(login_required, name='dispatch')
 class CustomFieldListView(ListView):
     context_object_name = 'custom_fields'
     queryset = CustomField.objects.all()
     template_name = 'device/custom_field_list.html'
 
 
+@method_decorator(login_required, name='dispatch')
 class CustomFieldCreate(CreateView):
     model = CustomField
     form_class = CustomFieldForm
@@ -21,6 +25,7 @@ class CustomFieldCreate(CreateView):
         return reverse('custom_field_list')
 
 
+@method_decorator(login_required, name='dispatch')
 class CustomFieldUpdate(UpdateView):
     model = CustomField
     form_class = CustomFieldForm
@@ -30,6 +35,7 @@ class CustomFieldUpdate(UpdateView):
         return reverse('custom_field_list')
 
 
+@method_decorator(login_required, name='dispatch')
 class CustomFieldDelete(DeleteView):
     model = CustomField
     template_name = 'device/delete.html'
@@ -38,12 +44,14 @@ class CustomFieldDelete(DeleteView):
         return reverse('custom_field_list')
 
 
+@method_decorator(login_required, name='dispatch')
 class DeviceTypeListView(ListView):
     context_object_name = 'device_types'
     queryset = DeviceType.objects.all()
     template_name = 'device/type_list.html'
 
 
+@method_decorator(login_required, name='dispatch')
 class DeviceTypeCreate(CreateView):
     model = DeviceType
     form_class = DeviceTypeForm
@@ -53,6 +61,7 @@ class DeviceTypeCreate(CreateView):
         return reverse('type_list')
 
 
+@method_decorator(login_required, name='dispatch')
 class DeviceTypeUpdate(UpdateView):
     model = DeviceType
     form_class = DeviceTypeForm
@@ -62,6 +71,7 @@ class DeviceTypeUpdate(UpdateView):
         return reverse('type_list')
 
 
+@method_decorator(login_required, name='dispatch')
 class DeviceTypeDelete(DeleteView):
     model = DeviceType
     template_name = 'device/delete.html'
@@ -70,12 +80,14 @@ class DeviceTypeDelete(DeleteView):
         return reverse('type_list')
 
 
+@method_decorator(login_required, name='dispatch')
 class DeviceListView(ListView):
     context_object_name = 'devices'
     queryset = Device.objects.all()
     template_name = 'device/device_list.html'
 
 
+@method_decorator(login_required, name='dispatch')
 class DeviceCreate(CreateView):
     model = Device
     form_class = DeviceForm
@@ -85,6 +97,7 @@ class DeviceCreate(CreateView):
         return reverse('device_list')
 
 
+@method_decorator(login_required, name='dispatch')
 class DeviceUpdate(UpdateView):
     model = Device
     form_class = DeviceForm
@@ -94,6 +107,7 @@ class DeviceUpdate(UpdateView):
         return reverse('device_list')
 
 
+@method_decorator(login_required, name='dispatch')
 class DeviceDelete(DeleteView):
     model = Device
     template_name = 'device/delete.html'
@@ -102,12 +116,14 @@ class DeviceDelete(DeleteView):
         return reverse('device_list')
 
 
+@method_decorator(login_required, name='dispatch')
 class DevicePhotoListView(ListView):
     context_object_name = 'photos'
     queryset = DevicePhoto.objects.all()
     template_name = 'device/photo_list.html'
 
 
+@method_decorator(login_required, name='dispatch')
 class DevicePhotoCreate(CreateView):
     model = DevicePhoto
     form_class = DevicePhotoForm
@@ -117,6 +133,7 @@ class DevicePhotoCreate(CreateView):
         return reverse('photo_list')
 
 
+@method_decorator(login_required, name='dispatch')
 class DevicePhotoUpdate(UpdateView):
     model = DevicePhoto
     form_class = DevicePhotoForm
@@ -126,6 +143,7 @@ class DevicePhotoUpdate(UpdateView):
         return reverse('photo_list')
 
 
+@method_decorator(login_required, name='dispatch')
 class DevicePhotoDelete(DeleteView):
     model = DevicePhoto
     template_name = 'device/delete.html'
@@ -134,12 +152,14 @@ class DevicePhotoDelete(DeleteView):
         return reverse('photo_list')
 
 
+@method_decorator(login_required, name='dispatch')
 class ButtonListView(ListView):
     context_object_name = 'buttons'
     queryset = Button.objects.all()
     template_name = 'device/button_list.html'
 
 
+@method_decorator(login_required, name='dispatch')
 class ButtonCreate(CreateView):
     model = Button
     form_class = ButtonForm
@@ -149,6 +169,7 @@ class ButtonCreate(CreateView):
         return reverse('button_list')
 
 
+@method_decorator(login_required, name='dispatch')
 class ButtonUpdate(UpdateView):
     model = Button
     form_class = ButtonForm
@@ -158,6 +179,7 @@ class ButtonUpdate(UpdateView):
         return reverse('button_list')
 
 
+@method_decorator(login_required, name='dispatch')
 class ButtonDelete(DeleteView):
     model = Button
     template_name = 'device/delete.html'
@@ -166,12 +188,14 @@ class ButtonDelete(DeleteView):
         return reverse('button_list')
 
 
+@method_decorator(login_required, name='dispatch')
 class LedListView(ListView):
     context_object_name = 'leds'
     queryset = Led.objects.all()
     template_name = 'device/led_list.html'
 
 
+@method_decorator(login_required, name='dispatch')
 class LedCreate(CreateView):
     model = Led
     form_class = LedForm
@@ -181,6 +205,7 @@ class LedCreate(CreateView):
         return reverse('led_list')
 
 
+@method_decorator(login_required, name='dispatch')
 class LedUpdate(UpdateView):
     model = Led
     form_class = LedForm
@@ -190,6 +215,7 @@ class LedUpdate(UpdateView):
         return reverse('led_list')
 
 
+@method_decorator(login_required, name='dispatch')
 class LedDelete(DeleteView):
     model = Led
     template_name = 'device/delete.html'

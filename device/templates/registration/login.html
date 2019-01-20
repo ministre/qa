@@ -1,5 +1,7 @@
 {% extends "device/wrapper.html" %}
 
+{% load i18n %}
+
 {% block content %}
 
 {% if form.errors %}
@@ -17,7 +19,7 @@
 {% endif %}
 
 <div class="grid-container">
-    <h3>Hey. How you doing?</h3>
+    <h3>{% trans "Hey. How you doing?" %}</h3>
 <form method="post" action="{% url 'login' %}">
 {% csrf_token %}
 
@@ -27,7 +29,7 @@
 {{ form.password.label_tag }}
 {{ form.password }}
 
-<input type="submit" value="Sign in" class="button small rounded" />
+<input type="submit" value='{% trans "Sign in" %}' class="button" />
 <input type="hidden" name="next" value="{{ next }}" />
 </form>
 </div>

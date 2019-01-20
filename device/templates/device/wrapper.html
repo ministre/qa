@@ -13,41 +13,54 @@
 <script src="{% static 'foundation-6.5.1-custom/js/vendor/jquery.js' %}"></script>
 
 <div class="top-bar">
+
     <div class="top-bar-left">
         <ul class="dropdown menu" data-dropdown-menu>
             <li class="menu-text">Quality Assurance</li>
+            {% if user.is_authenticated %}
             <li>
-                <a href="/{{ LANGUAGE_CODE }}/device/">{% trans "Devices" %}</a>
+                <a href="/device/">{% trans "Devices" %}</a>
                 <ul class="menu vertical">
-                    <li><a href="/{{ LANGUAGE_CODE }}/device/type/">{% trans "Device types" %}</a></li>
-                    <li><a href="/{{ LANGUAGE_CODE }}/device/custom_field/">{% trans "Custom fields" %}</a></li>
-                    <li><a href="/{{ LANGUAGE_CODE }}/device/photo/">{% trans "Photos" %}</a></li>
-                    <li><a href="/{{ LANGUAGE_CODE }}/device/button/">{% trans "Buttons" %}</a></li>
-                    <li><a href="/{{ LANGUAGE_CODE }}/device/led/">{% trans "Leds" %}</a></li>
+                    <li><a href="/device/type/">{% trans "Device types" %}</a></li>
+                    <li><a href="/device/custom_field/">{% trans "Custom fields" %}</a></li>
+                    <li><a href="/device/photo/">{% trans "Photos" %}</a></li>
+                    <li><a href="/device/button/">{% trans "Buttons" %}</a></li>
+                    <li><a href="/device/led/">{% trans "Leds" %}</a></li>
                 </ul>
             </li>
-        </ul>
-    </div>
-    <div class="top-bar-right">
-        <ul class="menu">
-        {% get_available_languages as LANGUAGES %}
-        {% get_language_info_list for LANGUAGES as languages %}
-        {% for language in languages %}
-        {% if language.code != LANGUAGE_CODE %}
-        <li><a href="/{{ language.code }}">{{ language.code }}</a></li>
-        {%endif %}
-        {% endfor %}
-        </ul>
-    </div>
-    <div class="top-bar-right">
-        <ul class="menu">
-            {% if user.is_authenticated %}
-            <li><a href="{% url 'logout'%}?next={{request.path}}" class="button rounded small">Sign out ({{ user.get_username }})</a></li>
-            {% else %}
-            <li><a href="{% url 'login'%}?next={{request.path}}" class="button rounded small">{% trans "Sign in" %}</a></li>
             {% endif %}
         </ul>
     </div>
+
+    <div class="top-bar-right">
+        <form action="{% url 'set_language' %}" method="post">
+        <ul class="menu">
+            {% csrf_token %}
+            <li>
+                <input type="hidden" name="next" value="{{ redirect_to }}">
+                <select name="language" id="">
+                    {% get_available_languages as LANGUAGES %}
+                    {% get_language_info_list for LANGUAGES as languages %}
+                    {% for language in languages %}
+                    <option value="{{ language.code }}" {% if language.code == LANGUAGE_CODE %} selected {% endif %}>
+                        {{ language.name_local }} ({{ language.code }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </li>
+            <li><input type="submit" value='{% trans "Change language" %}' class="button"></li>
+
+            {% if user.is_authenticated %}
+            <li><a href="{% url 'logout'%}?next={{request.path}}" class="button">{% trans "Sign out" %} ({{ user.get_username }})</a></li>
+            {% else %}
+            <li><a href="{% url 'login'%}?next={{request.path}}" class="button">{% trans "Sign in" %}</a></li>
+            {% endif %}
+
+        </ul>
+        </form>
+    </div>
+
+
 </div>
 
 <br>
