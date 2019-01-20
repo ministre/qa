@@ -1,5 +1,6 @@
 from django.forms import ModelForm
 from device.models import DeviceType, CustomField, Device, DevicePhoto, Button, Led
+from django.utils.translation import gettext_lazy as _
 
 
 class CustomFieldForm(ModelForm):
@@ -15,9 +16,9 @@ class DeviceTypeForm(ModelForm):
     class Meta:
         model = DeviceType
         labels = {
-            'tag': 'Tag',
-            'desc': 'Description',
-            'cf': 'Custom fields',
+            'tag': _('Tag'),
+            'desc': _('Description'),
+            'cf': _('Custom fields'),
         }
         fields = ['tag', 'desc', 'cf']
 
@@ -26,10 +27,10 @@ class DeviceForm(ModelForm):
     class Meta:
         model = Device
         labels = {
-            'vendor': 'Vendor',
-            'model': 'Model',
-            'hw': 'Hardware',
-            'type': 'Type',
+            'vendor': _('Vendor'),
+            'model': _('Model'),
+            'hw': _('Hardware'),
+            'type': _('Type'),
         }
         fields = ['vendor', 'model', 'hw', 'type']
 
@@ -38,9 +39,9 @@ class DevicePhotoForm(ModelForm):
     class Meta:
         model = DevicePhoto
         labels = {
-            'device': 'Device',
-            'photo': 'Photo',
-            'desc': 'Description',
+            'device': _('Device'),
+            'photo': _('Photo'),
+            'desc': _('Description'),
         }
         fields = ['device', 'photo', 'desc']
 

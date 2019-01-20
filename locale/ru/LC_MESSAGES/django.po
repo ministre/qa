@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-20 17:38+0300\n"
+"POT-Creation-Date: 2019-01-20 20:05+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,6 +19,53 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: .\device\forms.py:19 .\device\templates\device\type_list.html:15
+#: .\device\templates\device\type_list.html:31
+msgid "Tag"
+msgstr "Тег"
+
+#: .\device\forms.py:20 .\device\forms.py:44
+#: .\device\templates\device\photo_list.html:16
+#: .\device\templates\device\photo_list.html:32
+#: .\device\templates\device\type_list.html:16
+#: .\device\templates\device\type_list.html:32
+msgid "Description"
+msgstr "Описание"
+
+#: .\device\forms.py:21 .\device\templates\device\custom_field_list.html:7
+#: .\device\templates\device\wrapper.html:25
+msgid "Custom fields"
+msgstr "Настраиваемые поля"
+
+#: .\device\forms.py:30 .\device\templates\device\device_list.html:15
+#: .\device\templates\device\device_list.html:35
+msgid "Vendor"
+msgstr "Производитель"
+
+#: .\device\forms.py:31 .\device\templates\device\device_list.html:16
+#: .\device\templates\device\device_list.html:36
+#: .\device\templates\device\photo_list.html:15
+#: .\device\templates\device\photo_list.html:31
+msgid "Model"
+msgstr "Модель"
+
+#: .\device\forms.py:32
+msgid "Hardware"
+msgstr "Аппаратная версия"
+
+#: .\device\forms.py:33 .\device\templates\device\device_list.html:18
+#: .\device\templates\device\device_list.html:38
+msgid "Type"
+msgstr "Тип"
+
+#: .\device\forms.py:42
+msgid "Device"
+msgstr "Устройство"
+
+#: .\device\forms.py:43
+msgid "Photo"
+msgstr "Фото"
 
 #: .\device\templates\device\button_create.html:7
 #: .\device\templates\device\button_update.html:7
@@ -53,7 +100,7 @@ msgstr "Новая кнопка"
 #: .\device\templates\device\type_create.html:14
 #: .\device\templates\device\type_list.html:9
 msgid "Create"
-msgstr "Создать"
+msgstr "Добавить"
 
 #: .\device\templates\device\button_list.html:7
 #: .\device\templates\device\wrapper.html:27
@@ -97,11 +144,6 @@ msgstr "Удалить"
 msgid "New custom field"
 msgstr "Новое настраиваемое поле"
 
-#: .\device\templates\device\custom_field_list.html:7
-#: .\device\templates\device\wrapper.html:25
-msgid "Custom fields"
-msgstr "Настраиваемые поля"
-
 #: .\device\templates\device\custom_field_update.html:9
 msgid "Update custom field"
 msgstr "Редактировать настраиваемое поле"
@@ -115,37 +157,18 @@ msgid "Confirm"
 msgstr "Да"
 
 #: .\device\templates\device\device_create.html:9
-#, fuzzy
-#| msgid "New device type"
 msgid "New device"
-msgstr "Новое устройство"
+msgstr "Добавление устройства"
 
 #: .\device\templates\device\device_list.html:7
 #: .\device\templates\device\wrapper.html:22
 msgid "Devices"
 msgstr "Устройства"
 
-#: .\device\templates\device\device_list.html:15
-#: .\device\templates\device\device_list.html:35
-msgid "Vendor"
-msgstr "Производитель"
-
-#: .\device\templates\device\device_list.html:16
-#: .\device\templates\device\device_list.html:36
-#: .\device\templates\device\photo_list.html:15
-#: .\device\templates\device\photo_list.html:31
-msgid "Model"
-msgstr "Модель"
-
 #: .\device\templates\device\device_list.html:17
 #: .\device\templates\device\device_list.html:37
 msgid "HW"
 msgstr "Аппаратная версия"
-
-#: .\device\templates\device\device_list.html:18
-#: .\device\templates\device\device_list.html:38
-msgid "Type"
-msgstr "Тип"
 
 #: .\device\templates\device\device_update.html:9
 #, fuzzy
@@ -169,22 +192,13 @@ msgid "Update led"
 msgstr "Редактировать"
 
 #: .\device\templates\device\photo_create.html:9
-#, fuzzy
-#| msgid "New device type"
 msgid "New device photo"
-msgstr "Новый тип устройства"
+msgstr "Добавление фото устройства"
 
 #: .\device\templates\device\photo_list.html:7
 #: .\device\templates\device\wrapper.html:26
 msgid "Photos"
 msgstr "Фото устройств"
-
-#: .\device\templates\device\photo_list.html:16
-#: .\device\templates\device\photo_list.html:32
-#: .\device\templates\device\type_list.html:16
-#: .\device\templates\device\type_list.html:32
-msgid "Description"
-msgstr "Описание"
 
 #: .\device\templates\device\photo_update.html:9
 #, fuzzy
@@ -194,17 +208,12 @@ msgstr "Редактировать тип устройств"
 
 #: .\device\templates\device\type_create.html:9
 msgid "New device type"
-msgstr "Новый тип устройства"
+msgstr "Добавление типа устройств"
 
 #: .\device\templates\device\type_list.html:7
 #: .\device\templates\device\wrapper.html:24
 msgid "Device types"
 msgstr "Типы устройств"
-
-#: .\device\templates\device\type_list.html:15
-#: .\device\templates\device\type_list.html:31
-msgid "Tag"
-msgstr "Тег"
 
 #: .\device\templates\device\type_update.html:9
 msgid "Update device type"
