@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-20 20:55+0300\n"
+"POT-Creation-Date: 2019-01-21 22:21+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -50,11 +50,13 @@ msgstr "Настраиваемые поля"
 
 #: .\device\forms.py:30 .\device\templates\device\device_list.html:15
 #: .\device\templates\device\device_list.html:35
+#: .\device\templates\device\device_show.html:13
 msgid "Vendor"
 msgstr "Производитель"
 
 #: .\device\forms.py:31 .\device\templates\device\device_list.html:16
 #: .\device\templates\device\device_list.html:36
+#: .\device\templates\device\device_show.html:14
 #: .\device\templates\device\photo_list.html:15
 #: .\device\templates\device\photo_list.html:31
 msgid "Model"
@@ -83,6 +85,7 @@ msgstr "Фото"
 #: .\device\templates\device\custom_field_update.html:7
 #: .\device\templates\device\delete.html:11
 #: .\device\templates\device\device_create.html:7
+#: .\device\templates\device\device_show.html:7
 #: .\device\templates\device\device_update.html:7
 #: .\device\templates\device\led_create.html:7
 #: .\device\templates\device\led_update.html:7
@@ -166,8 +169,17 @@ msgstr "Устройства"
 
 #: .\device\templates\device\device_list.html:17
 #: .\device\templates\device\device_list.html:37
+#: .\device\templates\device\device_show.html:15
 msgid "HW"
 msgstr "Аппаратная версия"
+
+#: .\device\templates\device\device_show.html:12
+msgid "General Information"
+msgstr "Основная информация"
+
+#: .\device\templates\device\device_show.html:17
+msgid "Edit"
+msgstr "Редактировать"
 
 #: .\device\templates\device\device_update.html:9
 msgid "Update device"

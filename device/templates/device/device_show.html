@@ -1,6 +1,6 @@
 {% extends "device/wrapper.html" %}
 
-{% load i18n %}
+{% load i18n static %}
 
 {% block content %}
 
@@ -9,26 +9,27 @@
 <div class="grid-x grid-margin-x">
     <div class="cell medium-6 large-8">
         <div class="callout">
-            <h5>General Information</h5>
-            <p>Vendor: {{ device.vendor }}<br>
-            Model: {{ device.model }}<br>
-            HW: {{ device.hw }}
+            <h5>{% trans "General Information" %}</h5>
+            <p>{% trans "Vendor" %}: {{ device.vendor }}<br>
+            {% trans "Model" %}: {{ device.model }}<br>
+            {% trans "HW" %}: {{ device.hw }}<br>
+            {% trans "Type" %}: {{ device.type }}
             </p>
-            <a href="/device/{{ device.id }}/">Edit</a>
+            <a href="/device/{{ device.id }}/">{% trans "Edit" %}</a>
         </div>
         <div class="callout">
-            <h5>Additional Information</h5>
+            <h5>{% trans "Additional Information" %}</h5>
             <p>There is no information</p>
-            <a href="/device/{{ device.id }}/">Edit</a>
+            <a href="/device/{{ device.id }}/">{% trans "Edit" %}</a>
         </div>
         <div class="callout">
-            <h5>Test Reports</h5>
+            <h5>{% trans "Test Reports" %}</h5>
             <p>Not found</p>
         </div>
         <div class="callout">
             <h5>Redmine</h5>
             <p>Project ID:</p>
-            <a href="/device/{{ device.id }}/">Edit</a>
+            <a href="/device/{{ device.id }}/">{% trans "Edit" %}</a>
         </div>
 
     </div>
@@ -40,8 +41,8 @@
                 <a href="#" class="hollow button small">&laquo;</a>
                 <a href="#" class="clear button disabled small">1</a>
                 <a href="#" class="hollow button small">&raquo;</a>
-                <a href="#" class="hollow button small">Add</a>
-                <a href="#" class="hollow button alert small">Delete</a>
+                <a href="#" class="hollow button small">{% trans "Add" %}</a>
+                <a href="#" class="hollow button alert small">{% trans "Delete" %}</a>
             </p>
         </div>
     </div>
