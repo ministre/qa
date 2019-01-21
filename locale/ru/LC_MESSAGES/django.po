@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-21 22:21+0300\n"
+"POT-Creation-Date: 2019-01-21 22:31+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -68,6 +68,7 @@ msgstr "Аппаратная версия"
 
 #: .\device\forms.py:33 .\device\templates\device\device_list.html:18
 #: .\device\templates\device\device_list.html:38
+#: .\device\templates\device\device_show.html:16
 msgid "Type"
 msgstr "Тип"
 
@@ -135,6 +136,7 @@ msgstr "Редактировать"
 
 #: .\device\templates\device\button_update.html:15
 #: .\device\templates\device\custom_field_update.html:15
+#: .\device\templates\device\device_show.html:45
 #: .\device\templates\device\device_update.html:15
 #: .\device\templates\device\led_update.html:15
 #: .\device\templates\device\photo_update.html:15
@@ -177,9 +179,23 @@ msgstr "Аппаратная версия"
 msgid "General Information"
 msgstr "Основная информация"
 
-#: .\device\templates\device\device_show.html:17
+#: .\device\templates\device\device_show.html:18
+#: .\device\templates\device\device_show.html:23
+#: .\device\templates\device\device_show.html:32
 msgid "Edit"
 msgstr "Редактировать"
+
+#: .\device\templates\device\device_show.html:21
+msgid "Additional Information"
+msgstr "Дополнительная информация"
+
+#: .\device\templates\device\device_show.html:26
+msgid "Test Reports"
+msgstr "Протоколы испытаний"
+
+#: .\device\templates\device\device_show.html:44
+msgid "Add"
+msgstr "Добавить"
 
 #: .\device\templates\device\device_update.html:9
 msgid "Update device"

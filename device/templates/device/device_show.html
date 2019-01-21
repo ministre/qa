@@ -10,11 +10,23 @@
     <div class="cell medium-6 large-8">
         <div class="callout">
             <h5>{% trans "General Information" %}</h5>
-            <p>{% trans "Vendor" %}: {{ device.vendor }}<br>
-            {% trans "Model" %}: {{ device.model }}<br>
-            {% trans "HW" %}: {{ device.hw }}<br>
-            {% trans "Type" %}: {{ device.type }}
-            </p>
+            <div class="grid-x">
+                <div class="cell medium-6 large-4">{% trans "Vendor" %}:</div>
+                <div class="cell medium-6 large-8">{{ device.vendor }}</div>
+            </div>
+            <div class="grid-x">
+                <div class="cell medium-6 large-4">{% trans "Model" %}:</div>
+                <div class="cell medium-6 large-8">{{ device.model }}</div>
+            </div>
+            <div class="grid-x">
+                <div class="cell medium-6 large-4">{% trans "HW" %}:</div>
+                <div class="cell medium-6 large-8">{{ device.hw }}</div>
+            </div>
+            <div class="grid-x">
+                <div class="cell medium-6 large-4">{% trans "Type" %}:</div>
+                <div class="cell medium-6 large-8">{{ device.type }}</div>
+            </div>
+            <br>
             <a href="/device/{{ device.id }}/">{% trans "Edit" %}</a>
         </div>
         <div class="callout">
