@@ -14,7 +14,7 @@ class CustomField(models.Model):
 class DeviceType(models.Model):
     tag = models.CharField(max_length=100)
     desc = models.CharField(max_length=300)
-    cf = models.ManyToManyField(CustomField, blank=True)
+    cf = models.ManyToManyField(CustomField, related_name='custom_fields', blank=True)
 
     def __str__(self):
         return self.desc
@@ -31,6 +31,15 @@ class Device(models.Model):
 
     def __str__(self):
         return self.model
+
+
+class CustomValue(models.Model):
+    value = models.CharField(max_length=1000)
+    field = models.ForeignKey(CustomField, on_delete=models.CASCADE)
+    device = models.ForeignKey(Device, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.value
 
 
 class DevicePhoto(models.Model):

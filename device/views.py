@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from device.models import CustomField, DeviceType, Device, DevicePhoto, Button, Led
+from device.models import CustomField, CustomValue, DeviceType, Device, DevicePhoto, Button, Led
 from .forms import CustomFieldForm, DeviceTypeForm, DeviceForm, DevicePhotoForm, ButtonForm, LedForm
 from django.views.generic import ListView, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
@@ -7,6 +7,8 @@ from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
+from django.core.exceptions import ObjectDoesNotExist
 
 
 @method_decorator(login_required, name='dispatch')
@@ -117,10 +119,30 @@ class DeviceDelete(DeleteView):
         return reverse('device_list')
 
 
+def get_custom_properties(device_id):
+    custom_properties = []
+
+    class CustomProperty:
+        def __init__(self, field, value):
+            self.field = field
+            self.value = value
+
+    device = get_object_or_404(Device, pk=device_id)
+    custom_fields = CustomField.objects.filter(custom_fields__id=device.type.id)
+    for custom_field in custom_fields:
+        try:
+            custom_value = CustomValue.objects.get(Q(field=custom_field) & Q(device=device))
+        except ObjectDoesNotExist:
+            custom_value = ""
+        custom_properties.append(CustomProperty(custom_field, custom_value))
+    return custom_properties
+
+
 @login_required
 def device_show(request, pk):
     device = get_object_or_404(Device, pk=pk)
-    return render(request, 'device/device_show.html', {'device': device})
+    custom_properties = get_custom_properties(1)
+    return render(request, 'device/device_show.html', {'device': device, 'custom_properties': custom_properties})
 
 
 @method_decorator(login_required, name='dispatch')
