@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponseRedirect
 
 
 @method_decorator(login_required, name='dispatch')
@@ -119,7 +120,7 @@ class DeviceDelete(DeleteView):
         return reverse('device_list')
 
 
-def get_custom_properties(device_id):
+def get_device_custom_values(device_id):
     custom_properties = []
 
     class CustomProperty:
@@ -139,19 +140,29 @@ def get_custom_properties(device_id):
     return custom_properties
 
 
+def set_device_custom_value(device_id, field_id, value):
+    pass
+
+
 @login_required
 def device_show(request, pk):
     device = get_object_or_404(Device, pk=pk)
-    custom_properties = get_custom_properties(pk)
+    custom_properties = get_device_custom_values(pk)
     return render(request, 'device/device_show.html', {'device': device, 'custom_properties': custom_properties})
 
 
 @login_required
 def device_details_update(request, pk):
-    device = get_object_or_404(Device, pk=pk)
-    custom_properties = get_custom_properties(pk)
-    return render(request, 'device/device_details_update.html', {'device': device,
-                                                                 'custom_properties': custom_properties})
+    if request.method == 'POST':
+        for item in request.POST.dict().items():
+            if item[0] != 'csrfmiddlewaretoken':
+                set_device_custom_value(pk, int(item[0]), item[1])
+        return HttpResponseRedirect('/device/show/' + str(pk) + '/')
+    else:
+        device = get_object_or_404(Device, pk=pk)
+        custom_properties = get_device_custom_values(pk)
+        return render(request, 'device/device_details_update.html', {'device': device,
+                                                                     'custom_properties': custom_properties})
 
 
 @method_decorator(login_required, name='dispatch')

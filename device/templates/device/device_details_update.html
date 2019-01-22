@@ -10,14 +10,13 @@
 
 <form method="post" action="">
     {% csrf_token %}
-
     {% for custom_property in custom_properties %}
     <tr>
-        <th><label for="id_vendor">{{ custom_property.field_name }}:</label></th>
-        <td><input type="text" name="custom_field_{{ custom_property.field_id }}" value="{{ custom_property.value_name }}" id="id_vendor"></td>
+        <th><label for="id_custom_field_{{ custom_property.field_id }}">{{ custom_property.field_name }}:</label></th>
+        <td><input type="text" name="{{ custom_property.field_id }}" value="{{ custom_property.value_name }}" id="id_custom_field_{{ custom_property.field_id }}"></td>
     </tr>
     {% endfor %}
-    <input type="submit" value='{% trans "Create" %}' class="button" />
+    <input type="submit" value='{% trans "Save" %}' class="button" />
 </form>
 
 {% endblock %}
