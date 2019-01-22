@@ -34,12 +34,12 @@
 
             {% for custom_property in custom_properties %}
             <div class="grid-x">
-                <div class="cell medium-6 large-4">{{ custom_property.field }}:</div>
-                <div class="cell medium-6 large-8">{{ custom_property.value }}</div>
+                <div class="cell medium-6 large-4">{{ custom_property.field_name }}:</div>
+                <div class="cell medium-6 large-8">{{ custom_property.value_name }}</div>
             </div>
             {% endfor %}
             <br>
-            <a href="/device/{{ device.id }}/">{% trans "Edit" %}</a>
+            <a href="/device/details/{{ device.id }}/">{% trans "Edit" %}</a>
         </div>
         <div class="callout">
             <h5>{% trans "Test Reports" %}</h5>

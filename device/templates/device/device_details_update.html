@@ -1,0 +1,23 @@
+{% extends "device/wrapper.html" %}
+
+{% load i18n static %}
+
+{% block content %}
+
+<p><a href="/device/show/{{ device.id }}/" class="exit-off-canvas">&laquo; {% trans "Back" %}</a></p>
+
+<h4>{{ device.vendor }} {{ device.model }} ({{ device.hw }}) - {% trans "Additional Information" %}</h4>
+
+<form method="post" action="">
+    {% csrf_token %}
+
+    {% for custom_property in custom_properties %}
+    <tr>
+        <th><label for="id_vendor">{{ custom_property.field_name }}:</label></th>
+        <td><input type="text" name="custom_field_{{ custom_property.field_id }}" value="{{ custom_property.value_name }}" id="id_vendor"></td>
+    </tr>
+    {% endfor %}
+    <input type="submit" value='{% trans "Create" %}' class="button" />
+</form>
+
+{% endblock %}

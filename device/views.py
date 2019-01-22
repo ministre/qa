@@ -123,9 +123,10 @@ def get_custom_properties(device_id):
     custom_properties = []
 
     class CustomProperty:
-        def __init__(self, field, value):
-            self.field = field
-            self.value = value
+        def __init__(self, field_id, field_name, value_name):
+            self.field_id = field_id
+            self.field_name = field_name
+            self.value_name = value_name
 
     device = get_object_or_404(Device, pk=device_id)
     custom_fields = CustomField.objects.filter(custom_fields__id=device.type.id)
@@ -134,15 +135,23 @@ def get_custom_properties(device_id):
             custom_value = CustomValue.objects.get(Q(field=custom_field) & Q(device=device))
         except ObjectDoesNotExist:
             custom_value = ""
-        custom_properties.append(CustomProperty(custom_field, custom_value))
+        custom_properties.append(CustomProperty(custom_field.id, custom_field.name, custom_value))
     return custom_properties
 
 
 @login_required
 def device_show(request, pk):
     device = get_object_or_404(Device, pk=pk)
-    custom_properties = get_custom_properties(1)
+    custom_properties = get_custom_properties(pk)
     return render(request, 'device/device_show.html', {'device': device, 'custom_properties': custom_properties})
+
+
+@login_required
+def device_details_update(request, pk):
+    device = get_object_or_404(Device, pk=pk)
+    custom_properties = get_custom_properties(pk)
+    return render(request, 'device/device_details_update.html', {'device': device,
+                                                                 'custom_properties': custom_properties})
 
 
 @method_decorator(login_required, name='dispatch')
