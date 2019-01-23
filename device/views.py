@@ -141,7 +141,9 @@ def get_device_custom_values(device_id):
 
 
 def set_device_custom_value(device_id, field_id, value):
-    pass
+    CustomValue.objects.update_or_create(device=Device.objects.get(id=device_id),
+                                         field=CustomField.objects.get(id=field_id),
+                                         defaults={'value': value})
 
 
 @login_required
