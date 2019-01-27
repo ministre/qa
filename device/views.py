@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from device.models import CustomField, CustomValue, DeviceType, Device, DevicePhoto, Button, Led, Firmware
-from .forms import CustomFieldForm, DeviceTypeForm, DeviceForm, DevicePhotoForm, ButtonForm, LedForm
+from .forms import CustomFieldForm, DeviceTypeForm, DeviceForm, DevicePhotoForm, ButtonForm, LedForm, FirmwareForm
 from django.views.generic import ListView, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
 from django.urls import reverse
@@ -280,3 +280,13 @@ class FirmwareListView(ListView):
     context_object_name = 'firmwares'
     queryset = Firmware.objects.all()
     template_name = 'device/firmware_list.html'
+
+
+@method_decorator(login_required, name='dispatch')
+class FirmwareCreate(CreateView):
+    model = Firmware
+    form_class = FirmwareForm
+    template_name = 'device/firmware_create.html'
+
+    def get_success_url(self):
+        return reverse('firmware_list')
