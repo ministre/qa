@@ -4,52 +4,91 @@
 
 {% block content %}
 
-<p><a href="/" class="exit-off-canvas">&laquo; {% trans "Back" %}</a></p>
+<a href="/" class="button tiny">&laquo; {% trans "Back" %}</a>
+<a href="/device/update/{{ device.id }}/" class="button tiny">{% trans "Edit" %}</a>
+<a href="/device/fw/add/{{ device.id }}/" class="button tiny">{% trans "Add Firmware" %}</a>
+<a href="/device/{{ device.id }}/" class="button tiny alert">{% trans "Delete" %}</a>
 
 <div class="grid-x grid-margin-x">
     <div class="cell medium-6 large-8">
-        <div class="callout">
-            <h5>{% trans "General Information" %}</h5>
-            <div class="grid-x">
-                <div class="cell medium-6 large-4">{% trans "Vendor" %}:</div>
-                <div class="cell medium-6 large-8">{{ device.vendor }}</div>
-            </div>
-            <div class="grid-x">
-                <div class="cell medium-6 large-4">{% trans "Model" %}:</div>
-                <div class="cell medium-6 large-8">{{ device.model }}</div>
-            </div>
-            <div class="grid-x">
-                <div class="cell medium-6 large-4">{% trans "HW" %}:</div>
-                <div class="cell medium-6 large-8">{{ device.hw }}</div>
-            </div>
-            <div class="grid-x">
-                <div class="cell medium-6 large-4">{% trans "Type" %}:</div>
-                <div class="cell medium-6 large-8">{{ device.type }}</div>
-            </div>
-            <br>
-            <a href="/device/{{ device.id }}/">{% trans "Edit" %}</a>
-        </div>
-        <div class="callout">
-            <h5>{% trans "Additional Information" %}</h5>
 
-            {% for custom_property in custom_properties %}
-            <div class="grid-x">
-                <div class="cell medium-6 large-4">{{ custom_property.field_name }}:</div>
-                <div class="cell medium-6 large-8">{{ custom_property.value_name }}</div>
-            </div>
-            {% endfor %}
-            <br>
-            <a href="/device/details/{{ device.id }}/">{% trans "Edit" %}</a>
-        </div>
-        <div class="callout">
-            <h5>{% trans "Test Reports" %}</h5>
-            <p>Not found</p>
-        </div>
-        <div class="callout">
-            <h5>Redmine</h5>
-            <p>Project ID:</p>
-            <a href="/device/{{ device.id }}/">{% trans "Edit" %}</a>
-        </div>
+
+        <ul class="accordion" data-accordion data-multi-expand="true">
+            <li class="accordion-item is-active" data-accordion-item>
+                <!-- Accordion tab title -->
+                <a href="#" class="accordion-title">{% trans "General Information" %}</a>
+                <!-- Accordion tab content: it would start in the open state due to using the `is-active` state class. -->
+                <div class="accordion-content" data-tab-content>
+                    <div class="grid-x">
+                        <div class="cell medium-6 large-4">{% trans "Vendor" %}:</div>
+                        <div class="cell medium-6 large-8">{{ device.vendor }}</div>
+                    </div>
+                    <div class="grid-x">
+                        <div class="cell medium-6 large-4">{% trans "Model" %}:</div>
+                        <div class="cell medium-6 large-8">{{ device.model }}</div>
+                    </div>
+                    <div class="grid-x">
+                        <div class="cell medium-6 large-4">{% trans "HW" %}:</div>
+                        <div class="cell medium-6 large-8">{{ device.hw }}</div>
+                    </div>
+                    <div class="grid-x">
+                        <div class="cell medium-6 large-4">{% trans "Type" %}:</div>
+                        <div class="cell medium-6 large-8">{{ device.type }}</div>
+                    </div>
+                </div>
+            </li>
+
+            <li class="accordion-item is-active" data-accordion-item>
+                <a href="#" class="accordion-title">{% trans "Hardware Information" %}</a>
+                <div class="accordion-content" data-tab-content>
+                    <p>Not found</p>
+                </div>
+            </li>
+
+            <li class="accordion-item is-active" data-accordion-item>
+                <a href="#" class="accordion-title">{% trans "Additional Information" %}</a>
+                <div class="accordion-content" data-tab-content>
+                    {% for custom_property in custom_properties %}
+                    <div class="grid-x">
+                        <div class="cell medium-6 large-4">{{ custom_property.field_name }}:</div>
+                        <div class="cell medium-6 large-8">{{ custom_property.value_name }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </li>
+
+            <li class="accordion-item is-active" data-accordion-item>
+                <a href="#" class="accordion-title">{% trans "Firmware" %}</a>
+                <div class="accordion-content" data-tab-content>
+                    <p>Not found</p>
+                </div>
+            </li>
+
+            <li class="accordion-item is-active" data-accordion-item>
+                <a href="#" class="accordion-title">{% trans "Documentation" %}</a>
+                <div class="accordion-content" data-tab-content>
+                    <p>Not found</p>
+                </div>
+            </li>
+
+            <li class="accordion-item is-active" data-accordion-item>
+                <a href="#" class="accordion-title">{% trans "Test Reports" %}</a>
+                <div class="accordion-content" data-tab-content>
+                    <p>Not found</p>
+                </div>
+            </li>
+
+            <li class="accordion-item is-active" data-accordion-item>
+                <a href="#" class="accordion-title">Redmine</a>
+                <div class="accordion-content" data-tab-content>
+                    <p>Not found</p>
+                </div>
+            </li>
+
+        </ul>
+
+
+
 
     </div>
     <div class="cell medium-6 large-4">

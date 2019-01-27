@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class CustomField(models.Model):
@@ -28,6 +29,8 @@ class Device(models.Model):
     model = models.CharField(max_length=300)
     hw = models.CharField(max_length=100)
     type = models.ForeignKey(DeviceType, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(User, related_name='created_by_user', on_delete=models.CASCADE,
+                                   blank=True, null=True)
 
     def __str__(self):
         return self.model
@@ -66,3 +69,18 @@ class Led(models.Model):
 
     class Meta:
         ordering = ('name',)
+
+
+class Firmware(models.Model):
+    device = models.ForeignKey(Device, on_delete=models.CASCADE)
+    version = models.CharField(max_length=300)
+    file = models.FileField(upload_to="device/", blank=True, null=True)
+    desc = models.CharField(max_length=500)
+    created_by = models.ForeignKey(User, related_name='fw_created_by_user', on_delete=models.CASCADE,
+                                   blank=True, null=True)
+
+    def __str__(self):
+        return self.version
+
+    class Meta:
+        ordering = ('version',)

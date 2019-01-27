@@ -12,9 +12,9 @@ urlpatterns = [
     path('custom_field/<int:pk>/', views.CustomFieldUpdate.as_view(), name='custom_field_update'),
     path('custom_field/<int:pk>/delete/', views.CustomFieldDelete.as_view(), name='custom_field_delete'),
     path('device/create/', views.DeviceCreate.as_view(), name='device_create'),
-    path('device/<int:pk>/', views.DeviceUpdate.as_view(), name='device_update'),
+    path('device/update/<int:pk>/', views.DeviceUpdate.as_view(), name='device_update'),
     path('device/<int:pk>/delete/', views.DeviceDelete.as_view(), name='device_delete'),
-    path('device/show/<int:pk>/', views.device_show, name='device_show'),
+    path('device/<int:pk>/', views.device_show, name='device_show'),
     path('device/details/<int:pk>/', views.device_details_update, name='device_details_update'),
     path('photo/', views.DevicePhotoListView.as_view(), name='photo_list'),
     path('photo/create/', views.DevicePhotoCreate.as_view(), name='photo_create'),
@@ -28,4 +28,5 @@ urlpatterns = [
     path('led/create/', views.LedCreate.as_view(), name='led_create'),
     path('led/<int:pk>/', views.LedUpdate.as_view(), name='led_update'),
     path('led/<int:pk>/delete/', views.LedDelete.as_view(), name='led_delete'),
+    path('fw/', views.FirmwareListView.as_view(), name='firmware_list'),
 ]

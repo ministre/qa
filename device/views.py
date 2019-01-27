@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from device.models import CustomField, CustomValue, DeviceType, Device, DevicePhoto, Button, Led
+from device.models import CustomField, CustomValue, DeviceType, Device, DevicePhoto, Button, Led, Firmware
 from .forms import CustomFieldForm, DeviceTypeForm, DeviceForm, DevicePhotoForm, ButtonForm, LedForm
 from django.views.generic import ListView, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
@@ -130,7 +130,7 @@ def get_device_custom_values(device_id):
             self.value_name = value_name
 
     device = get_object_or_404(Device, pk=device_id)
-    custom_fields = CustomField.objects.filter(custom_fields__id=device.type.id)
+    custom_fields = CustomField.objects.filter(custom_fields__id=device.type.id).order_by('id')
     for custom_field in custom_fields:
         try:
             custom_value = CustomValue.objects.get(Q(field=custom_field) & Q(device=device))
@@ -273,3 +273,10 @@ class LedDelete(DeleteView):
 
     def get_success_url(self):
         return reverse('led_list')
+
+
+@method_decorator(login_required, name='dispatch')
+class FirmwareListView(ListView):
+    context_object_name = 'firmwares'
+    queryset = Firmware.objects.all()
+    template_name = 'device/firmware_list.html'

@@ -4,9 +4,7 @@
 
 {% block content %}
 
-<h4>{% trans "Devices" %}</h4>
-
-<a href="create/" class="button small rounded">{% trans "Create" %}</a>
+<a href="/device/create/" class="button">{% trans "Create" %}</a>
 
 <table id="devices" class="display" style="width:100%">
     <thead>
@@ -16,6 +14,7 @@
         <th>{% trans "Model" %}</th>
         <th>{% trans "HW" %}</th>
         <th>{% trans "Type" %}</th>
+        <th>{% trans "Created by" %}</th>
     </tr>
     </thead>
     <tbody>
@@ -26,6 +25,7 @@
         <td>{{ device.model }}</td>
         <td>{{ device.hw }}</td>
         <td>{{ device.type }}</td>
+        <td>{{ device.created_by }}</td>
     </tr>
     {% endfor %}
     </tbody>
@@ -36,6 +36,7 @@
         <th>{% trans "Model" %}</th>
         <th>{% trans "HW" %}</th>
         <th>{% trans "Type" %}</th>
+        <th>{% trans "Created by" %}</th>
     </tr>
     </tfoot>
 </table>
@@ -51,7 +52,7 @@
 
       $('#devices tbody').on('click', 'tr', function () {
           var data = table.row( this ).data();
-		  window.open("/device/show/"+data[0]+"/","_self");
+		  window.open("/device/"+data[0]+"/","_self");
       } );
   } );
 </script>
