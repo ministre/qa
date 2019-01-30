@@ -12,6 +12,10 @@ class CustomField(models.Model):
         ordering = ('name',)
 
 
+class Interface(models.Model):
+    name = models.CharField(max_length=300)
+
+
 class DeviceType(models.Model):
     tag = models.CharField(max_length=100)
     desc = models.CharField(max_length=300)
@@ -84,3 +88,4 @@ class Firmware(models.Model):
 
     class Meta:
         ordering = ('version',)
+
