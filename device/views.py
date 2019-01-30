@@ -157,16 +157,16 @@ def device_show(request, pk):
 
 
 @login_required
-def device_details_update(request, pk):
+def device_update_details(request, pk):
     if request.method == 'POST':
         for item in request.POST.dict().items():
             if item[0] != 'csrfmiddlewaretoken':
                 set_device_custom_value(pk, int(item[0]), item[1])
-        return HttpResponseRedirect('/device/show/' + str(pk) + '/')
+        return HttpResponseRedirect('/device/' + str(pk) + '/')
     else:
         device = get_object_or_404(Device, pk=pk)
         custom_properties = get_device_custom_values(pk)
-        return render(request, 'device/device_details_update.html', {'device': device,
+        return render(request, 'device/device_update_details.html', {'device': device,
                                                                      'custom_properties': custom_properties})
 
 

@@ -5,7 +5,8 @@
 {% block content %}
 
 <a href="/" class="button">&laquo; {% trans "Back" %}</a>
-<a href="/device/{{ device.id }}/update/" class="button">{% trans "Edit" %}</a>
+<a href="/device/{{ device.id }}/update/" class="button">{% trans "Update" %}</a>
+<a href="/device/{{ device.id }}/update_details/" class="button">{% trans "Update Details" %}</a>
 <a href="/device/fw/add/{{ device.id }}/" class="button">{% trans "Add Firmware" %}</a>
 <a href="/device/{{ device.id }}/delete/" class="button alert">{% trans "Delete" %}</a>
 
@@ -41,7 +42,7 @@
             <li class="accordion-item is-active" data-accordion-item>
                 <a href="#" class="accordion-title">{% trans "Hardware Information" %}</a>
                 <div class="accordion-content" data-tab-content>
-                    <p>Not found</p>
+                    <p>Interfaces: </p>
                 </div>
             </li>
 

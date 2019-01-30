@@ -4,11 +4,11 @@
 
 {% block content %}
 
-<p><a href="/device/show/{{ device.id }}/" class="exit-off-canvas">&laquo; {% trans "Back" %}</a></p>
-
-<h4>{{ device.vendor }} {{ device.model }} ({{ device.hw }}) - {% trans "Additional Information" %}</h4>
 
 <form method="post" action="">
+    <a href=".." class="button">&laquo; {% trans "Back" %}</a>
+    <input type="submit" value='{% trans "Update" %}' class="button" />
+
     {% csrf_token %}
     {% for custom_property in custom_properties %}
     <tr>
@@ -16,7 +16,6 @@
         <td><input type="text" name="{{ custom_property.field_id }}" value="{{ custom_property.value_name }}" id="id_custom_field_{{ custom_property.field_id }}"></td>
     </tr>
     {% endfor %}
-    <input type="submit" value='{% trans "Save" %}' class="button" />
 </form>
 
 {% endblock %}
