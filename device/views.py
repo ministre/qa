@@ -288,5 +288,27 @@ class FirmwareCreate(CreateView):
     form_class = FirmwareForm
     template_name = 'device/firmware_create.html'
 
+    def get_initial(self):
+        return {'created_by': self.request.user}
+
+    def get_success_url(self):
+        return reverse('firmware_list')
+
+
+@method_decorator(login_required, name='dispatch')
+class FirmwareUpdate(UpdateView):
+    model = Firmware
+    form_class = FirmwareForm
+    template_name = 'device/firmware_update.html'
+
+    def get_success_url(self):
+        return reverse('firmware_list')
+
+
+@method_decorator(login_required, name='dispatch')
+class FirmwareDelete(DeleteView):
+    model = Firmware
+    template_name = 'device/delete.html'
+
     def get_success_url(self):
         return reverse('firmware_list')

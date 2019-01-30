@@ -4,15 +4,15 @@
 
 {% block content %}
 
-<p><a href=".." class="exit-off-canvas">&laquo; {% trans "Back" %}</a></p>
-
-<h4>{% trans "New Firmware" %}</h4>
-
 <form method="post" action="" enctype="multipart/form-data">
+    <a href=".." class="button">&laquo; {% trans "Back" %}</a>
+    <input type="submit" value='{% trans "Create" %}' class="button" />
+
     {% csrf_token %}
     <input type="hidden" name="created_by" value="{{ user.get_username }}" />
+
     {{ form }}
-    <input type="submit" value='{% trans "Create" %}' class="button small rounded" />
+
 </form>
 
 {% endblock %}

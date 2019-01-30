@@ -74,7 +74,7 @@ class Led(models.Model):
 class Firmware(models.Model):
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
     version = models.CharField(max_length=300)
-    file = models.FileField(upload_to="device/", blank=True, null=True)
+    file = models.FileField(upload_to="device/fw/", blank=True, null=True)
     desc = models.CharField(max_length=500, blank=True, null=True)
     created_by = models.ForeignKey(User, related_name='fw_created_by_user', on_delete=models.CASCADE,
                                    blank=True, null=True)

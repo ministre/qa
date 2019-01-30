@@ -30,4 +30,6 @@ urlpatterns = [
     path('led/<int:pk>/delete/', views.LedDelete.as_view(), name='led_delete'),
     path('fw/', views.FirmwareListView.as_view(), name='firmware_list'),
     path('fw/create/', views.FirmwareCreate.as_view(), name='firmware_create'),
+    path('fw/<int:pk>/', views.FirmwareUpdate.as_view(), name='firmware_update'),
+    path('fw/<int:pk>/delete/', views.FirmwareDelete.as_view(), name='firmware_delete'),
 ]

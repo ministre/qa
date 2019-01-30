@@ -1,4 +1,4 @@
-from django.forms import ModelForm
+from django.forms import ModelForm, HiddenInput
 from device.models import DeviceType, CustomField, Device, DevicePhoto, Button, Led, Firmware
 from django.utils.translation import gettext_lazy as _
 
@@ -73,4 +73,5 @@ class FirmwareForm(ModelForm):
             'file': _('File'),
             'desc': _('Description'),
         }
-        fields = ['device', 'version', 'file', 'desc']
+        fields = ['device', 'version', 'desc', 'file', 'created_by']
+        widgets = {'created_by': HiddenInput()}
