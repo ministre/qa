@@ -9,7 +9,7 @@ class CustomFieldForm(ModelForm):
         labels = {
             'name': _('Name'),
         }
-        fields = ['name']
+        fields = '__all__'
 
 
 class DeviceTypeForm(ModelForm):
@@ -20,7 +20,7 @@ class DeviceTypeForm(ModelForm):
             'desc': _('Description'),
             'cf': _('Custom fields'),
         }
-        fields = ['tag', 'desc', 'cf']
+        fields = '__all__'
 
 
 class DeviceForm(ModelForm):
@@ -32,7 +32,8 @@ class DeviceForm(ModelForm):
             'hw': _('Hardware'),
             'type': _('Type'),
         }
-        fields = ['vendor', 'model', 'hw', 'type']
+        fields = ['vendor', 'model', 'hw', 'type', 'created_by']
+        widgets = {'created_by': HiddenInput()}
 
 
 class DevicePhotoForm(ModelForm):
@@ -43,7 +44,7 @@ class DevicePhotoForm(ModelForm):
             'photo': _('Photo'),
             'desc': _('Description'),
         }
-        fields = ['device', 'photo', 'desc']
+        fields = '__all__'
 
 
 class ButtonForm(ModelForm):
@@ -52,7 +53,7 @@ class ButtonForm(ModelForm):
         labels = {
             'name': _('Name'),
         }
-        fields = ['name']
+        fields = '__all__'
 
 
 class LedForm(ModelForm):
@@ -61,7 +62,7 @@ class LedForm(ModelForm):
         labels = {
             'name': _('Name'),
         }
-        fields = ['name']
+        fields = '__all__'
 
 
 class FirmwareForm(ModelForm):

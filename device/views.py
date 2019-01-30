@@ -97,6 +97,9 @@ class DeviceCreate(CreateView):
     form_class = DeviceForm
     template_name = 'device/device_create.html'
 
+    def get_initial(self):
+        return {'created_by': self.request.user}
+
     def get_success_url(self):
         return reverse('device_list')
 
