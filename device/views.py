@@ -1,6 +1,8 @@
 from django.shortcuts import render
-from device.models import CustomField, CustomValue, DeviceType, Device, DevicePhoto, Button, Led, Firmware
-from .forms import CustomFieldForm, DeviceTypeForm, DeviceForm, DevicePhotoForm, ButtonForm, LedForm, FirmwareForm
+from device.models import CustomField, CustomValue, DeviceType, Device, DevicePhoto, Button, Led, Firmware, \
+    Interface
+from .forms import CustomFieldForm, DeviceTypeForm, DeviceForm, DevicePhotoForm, ButtonForm, LedForm, FirmwareForm, \
+    InterfaceForm
 from django.views.generic import ListView, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
 from django.urls import reverse
@@ -10,6 +12,42 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
+
+
+@method_decorator(login_required, name='dispatch')
+class InterfaceListView(ListView):
+    context_object_name = 'interfaces'
+    queryset = Interface.objects.all()
+    template_name = 'device/interface_list.html'
+
+
+@method_decorator(login_required, name='dispatch')
+class InterfaceCreate(CreateView):
+    model = Interface
+    form_class = InterfaceForm
+    template_name = 'device/interface_create.html'
+
+    def get_success_url(self):
+        return reverse('interface_list')
+
+
+@method_decorator(login_required, name='dispatch')
+class InterfaceUpdate(UpdateView):
+    model = Interface
+    form_class = InterfaceForm
+    template_name = 'device/interface_update.html'
+
+    def get_success_url(self):
+        return reverse('interface_list')
+
+
+@method_decorator(login_required, name='dispatch')
+class InterfaceDelete(DeleteView):
+    model = Interface
+    template_name = 'device/delete.html'
+
+    def get_success_url(self):
+        return reverse('interface_list')
 
 
 @method_decorator(login_required, name='dispatch')

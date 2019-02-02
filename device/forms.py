@@ -1,6 +1,15 @@
 from django.forms import ModelForm, HiddenInput
-from device.models import DeviceType, CustomField, Device, DevicePhoto, Button, Led, Firmware
+from device.models import DeviceType, CustomField, Device, DevicePhoto, Button, Led, Firmware, Interface
 from django.utils.translation import gettext_lazy as _
+
+
+class InterfaceForm(ModelForm):
+    class Meta:
+        model = Interface
+        labels = {
+            'name': _('Name'),
+        }
+        fields = '__all__'
 
 
 class CustomFieldForm(ModelForm):

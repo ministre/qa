@@ -3,6 +3,10 @@ from . import views
 
 urlpatterns = [
     path('', views.DeviceListView.as_view(), name='device_list'),
+    path('interface/', views.InterfaceListView.as_view(), name='interface_list'),
+    path('interface/create/', views.InterfaceCreate.as_view(), name='interface_create'),
+    path('interface/<int:pk>/', views.InterfaceUpdate.as_view(), name='interface_update'),
+    path('interface/<int:pk>/delete/', views.InterfaceDelete.as_view(), name='interface_delete'),
     path('type/', views.DeviceTypeListView.as_view(), name='type_list'),
     path('type/create/', views.DeviceTypeCreate.as_view(), name='type_create'),
     path('type/<int:pk>/', views.DeviceTypeUpdate.as_view(), name='type_update'),
