@@ -4,15 +4,12 @@
 
 {% block content %}
 
-<p><a href=".." class="exit-off-canvas">&laquo; {% trans "Back" %}</a></p>
-
-<h4>{% trans "Update device type" %}</h4>
-
 <form method="post" action="">
+    <a href=".." class="button">&laquo; {% trans "Back" %}</a>
+    <input type="submit" value='{% trans "Update" %}' class="button" />
+    <a href="delete/" class="button alert">{% trans "Delete" %}</a>
     {% csrf_token %}
     {{ form }}
-    <input type="submit" value='{% trans "Update" %}' class="button small rounded" />
-    <a href="delete/" class="button small alert rounded">{% trans "Delete" %}</a>
 </form>
 
 {% endblock %}

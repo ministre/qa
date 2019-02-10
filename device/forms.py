@@ -28,6 +28,7 @@ class DeviceTypeForm(ModelForm):
             'tag': _('Tag'),
             'desc': _('Description'),
             'cf': _('Custom fields'),
+            'ifaces': _('Interfaces'),
         }
         fields = '__all__'
 
