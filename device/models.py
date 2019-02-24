@@ -96,3 +96,8 @@ class Firmware(models.Model):
     class Meta:
         ordering = ('version',)
 
+
+class DeviceInterface(models.Model):
+    device = models.ForeignKey(Device, on_delete=models.CASCADE)
+    interface = models.ForeignKey(Interface, on_delete=models.CASCADE)
+    quantity = models.IntegerField()
