@@ -4,8 +4,11 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
-from testplan.models import TestplanPattern
-from .forms import TestplanPatternForm
+from testplan.models import TestplanPattern, TestplanPatternCategory
+from .forms import TestplanPatternForm, TestplanPatternCategoryForm
+from django.shortcuts import get_object_or_404
+from django.db.models import Max
+from django.http import HttpResponseRedirect
 
 
 @method_decorator(login_required, name='dispatch')
@@ -39,6 +42,42 @@ class TestplanPatternUpdate(UpdateView):
 class TestplanPatternDelete(DeleteView):
     model = TestplanPattern
     template_name = 'testplan/delete.html'
+
+    def get_success_url(self):
+        return reverse('testplan_pattern_list')
+
+
+@login_required
+def testplan_pattern_details(request, pk):
+    pattern = get_object_or_404(TestplanPattern, id=pk)
+    categories = TestplanPatternCategory.objects.filter(pattern=pattern)
+    return render(request, 'testplan/testplan_pattern_details.html', {'pk': pk, 'categories': categories,
+                                                                      'pattern': pattern})
+
+
+@login_required
+def testplan_pattern_category_create(request, pk):
+    if request.method == "POST":
+        form = TestplanPatternCategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/testplan/pattern/' + str(pk) + '/')
+    else:
+        pattern = TestplanPattern.objects.get(pk=pk)
+        categories = TestplanPatternCategory.objects.filter(pattern=pattern)
+        if categories:
+            queue = categories.aggregate(Max('queue')).get('queue__max')+1
+        else:
+            queue = 0
+        form = TestplanPatternCategoryForm(initial={'pattern': pattern.id, 'queue': queue})
+        return render(request, 'testplan/testplan_pattern_category_create.html', {'form': form, 'pk': pk})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestplanPatternCategoryUpdate(UpdateView):
+    model = TestplanPatternCategory
+    form_class = TestplanPatternCategoryForm
+    template_name = 'testplan/testplan_pattern_category_update.html'
 
     def get_success_url(self):
         return reverse('testplan_pattern_list')
