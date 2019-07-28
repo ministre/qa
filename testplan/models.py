@@ -40,3 +40,15 @@ class Testplan(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class TestplanChapter(models.Model):
+    testplan = models.ForeignKey(Testplan, on_delete=models.CASCADE)
+    title = models.CharField(max_length=1000)
+    text = models.TextField(max_length=100000)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name_plural = "Testplan Chapters"
