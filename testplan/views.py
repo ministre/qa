@@ -4,8 +4,8 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
-from testplan.models import TestplanPattern, TestplanPatternCategory, TestplanChecklist
-from .forms import TestplanPatternForm, TestplanPatternCategoryForm
+from testplan.models import TestplanPattern, TestplanPatternCategory, TestplanChecklist, Testplan
+from .forms import TestplanPatternForm, TestplanPatternCategoryForm, TestplanForm
 from django.shortcuts import get_object_or_404
 from django.db.models import Max
 from django.http import HttpResponseRedirect
@@ -88,3 +88,20 @@ class TestplanChecklistListView(ListView):
     context_object_name = 'testplan_checklists'
     queryset = TestplanChecklist.objects.all()
     template_name = 'testplan/testplan_checklist_list.html'
+
+
+@method_decorator(login_required, name='dispatch')
+class TestplanListView(ListView):
+    context_object_name = 'testplans'
+    queryset = Testplan.objects.all()
+    template_name = 'testplan/testplan_list.html'
+
+
+@method_decorator(login_required, name='dispatch')
+class TestplanCreate(CreateView):
+    model = Testplan
+    form_class = TestplanForm
+    template_name = 'testplan/create.html'
+
+    def get_success_url(self):
+        return reverse('testplan_list')
