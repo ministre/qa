@@ -1,0 +1,28 @@
+{% extends "device/wrapper.html" %}
+
+{% load i18n static %}
+
+{% block content %}
+
+<h3>{% trans "Import Testplan from Redmine" %}</h3>
+
+<form method="post" action="">
+    {% csrf_token %}
+    <label for="id_testplan_project">{% trans "Testplan" %}:</label>
+    <select name="testplan_project" id="id_testplan_project">
+        {% for testplan_project in testplan_projects %}
+        <option value="{{ testplan_project.identifier }}">{{ testplan_project.name }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="id_tag">{% trans "Tag" %}:</label>
+    <select name="tag" id="id_tag">
+        <option value=""></option>
+        {% for device_types_tag in device_types_tags %}
+        <option value="{{ device_types_tag.tag }}">{{ device_types_tag.tag }}</option>
+        {% endfor %}
+    </select>
+    <input type="submit" value='{% trans "Import" %}' class="button" />
+</form>
+
+{% endblock %}

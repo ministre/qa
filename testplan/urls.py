@@ -11,4 +11,5 @@ urlpatterns = [
          name='testplan_pattern_category_create'),
     path('pattern/category/<int:pk>/', views.TestplanPatternCategoryUpdate.as_view(),
          name='testplan_pattern_category_update'),
+    path('checklist/', views.TestplanChecklistListView.as_view(), name='testplan_checklist_list'),
 ]

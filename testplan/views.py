@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
-from testplan.models import TestplanPattern, TestplanPatternCategory
+from testplan.models import TestplanPattern, TestplanPatternCategory, TestplanChecklist
 from .forms import TestplanPatternForm, TestplanPatternCategoryForm
 from django.shortcuts import get_object_or_404
 from django.db.models import Max
@@ -81,3 +81,10 @@ class TestplanPatternCategoryUpdate(UpdateView):
 
     def get_success_url(self):
         return reverse('testplan_pattern_list')
+
+
+@method_decorator(login_required, name='dispatch')
+class TestplanChecklistListView(ListView):
+    context_object_name = 'testplan_checklists'
+    queryset = TestplanChecklist.objects.all()
+    template_name = 'testplan/testplan_checklist_list.html'

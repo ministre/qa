@@ -12,6 +12,7 @@ urlpatterns = [
     path('auth/', include('django.contrib.auth.urls')),
     path('device/', include('device.urls')),
     path('testplan/', include('testplan.urls')),
+    path('redmine/', include('redmine.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 '''
