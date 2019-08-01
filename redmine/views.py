@@ -44,7 +44,7 @@ def collapse_filter(ctx, tag):
     for i, block in enumerate(blocks):
         if re.search('{{collapse\(#', block):
             if re.search(tag+'\)', block):
-                blocks[i] = blocks[i][5:-18]
+                blocks[i] = blocks[i].replace('\n{{collapse(#'+tag+')', '')
             else:
                 blocks[i] = ''
     ctx = ''.join(blocks)
