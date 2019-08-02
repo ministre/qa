@@ -12,8 +12,7 @@ def redmine_testplan_import(request):
     if request.method == 'POST':
         testplan_project = request.POST['testplan_project']
         tag = request.POST['tag']
-        redmine = Redmine(settings.REDMINE_URL, username=settings.REDMINE_USERNAME,
-                          password=settings.REDMINE_PASSWORD)
+        redmine = Redmine(settings.REDMINE_URL, key=settings.REDMINE_KEY)
         # get testplan title and version from wiki page
         try:
             wiki_page = redmine.wiki_page.get('Headers', project_id=testplan_project)
@@ -25,8 +24,7 @@ def redmine_testplan_import(request):
             return render(request, 'redmine/error.html', {'message': message})
         ###
     else:
-        redmine = Redmine(settings.REDMINE_URL, username=settings.REDMINE_USERNAME,
-                          password=settings.REDMINE_PASSWORD)
+        redmine = Redmine(settings.REDMINE_URL, key=settings.REDMINE_KEY)
         testplan_projects = []
         for project in redmine.project.all():
             try:
