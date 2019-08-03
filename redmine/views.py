@@ -17,7 +17,8 @@ def redmine_testplan_import(request):
         try:
             wiki_page = redmine.wiki_page.get('Headers', project_id=testplan_project)
             ctx = collapse_filter(wiki_page.text, tag)
-            return render(request, 'redmine/debug.html', {'ctx': ctx})
+            head = parse_testplan_head(ctx)
+            return render(request, 'redmine/debug.html', {'head': head})
 
         except ResourceNotFoundError:
             message = "Redmine project or wiki page not found!"
@@ -46,5 +47,12 @@ def collapse_filter(ctx, tag):
             else:
                 blocks[i] = ''
     ctx = ''.join(blocks)
-    # ctx = tag
     return ctx
+
+
+def parse_testplan_head(ctx):
+    head = dict()
+    blocks = ctx.split('|')
+    head['title'] = blocks[2].strip()
+    head['version'] = blocks[5].strip()
+    return head
