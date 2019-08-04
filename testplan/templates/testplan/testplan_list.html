@@ -12,7 +12,7 @@
         <th>ID</th>
         <th>{% trans "Name" %}</th>
         <th>{% trans "Version" %}</th>
-        <th>{% trans "Device Type" %}</th>
+        <th>{% trans "Tag" %}</th>
     </tr>
     </thead>
     <tbody>
@@ -21,7 +21,7 @@
         <td>{{ testplan.id }}</td>
         <td>{{ testplan.name }}</td>
         <td>{{ testplan.version }}</td>
-        <td>{{ testplan.device_type }}</td>
+        <td>{{ testplan.device_type.tag }}</td>
     </tr>
     {% endfor %}
     </tbody>
@@ -30,7 +30,7 @@
         <th>ID</th>
         <th>{% trans "Name" %}</th>
         <th>{% trans "Version" %}</th>
-        <th>{% trans "Device Type" %}</th>
+        <th>{% trans "Tag" %}</th>
     </tr>
     </tfoot>
 </table>

@@ -1,9 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from device.models import DeviceType
+from testplan.models import Testplan
 from redminelib import Redmine
 from qa import settings
 from redminelib.exceptions import ResourceAttrError, ResourceNotFoundError
+from django.http import HttpResponseRedirect
 import re
 
 
@@ -12,28 +14,14 @@ def redmine_testplan_import(request):
     if request.method == 'POST':
         testplan_project = request.POST['testplan_project']
         tag = request.POST['tag']
-        redmine = Redmine(settings.REDMINE_URL, key=settings.REDMINE_KEY)
-        # get testplan title and version from wiki page
-        try:
-            wiki_page = redmine.wiki_page.get('Headers', project_id=testplan_project)
-            ctx = collapse_filter(wiki_page.text, tag)
-            head = parse_testplan_head(ctx)
-
-            # get items from wiki page
-            try:
-                wiki_page = redmine.wiki_page.get('Wiki', project_id=testplan_project)
-                items = item_filter(wiki_page.text, tag)
-                ####
-            except ResourceNotFoundError:
-                message = "Redmine project or wiki page 'wiki' not found!"
-                return render(request, 'redmine/error.html', {'message': message})
-
-            return render(request, 'redmine/debug.html', {'head': head, 'items': items})
-
-        except ResourceNotFoundError:
-            message = "Redmine project or wiki page 'headers' not found!"
+        # create testplan
+        if create_testplan(testplan_project, tag):
+            return HttpResponseRedirect('/testplan/')
+        else:
+            message = "can't parse wiki page: " + settings.REDMINE_URL + "/projects/" + testplan_project + \
+                      "/wiki/Headers"
             return render(request, 'redmine/error.html', {'message': message})
-        ###
+
     else:
         redmine = Redmine(settings.REDMINE_URL, key=settings.REDMINE_KEY)
         testplan_projects = []
@@ -87,10 +75,25 @@ def item_filter(ctx, tag):
             sblocks = blocks[i].split('*')
             for j, sblock in enumerate(sblocks):
                 # check tags
-                if (('\nall' in sblocks[j]) and ('!'+tag not in sblocks[j])) or ('\n'+tag in sblocks[j]):
+                if (('\nall' in sblocks[j]) and ('\n!'+tag not in sblocks[j])) or ('\n'+tag in sblocks[j]):
                     p = sblocks[j].index('|')
                     r = sblocks[j].index(']')
                     item_keyword = sblocks[j][3:p]
                     item_name = sblocks[j][p+1:r]
                     items.append(Item(category_name, item_keyword, item_name))
     return items
+
+
+def create_testplan(testplan_project, tag):
+    redmine = Redmine(settings.REDMINE_URL, key=settings.REDMINE_KEY)
+    try:
+        wiki_page = redmine.wiki_page.get('Headers', project_id=testplan_project)
+        ctx = collapse_filter(wiki_page.text, tag)
+        head = parse_testplan_head(ctx)
+        new_testplan = Testplan(name=head['title'], version=head['version'],
+                                device_type=DeviceType.objects.get(tag=tag))
+        new_testplan.save()
+        return True
+
+    except ResourceNotFoundError:
+        return
