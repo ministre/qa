@@ -10,4 +10,12 @@
 
 <p>version: {{ head.version }}</p>
 
+<p>===</p>
+
+{% for item in items %}
+
+[{{ item.category_name }}] [{{ item.item_keyword }}] [{{ item.item_name }}]<br>
+
+{% endfor %}
+
 {% endblock %}

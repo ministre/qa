@@ -18,10 +18,20 @@ def redmine_testplan_import(request):
             wiki_page = redmine.wiki_page.get('Headers', project_id=testplan_project)
             ctx = collapse_filter(wiki_page.text, tag)
             head = parse_testplan_head(ctx)
-            return render(request, 'redmine/debug.html', {'head': head})
+
+            # get items from wiki page
+            try:
+                wiki_page = redmine.wiki_page.get('Wiki', project_id=testplan_project)
+                items = item_filter(wiki_page.text, tag)
+                ####
+            except ResourceNotFoundError:
+                message = "Redmine project or wiki page 'wiki' not found!"
+                return render(request, 'redmine/error.html', {'message': message})
+
+            return render(request, 'redmine/debug.html', {'head': head, 'items': items})
 
         except ResourceNotFoundError:
-            message = "Redmine project or wiki page not found!"
+            message = "Redmine project or wiki page 'headers' not found!"
             return render(request, 'redmine/error.html', {'message': message})
         ###
     else:
@@ -56,3 +66,31 @@ def parse_testplan_head(ctx):
     head['title'] = blocks[2].strip()
     head['version'] = blocks[5].strip()
     return head
+
+
+class Item:
+        def __init__(self, category_name, item_keyword, item_name):
+            self.category_name = category_name
+            self.item_keyword = item_keyword
+            self.item_name = item_name
+
+
+def item_filter(ctx, tag):
+    items = []
+    blocks = ctx.split('h2')
+    for i, block in enumerate(blocks):
+        # peek categories
+        if block.startswith('. '):
+            s = blocks[i].index('\n')
+            category_name = blocks[i][2:s-1]
+            # peek items
+            sblocks = blocks[i].split('*')
+            for j, sblock in enumerate(sblocks):
+                # check tags
+                if (('\nall' in sblocks[j]) and ('!'+tag not in sblocks[j])) or ('\n'+tag in sblocks[j]):
+                    p = sblocks[j].index('|')
+                    r = sblocks[j].index(']')
+                    item_keyword = sblocks[j][3:p]
+                    item_name = sblocks[j][p+1:r]
+                    items.append(Item(category_name, item_keyword, item_name))
+    return items
