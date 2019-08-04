@@ -25,8 +25,8 @@ class CustomField(models.Model):
 class DeviceType(models.Model):
     tag = models.CharField(max_length=100)
     desc = models.CharField(max_length=300)
-    cf = models.ManyToManyField(CustomField, related_name='custom_fields', blank=True, null=True)
-    ifaces = models.ManyToManyField(Interface, related_name='interfaces', blank=True, null=True)
+    cf = models.ManyToManyField(CustomField, related_name='custom_fields', blank=True)
+    ifaces = models.ManyToManyField(Interface, related_name='interfaces', blank=True)
 
     def __str__(self):
         return self.desc

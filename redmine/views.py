@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from device.models import DeviceType
-from testplan.models import Testplan
+from testplan.models import Testplan, TestplanCategory
 from redminelib import Redmine
 from qa import settings
 from redminelib.exceptions import ResourceAttrError, ResourceNotFoundError
@@ -15,11 +15,17 @@ def redmine_testplan_import(request):
         testplan_project = request.POST['testplan_project']
         tag = request.POST['tag']
         # create testplan
-        if create_testplan(testplan_project, tag):
-            return HttpResponseRedirect('/testplan/')
+
+        testplan_id = create_testplan(testplan_project, tag)
+        if testplan_id:
+            # create testplan categories
+            if create_testplan_categories(testplan_id, testplan_project, tag):
+                return HttpResponseRedirect('/testplan/')
+                # return render(request, 'redmine/debug.html', {'message': testplan_id})
+
         else:
-            message = "Can't parse wiki page - " + settings.REDMINE_URL + "/projects/" + testplan_project + \
-                      "/wiki/Headers"
+            message = "Can't parse wiki page - " + settings.REDMINE_URL + "/projects/" + \
+                      testplan_project + "/wiki/Headers"
             return render(request, 'redmine/error.html', {'message': message})
 
     else:
@@ -93,6 +99,21 @@ def create_testplan(testplan_project, tag):
         new_testplan = Testplan(name=head['title'], version=head['version'],
                                 device_type=DeviceType.objects.get(tag=tag))
         new_testplan.save()
+        return new_testplan.id
+    except ResourceNotFoundError:
+        return
+
+
+def create_testplan_categories(testplan_id, testplan_project, tag):
+    redmine = Redmine(settings.REDMINE_URL, key=settings.REDMINE_KEY)
+    try:
+        wiki_page = redmine.wiki_page.get('Wiki', project_id=testplan_project)
+        ctx = wiki_page.text
+        items = item_filter(ctx, tag)
+        for item in items:
+            new_category = TestplanCategory.objects.get_or_create(name=item.category_name,
+                                                                  testplan=Testplan.objects.get(id=testplan_id))
+            # new_category.save()
         return True
 
     except ResourceNotFoundError:

@@ -115,6 +115,16 @@ def testplan_details(request, pk):
 
 
 @method_decorator(login_required, name='dispatch')
+class TestplanUpdate(UpdateView):
+    model = Testplan
+    form_class = TestplanForm
+    template_name = 'testplan/update.html'
+
+    def get_success_url(self):
+        return reverse('testplan_list')
+
+
+@method_decorator(login_required, name='dispatch')
 class TestplanDelete(DeleteView):
     model = Testplan
     template_name = 'testplan/delete.html'

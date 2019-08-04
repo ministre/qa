@@ -5,8 +5,11 @@
 {% block content %}
 
 <a href=".." class="button">&laquo; {% trans "Back" %}</a>
+<a href="../update/{{ testplan.id }}/" class="button">{% trans "Update" %}</a>
 <a href="../delete/{{ testplan.id }}/" class="button alert">{% trans "Delete" %}</a>
 
 <h4>{{ testplan.name}}</h4>
+
+<h5>Categories</h5>
 
 {% endblock %}
