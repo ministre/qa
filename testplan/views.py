@@ -105,3 +105,19 @@ class TestplanCreate(CreateView):
 
     def get_success_url(self):
         return reverse('testplan_list')
+
+
+@login_required
+def testplan_details(request, pk):
+    testplan = get_object_or_404(Testplan, id=pk)
+    # categories = TestplanPatternCategory.objects.filter(pattern=pattern)
+    return render(request, 'testplan/testplan_details.html', {'testplan': testplan})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestplanDelete(DeleteView):
+    model = Testplan
+    template_name = 'testplan/delete.html'
+
+    def get_success_url(self):
+        return reverse('testplan_list')

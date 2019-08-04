@@ -3,6 +3,8 @@ from . import views
 
 urlpatterns = [
     path('', views.TestplanListView.as_view(), name='testplan_list'),
+    path('<int:pk>/', views.testplan_details, name='testplan_details'),
+    path('delete/<int:pk>/', views.TestplanDelete.as_view(), name='testplan_delete'),
     path('create/', views.TestplanCreate.as_view(), name='testplan_create'),
     path('pattern/', views.TestplanPatternListView.as_view(), name='testplan_pattern_list'),
     path('pattern/create/', views.TestplanPatternCreate.as_view(), name='testplan_pattern_create'),

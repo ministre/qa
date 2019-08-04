@@ -18,7 +18,7 @@ def redmine_testplan_import(request):
         if create_testplan(testplan_project, tag):
             return HttpResponseRedirect('/testplan/')
         else:
-            message = "can't parse wiki page: " + settings.REDMINE_URL + "/projects/" + testplan_project + \
+            message = "Can't parse wiki page - " + settings.REDMINE_URL + "/projects/" + testplan_project + \
                       "/wiki/Headers"
             return render(request, 'redmine/error.html', {'message': message})
 
