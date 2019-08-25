@@ -16,7 +16,7 @@ def redmine_testplan_import(request):
         tag = request.POST['tag']
         # create testplan
 
-        testplan_id = create_testplan(testplan_project, tag)
+        testplan_id = create_testplan(testplan_project, tag, request)
         if testplan_id:
             # create testplan categories
             if create_testplan_categories(testplan_id, testplan_project, tag):
@@ -90,14 +90,14 @@ def item_filter(ctx, tag):
     return items
 
 
-def create_testplan(testplan_project, tag):
+def create_testplan(testplan_project, tag, request):
     redmine = Redmine(settings.REDMINE_URL, key=settings.REDMINE_KEY)
     try:
         wiki_page = redmine.wiki_page.get('Headers', project_id=testplan_project)
         ctx = collapse_filter(wiki_page.text, tag)
         head = parse_testplan_head(ctx)
         new_testplan = Testplan(name=head['title'], version=head['version'],
-                                device_type=DeviceType.objects.get(tag=tag))
+                                device_type=DeviceType.objects.get(tag=tag), created_by=request.user)
         new_testplan.save()
         return new_testplan.id
     except ResourceNotFoundError:

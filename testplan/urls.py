@@ -7,6 +7,12 @@ urlpatterns = [
     path('update/<int:pk>/', views.TestplanUpdate.as_view(), name='testplan_update'),
     path('delete/<int:pk>/', views.TestplanDelete.as_view(), name='testplan_delete'),
     path('create/', views.TestplanCreate.as_view(), name='testplan_create'),
+    path('<int:pk>/category/create/', views.TestplanCategoryCreate.as_view(), name='testplan_category_create'),
+    path('<int:testplan>/category/update/<int:pk>/', views.TestplanCategoryUpdate.as_view(),
+         name='testplan_category_update'),
+    path('<int:testplan>/category/delete/<int:pk>/', views.TestplanCategoryDelete.as_view(),
+         name='testplan_category_delete'),
+
     path('pattern/', views.TestplanPatternListView.as_view(), name='testplan_pattern_list'),
     path('pattern/create/', views.TestplanPatternCreate.as_view(), name='testplan_pattern_create'),
     path('pattern/<int:pk>/', views.testplan_pattern_details, name='testplan_pattern_details'),

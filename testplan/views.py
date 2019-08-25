@@ -4,8 +4,8 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
-from testplan.models import TestplanPattern, TestplanPatternCategory, TestplanChecklist, Testplan
-from .forms import TestplanPatternForm, TestplanPatternCategoryForm, TestplanForm
+from testplan.models import TestplanPattern, TestplanPatternCategory, TestplanChecklist, Testplan, TestplanCategory
+from .forms import TestplanPatternForm, TestplanPatternCategoryForm, TestplanForm, TestplanCategoryForm
 from django.shortcuts import get_object_or_404
 from django.db.models import Max
 from django.http import HttpResponseRedirect
@@ -103,6 +103,9 @@ class TestplanCreate(CreateView):
     form_class = TestplanForm
     template_name = 'testplan/create.html'
 
+    def get_initial(self):
+        return {'created_by': self.request.user}
+
     def get_success_url(self):
         return reverse('testplan_list')
 
@@ -110,8 +113,8 @@ class TestplanCreate(CreateView):
 @login_required
 def testplan_details(request, pk):
     testplan = get_object_or_404(Testplan, id=pk)
-    # categories = TestplanPatternCategory.objects.filter(pattern=pattern)
-    return render(request, 'testplan/testplan_details.html', {'testplan': testplan})
+    categories = TestplanCategory.objects.filter(testplan=testplan).order_by('id')
+    return render(request, 'testplan/testplan_details.html', {'testplan': testplan, 'categories': categories})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -131,3 +134,35 @@ class TestplanDelete(DeleteView):
 
     def get_success_url(self):
         return reverse('testplan_list')
+
+
+@method_decorator(login_required, name='dispatch')
+class TestplanCategoryCreate(CreateView):
+    model = TestplanCategory
+    form_class = TestplanCategoryForm
+    template_name = 'testplan/create.html'
+
+    def get_initial(self):
+        return {'testplan': self.kwargs.get('pk')}
+
+    def get_success_url(self):
+        return reverse('testplan_details', kwargs={'pk': self.kwargs.get('pk')})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestplanCategoryUpdate(UpdateView):
+    model = TestplanCategory
+    form_class = TestplanCategoryForm
+    template_name = 'testplan/update.html'
+
+    def get_success_url(self):
+        return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan')})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestplanCategoryDelete(DeleteView):
+    model = TestplanCategory
+    template_name = 'testplan/delete.html'
+
+    def get_success_url(self):
+        return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan')})

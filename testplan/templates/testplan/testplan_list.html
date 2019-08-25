@@ -5,6 +5,7 @@
 {% block content %}
 
 <a href="create/" class="button">{% trans "Create" %}</a>
+<a href="/redmine/testplan/import/" class="button">{% trans "Import" %}</a>
 
 <table id="testplans" class="display" style="width:100%">
     <thead>
@@ -13,6 +14,7 @@
         <th>{% trans "Name" %}</th>
         <th>{% trans "Version" %}</th>
         <th>{% trans "Tag" %}</th>
+        <th>{% trans "Created by" %}</th>
     </tr>
     </thead>
     <tbody>
@@ -22,6 +24,7 @@
         <td>{{ testplan.name }}</td>
         <td>{{ testplan.version }}</td>
         <td>{{ testplan.device_type.tag }}</td>
+        <td>{{ testplan.created_by }}</td>
     </tr>
     {% endfor %}
     </tbody>
@@ -31,6 +34,7 @@
         <th>{% trans "Name" %}</th>
         <th>{% trans "Version" %}</th>
         <th>{% trans "Tag" %}</th>
+        <th>{% trans "Created by" %}</th>
     </tr>
     </tfoot>
 </table>
