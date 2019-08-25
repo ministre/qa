@@ -68,3 +68,12 @@ class TestplanCategory(models.Model):
 
     class Meta:
         verbose_name_plural = "Testplan Categories"
+
+
+class Test(models.Model):
+    name = models.CharField(max_length=1000)
+    category = models.ForeignKey(TestplanCategory, on_delete=models.CASCADE)
+    purpose = models.TextField(max_length=5000)
+
+    def __str__(self):
+        return self.name

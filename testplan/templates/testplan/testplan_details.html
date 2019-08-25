@@ -6,10 +6,20 @@
 
 <a href=".." class="button">&laquo; {% trans "Back" %}</a>
 <a href="../update/{{ testplan.id }}/" class="button">{% trans "Update" %}</a>
-<a href="../{{ testplan.id }}/category/create/" class="button">{% trans "Add Category" %}</a>
 <a href="../delete/{{ testplan.id }}/" class="button alert">{% trans "Delete" %}</a>
 
 <h4>{{ testplan.name}}</h4>
+
+<p class="label warning">{{ testplan.version}}</p>
+<p class="label warning">{{ testplan.device_type.tag}}</p>
+
+<h5>{% trans "Introduction" %}</h5>
+
+<a href="#" class="button small">{% trans "Add Chapter" %}</a>
+
+<h5>{% trans "Test list" %}</h5>
+
+<a href="../{{ testplan.id }}/category/create/" class="button small">{% trans "Add Category" %}</a>
 
         <ul class="accordion" data-accordion data-multi-expand="true">
 
