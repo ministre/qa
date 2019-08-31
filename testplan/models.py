@@ -49,11 +49,12 @@ class Testplan(models.Model):
 
 class TestplanChapter(models.Model):
     testplan = models.ForeignKey(Testplan, on_delete=models.CASCADE)
-    title = models.CharField(max_length=1000)
+    redmine_url = models.CharField(max_length=1000, blank=True, null=True)
+    name = models.CharField(max_length=1000)
     text = models.TextField(max_length=100000)
 
     def __str__(self):
-        return self.title
+        return self.name
 
     class Meta:
         verbose_name_plural = "Testplan Chapters"

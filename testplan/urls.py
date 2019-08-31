@@ -12,6 +12,11 @@ urlpatterns = [
          name='testplan_category_update'),
     path('<int:testplan>/category/delete/<int:pk>/', views.TestplanCategoryDelete.as_view(),
          name='testplan_category_delete'),
+    path('<int:pk>/chapter/create/', views.TestplanChapterCreate.as_view(), name='testplan_chapter_create'),
+    path('<int:testplan>/chapter/update/<int:pk>/', views.TestplanChapterUpdate.as_view(),
+         name='testplan_chapter_update'),
+    path('<int:testplan>/chapter/delete/<int:pk>/', views.TestplanChapterDelete.as_view(),
+         name='testplan_chapter_delete'),
 
     path('pattern/', views.TestplanPatternListView.as_view(), name='testplan_pattern_list'),
     path('pattern/create/', views.TestplanPatternCreate.as_view(), name='testplan_pattern_create'),
