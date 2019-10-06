@@ -1,0 +1,46 @@
+{% extends "device/wrapper.html" %}
+
+{% load i18n static %}
+
+{% block content %}
+
+<a href="/testplan/{{ testplan.id }}/" class="button">&laquo; {% trans "Back" %}</a>
+<a href="/testplan/{{ testplan.id }}/category/{{ category.id }}/test/{{ test.id }}/delete/" class="button alert">
+    {% trans "Delete" %}</a>
+
+    <ul>
+        <li>{{ testplan.name }}
+            <ul>
+                <li>{{ category.name }}</li>
+            </ul>
+        </li>
+    </ul>
+
+<ul class="accordion" data-accordion data-multi-expand="true">
+    <li class="accordion-item is-active" data-accordion-item>
+        <!-- Accordion tab title -->
+        <a href="#" class="accordion-title">{% trans "Name" %}</a>
+        <!-- Accordion tab content: it would start in the open state due to using the `is-active` state class. -->
+        <div class="accordion-content" data-tab-content>
+            <div class="grid-x">{{ test.name }}</div>
+        </div>
+    </li>
+    <li class="accordion-item is-active" data-accordion-item>
+        <!-- Accordion tab title -->
+        <a href="#" class="accordion-title">{% trans "Purpose" %}</a>
+        <!-- Accordion tab content: it would start in the open state due to using the `is-active` state class. -->
+        <div class="accordion-content" data-tab-content>
+            <div class="grid-x">{{ test.purpose }}</div>
+        </div>
+    </li>
+    <li class="accordion-item is-active" data-accordion-item>
+        <!-- Accordion tab title -->
+        <a href="#" class="accordion-title">{% trans "Procedure" %}</a>
+        <!-- Accordion tab content: it would start in the open state due to using the `is-active` state class. -->
+        <div class="accordion-content" data-tab-content>
+            <div class="grid-x">{{ test.procedure }}</div>
+        </div>
+    </li>
+</ul>
+
+{% endblock %}

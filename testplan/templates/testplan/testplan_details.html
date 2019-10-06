@@ -54,7 +54,9 @@
                 <!-- Accordion tab content: it would start in the open state due to using the `is-active` state class. -->
                 <div class="accordion-content" data-tab-content>
                     {% for test in category.tests %}
-                    <a href="test/{{ test.id }}">{{ forloop.counter }}. {{ test.name }}</a><br>
+                    <a href="category/{{ category.id }}/test/{{ test.id }}/">
+                        {{forloop.parentloop.counter}}.{{ forloop.counter }}. {{ test.name }}
+                    </a><br>
                     {% endfor %}<br>
                     <div class="grid-x">
                         <a href="category/{{ category.id }}/test/create/" class="button small">{% trans "Add Test" %}</a>&nbsp;

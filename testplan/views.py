@@ -226,3 +226,21 @@ class TestCreate(CreateView):
 
     def get_success_url(self):
         return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan_id')})
+
+
+@login_required
+def test_details(request, testplan_id, category_id, pk):
+    testplan = get_object_or_404(Testplan, id=testplan_id)
+    category = get_object_or_404(TestplanCategory, id=category_id)
+    test = get_object_or_404(Test, id=pk)
+    return render(request, 'testplan/test_details.html', {'testplan': testplan, 'category': category,
+                                                          'test': test})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestDelete(DeleteView):
+    model = Test
+    template_name = 'testplan/delete.html'
+
+    def get_success_url(self):
+        return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan_id')})

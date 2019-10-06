@@ -62,6 +62,7 @@ class TestForm(ModelForm):
         labels = {
             'name': _('Name'),
             'purpose': _('Purpose'),
+            'procedure': _('Procedure'),
         }
         fields = '__all__'
         widgets = {'category': HiddenInput()}
