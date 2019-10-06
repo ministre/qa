@@ -72,8 +72,8 @@ class TestplanCategory(models.Model):
 
 
 class Test(models.Model):
-    name = models.CharField(max_length=1000)
     category = models.ForeignKey(TestplanCategory, on_delete=models.CASCADE)
+    name = models.CharField(max_length=1000)
     purpose = models.TextField(max_length=5000)
 
     def __str__(self):

@@ -5,9 +5,9 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
 from testplan.models import TestplanPattern, TestplanPatternCategory, TestplanChecklist, Testplan, TestplanCategory, \
-    TestplanChapter
+    TestplanChapter, Test
 from .forms import TestplanPatternForm, TestplanPatternCategoryForm, TestplanForm, TestplanCategoryForm, \
-    TestplanChapterForm
+    TestplanChapterForm, TestForm
 from django.shortcuts import get_object_or_404
 from django.db.models import Max
 from django.http import HttpResponseRedirect
@@ -112,11 +112,22 @@ class TestplanCreate(CreateView):
         return reverse('testplan_list')
 
 
+def get_testlist(testplan_id):
+    testplan = get_object_or_404(Testplan, id=testplan_id)
+    categories = TestplanCategory.objects.filter(testplan=testplan).order_by('id')
+    testlist = []
+    for category in categories:
+        tests = Test.objects.filter(category=category).order_by('id')
+        testlist.append({'id': category.id, 'name': category.name, 'tests': tests})
+    return testlist
+
+
 @login_required
 def testplan_details(request, pk):
     testplan = get_object_or_404(Testplan, id=pk)
-    categories = TestplanCategory.objects.filter(testplan=testplan).order_by('id')
     chapters = TestplanChapter.objects.filter(testplan=testplan).order_by('id')
+    categories = get_testlist(pk)
+
     return render(request, 'testplan/testplan_details.html', {'testplan': testplan, 'categories': categories,
                                                               'chapters': chapters})
 
@@ -202,3 +213,16 @@ class TestplanChapterDelete(DeleteView):
 
     def get_success_url(self):
         return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan')})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestCreate(CreateView):
+    model = Test
+    form_class = TestForm
+    template_name = 'testplan/create.html'
+
+    def get_initial(self):
+        return {'category': self.kwargs.get('pk')}
+
+    def get_success_url(self):
+        return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan_id')})

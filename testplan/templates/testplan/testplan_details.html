@@ -23,7 +23,7 @@
 
             <li class="accordion-item" data-accordion-item>
                 <!-- Accordion tab title -->
-                <a href="#" class="accordion-title">{{ chapter.name }}</a>
+                <a href="#" class="accordion-title">{{ forloop.counter }}. {{ chapter.name }}</a>
                 <!-- Accordion tab content: it would start in the open state due to using the `is-active` state class. -->
                 <div class="accordion-content" data-tab-content>
                     <div class="grid-x">
@@ -50,11 +50,14 @@
 
             <li class="accordion-item is-active" data-accordion-item>
                 <!-- Accordion tab title -->
-                <a href="#" class="accordion-title">{{ category.name }}</a>
+                <a href="#" class="accordion-title">{{ forloop.counter }}. {{ category.name }}</a>
                 <!-- Accordion tab content: it would start in the open state due to using the `is-active` state class. -->
                 <div class="accordion-content" data-tab-content>
+                    {% for test in category.tests %}
+                    <a href="test/{{ test.id }}">{{ forloop.counter }}. {{ test.name }}</a><br>
+                    {% endfor %}<br>
                     <div class="grid-x">
-                        <a href="#" class="button small">{% trans "Add Test" %}</a>&nbsp;
+                        <a href="category/{{ category.id }}/test/create/" class="button small">{% trans "Add Test" %}</a>&nbsp;
                         <a href="category/update/{{ category.id }}/" class="button small">{% trans "Update" %}</a>&nbsp;
                         <a href="category/delete/{{ category.id }}/" class="button small alert">{% trans "Delete" %}</a>
                     </div>

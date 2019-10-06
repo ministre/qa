@@ -17,6 +17,7 @@ urlpatterns = [
          name='testplan_chapter_update'),
     path('<int:testplan>/chapter/delete/<int:pk>/', views.TestplanChapterDelete.as_view(),
          name='testplan_chapter_delete'),
+    path('<int:testplan_id>/category/<int:pk>/test/create/', views.TestCreate.as_view(), name='test_create'),
 
     path('pattern/', views.TestplanPatternListView.as_view(), name='testplan_pattern_list'),
     path('pattern/create/', views.TestplanPatternCreate.as_view(), name='testplan_pattern_create'),
