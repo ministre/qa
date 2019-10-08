@@ -1,11 +1,12 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from device.models import DeviceType
-from testplan.models import Testplan, TestplanCategory
+from testplan.models import Testplan, TestplanCategory, Test
 from redminelib import Redmine
 from qa import settings
 from redminelib.exceptions import ResourceAttrError, ResourceNotFoundError
 from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 import re
 
 
@@ -118,3 +119,15 @@ def create_testplan_categories(testplan_id, testplan_project, tag):
 
     except ResourceNotFoundError:
         return
+
+
+@login_required
+def redmine_test_import(request, pk):
+    testplan = get_object_or_404(Test, id=pk)
+    if (testplan.redmine_url is None) or (testplan.redmine_url is ''):
+        message = 'There is no redmine_url for test #' + str(pk)
+        return render(request, 'redmine/error.html', {'message': message})
+    else:
+        redmine = Redmine(settings.REDMINE_URL, key=settings.REDMINE_KEY)
+
+        return render(request, 'redmine/debug.html', {'pk': pk})

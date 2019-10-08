@@ -7,6 +7,8 @@
 <a href="/testplan/{{ testplan.id }}/" class="button">&laquo; {% trans "Back" %}</a>
 <a href="/testplan/{{ testplan.id }}/category/{{ category.id }}/test/{{ test.id }}/update/" class="button">
     {% trans "Update" %}</a>
+<a href="/redmine/test/{{ test.id }}/import/" class="button">
+    {% trans "Update from Redmine" %}</a>
 <a href="/testplan/{{ testplan.id }}/category/{{ category.id }}/test/{{ test.id }}/delete/" class="button alert">
     {% trans "Delete" %}</a>
 
