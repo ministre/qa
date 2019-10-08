@@ -244,3 +244,13 @@ class TestDelete(DeleteView):
 
     def get_success_url(self):
         return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan_id')})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestUpdate(UpdateView):
+    model = Test
+    form_class = TestForm
+    template_name = 'testplan/update.html'
+
+    def get_success_url(self):
+        return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan_id')})

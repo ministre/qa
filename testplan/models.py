@@ -49,9 +49,9 @@ class Testplan(models.Model):
 
 class TestplanChapter(models.Model):
     testplan = models.ForeignKey(Testplan, on_delete=models.CASCADE)
-    redmine_url = models.CharField(max_length=1000, blank=True, null=True)
     name = models.CharField(max_length=1000)
     text = models.TextField(max_length=100000)
+    redmine_url = models.CharField(max_length=1000, blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -76,6 +76,8 @@ class Test(models.Model):
     name = models.CharField(max_length=1000)
     purpose = models.TextField(max_length=5000, null=True, blank=True)
     procedure = models.TextField(null=True, blank=True)
+    expected = models.TextField(null=True, blank=True)
+    redmine_url = models.CharField(max_length=1000, null=True, blank=True)
 
     def __str__(self):
         return self.name
