@@ -11,7 +11,7 @@ import re
 
 
 @login_required
-def redmine_testplan_import(request):
+def testplan_import(request):
     if request.method == 'POST':
         testplan_project = request.POST['testplan_project']
         tag = request.POST['tag']
@@ -122,7 +122,7 @@ def create_testplan_categories(testplan_id, testplan_project, tag):
 
 
 @login_required
-def update_test_details(request):
+def test_details_update(request):
     if request.method == "POST":
         test_id = request.POST['test_id']
         redmine_url = request.POST['redmine_url']

@@ -10,7 +10,7 @@
 <a href="/testplan/{{ testplan.id }}/category/{{ category.id }}/test/{{ test.id }}/delete/" class="button alert">
     {% trans "Delete" %}</a>
 
-<form method="post" action="/redmine/update_test_details/">
+<form method="post" action="/redmine/test_details_update/">
     {% csrf_token %}
     <input type="hidden" name="test_id" value="{{ test.id }}">
     <input type="hidden" name="redmine_url" value="{{ test.redmine_url }}">
