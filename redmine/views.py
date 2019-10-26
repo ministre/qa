@@ -6,7 +6,7 @@ from redminelib import Redmine
 from qa import settings
 from redminelib.exceptions import ResourceAttrError, ResourceNotFoundError
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404
+from django.core.exceptions import ObjectDoesNotExist
 import re
 
 
@@ -122,12 +122,45 @@ def create_testplan_categories(testplan_id, testplan_project, tag):
 
 
 @login_required
-def redmine_test_import(request, pk):
-    testplan = get_object_or_404(Test, id=pk)
-    if (testplan.redmine_url is None) or (testplan.redmine_url is ''):
-        message = 'There is no redmine_url for test #' + str(pk)
-        return render(request, 'redmine/error.html', {'message': message})
-    else:
-        redmine = Redmine(settings.REDMINE_URL, key=settings.REDMINE_KEY)
+def update_test_details(request):
+    if request.method == "POST":
+        test_id = request.POST['test_id']
+        redmine_url = request.POST['redmine_url']
+        tag = request.POST['tag']
+        try:
+            debug = test_update_from_redmine(test_id, redmine_url, tag)
+            return render(request, 'redmine/debug.html', {'debug': debug})
+        except ValueError as e:
+            return render(request, 'redmine/debug.html', {'debug': e})
 
-        return render(request, 'redmine/debug.html', {'pk': pk})
+
+def test_update_from_redmine(test_id, redmine_url, tag):
+    if not redmine_url:
+        raise ValueError('Test #'+str(test_id)+': Import error - REDMINE_URL not found')
+    try:
+        test = Test.objects.get(id=test_id)
+    except ObjectDoesNotExist:
+        raise ValueError('Test #'+str(test_id)+': Import error - Test object not found')
+
+    redmine = Redmine(settings.REDMINE_URL, key=settings.REDMINE_KEY)
+
+    try:
+        project_id = redmine_url.split('/')[2]
+        wiki_id = redmine_url.split('/')[4]
+    except IndexError:
+        raise ValueError('Test #'+str(test_id)+': Import error - Can not parse project_id or wiki_id from REDMINE_URL')
+
+    try:
+        wiki_page = redmine.wiki_page.get(wiki_id, project_id=project_id)
+        wiki_blocks = wiki_page.text.split('\nh2. ')
+        test.name = wiki_blocks[0].split('h1. ')[1][0:-3]
+        test.purpose = wiki_blocks[1].split('\r\n')[2]
+        test.procedure = collapse_filter(wiki_blocks[2], tag).replace("Процедура\r\n\r\n", "")
+        test.expected = collapse_filter(wiki_blocks[3], tag).replace("Ожидаемый результат\r\n\r\n", "")
+        test.redmine_url = redmine_url
+        test.save()
+        return test.id
+
+    except ResourceNotFoundError:
+        raise ValueError('Test #'+str(test_id)+': Import error - Wiki page ' +
+                         settings.REDMINE_URL + redmine_url + ' not found')

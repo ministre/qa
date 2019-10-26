@@ -6,11 +6,11 @@
 
 <h3>Debug</h3>
 
-<p>title: {{ head.title }}</p>
-
-<p>version: {{ head.version }}</p>
-
-<p>===</p>
+<p>
+    {% autoescape on %}
+      {{ debug | linebreaksbr }}
+    {% endautoescape %}
+</p>
 
 {{ message }}
 
