@@ -63,10 +63,10 @@ def parse_testplan_head(ctx):
 
 
 class Item:
-        def __init__(self, category_name, item_keyword, item_name):
-            self.category_name = category_name
-            self.item_keyword = item_keyword
-            self.item_name = item_name
+        def __init__(self, category, keyword, name):
+            self.category = category
+            self.keyword = keyword
+            self.name = name
 
 
 # Parse tests from Redmine wiki page
@@ -77,7 +77,7 @@ def item_filter(ctx, tag):
         # peek categories
         if block.startswith('. '):
             s = blocks[i].index('\n')
-            category_name = blocks[i][2:s-1]
+            category = blocks[i][2:s-1]
             # peek items
             sblocks = blocks[i].split('*')
             for j, sblock in enumerate(sblocks):
@@ -85,12 +85,13 @@ def item_filter(ctx, tag):
                 if (('\nall' in sblocks[j]) and ('\n!'+tag not in sblocks[j])) or ('\n'+tag in sblocks[j]):
                     p = sblocks[j].index('|')
                     r = sblocks[j].index(']')
-                    item_keyword = sblocks[j][3:p]
-                    item_name = sblocks[j][p+1:r]
-                    items.append(Item(category_name, item_keyword, item_name))
+                    keyword = sblocks[j][3:p]
+                    name = sblocks[j][p+1:r]
+                    items.append(Item(category, keyword, name))
     return items
 
 
+# Create new testplan from Redmine wiki page
 def create_testplan(testplan_project, tag, created_by):
     redmine = Redmine(settings.REDMINE_URL, key=settings.REDMINE_KEY)
     try:
@@ -192,20 +193,20 @@ def tests_create_from_wiki(testplan_id, redmine_url, tag):
     for item in items:
         try:
             category = TestplanCategory.objects.get(Q(testplan=Testplan.objects.get(id=testplan_id)) &
-                                                       Q(name=item.category_name)).id
-            test_redmine_url = redmine_url + '/' + item.item_keyword
+                                                    Q(name=item.category)).id
+            test_redmine_url = redmine_url + '/' + item.keyword
             new_test = Test.objects.create(category=TestplanCategory.objects.get(id=category),
-                                           name=item.item_name,
+                                           name=item.name,
                                            redmine_url=test_redmine_url)
             test_details_update_from_wiki(new_test.id, test_redmine_url, tag)
 
         except ObjectDoesNotExist:
             # create category if not found
-            new_category = TestplanCategory.objects.create(name=item.category_name,
+            new_category = TestplanCategory.objects.create(name=item.category,
                                                            testplan=Testplan.objects.get(id=testplan_id))
-            test_redmine_url = redmine_url + '/' + item.item_keyword
+            test_redmine_url = redmine_url + '/' + item.keyword
             new_test = Test.objects.create(category=TestplanCategory.objects.get(id=new_category.id),
-                                           name=item.item_name,
+                                           name=item.name,
                                            redmine_url=test_redmine_url)
             test_details_update_from_wiki(new_test.id, test_redmine_url, tag)
     return len(items)
