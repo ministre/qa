@@ -11,6 +11,7 @@ from .forms import TestplanPatternForm, TestplanPatternCategoryForm, TestplanFor
 from django.shortcuts import get_object_or_404
 from django.db.models import Max
 from django.http import HttpResponseRedirect
+import textile
 
 
 @method_decorator(login_required, name='dispatch')
@@ -127,7 +128,6 @@ def testplan_details(request, pk):
     testplan = get_object_or_404(Testplan, id=pk)
     chapters = TestplanChapter.objects.filter(testplan=testplan).order_by('id')
     categories = get_testlist(pk)
-
     return render(request, 'testplan/testplan_details.html', {'testplan': testplan, 'categories': categories,
                                                               'chapters': chapters})
 
@@ -229,12 +229,15 @@ class TestCreate(CreateView):
 
 
 @login_required
-def test_details(request, testplan_id, category_id, pk):
-    testplan = get_object_or_404(Testplan, id=testplan_id)
-    category = get_object_or_404(TestplanCategory, id=category_id)
+def test_details(request, pk):
     test = get_object_or_404(Test, id=pk)
+    testplan = test.category.testplan
+    category = test.category
+    test_procedure = textile.textile(test.procedure)
+    test_expected = textile.textile(test.expected)
     return render(request, 'testplan/test_details.html', {'testplan': testplan, 'category': category,
-                                                          'test': test})
+                                                          'test': test, 'test_procedure': test_procedure,
+                                                          'test_expected': test_expected})
 
 
 @method_decorator(login_required, name='dispatch')

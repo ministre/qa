@@ -19,8 +19,7 @@ urlpatterns = [
          name='testplan_chapter_delete'),
 
     path('<int:testplan_id>/category/<int:pk>/test/create/', views.TestCreate.as_view(), name='test_create'),
-    path('<int:testplan_id>/category/<int:category_id>/test/<int:pk>/', views.test_details,
-         name='test_details'),
+    path('test/<int:pk>/', views.test_details, name='test_details'),
     path('<int:testplan_id>/category/<int:category_id>/test/<int:pk>/delete/', views.TestDelete.as_view(),
          name='test_delete'),
     path('<int:testplan_id>/category/<int:category_id>/test/<int:pk>/update/', views.TestUpdate.as_view(),

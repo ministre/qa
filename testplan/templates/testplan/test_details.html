@@ -4,78 +4,58 @@
 
 {% block content %}
 
-<a href="/testplan/{{ testplan.id }}/" class="button">&laquo; {% trans "Back" %}</a>
-<a href="/testplan/{{ testplan.id }}/category/{{ category.id }}/test/{{ test.id }}/update/" class="button">
-    {% trans "Update" %}</a>
-<a href="/testplan/{{ testplan.id }}/category/{{ category.id }}/test/{{ test.id }}/delete/" class="button alert">
-    {% trans "Delete" %}</a>
-
 <form method="post" action="/redmine/test_details_update/">
+
+    <a href="/testplan/{{ testplan.id }}/" class="button">&laquo; {% trans "Back" %}</a>
+    <a href="/testplan/{{ testplan.id }}/category/{{ category.id }}/test/{{ test.id }}/update/" class="button">
+    {% trans "Update" %}</a>
+
     {% csrf_token %}
     <input type="hidden" name="test_id" value="{{ test.id }}">
     <input type="hidden" name="redmine_url" value="{{ test.redmine_url }}">
     <input type="hidden" name="tag" value="{{ testplan.device_type.tag }}">
     <input type="submit" value='{% trans "Update from Redmine" %}' class="button" />
+
+    <a href="/testplan/{{ testplan.id }}/category/{{ category.id }}/test/{{ test.id }}/delete/" class="button alert">
+    {% trans "Delete" %}</a>
 </form>
 
-
     <ul>
-        <li>{{ testplan.name }}
+        <li>{{ testplan }}
             <ul>
-                <li>{{ category.name }}</li>
+                <li>{{ category }}</li>
             </ul>
         </li>
     </ul>
 
-<ul class="accordion" data-accordion data-multi-expand="true">
-    <li class="accordion-item is-active" data-accordion-item>
-        <!-- Accordion tab title -->
-        <a href="#" class="accordion-title">{% trans "Name" %}</a>
-        <!-- Accordion tab content: it would start in the open state due to using the `is-active` state class. -->
-        <div class="accordion-content" data-tab-content>
-            <div class="grid-x">{{ test.name }}</div>
-        </div>
-    </li>
-    <li class="accordion-item is-active" data-accordion-item>
-        <!-- Accordion tab title -->
-        <a href="#" class="accordion-title">{% trans "Purpose" %}</a>
-        <!-- Accordion tab content: it would start in the open state due to using the `is-active` state class. -->
-        <div class="accordion-content" data-tab-content>
-            <div class="grid-x">{{ test.purpose }}</div>
-        </div>
-    </li>
-    <li class="accordion-item is-active" data-accordion-item>
-        <!-- Accordion tab title -->
-        <a href="#" class="accordion-title">{% trans "Procedure" %}</a>
-        <!-- Accordion tab content: it would start in the open state due to using the `is-active` state class. -->
-        <div class="accordion-content" data-tab-content>
-            <div class="grid-x">
-                {% autoescape on %}
-                  {{ test.procedure | linebreaksbr }}
-                {% endautoescape %}
-            </div>
-        </div>
-    </li>
-    <li class="accordion-item is-active" data-accordion-item>
-        <!-- Accordion tab title -->
-        <a href="#" class="accordion-title">{% trans "Expected result" %}</a>
-        <!-- Accordion tab content: it would start in the open state due to using the `is-active` state class. -->
-        <div class="accordion-content" data-tab-content>
-            <div class="grid-x">
-                {% autoescape on %}
-                  {{ test.expected | linebreaksbr }}
-                {% endautoescape %}
-            </div>
-        </div>
-    </li>
-    <li class="accordion-item is-active" data-accordion-item>
-        <!-- Accordion tab title -->
-        <a href="#" class="accordion-title">{% trans "Redmine URL" %}</a>
-        <!-- Accordion tab content: it would start in the open state due to using the `is-active` state class. -->
-        <div class="accordion-content" data-tab-content>
-            <div class="grid-x">{{ test.redmine_url }}</div>
-        </div>
-    </li>
-</ul>
+    <ul class="tabs" data-tabs id="example-tabs">
+        <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">{% trans "Name" %}</a></li>
+        <li class="tabs-title"><a data-tabs-target="panel2" href="#panel2">{% trans "Purpose" %}</a></li>
+        <li class="tabs-title"><a data-tabs-target="panel3" href="#panel3">{% trans "Procedure" %}</a></li>
+        <li class="tabs-title"><a data-tabs-target="panel4" href="#panel4">{% trans "Expected result" %}</a></li>
+        <li class="tabs-title"><a data-tabs-target="panel5" href="#panel5">{% trans "Redmine URL" %}</a></li>
+    </ul>
+
+<div class="tabs-content" data-tabs-content="example-tabs">
+  <div class="tabs-panel is-active" id="panel1">
+    <p>{{ test.name }}</p>
+  </div>
+  <div class="tabs-panel" id="panel2">
+    <p>
+        {% autoescape on %}
+          {{ test.purpose | linebreaksbr }}
+        {% endautoescape %}
+    </p>
+  </div>
+  <div class="tabs-panel" id="panel3">
+    <p>{{ test_procedure|safe }}</p>
+  </div>
+  <div class="tabs-panel" id="panel4">
+    <p>{{ test_expected|safe }}</p>
+  </div>
+  <div class="tabs-panel" id="panel5">
+    <p>{{ test.redmine_url }}</p>
+  </div>
+</div>
 
 {% endblock %}

@@ -142,18 +142,17 @@ def test_details_update_from_wiki(test_id, redmine_url, tag):
 
     try:
         wiki_page = redmine.wiki_page.get(wiki_id, project_id=project_id)
-        wiki_blocks = wiki_page.text.split('\nh2. ')
-        test.name = wiki_blocks[0].split('h1. ')[1][0:-3]
-        test.purpose = wiki_blocks[1].split('\r\n')[2]
-        test.procedure = collapse_filter(wiki_blocks[2], tag).replace("Процедура\r\n\r\n", "")
-        test.expected = collapse_filter(wiki_blocks[3], tag).replace("Ожидаемый результат\r\n\r\n", "")
-        test.redmine_url = redmine_url
-        test.save()
-        return test.id
-
     except ResourceNotFoundError:
         raise ValueError('Test #'+str(test_id)+': Import error - Wiki page ' +
                          settings.REDMINE_URL + redmine_url + ' not found')
+    wiki_blocks = wiki_page.text.split('\nh2. ')
+    test.name = wiki_blocks[0].split('h1. ')[1][0:-3]
+    test.purpose = wiki_blocks[1].split('\r\n')[2]
+    test.procedure = collapse_filter(wiki_blocks[2], tag).replace("Процедура\r\n\r\n", "")
+    test.expected = collapse_filter(wiki_blocks[3], tag).replace("Ожидаемый результат\r\n\r\n", "")
+    test.redmine_url = redmine_url
+    test.save()
+    return test.id
 
 
 @login_required
