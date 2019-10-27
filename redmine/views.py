@@ -21,6 +21,10 @@ def testplan_import(request):
         if testplan_id:
             # create testplan categories
             if create_testplan_categories(testplan_id, testplan_project, tag):
+
+
+
+
                 return HttpResponseRedirect('/testplan/')
                 # return render(request, 'redmine/debug.html', {'message': testplan_id})
 
@@ -98,7 +102,9 @@ def create_testplan(testplan_project, tag, request):
         ctx = collapse_filter(wiki_page.text, tag)
         head = parse_testplan_head(ctx)
         new_testplan = Testplan(name=head['title'], version=head['version'],
-                                device_type=DeviceType.objects.get(tag=tag), created_by=request.user)
+                                device_type=DeviceType.objects.get(tag=tag),
+                                redmine_url='/projects/' + testplan_project + '/wiki',
+                                created_by=request.user)
         new_testplan.save()
         return new_testplan.id
     except ResourceNotFoundError:
@@ -128,13 +134,13 @@ def test_details_update(request):
         redmine_url = request.POST['redmine_url']
         tag = request.POST['tag']
         try:
-            debug = test_update_from_redmine(test_id, redmine_url, tag)
-            return render(request, 'redmine/debug.html', {'debug': debug})
+            debug = test_details_update_from_wiki(test_id, redmine_url, tag)
+            return HttpResponseRedirect('/testplan/test/' + test_id + '/')
         except ValueError as e:
-            return render(request, 'redmine/debug.html', {'debug': e})
+            return render(request, 'redmine/error.html', {'message': e})
 
 
-def test_update_from_redmine(test_id, redmine_url, tag):
+def test_details_update_from_wiki(test_id, redmine_url, tag):
     if not redmine_url:
         raise ValueError('Test #'+str(test_id)+': Import error - REDMINE_URL not found')
     try:
@@ -164,3 +170,15 @@ def test_update_from_redmine(test_id, redmine_url, tag):
     except ResourceNotFoundError:
         raise ValueError('Test #'+str(test_id)+': Import error - Wiki page ' +
                          settings.REDMINE_URL + redmine_url + ' not found')
+
+
+def test_create_from_wiki(testplan_id, redmine_url, tag):
+
+#
+#
+#
+
+    categories = TestplanCategory.objects.filter(testplan=testplan_id)
+    for category in categories:
+        pass
+    pass

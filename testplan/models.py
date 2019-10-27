@@ -42,6 +42,7 @@ class Testplan(models.Model):
     device_type = models.ForeignKey(DeviceType, on_delete=models.CASCADE, null=True)
     created_by = models.ForeignKey(User, related_name='testplan_created_by_user', on_delete=models.CASCADE,
                                    blank=True, null=True)
+    redmine_url = models.CharField(max_length=1000, blank=True, null=True)
 
     def __str__(self):
         return self.name

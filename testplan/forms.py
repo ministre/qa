@@ -29,8 +29,9 @@ class TestplanForm(ModelForm):
             'name': _('Name'),
             'version': _('Version'),
             'device_type': _('Device Type'),
+            'redmine_url': _('Redmine URL'),
         }
-        fields = ['name', 'version', 'device_type', 'created_by']
+        fields = ['name', 'version', 'device_type', 'redmine_url', 'created_by']
         widgets = {'created_by': HiddenInput()}
 
 
