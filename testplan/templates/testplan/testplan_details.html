@@ -8,6 +8,14 @@
 <a href="../update/{{ testplan.id }}/" class="button">{% trans "Update" %}</a>
 <a href="../delete/{{ testplan.id }}/" class="button alert">{% trans "Delete" %}</a>
 
+<form method="post" action="/redmine/tests_import/">
+    {% csrf_token %}
+    <input type="hidden" name="testplan_id" value="{{ testplan.id }}">
+    <input type="hidden" name="redmine_url" value="{{ testplan.redmine_url }}">
+    <input type="hidden" name="tag" value="{{ testplan.device_type.tag }}">
+    <input type="submit" value='{% trans "Add Tests from Redmine" %}' class="button" />
+</form>
+
 <h4>{{ testplan.name}}</h4>
 
 <p class="label warning">{{ testplan.version}}</p>

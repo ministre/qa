@@ -7,6 +7,7 @@ from qa import settings
 from redminelib.exceptions import ResourceAttrError, ResourceNotFoundError
 from django.http import HttpResponseRedirect
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
 import re
 
 
@@ -16,22 +17,15 @@ def testplan_import(request):
         testplan_project = request.POST['testplan_project']
         tag = request.POST['tag']
         # create testplan
+        try:
+            testplan_id = create_testplan(testplan_project, tag, request.user)
+        except ValueError as e:
+            return render(request, 'redmine/error.html', {'message': e})
+        # create tests
+        redmine_url = '/projects/' + testplan_project + '/wiki'
+        tests_create_from_wiki(testplan_id, redmine_url, tag)
 
-        testplan_id = create_testplan(testplan_project, tag, request)
-        if testplan_id:
-            # create testplan categories
-            if create_testplan_categories(testplan_id, testplan_project, tag):
-
-
-
-
-                return HttpResponseRedirect('/testplan/')
-                # return render(request, 'redmine/debug.html', {'message': testplan_id})
-
-        else:
-            message = "Can't parse wiki page - " + settings.REDMINE_URL + "/projects/" + \
-                      testplan_project + "/wiki/Headers"
-            return render(request, 'redmine/error.html', {'message': message})
+        return HttpResponseRedirect('/testplan/')
 
     else:
         redmine = Redmine(settings.REDMINE_URL, key=settings.REDMINE_KEY)
@@ -47,6 +41,7 @@ def testplan_import(request):
                                                                 'testplan_projects': testplan_projects})
 
 
+# Extract spoilers of device-type from wiki page
 def collapse_filter(ctx, tag):
     blocks = ctx.split('}}')
     for i, block in enumerate(blocks):
@@ -74,6 +69,7 @@ class Item:
             self.item_name = item_name
 
 
+# Parse tests from Redmine wiki page
 def item_filter(ctx, tag):
     items = []
     blocks = ctx.split('h2')
@@ -95,36 +91,22 @@ def item_filter(ctx, tag):
     return items
 
 
-def create_testplan(testplan_project, tag, request):
+def create_testplan(testplan_project, tag, created_by):
     redmine = Redmine(settings.REDMINE_URL, key=settings.REDMINE_KEY)
     try:
         wiki_page = redmine.wiki_page.get('Headers', project_id=testplan_project)
-        ctx = collapse_filter(wiki_page.text, tag)
-        head = parse_testplan_head(ctx)
-        new_testplan = Testplan(name=head['title'], version=head['version'],
-                                device_type=DeviceType.objects.get(tag=tag),
-                                redmine_url='/projects/' + testplan_project + '/wiki',
-                                created_by=request.user)
-        new_testplan.save()
-        return new_testplan.id
     except ResourceNotFoundError:
-        return
+        raise ValueError('[create_testplan]: Headers wiki page not found')
 
-
-def create_testplan_categories(testplan_id, testplan_project, tag):
-    redmine = Redmine(settings.REDMINE_URL, key=settings.REDMINE_KEY)
-    try:
-        wiki_page = redmine.wiki_page.get('Wiki', project_id=testplan_project)
-        ctx = wiki_page.text
-        items = item_filter(ctx, tag)
-        for item in items:
-            new_category = TestplanCategory.objects.get_or_create(name=item.category_name,
-                                                                  testplan=Testplan.objects.get(id=testplan_id))
-            # new_category.save()
-        return True
-
-    except ResourceNotFoundError:
-        return
+    ctx = collapse_filter(wiki_page.text, tag)
+    head = parse_testplan_head(ctx)
+    new_testplan = Testplan(name=head['title'],
+                            version=head['version'],
+                            device_type=DeviceType.objects.get(tag=tag),
+                            redmine_url='/projects/' + testplan_project + '/wiki',
+                            created_by=created_by)
+    new_testplan.save()
+    return new_testplan.id
 
 
 @login_required
@@ -134,12 +116,13 @@ def test_details_update(request):
         redmine_url = request.POST['redmine_url']
         tag = request.POST['tag']
         try:
-            debug = test_details_update_from_wiki(test_id, redmine_url, tag)
+            test_details_update_from_wiki(test_id, redmine_url, tag)
             return HttpResponseRedirect('/testplan/test/' + test_id + '/')
         except ValueError as e:
             return render(request, 'redmine/error.html', {'message': e})
 
 
+# Update test details from Redmine wiki page
 def test_details_update_from_wiki(test_id, redmine_url, tag):
     if not redmine_url:
         raise ValueError('Test #'+str(test_id)+': Import error - REDMINE_URL not found')
@@ -172,13 +155,57 @@ def test_details_update_from_wiki(test_id, redmine_url, tag):
                          settings.REDMINE_URL + redmine_url + ' not found')
 
 
-def test_create_from_wiki(testplan_id, redmine_url, tag):
+@login_required
+def tests_import(request):
+    if request.method == "POST":
+        testplan_id = request.POST['testplan_id']
+        redmine_url = request.POST['redmine_url']
+        tag = request.POST['tag']
+        try:
+            tests_create_from_wiki(testplan_id, redmine_url, tag)
+            return HttpResponseRedirect('/testplan/' + str(testplan_id) + '/')
+        except ValueError as e:
+            return render(request, 'redmine/error.html', {'message': e})
+    else:
+        return HttpResponseRedirect('/testplan/')
 
-#
-#
-#
 
-    categories = TestplanCategory.objects.filter(testplan=testplan_id)
-    for category in categories:
-        pass
-    pass
+# Import all tests from Redmine wiki page
+def tests_create_from_wiki(testplan_id, redmine_url, tag):
+    redmine = Redmine(settings.REDMINE_URL, key=settings.REDMINE_KEY)
+    if not redmine_url:
+        raise ValueError("[tests_create_from_wiki]: value <redmine_url> not set in testplan #"
+                         + str(testplan_id))
+
+    try:
+        project_id = redmine_url.split('/')[2]
+    except IndexError:
+        raise ValueError("[tests_create_from_wiki]: Can't parse <project_id> from <redmine_url> in testplan #"
+                         + str(testplan_id))
+
+    try:
+        wiki_page = redmine.wiki_page.get('wiki', project_id=project_id)
+    except ResourceNotFoundError:
+        raise ValueError("[tests_create_from_wiki]: Wiki page " + settings.REDMINE_URL + redmine_url + " not found")
+
+    items = item_filter(wiki_page.text, tag)
+    for item in items:
+        try:
+            category = TestplanCategory.objects.get(Q(testplan=Testplan.objects.get(id=testplan_id)) &
+                                                       Q(name=item.category_name)).id
+            test_redmine_url = redmine_url + '/' + item.item_keyword
+            new_test = Test.objects.create(category=TestplanCategory.objects.get(id=category),
+                                           name=item.item_name,
+                                           redmine_url=test_redmine_url)
+            test_details_update_from_wiki(new_test.id, test_redmine_url, tag)
+
+        except ObjectDoesNotExist:
+            # create category if not found
+            new_category = TestplanCategory.objects.create(name=item.category_name,
+                                                           testplan=Testplan.objects.get(id=testplan_id))
+            test_redmine_url = redmine_url + '/' + item.item_keyword
+            new_test = Test.objects.create(category=TestplanCategory.objects.get(id=new_category.id),
+                                           name=item.item_name,
+                                           redmine_url=test_redmine_url)
+            test_details_update_from_wiki(new_test.id, test_redmine_url, tag)
+    return len(items)
