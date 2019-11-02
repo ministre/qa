@@ -1,6 +1,7 @@
 from django.db import models
 from device.models import DeviceType
 from django.contrib.auth.models import User
+from datetime import datetime
 
 
 class TestplanChecklist(models.Model):
@@ -19,6 +20,10 @@ class Testplan(models.Model):
     device_type = models.ForeignKey(DeviceType, on_delete=models.CASCADE, null=True)
     created_by = models.ForeignKey(User, related_name='testplan_created_by_user', on_delete=models.CASCADE,
                                    blank=True, null=True)
+    created_at = models.DateTimeField(default=datetime.now, blank=True)
+    updated_by = models.ForeignKey(User, related_name='testplan_updated_by_user', on_delete=models.CASCADE,
+                                   blank=True, null=True)
+    updated_at = models.DateTimeField(default=datetime.now, blank=True)
     redmine_url = models.CharField(max_length=1000, blank=True, null=True)
 
     def __str__(self):

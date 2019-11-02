@@ -12,8 +12,10 @@ class TestplanForm(ModelForm):
             'device_type': _('Device Type'),
             'redmine_url': _('Redmine URL'),
         }
-        fields = ['name', 'version', 'device_type', 'redmine_url', 'created_by']
-        widgets = {'created_by': HiddenInput()}
+        fields = ['name', 'version', 'device_type', 'redmine_url', 'created_by', 'created_at',
+                  'updated_by', 'updated_at']
+        widgets = {'created_by': HiddenInput(), 'created_at': HiddenInput(),
+                   'updated_by': HiddenInput(), 'updated_at': HiddenInput()}
 
 
 class TestplanCategoryForm(ModelForm):

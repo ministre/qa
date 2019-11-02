@@ -32,6 +32,18 @@
                 <td>{{ testplan.created_by }}</td>
             </tr>
             <tr>
+                <td>{% trans "Created at" %}:</td>
+                <td>{{ testplan.created_at }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Updated by" %}:</td>
+                <td>{{ testplan.updated_by }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Updated at" %}:</td>
+                <td>{{ testplan.updated_at }}</td>
+            </tr>
+            <tr>
                 <td>{% trans "Redmine URL" %}:</td>
                 <td>{{ testplan.redmine_url }}</td>
             </tr>
@@ -65,7 +77,7 @@
             <li>{{ forloop.counter }}. {{ category.name }}
                 {% for test in category.tests %}
                 <ul>
-                    <li>{{forloop.parentloop.counter}}.{{ forloop.counter }}. {{ test.name }}</li>
+                    <li><a href="../test/{{ test.id }}/">{{forloop.parentloop.counter}}.{{ forloop.counter }}. {{ test.name }}</a></li>
                 </ul>
                 {% endfor %}
             </li>

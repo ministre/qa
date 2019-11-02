@@ -8,6 +8,7 @@ from testplan.models import TestplanChecklist, Testplan, TestplanCategory, Testp
 from .forms import TestplanForm, TestplanCategoryForm, TestplanChapterForm, TestForm
 from django.shortcuts import get_object_or_404
 import textile
+from datetime import datetime
 
 
 @method_decorator(login_required, name='dispatch')
@@ -61,6 +62,9 @@ class TestplanUpdate(UpdateView):
     model = Testplan
     form_class = TestplanForm
     template_name = 'testplan/update.html'
+
+    def get_initial(self):
+        return {'updated_by': self.request.user, 'updated_at': datetime.now}
 
     def get_success_url(self):
         return reverse('testplan_list')
