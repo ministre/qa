@@ -68,13 +68,12 @@
     </p>
   </div>
   <div class="tabs-panel is-active" id="panel3">
-    <p>
-        <a href="../{{ testplan.id }}/category/create/" class="button">{% trans "Add Category" %}</a>
-    </p>
-
+<br>
         {% for category in categories %}
         <ul>
-            <li>{{ forloop.counter }}. {{ category.name }}
+            <li><b>{{ forloop.counter }}. {{ category.name }}</b>
+                <a href="#edit"><i class="step fi-pencil"></i></a>
+                <a href="#add"><i class="step fi-plus"></i></a>
                 {% for test in category.tests %}
                 <ul>
                     <li><a href="../test/{{ test.id }}/">{{forloop.parentloop.counter}}.{{ forloop.counter }}. {{ test.name }}</a></li>
@@ -83,6 +82,8 @@
             </li>
         </ul>
         {% endfor %}
+
+          <p><a href="../{{ testplan.id }}/category/create/" class="button">{% trans "Add Category" %}</a></p>
 
   </div>
 </div>
