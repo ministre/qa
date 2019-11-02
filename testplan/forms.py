@@ -8,7 +8,7 @@ class TestplanForm(ModelForm):
         model = Testplan
         labels = {
             'name': _('Name'),
-            'version': _('Version'),
+            'version': _('Document version'),
             'device_type': _('Device Type'),
             'redmine_url': _('Redmine URL'),
         }

@@ -14,14 +14,14 @@ import textile
 class TestplanChecklistListView(ListView):
     context_object_name = 'testplan_checklists'
     queryset = TestplanChecklist.objects.all()
-    template_name = 'testplan/testplan_checklist_list.html'
+    template_name = 'testplan/checklists.html'
 
 
 @method_decorator(login_required, name='dispatch')
 class TestplanListView(ListView):
     context_object_name = 'testplans'
     queryset = Testplan.objects.all()
-    template_name = 'testplan/testplan_list.html'
+    template_name = 'testplan/testplans.html'
 
 
 @method_decorator(login_required, name='dispatch')

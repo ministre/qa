@@ -4,9 +4,11 @@
 
 {% block content %}
 
-<h3>{% trans "Import Testplan from Redmine" %}</h3>
+
 
 <form method="post" action="">
+    <a href="/testplan/" class="button">&laquo; {% trans "Back" %}</a>
+    <input type="submit" value='{% trans "Create" %}' class="button success" />
     {% csrf_token %}
     <label for="id_testplan_project">{% trans "Testplan" %}:</label>
     <select name="testplan_project" id="id_testplan_project">
@@ -21,7 +23,6 @@
         <option value="{{ device_types_tag.tag }}">{{ device_types_tag.tag }}</option>
         {% endfor %}
     </select>
-    <input type="submit" value='{% trans "Import" %}' class="button" />
 </form>
 
 {% endblock %}

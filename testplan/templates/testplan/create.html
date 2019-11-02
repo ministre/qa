@@ -6,7 +6,7 @@
 
 <form method="post" action="">
     <a href=".." class="button">&laquo; {% trans "Back" %}</a>
-    <input type="submit" value='{% trans "Create" %}' class="button" />
+    <input type="submit" value='{% trans "Create" %}' class="button success" />
     {% csrf_token %}
     {{ form }}
 </form>

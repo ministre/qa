@@ -4,26 +4,96 @@
 
 {% block content %}
 
-<a href=".." class="button">&laquo; {% trans "Back" %}</a>
-<a href="../update/{{ testplan.id }}/" class="button">{% trans "Update" %}</a>
-<a href="../delete/{{ testplan.id }}/" class="button alert">{% trans "Delete" %}</a>
+<p>
+    <a href="/testplan/">{% trans "Testplan" %}</a> &raquo; {{ testplan.name}}
+</p>
 
-<form method="post" action="/redmine/tests_import/">
-    {% csrf_token %}
-    <input type="hidden" name="testplan_id" value="{{ testplan.id }}">
-    <input type="hidden" name="redmine_url" value="{{ testplan.redmine_url }}">
-    <input type="hidden" name="tag" value="{{ testplan.device_type.tag }}">
-    <input type="submit" value='{% trans "Add Tests from Redmine" %}' class="button" />
-</form>
+<p>
+<ul class="tabs" data-tabs id="example-tabs">
+    <li class="tabs-title"><a href="#panel1" aria-selected="true">{% trans "General" %}</a></li>
+    <li class="tabs-title"><a data-tabs-target="panel2" href="#panel2">{% trans "Introduction" %}</a></li>
+    <li class="tabs-title is-active"><a data-tabs-target="panel3" href="#panel3">{% trans "Tests" %}</a></li>
+</ul>
 
-<h4>{{ testplan.name}}</h4>
+<div class="tabs-content" data-tabs-content="example-tabs">
+    <div class="tabs-panel" id="panel1">
+        <table class="hover unstriped">
+            <tbody>
+            <tr>
+                <td>{% trans "Document version" %}:</td>
+                <td>{{ testplan.version }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Device type" %}:</td>
+                <td>{{ testplan.device_type.tag }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Created by" %}:</td>
+                <td>{{ testplan.created_by }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Redmine URL" %}:</td>
+                <td>{{ testplan.redmine_url }}</td>
+            </tr>
+            </tbody>
+        </table>
 
-<p class="label warning">{{ testplan.version}}</p>
-<p class="label warning">{{ testplan.device_type.tag}}</p>
+        <form method="post" action="/redmine/tests_import/">
+            {% csrf_token %}
+            <a href="../update/{{ testplan.id }}/" class="button">{% trans "Update" %}</a>
+            <input type="hidden" name="testplan_id" value="{{ testplan.id }}">
+            <input type="hidden" name="redmine_url" value="{{ testplan.redmine_url }}">
+            <input type="hidden" name="tag" value="{{ testplan.device_type.tag }}">
+            <input type="submit" value='{% trans "Update from Redmine" %}' class="button success" />
+            <a href="../delete/{{ testplan.id }}/" class="button alert">{% trans "Delete" %}</a>
+        </form>
+    </div>
+
+
+  <div class="tabs-panel" id="panel2">
+    <p>
+        <a href="../{{ testplan.id }}/chapter/create/" class="button">{% trans "Add Part" %}</a>
+    </p>
+  </div>
+  <div class="tabs-panel is-active" id="panel3">
+    <p>
+        <a href="../{{ testplan.id }}/category/create/" class="button">{% trans "Add Category" %}</a>
+    </p>
+
+        {% for category in categories %}
+        <ul>
+            <li>{{ forloop.counter }}. {{ category.name }}
+                {% for test in category.tests %}
+                <ul>
+                    <li>{{forloop.parentloop.counter}}.{{ forloop.counter }}. {{ test.name }}</li>
+                </ul>
+                {% endfor %}
+            </li>
+        </ul>
+        {% endfor %}
+
+  </div>
+</div>
+
+</p>
+
+
+
+
+
+
+
+
+
+
+<p></p>
+
+
+
 
 <h5>{% trans "Introduction" %}</h5>
 
-<a href="../{{ testplan.id }}/chapter/create/" class="button small">{% trans "Add Chapter" %}</a>
+
 
         <ul class="accordion" data-accordion data-multi-expand="true">
 
@@ -50,7 +120,7 @@
 
 <h5>{% trans "Test list" %}</h5>
 
-<a href="../{{ testplan.id }}/category/create/" class="button small">{% trans "Add Category" %}</a>
+
 
         <ul class="accordion" data-accordion data-multi-expand="true">
 
@@ -77,6 +147,5 @@
             {% endfor %}
 
         </ul>
-
 
 {% endblock %}
