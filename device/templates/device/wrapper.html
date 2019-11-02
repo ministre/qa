@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-{% load static i18n %}
+{% load static i18n compress %}
 {% get_current_language as LANGUAGE_CODE %}
 <html class="no-js" lang="{{ LANGUAGE_CODE }}">
 <head>
@@ -7,6 +7,9 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Quality Assurance</title>
+    {% compress css %}
+    <link type="text/x-scss" href="{% static 'scss/test.scss' %}" rel="stylesheet" media="screen">
+    {% endcompress %}
     <link rel="stylesheet" href="{% static 'foundation-6.5.1-custom/css/foundation.css' %}" />
     <link rel="stylesheet" href="{% static 'DataTables/datatables.css' %}" />
 </head>
