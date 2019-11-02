@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 {% load static i18n %}
 {% get_current_language as LANGUAGE_CODE %}
-<html lang="{{ LANGUAGE_CODE }}">
+<html class="no-js" lang="{{ LANGUAGE_CODE }}">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Quality Assurance</title>
-    <link href="{% static 'foundation-6.5.1-custom/css/foundation.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'DataTables/datatables.css' %}" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="{% static 'foundation-6.5.1-custom/css/foundation.css' %}" />
+    <link rel="stylesheet" href="{% static 'DataTables/datatables.css' %}" />
 </head>
 
 <body>
-<script src="{% static 'foundation-6.5.1-custom/js/vendor/jquery.js' %}"></script>
+  <script src="{% static 'foundation-6.5.1-custom/js/vendor/jquery.js' %}"></script>
 
 <div class="top-bar">
 
