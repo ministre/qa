@@ -2,10 +2,10 @@
 *.log
 *.pot
 .idea/
-qa/settings/local.py
-qa/settings/static/
+/qa/settings/local.py
+/qa/static/
 **/migrations/*
-qa/media/device/*
+/qa/media/device/*
 
 # Byte-compiled / optimized / DLL files
 *.py[cod]
@@ -20,5 +20,3 @@ myvenv/*
 
 # C extensions
 *.so
-
-
