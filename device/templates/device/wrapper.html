@@ -13,6 +13,8 @@
 
 <body>
   <script src="{% static 'foundation-6.5.1-custom/js/vendor/jquery.js' %}"></script>
+  <script src="{% static 'foundation-6.5.1-custom/js/vendor/what-input.js' %}"></script>
+  <script src="{% static 'foundation-6.5.1-custom/js/vendor/foundation.js' %}"></script>
 
 <div class="top-bar">
 
@@ -80,10 +82,8 @@
     {% block content %}
 </div>
 
-{% endblock %}
-</body>
+  {% endblock %}
 
-<script src="{% static 'foundation-6.5.1-custom/js/vendor/what-input.js' %}"></script>
-<script src="{% static 'foundation-6.5.1-custom/js/vendor/foundation.js' %}"></script>
-<script src="{% static 'foundation-6.5.1-custom/js/app.js' %}"></script>
+  <script src="{% static 'foundation-6.5.1-custom/js/app.js' %}"></script>
+</body>
 </html>
