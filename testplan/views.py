@@ -53,8 +53,9 @@ def testplan_details(request, pk):
     testplan = get_object_or_404(Testplan, id=pk)
     chapters = TestplanChapter.objects.filter(testplan=testplan).order_by('id')
     categories = get_testlist(pk)
+    amount_of_tests = count_of_tests(pk)
     return render(request, 'testplan/testplan_details.html', {'testplan': testplan, 'categories': categories,
-                                                              'chapters': chapters})
+                                                              'chapters': chapters, 'amount_of_tests': amount_of_tests})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -185,3 +186,14 @@ class TestUpdate(UpdateView):
 
     def get_success_url(self):
         return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan_id')})
+
+
+# Return amount of tests in testplan
+def count_of_tests(testplan_id):
+    count = 0
+    categories = TestplanCategory.objects.filter(testplan=Testplan.objects.get(id=testplan_id))
+    for category in categories:
+        tests = Test.objects.filter(category=TestplanCategory.objects.get(id=category.id))
+        for test in tests:
+            count += 1
+    return count
