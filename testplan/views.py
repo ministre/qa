@@ -174,7 +174,7 @@ class TestDelete(DeleteView):
     template_name = 'testplan/delete.html'
 
     def get_success_url(self):
-        return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan_id')})
+        return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan')})
 
 
 @method_decorator(login_required, name='dispatch')
