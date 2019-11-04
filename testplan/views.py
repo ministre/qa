@@ -89,6 +89,26 @@ class CategoryCreate(CreateView):
     def get_initial(self):
         return {'testplan': self.kwargs.get('testplan')}
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['testplan_id'] = self.kwargs.get('testplan')
+        return context
+
+    def get_success_url(self):
+        testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
+        return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan')})
+
+
+@method_decorator(login_required, name='dispatch')
+class CategoryDelete(DeleteView):
+    model = TestplanCategory
+    template_name = 'testplan/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['testplan_id'] = self.kwargs.get('testplan')
+        return context
+
     def get_success_url(self):
         testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
         return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan')})
@@ -100,15 +120,10 @@ class CategoryUpdate(UpdateView):
     form_class = TestplanCategoryForm
     template_name = 'testplan/update.html'
 
-    def get_success_url(self):
-        testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
-        return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan')})
-
-
-@method_decorator(login_required, name='dispatch')
-class CategoryDelete(DeleteView):
-    model = TestplanCategory
-    template_name = 'testplan/delete.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['testplan_id'] = self.kwargs.get('testplan')
+        return context
 
     def get_success_url(self):
         testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
@@ -124,6 +139,11 @@ class TestCreate(CreateView):
     def get_initial(self):
         return {'category': self.kwargs.get('pk')}
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['testplan_id'] = self.kwargs.get('testplan')
+        return context
+
     def get_success_url(self):
         testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
         return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan')})
@@ -133,6 +153,11 @@ class TestCreate(CreateView):
 class TestDelete(DeleteView):
     model = Test
     template_name = 'testplan/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['testplan_id'] = self.kwargs.get('testplan')
+        return context
 
     def get_success_url(self):
         testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
@@ -144,6 +169,11 @@ class TestUpdate(UpdateView):
     model = Test
     form_class = TestForm
     template_name = 'testplan/update.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['testplan_id'] = self.kwargs.get('testplan')
+        return context
 
     def get_success_url(self):
         testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
