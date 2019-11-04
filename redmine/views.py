@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from device.models import DeviceType
 from testplan.models import Testplan, TestplanCategory, Test
+from testplan.views import testplan_update_timestamp
 from redminelib import Redmine
 from qa import settings
 from redminelib.exceptions import ResourceAttrError, ResourceNotFoundError
@@ -122,7 +123,8 @@ def import_test_details(request):
         tag = request.POST['tag']
         try:
             test_details_update_from_wiki(test_id, redmine_url, tag)
-            return HttpResponseRedirect('/testplan/' + testplan_id + '/test/details/' + test_id + '/')
+            testplan_update_timestamp(testplan_id, request.user)
+            return HttpResponseRedirect('/testplan/' + testplan_id + '/test/' + test_id + '/')
         except ValueError as e:
             return render(request, 'redmine/error.html', {'message': e})
 
@@ -136,7 +138,7 @@ def test_details_update_from_wiki(test_id, redmine_url, tag):
     except ObjectDoesNotExist:
         raise ValueError('Test #'+str(test_id)+': Import error - Test object not found')
 
-    redmine = Redmine(settings.REDMINE_URL, key=settings.REDMINE_KEY)
+    redmine = redmine_connect()
 
     try:
         project_id = redmine_url.split('/')[2]
@@ -160,13 +162,14 @@ def test_details_update_from_wiki(test_id, redmine_url, tag):
 
 
 @login_required
-def tests_import(request):
+def import_all_tests(request):
     if request.method == "POST":
         testplan_id = request.POST['testplan_id']
         redmine_url = request.POST['redmine_url']
         tag = request.POST['tag']
         try:
             tests_create_from_wiki(testplan_id, redmine_url, tag)
+            testplan_update_timestamp(testplan_id, request.user)
             return HttpResponseRedirect('/testplan/' + str(testplan_id) + '/')
         except ValueError as e:
             return render(request, 'redmine/error.html', {'message': e})
@@ -176,7 +179,7 @@ def tests_import(request):
 
 # Import all tests from Redmine wiki page
 def tests_create_from_wiki(testplan_id, redmine_url, tag):
-    redmine = Redmine(settings.REDMINE_URL, key=settings.REDMINE_KEY)
+    redmine = redmine_connect()
     if not redmine_url:
         raise ValueError("[tests_create_from_wiki]: value <redmine_url> not set in testplan #"
                          + str(testplan_id))
