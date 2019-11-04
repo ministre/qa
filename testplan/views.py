@@ -12,13 +12,6 @@ from datetime import datetime
 
 
 @method_decorator(login_required, name='dispatch')
-class TestplanChecklistListView(ListView):
-    context_object_name = 'testplan_checklists'
-    queryset = TestplanChecklist.objects.all()
-    template_name = 'testplan/checklists.html'
-
-
-@method_decorator(login_required, name='dispatch')
 class TestplanListView(ListView):
     context_object_name = 'testplans'
     queryset = Testplan.objects.all()
@@ -36,6 +29,39 @@ class TestplanCreate(CreateView):
 
     def get_success_url(self):
         return reverse('testplan_list')
+
+
+@method_decorator(login_required, name='dispatch')
+class TestplanDelete(DeleteView):
+    model = Testplan
+    template_name = 'testplan/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['testplan_id'] = self.kwargs.get('pk')
+        return context
+
+    def get_success_url(self):
+        return reverse('testplan_list')
+
+
+@method_decorator(login_required, name='dispatch')
+class TestplanUpdate(UpdateView):
+    model = Testplan
+    form_class = TestplanForm
+    template_name = 'testplan/update.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['testplan_id'] = self.kwargs.get('pk')
+        return context
+
+    def get_initial(self):
+        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+
+    def get_success_url(self):
+        testplan_update_timestamp(self.kwargs.get('pk'), self.request.user)
+        return reverse('testplan_details', kwargs={'pk': self.kwargs.get('pk')})
 
 
 def get_testlist(testplan_id):
@@ -56,28 +82,6 @@ def testplan_details(request, pk):
     amount_of_tests = count_of_tests(pk)
     return render(request, 'testplan/testplan_details.html', {'testplan': testplan, 'categories': categories,
                                                               'chapters': chapters, 'amount_of_tests': amount_of_tests})
-
-
-@method_decorator(login_required, name='dispatch')
-class TestplanUpdate(UpdateView):
-    model = Testplan
-    form_class = TestplanForm
-    template_name = 'testplan/update.html'
-
-    def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': datetime.now}
-
-    def get_success_url(self):
-        return reverse('testplan_list')
-
-
-@method_decorator(login_required, name='dispatch')
-class TestplanDelete(DeleteView):
-    model = Testplan
-    template_name = 'testplan/delete.html'
-
-    def get_success_url(self):
-        return reverse('testplan_list')
 
 
 @method_decorator(login_required, name='dispatch')
@@ -242,3 +246,10 @@ class TestplanChapterDelete(DeleteView):
 
     def get_success_url(self):
         return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan')})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestplanChecklistListView(ListView):
+    context_object_name = 'testplan_checklists'
+    queryset = TestplanChecklist.objects.all()
+    template_name = 'testplan/checklists.html'
