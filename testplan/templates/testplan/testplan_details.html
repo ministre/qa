@@ -89,13 +89,13 @@
               {% for test in category.tests %}
               <ul style="list-style: none">
                   <li>
-                      <a href="../test/{{ test.id }}/">{{forloop.parentloop.counter}}.{{ forloop.counter }}. {{ test.name }}</a>
+                      <a href="test/details/{{ test.id }}/">{{forloop.parentloop.counter}}.{{ forloop.counter }}. {{ test.name }}</a>
                       <a href="test/update/{{ test.id }}/"><i class="step fi-pencil"></i></a>
                       <a href="test/delete/{{ test.id }}/"><i class="step fi-minus" style="color: #bc104b"></i></a>
                   </li>
               </ul>
               {% endfor %}
-              <blockquote><a href="category/{{ category.id }}/test/create/"><i class="step fi-plus"></i></a></blockquote>
+              <blockquote><a href="test/create/{{ category.id }}/"><i class="step fi-plus"></i></a></blockquote>
           </li>
       </ul>
       {% endfor %}

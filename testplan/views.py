@@ -151,9 +151,9 @@ class TestUpdate(UpdateView):
 
 
 @login_required
-def test_details(request, pk):
+def test_details(request, testplan, pk):
     test = get_object_or_404(Test, id=pk)
-    testplan = test.category.testplan
+    testplan = get_object_or_404(Test, id=testplan)
     category = test.category
     test_procedure = textile.textile(test.procedure)
     test_expected = textile.textile(test.expected)
