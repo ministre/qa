@@ -81,35 +81,105 @@ class TestplanDelete(DeleteView):
 
 
 @method_decorator(login_required, name='dispatch')
-class TestplanCategoryCreate(CreateView):
+class CategoryCreate(CreateView):
     model = TestplanCategory
     form_class = TestplanCategoryForm
     template_name = 'testplan/create.html'
 
     def get_initial(self):
-        return {'testplan': self.kwargs.get('pk')}
+        return {'testplan': self.kwargs.get('testplan')}
 
     def get_success_url(self):
-        return reverse('testplan_details', kwargs={'pk': self.kwargs.get('pk')})
+        testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
+        return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan')})
 
 
 @method_decorator(login_required, name='dispatch')
-class TestplanCategoryUpdate(UpdateView):
+class CategoryUpdate(UpdateView):
     model = TestplanCategory
     form_class = TestplanCategoryForm
     template_name = 'testplan/update.html'
 
     def get_success_url(self):
+        testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
         return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan')})
 
 
 @method_decorator(login_required, name='dispatch')
-class TestplanCategoryDelete(DeleteView):
+class CategoryDelete(DeleteView):
     model = TestplanCategory
     template_name = 'testplan/delete.html'
 
     def get_success_url(self):
+        testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
         return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan')})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestCreate(CreateView):
+    model = Test
+    form_class = TestForm
+    template_name = 'testplan/create.html'
+
+    def get_initial(self):
+        return {'category': self.kwargs.get('pk')}
+
+    def get_success_url(self):
+        testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
+        return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan')})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestDelete(DeleteView):
+    model = Test
+    template_name = 'testplan/delete.html'
+
+    def get_success_url(self):
+        testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
+        return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan')})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestUpdate(UpdateView):
+    model = Test
+    form_class = TestForm
+    template_name = 'testplan/update.html'
+
+    def get_success_url(self):
+        testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
+        return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan')})
+
+
+@login_required
+def test_details(request, pk):
+    test = get_object_or_404(Test, id=pk)
+    testplan = test.category.testplan
+    category = test.category
+    test_procedure = textile.textile(test.procedure)
+    test_expected = textile.textile(test.expected)
+    return render(request, 'testplan/test_details.html', {'testplan': testplan, 'category': category,
+                                                          'test': test, 'test_procedure': test_procedure,
+                                                          'test_expected': test_expected})
+
+
+# Return amount of tests in testplan
+def count_of_tests(testplan_id):
+    count = 0
+    categories = TestplanCategory.objects.filter(testplan=Testplan.objects.get(id=testplan_id))
+    for category in categories:
+        tests = Test.objects.filter(category=TestplanCategory.objects.get(id=category.id))
+        for test in tests:
+            count += 1
+    return count
+
+
+# Update testplan fields 'updated_by' and 'updated_at'
+def testplan_update_timestamp(testplan_id, user):
+    testplan = Testplan.objects.get(id=testplan_id)
+    testplan.updated_by = user
+    testplan.updated_at = datetime.now()
+    testplan.save()
+    return True
 
 
 @method_decorator(login_required, name='dispatch')
@@ -142,58 +212,3 @@ class TestplanChapterDelete(DeleteView):
 
     def get_success_url(self):
         return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan')})
-
-
-@method_decorator(login_required, name='dispatch')
-class TestCreate(CreateView):
-    model = Test
-    form_class = TestForm
-    template_name = 'testplan/create.html'
-
-    def get_initial(self):
-        return {'category': self.kwargs.get('pk')}
-
-    def get_success_url(self):
-        return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan_id')})
-
-
-@login_required
-def test_details(request, pk):
-    test = get_object_or_404(Test, id=pk)
-    testplan = test.category.testplan
-    category = test.category
-    test_procedure = textile.textile(test.procedure)
-    test_expected = textile.textile(test.expected)
-    return render(request, 'testplan/test_details.html', {'testplan': testplan, 'category': category,
-                                                          'test': test, 'test_procedure': test_procedure,
-                                                          'test_expected': test_expected})
-
-
-@method_decorator(login_required, name='dispatch')
-class TestDelete(DeleteView):
-    model = Test
-    template_name = 'testplan/delete.html'
-
-    def get_success_url(self):
-        return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan')})
-
-
-@method_decorator(login_required, name='dispatch')
-class TestUpdate(UpdateView):
-    model = Test
-    form_class = TestForm
-    template_name = 'testplan/update.html'
-
-    def get_success_url(self):
-        return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan_id')})
-
-
-# Return amount of tests in testplan
-def count_of_tests(testplan_id):
-    count = 0
-    categories = TestplanCategory.objects.filter(testplan=Testplan.objects.get(id=testplan_id))
-    for category in categories:
-        tests = Test.objects.filter(category=TestplanCategory.objects.get(id=category.id))
-        for test in tests:
-            count += 1
-    return count

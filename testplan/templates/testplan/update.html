@@ -6,7 +6,7 @@
 
 <form method="post" action="" enctype="multipart/form-data">
 
-<a href="../../{{ object.id }}/" class="button">&laquo; {% trans "Back" %}</a>
+<a href="../../../" class="button">&laquo; {% trans "Back" %}</a>
 <input type="submit" value='{% trans "Update" %}' class="button" />
 <a href="../../delete/{{ object.id }}/" class="button alert">{% trans "Delete" %}</a>
 {% csrf_token %}
