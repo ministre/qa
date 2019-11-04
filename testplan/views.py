@@ -4,8 +4,8 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
-from testplan.models import TestplanChecklist, Testplan, TestplanCategory, TestplanChapter, Test
-from .forms import TestplanForm, TestplanCategoryForm, TestplanChapterForm, TestForm
+from testplan.models import Checklist, Testplan, Category, Chapter, Test
+from .forms import TestplanForm, CategoryForm, ChapterForm, TestForm
 from django.shortcuts import get_object_or_404
 import textile
 from datetime import datetime
@@ -66,7 +66,7 @@ class TestplanUpdate(UpdateView):
 
 def get_testlist(testplan_id):
     testplan = get_object_or_404(Testplan, id=testplan_id)
-    categories = TestplanCategory.objects.filter(testplan=testplan).order_by('id')
+    categories = Category.objects.filter(testplan=testplan).order_by('id')
     testlist = []
     for category in categories:
         tests = Test.objects.filter(category=category).order_by('id')
@@ -77,7 +77,7 @@ def get_testlist(testplan_id):
 @login_required
 def testplan_details(request, pk):
     testplan = get_object_or_404(Testplan, id=pk)
-    chapters = TestplanChapter.objects.filter(testplan=testplan).order_by('id')
+    chapters = Chapter.objects.filter(testplan=testplan).order_by('id')
     categories = get_testlist(pk)
     amount_of_tests = count_of_tests(pk)
     return render(request, 'testplan/testplan_details.html', {'testplan': testplan, 'categories': categories,
@@ -86,8 +86,8 @@ def testplan_details(request, pk):
 
 @method_decorator(login_required, name='dispatch')
 class CategoryCreate(CreateView):
-    model = TestplanCategory
-    form_class = TestplanCategoryForm
+    model = Category
+    form_class = CategoryForm
     template_name = 'testplan/create.html'
 
     def get_initial(self):
@@ -105,7 +105,7 @@ class CategoryCreate(CreateView):
 
 @method_decorator(login_required, name='dispatch')
 class CategoryDelete(DeleteView):
-    model = TestplanCategory
+    model = Category
     template_name = 'testplan/delete.html'
 
     def get_context_data(self, **kwargs):
@@ -120,8 +120,8 @@ class CategoryDelete(DeleteView):
 
 @method_decorator(login_required, name='dispatch')
 class CategoryUpdate(UpdateView):
-    model = TestplanCategory
-    form_class = TestplanCategoryForm
+    model = Category
+    form_class = CategoryForm
     template_name = 'testplan/update.html'
 
     def get_context_data(self, **kwargs):
@@ -198,9 +198,9 @@ def test_details(request, testplan, pk):
 # Return amount of tests in testplan
 def count_of_tests(testplan_id):
     count = 0
-    categories = TestplanCategory.objects.filter(testplan=Testplan.objects.get(id=testplan_id))
+    categories = Category.objects.filter(testplan=Testplan.objects.get(id=testplan_id))
     for category in categories:
-        tests = Test.objects.filter(category=TestplanCategory.objects.get(id=category.id))
+        tests = Test.objects.filter(category=Category.objects.get(id=category.id))
         for test in tests:
             count += 1
     return count
@@ -217,8 +217,8 @@ def testplan_update_timestamp(testplan_id, user):
 
 @method_decorator(login_required, name='dispatch')
 class ChapterCreate(CreateView):
-    model = TestplanChapter
-    form_class = TestplanChapterForm
+    model = Chapter
+    form_class = ChapterForm
     template_name = 'testplan/create.html'
 
     def get_initial(self):
@@ -236,7 +236,7 @@ class ChapterCreate(CreateView):
 
 @method_decorator(login_required, name='dispatch')
 class ChapterDelete(DeleteView):
-    model = TestplanChapter
+    model = Chapter
     template_name = 'testplan/delete.html'
 
     def get_context_data(self, **kwargs):
@@ -251,8 +251,8 @@ class ChapterDelete(DeleteView):
 
 @method_decorator(login_required, name='dispatch')
 class ChapterUpdate(UpdateView):
-    model = TestplanChapter
-    form_class = TestplanChapterForm
+    model = Chapter
+    form_class = ChapterForm
     template_name = 'testplan/update.html'
 
     def get_context_data(self, **kwargs):
@@ -268,5 +268,5 @@ class ChapterUpdate(UpdateView):
 @method_decorator(login_required, name='dispatch')
 class ChecklistListView(ListView):
     context_object_name = 'checklists'
-    queryset = TestplanChecklist.objects.all()
+    queryset = Checklist.objects.all()
     template_name = 'testplan/checklists.html'

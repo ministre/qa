@@ -4,14 +4,14 @@ from django.contrib.auth.models import User
 from datetime import datetime
 
 
-class TestplanChecklist(models.Model):
+class Checklist(models.Model):
     name = models.CharField(max_length=1000)
 
     def __str__(self):
         return self.name
 
     class Meta:
-        verbose_name_plural = "Testplan Checklists"
+        verbose_name_plural = "Checklists"
 
 
 class Testplan(models.Model):
@@ -30,7 +30,7 @@ class Testplan(models.Model):
         return self.name
 
 
-class TestplanChapter(models.Model):
+class Chapter(models.Model):
     testplan = models.ForeignKey(Testplan, on_delete=models.CASCADE)
     name = models.CharField(max_length=1000)
     text = models.TextField(max_length=100000)
@@ -40,10 +40,10 @@ class TestplanChapter(models.Model):
         return self.name
 
     class Meta:
-        verbose_name_plural = "Testplan Chapters"
+        verbose_name_plural = "Chapters"
 
 
-class TestplanCategory(models.Model):
+class Category(models.Model):
     name = models.CharField(max_length=1000)
     testplan = models.ForeignKey(Testplan, on_delete=models.CASCADE)
 
@@ -51,11 +51,11 @@ class TestplanCategory(models.Model):
         return self.name
 
     class Meta:
-        verbose_name_plural = "Testplan Categories"
+        verbose_name_plural = "Categories"
 
 
 class Test(models.Model):
-    category = models.ForeignKey(TestplanCategory, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
     name = models.CharField(max_length=1000)
     purpose = models.TextField(max_length=5000, null=True, blank=True)
     procedure = models.TextField(null=True, blank=True)

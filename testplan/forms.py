@@ -1,5 +1,5 @@
 from django.forms import ModelForm, HiddenInput
-from testplan.models import Testplan, TestplanCategory, TestplanChapter, Test
+from testplan.models import Testplan, Category, Chapter, Test
 from django.utils.translation import gettext_lazy as _
 
 
@@ -18,9 +18,9 @@ class TestplanForm(ModelForm):
                    'updated_by': HiddenInput(), 'updated_at': HiddenInput()}
 
 
-class TestplanCategoryForm(ModelForm):
+class CategoryForm(ModelForm):
     class Meta:
-        model = TestplanCategory
+        model = Category
         labels = {
             'name': _('Name'),
         }
@@ -28,9 +28,9 @@ class TestplanCategoryForm(ModelForm):
         widgets = {'testplan': HiddenInput()}
 
 
-class TestplanChapterForm(ModelForm):
+class ChapterForm(ModelForm):
     class Meta:
-        model = TestplanChapter
+        model = Chapter
         labels = {
             'redmine_url': _('Redmine URL'),
             'name': _('Name'),

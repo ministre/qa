@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from device.models import DeviceType
-from testplan.models import Testplan, TestplanCategory, Test
+from testplan.models import Testplan, Category, Test
 from testplan.views import testplan_update_timestamp
 from redminelib import Redmine
 from qa import settings
@@ -52,8 +52,8 @@ def collapse_filter(ctx, tag):
     blocks = ctx.split('}}')
     for i, block in enumerate(blocks):
         if re.search('{{collapse\(#', block):
-            if re.search(tag+'\)', block):
-                blocks[i] = blocks[i].replace('\n{{collapse(#'+tag+')', '')
+            if re.search(tag + '\)', block):
+                blocks[i] = blocks[i].replace('\n{{collapse(#' + tag + ')', '')
             else:
                 blocks[i] = ''
     ctx = ''.join(blocks)
@@ -183,13 +183,11 @@ def tests_create_from_wiki(testplan_id, redmine_url, tag):
     if not redmine_url:
         raise ValueError("[tests_create_from_wiki]: value <redmine_url> not set in testplan #"
                          + str(testplan_id))
-
     try:
         project_id = redmine_url.split('/')[2]
     except IndexError:
         raise ValueError("[tests_create_from_wiki]: Can't parse <project_id> from <redmine_url> in testplan #"
                          + str(testplan_id))
-
     try:
         wiki_page = redmine.wiki_page.get('wiki', project_id=project_id)
     except ResourceNotFoundError:
@@ -198,21 +196,18 @@ def tests_create_from_wiki(testplan_id, redmine_url, tag):
     items = item_filter(wiki_page.text, tag)
     for item in items:
         try:
-            category = TestplanCategory.objects.get(Q(testplan=Testplan.objects.get(id=testplan_id)) &
-                                                    Q(name=item.category)).id
+            category = Category.objects.get(Q(testplan=Testplan.objects.get(id=testplan_id)) &
+                                            Q(name=item.category)).id
             test_redmine_url = redmine_url + '/' + item.keyword
-            new_test = Test.objects.create(category=TestplanCategory.objects.get(id=category),
-                                           name=item.name,
+            new_test = Test.objects.create(category=Category.objects.get(id=category), name=item.name,
                                            redmine_url=test_redmine_url)
             test_details_update_from_wiki(new_test.id, test_redmine_url, tag)
 
         except ObjectDoesNotExist:
             # create category if not found
-            new_category = TestplanCategory.objects.create(name=item.category,
-                                                           testplan=Testplan.objects.get(id=testplan_id))
+            new_category = Category.objects.create(name=item.category, testplan=Testplan.objects.get(id=testplan_id))
             test_redmine_url = redmine_url + '/' + item.keyword
-            new_test = Test.objects.create(category=TestplanCategory.objects.get(id=new_category.id),
-                                           name=item.name,
+            new_test = Test.objects.create(category=Category.objects.get(id=new_category.id), name=item.name,
                                            redmine_url=test_redmine_url)
             test_details_update_from_wiki(new_test.id, test_redmine_url, tag)
     return len(items)
