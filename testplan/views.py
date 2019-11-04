@@ -267,7 +267,7 @@ class ChapterUpdate(UpdateView):
 
 
 @method_decorator(login_required, name='dispatch')
-class TestplanChecklistListView(ListView):
-    context_object_name = 'testplan_checklists'
+class ChecklistListView(ListView):
+    context_object_name = 'checklists'
     queryset = TestplanChecklist.objects.all()
     template_name = 'testplan/checklists.html'

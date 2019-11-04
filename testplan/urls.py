@@ -21,5 +21,5 @@ urlpatterns = [
     path('<int:testplan>/chapter/delete/<int:pk>/', views.ChapterDelete.as_view(), name='chapter_delete'),
     path('<int:testplan>/chapter/update/<int:pk>/', views.ChapterUpdate.as_view(), name='chapter_update'),
 
-    path('checklist/', views.TestplanChecklistListView.as_view(), name='testplan_checklist_list'),
+    path('checklist/', views.ChecklistListView.as_view(), name='checklists'),
 ]
