@@ -188,11 +188,10 @@ class TestUpdate(UpdateView):
 def test_details(request, testplan, pk):
     test = get_object_or_404(Test, id=pk)
     testplan = get_object_or_404(Testplan, id=testplan)
-    category = test.category
     test_procedure = textile.textile(test.procedure)
     test_expected = textile.textile(test.expected)
-    return render(request, 'testplan/test_details.html', {'testplan': testplan, 'category': category,
-                                                          'test': test, 'test_procedure': test_procedure,
+    return render(request, 'testplan/test_details.html', {'testplan': testplan, 'test': test,
+                                                          'test_procedure': test_procedure,
                                                           'test_expected': test_expected})
 
 

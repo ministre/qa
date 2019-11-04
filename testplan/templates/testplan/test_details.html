@@ -4,34 +4,19 @@
 
 {% block content %}
 
-<form method="post" action="/redmine/import_test_details/">
+<p><a href="/testplan/">{% trans "Testplan" %}</a> &raquo;
+    <a href="/testplan/{{ testplan.id }}/">{{ testplan.name}}</a> &raquo;
+    {{ test.category }}
+</p>
 
-    <a href="/testplan/{{ testplan.id }}/" class="button small">&laquo; {% trans "Back" %}</a>
-    <a href="/testplan/{{ testplan.id }}/test/update/{{ test.id }}/" class="button small">{% trans "Update" %}</a>
 
-    {% csrf_token %}
-    <input type="hidden" name="test_id" value="{{ test.id }}">
-    <input type="hidden" name="testplan_id" value="{{ testplan.id }}">
-    <input type="hidden" name="redmine_url" value="{{ test.redmine_url }}">
-    <input type="hidden" name="tag" value="{{ testplan.device_type.tag }}">
-    <input type="submit" value='{% trans "Update from Redmine" %}' class="button success small" />
-
-</form>
-
-    <ul>
-        <li>{{ testplan }}
-            <ul>
-                <li>{{ category }}</li>
-            </ul>
-        </li>
-    </ul>
 
     <ul class="tabs" data-tabs id="example-tabs">
         <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">{% trans "Name" %}</a></li>
         <li class="tabs-title"><a data-tabs-target="panel2" href="#panel2">{% trans "Purpose" %}</a></li>
         <li class="tabs-title"><a data-tabs-target="panel3" href="#panel3">{% trans "Procedure" %}</a></li>
         <li class="tabs-title"><a data-tabs-target="panel4" href="#panel4">{% trans "Expected result" %}</a></li>
-        <li class="tabs-title"><a data-tabs-target="panel5" href="#panel5">{% trans "Redmine URL" %}</a></li>
+        <li class="tabs-title"><a data-tabs-target="panel5" href="#panel5">{% trans "Redmine" %}</a></li>
     </ul>
 
 <div class="tabs-content" data-tabs-content="example-tabs">
@@ -52,7 +37,24 @@
     <p>{{ test_expected|safe }}</p>
   </div>
   <div class="tabs-panel" id="panel5">
-    <p>{{ test.redmine_url }}</p>
+      <table class="hover unstriped">
+          <tbody>
+          <tr>
+              <td>{% trans "Redmine URL" %}:</td>
+              <td>{{ test.redmine_url }}</td>
+          </tr>
+          </tbody>
+      </table>
+
+      <form method="post" action="/redmine/import_test_details/">
+          {% csrf_token %}
+          <input type="hidden" name="test_id" value="{{ test.id }}">
+          <input type="hidden" name="testplan_id" value="{{ testplan.id }}">
+          <input type="hidden" name="redmine_url" value="{{ test.redmine_url }}">
+          <input type="hidden" name="tag" value="{{ testplan.device_type.tag }}">
+          <input type="submit" value='{% trans "Update from Redmine" %}' class="button success small" />
+      </form>
+
   </div>
 </div>
 
