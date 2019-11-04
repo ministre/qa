@@ -32,7 +32,7 @@ class TestplanCreate(CreateView):
     template_name = 'testplan/create.html'
 
     def get_initial(self):
-        return {'created_by': self.request.user}
+        return {'created_by': self.request.user, 'updated_by': self.request.user}
 
     def get_success_url(self):
         return reverse('testplan_list')
