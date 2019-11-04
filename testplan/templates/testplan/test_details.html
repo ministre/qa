@@ -4,20 +4,18 @@
 
 {% block content %}
 
-<form method="post" action="/redmine/test_details_update/">
+<form method="post" action="/redmine/import_test_details/">
 
-    <a href="/testplan/{{ testplan.id }}/" class="button">&laquo; {% trans "Back" %}</a>
-    <a href="/testplan/{{ testplan.id }}/category/{{ category.id }}/test/{{ test.id }}/update/" class="button">
-    {% trans "Update" %}</a>
+    <a href="/testplan/{{ testplan.id }}/" class="button small">&laquo; {% trans "Back" %}</a>
+    <a href="/testplan/{{ testplan.id }}/test/update/{{ test.id }}/" class="button small">{% trans "Update" %}</a>
 
     {% csrf_token %}
     <input type="hidden" name="test_id" value="{{ test.id }}">
+    <input type="hidden" name="testplan_id" value="{{ testplan.id }}">
     <input type="hidden" name="redmine_url" value="{{ test.redmine_url }}">
     <input type="hidden" name="tag" value="{{ testplan.device_type.tag }}">
-    <input type="submit" value='{% trans "Update from Redmine" %}' class="button" />
+    <input type="submit" value='{% trans "Update from Redmine" %}' class="button success small" />
 
-    <a href="/testplan/{{ testplan.id }}/category/{{ category.id }}/test/{{ test.id }}/delete/" class="button alert">
-    {% trans "Delete" %}</a>
 </form>
 
     <ul>

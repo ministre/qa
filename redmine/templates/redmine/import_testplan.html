@@ -8,8 +8,8 @@
     <a href="/testplan/" class="button small">&laquo; {% trans "Back" %}</a>
     <input type="submit" value='{% trans "Create" %}' class="button success small" />
     {% csrf_token %}
-    <label for="id_testplan_project">{% trans "Testplan" %}:</label>
-    <select name="testplan_project" id="id_testplan_project">
+    <label for="id_project">{% trans "Testplan" %}:</label>
+    <select name="project" id="id_project">
         {% for project in projects %}
         <option value="{{ project.identifier }}">{{ project.name }}</option>
         {% endfor %}

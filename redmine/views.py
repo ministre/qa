@@ -9,6 +9,7 @@ from django.http import HttpResponseRedirect
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 import re
+from datetime import datetime
 
 
 def redmine_connect():
@@ -19,15 +20,15 @@ def redmine_connect():
 @login_required
 def import_testplan(request):
     if request.method == 'POST':
-        testplan_project = request.POST['testplan_project']
+        project = request.POST['project']
         tag = request.POST['tag']
         # create testplan
         try:
-            testplan_id = create_testplan(testplan_project, tag, request.user)
+            testplan_id = create_testplan(project, tag, request.user)
         except ValueError as e:
             return render(request, 'redmine/error.html', {'message': e})
         # create tests
-        redmine_url = '/projects/' + testplan_project + '/wiki'
+        redmine_url = '/projects/' + project + '/wiki'
         tests_create_from_wiki(testplan_id, redmine_url, tag)
 
         return HttpResponseRedirect('/testplan/')
@@ -96,8 +97,8 @@ def item_filter(ctx, tag):
 
 
 # Create new testplan from Redmine wiki page
-def create_testplan(testplan_project, tag, created_by):
-    redmine = Redmine(settings.REDMINE_URL, key=settings.REDMINE_KEY)
+def create_testplan(testplan_project, tag, user):
+    redmine = redmine_connect()
     try:
         wiki_page = redmine.wiki_page.get('Headers', project_id=testplan_project)
     except ResourceNotFoundError:
@@ -105,24 +106,23 @@ def create_testplan(testplan_project, tag, created_by):
 
     ctx = collapse_filter(wiki_page.text, tag)
     head = parse_testplan_head(ctx)
-    new_testplan = Testplan(name=head['title'],
-                            version=head['version'],
-                            device_type=DeviceType.objects.get(tag=tag),
-                            redmine_url='/projects/' + testplan_project + '/wiki',
-                            created_by=created_by)
+    new_testplan = Testplan(name=head['title'], version=head['version'], device_type=DeviceType.objects.get(tag=tag),
+                            redmine_url='/projects/' + testplan_project + '/wiki', created_by=user,
+                            created_at=datetime.now(), updated_by=user, updated_at=datetime.now())
     new_testplan.save()
     return new_testplan.id
 
 
 @login_required
-def test_details_update(request):
+def import_test_details(request):
     if request.method == "POST":
         test_id = request.POST['test_id']
+        testplan_id = request.POST['testplan_id']
         redmine_url = request.POST['redmine_url']
         tag = request.POST['tag']
         try:
             test_details_update_from_wiki(test_id, redmine_url, tag)
-            return HttpResponseRedirect('/testplan/test/' + test_id + '/')
+            return HttpResponseRedirect('/testplan/' + testplan_id + '/test/details/' + test_id + '/')
         except ValueError as e:
             return render(request, 'redmine/error.html', {'message': e})
 
