@@ -6,8 +6,8 @@
 
 <form method="post" action="" enctype="multipart/form-data">
 
-<a href="/testplan/{{ testplan_id }}" class="button">&laquo; {% trans "Back" %}</a>
-<input type="submit" value='{% trans "Update" %}' class="button" />
+<a href="/testplan/{{ testplan_id }}" class="button small">&laquo; {% trans "Back" %}</a>
+<input type="submit" value='{% trans "Update" %}' class="button small" />
 
 {% csrf_token %}
 {{ form }}

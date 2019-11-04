@@ -28,7 +28,7 @@ class TestplanCreate(CreateView):
         return {'created_by': self.request.user, 'updated_by': self.request.user}
 
     def get_success_url(self):
-        return reverse('testplan_list')
+        return reverse('testplans')
 
 
 @method_decorator(login_required, name='dispatch')
@@ -42,7 +42,7 @@ class TestplanDelete(DeleteView):
         return context
 
     def get_success_url(self):
-        return reverse('testplan_list')
+        return reverse('testplans')
 
 
 @method_decorator(login_required, name='dispatch')
@@ -217,34 +217,52 @@ def testplan_update_timestamp(testplan_id, user):
 
 
 @method_decorator(login_required, name='dispatch')
-class TestplanChapterCreate(CreateView):
+class ChapterCreate(CreateView):
     model = TestplanChapter
     form_class = TestplanChapterForm
     template_name = 'testplan/create.html'
 
     def get_initial(self):
-        return {'testplan': self.kwargs.get('pk')}
+        return {'testplan': self.kwargs.get('testplan')}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['testplan_id'] = self.kwargs.get('testplan')
+        return context
 
     def get_success_url(self):
-        return reverse('testplan_details', kwargs={'pk': self.kwargs.get('pk')})
-
-
-@method_decorator(login_required, name='dispatch')
-class TestplanChapterUpdate(UpdateView):
-    model = TestplanChapter
-    form_class = TestplanChapterForm
-    template_name = 'testplan/update.html'
-
-    def get_success_url(self):
+        testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
         return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan')})
 
 
 @method_decorator(login_required, name='dispatch')
-class TestplanChapterDelete(DeleteView):
+class ChapterDelete(DeleteView):
     model = TestplanChapter
     template_name = 'testplan/delete.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['testplan_id'] = self.kwargs.get('testplan')
+        return context
+
     def get_success_url(self):
+        testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
+        return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan')})
+
+
+@method_decorator(login_required, name='dispatch')
+class ChapterUpdate(UpdateView):
+    model = TestplanChapter
+    form_class = TestplanChapterForm
+    template_name = 'testplan/update.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['testplan_id'] = self.kwargs.get('testplan')
+        return context
+
+    def get_success_url(self):
+        testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
         return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan')})
 
 

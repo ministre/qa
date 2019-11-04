@@ -69,7 +69,7 @@
       <ul style="list-style: none">
           {% for chapter in chapters %}
           <li>
-              <a href="#add">{{ forloop.counter }}. {{ chapter.name }}</a>
+              <a href="chapter/create/">{{ forloop.counter }}. {{ chapter.name }}</a>
               <a href="chapter/update/{{ chapter.id }}/"><i class="step fi-pencil"></i></a>
               <a href="chapter/delete/{{ chapter.id }}/"><i class="step fi-minus" style="color: #bc104b"></i></a>
           </li>
