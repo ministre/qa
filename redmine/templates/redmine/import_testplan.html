@@ -4,23 +4,21 @@
 
 {% block content %}
 
-
-
 <form method="post" action="">
-    <a href="/testplan/" class="button">&laquo; {% trans "Back" %}</a>
-    <input type="submit" value='{% trans "Create" %}' class="button success" />
+    <a href="/testplan/" class="button small">&laquo; {% trans "Back" %}</a>
+    <input type="submit" value='{% trans "Create" %}' class="button success small" />
     {% csrf_token %}
     <label for="id_testplan_project">{% trans "Testplan" %}:</label>
     <select name="testplan_project" id="id_testplan_project">
-        {% for testplan_project in testplan_projects %}
-        <option value="{{ testplan_project.identifier }}">{{ testplan_project.name }}</option>
+        {% for project in projects %}
+        <option value="{{ project.identifier }}">{{ project.name }}</option>
         {% endfor %}
     </select>
 
     <label for="id_tag">{% trans "Tag" %}:</label>
     <select name="tag" id="id_tag">
-        {% for device_types_tag in device_types_tags %}
-        <option value="{{ device_types_tag.tag }}">{{ device_types_tag.tag }}</option>
+        {% for tag in tags %}
+        <option value="{{ tag.tag }}">{{ tag.tag }}</option>
         {% endfor %}
     </select>
 </form>

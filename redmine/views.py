@@ -11,8 +11,13 @@ from django.db.models import Q
 import re
 
 
+def redmine_connect():
+    redmine = Redmine(settings.REDMINE_URL, key=settings.REDMINE_KEY, version='4.0.4')
+    return redmine
+
+
 @login_required
-def testplan_import(request):
+def import_testplan(request):
     if request.method == 'POST':
         testplan_project = request.POST['testplan_project']
         tag = request.POST['tag']
@@ -28,17 +33,16 @@ def testplan_import(request):
         return HttpResponseRedirect('/testplan/')
 
     else:
-        redmine = Redmine(settings.REDMINE_URL, key=settings.REDMINE_KEY)
-        testplan_projects = []
+        redmine = redmine_connect()
+        projects = []
         for project in redmine.project.all():
             try:
                 if project.parent.name == settings.REDMINE_TESTPLAN_PROJECTNAME:
-                    testplan_projects.append(project)
+                    projects.append(project)
             except ResourceAttrError:
                 pass
-        device_types_tags = DeviceType.objects.all().order_by("tag")
-        return render(request, 'redmine/testplan_import.html', {'device_types_tags': device_types_tags,
-                                                                'testplan_projects': testplan_projects})
+        tags = DeviceType.objects.all().order_by("tag")
+        return render(request, 'redmine/import_testplan.html', {'tags': tags, 'projects': projects})
 
 
 # Extract spoilers of device-type from wiki page
