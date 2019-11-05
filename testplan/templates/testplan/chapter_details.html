@@ -41,7 +41,7 @@
 
 
   <div class="tabs-panel is-active" id="panel2">
-      {{ chapter.text }}
+      {{ chapter_text|safe }}
   </div>
 
 
@@ -57,9 +57,9 @@
 
       <form method="post" action="/redmine/import_chapter_details/">
           {% csrf_token %}
-          <input type="hidden" name="test_id" value="{{ chapter.id }}">
+          <input type="hidden" name="chapter_id" value="{{ chapter.id }}">
           <input type="hidden" name="testplan_id" value="{{ testplan.id }}">
-          <input type="hidden" name="redmine_url" value="{{ test.redmine_url }}">
+          <input type="hidden" name="redmine_url" value="{{ chapter.redmine_url }}">
           <input type="hidden" name="tag" value="{{ testplan.device_type.tag }}">
           <input type="submit" value='{% trans "Update from Redmine" %}' class="button success small" />
       </form>

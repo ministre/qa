@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from device.models import DeviceType
-from testplan.models import Testplan, Category, Test
+from testplan.models import Testplan, Category, Test, Chapter
 from testplan.views import testplan_update_timestamp
 from redminelib import Redmine
 from qa import settings
@@ -211,3 +211,47 @@ def tests_create_from_wiki(testplan_id, redmine_url, tag):
                                            redmine_url=test_redmine_url)
             test_details_update_from_wiki(new_test.id, test_redmine_url, tag)
     return len(items)
+
+
+@login_required
+def import_chapter_details(request):
+    if request.method == "POST":
+        chapter_id = request.POST['chapter_id']
+        testplan_id = request.POST['testplan_id']
+        redmine_url = request.POST['redmine_url']
+        tag = request.POST['tag']
+        try:
+            chapter_details_update_from_wiki(chapter_id, redmine_url, tag)
+            testplan_update_timestamp(testplan_id, request.user)
+            return HttpResponseRedirect('/testplan/' + testplan_id + '/chapter/' + chapter_id + '/')
+        except ValueError as e:
+            return render(request, 'redmine/error.html', {'message': e})
+
+
+# Update chapter details from Redmine wiki page
+def chapter_details_update_from_wiki(chapter_id, redmine_url, tag):
+    if not redmine_url:
+        raise ValueError('Chapter #'+str(chapter_id)+': Import error - REDMINE_URL not found')
+    try:
+        chapter = Chapter.objects.get(id=chapter_id)
+    except ObjectDoesNotExist:
+        raise ValueError('Chapter #'+str(chapter_id)+': Import error - Chapter object not found')
+    redmine = redmine_connect()
+    try:
+        project_id = redmine_url.split('/')[2]
+        wiki_id = redmine_url.split('/')[4]
+    except IndexError:
+        raise ValueError('Chapter #' + str(chapter_id) +
+                         ': Import error - Can not parse project_id or wiki_id from REDMINE_URL')
+    try:
+        wiki_page = redmine.wiki_page.get(wiki_id, project_id=project_id)
+    except ResourceNotFoundError:
+        raise ValueError('Chapter #'+str(chapter_id)+': Import error - Wiki page ' +
+                         settings.REDMINE_URL + redmine_url + ' not found')
+    wiki_blocks = wiki_page.text.split('\r\n')
+    chapter.name = wiki_blocks[0][4:]
+
+    chapter.text = collapse_filter(wiki_page.text, tag)
+
+    chapter.save()
+    return chapter.id
