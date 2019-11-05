@@ -196,6 +196,13 @@ def test_details(request, testplan, pk):
                                                           'test_expected': test_expected})
 
 
+@login_required
+def chapter_details(request, testplan, pk):
+    chapter = get_object_or_404(Chapter, id=pk)
+    testplan = get_object_or_404(Testplan, id=testplan)
+    return render(request, 'testplan/chapter_details.html', {'chapter': chapter, 'testplan': testplan})
+
+
 # Return amount of tests in testplan
 def count_of_tests(testplan_id):
     count = 0
@@ -223,7 +230,8 @@ class ChapterCreate(CreateView):
     template_name = 'testplan/create.html'
 
     def get_initial(self):
-        return {'testplan': self.kwargs.get('testplan')}
+        return {'testplan': self.kwargs.get('testplan'),
+                'created_by': self.request.user, 'updated_by': self.request.user}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -260,6 +268,9 @@ class ChapterUpdate(UpdateView):
         context = super().get_context_data(**kwargs)
         context['testplan_id'] = self.kwargs.get('testplan')
         return context
+
+    def get_initial(self):
+        return {'updated_by': self.request.user, 'updated_at': datetime.now}
 
     def get_success_url(self):
         testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)

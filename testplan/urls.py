@@ -21,6 +21,7 @@ urlpatterns = [
     path('<int:testplan>/chapter/create/', views.ChapterCreate.as_view(), name='chapter_create'),
     path('<int:testplan>/chapter/delete/<int:pk>/', views.ChapterDelete.as_view(), name='chapter_delete'),
     path('<int:testplan>/chapter/update/<int:pk>/', views.ChapterUpdate.as_view(), name='chapter_update'),
+    path('<int:testplan>/chapter/<int:pk>/', views.chapter_details, name='chapter_details'),
     path('<int:testplan>/clear_chapters/', views.clear_chapters, name='clear_chapters'),
 
     path('checklist/', views.ChecklistListView.as_view(), name='checklists'),

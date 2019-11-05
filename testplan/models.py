@@ -34,6 +34,12 @@ class Chapter(models.Model):
     testplan = models.ForeignKey(Testplan, on_delete=models.CASCADE)
     name = models.CharField(max_length=1000)
     text = models.TextField(max_length=100000)
+    created_by = models.ForeignKey(User, related_name='chapter_created_by_user', on_delete=models.CASCADE,
+                                   blank=True, null=True)
+    created_at = models.DateTimeField(default=datetime.now, blank=True)
+    updated_by = models.ForeignKey(User, related_name='chapter_updated_by_user', on_delete=models.CASCADE,
+                                   blank=True, null=True)
+    updated_at = models.DateTimeField(default=datetime.now, blank=True)
     redmine_url = models.CharField(max_length=1000, blank=True, null=True)
 
     def __str__(self):

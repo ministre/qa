@@ -37,7 +37,8 @@ class ChapterForm(ModelForm):
             'text': _('Text'),
         }
         fields = '__all__'
-        widgets = {'testplan': HiddenInput()}
+        widgets = {'testplan': HiddenInput(), 'created_by': HiddenInput(), 'created_at': HiddenInput(),
+                   'updated_by': HiddenInput(), 'updated_at': HiddenInput()}
 
 
 class TestForm(ModelForm):

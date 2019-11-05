@@ -1,0 +1,70 @@
+{% extends "device/wrapper.html" %}
+
+{% load i18n static %}
+
+{% block content %}
+
+<p><a href="/testplan/">{% trans "Testplan" %}</a> &raquo;
+    <a href="/testplan/{{ testplan.id}}/">{{ testplan.name }}</a>  &raquo;
+    {{ chapter.name }}
+</p>
+
+<ul class="tabs" data-tabs id="example-tabs">
+    <li class="tabs-title"><a href="#panel1" aria-selected="true">{% trans "General" %}</a></li>
+    <li class="tabs-title is-active"><a data-tabs-target="panel2" href="#panel2">{% trans "Description" %}</a></li>
+    <li class="tabs-title"><a data-tabs-target="panel3" href="#panel3">{% trans "Redmine" %}</a></li>
+</ul>
+
+<div class="tabs-content" data-tabs-content="example-tabs">
+    <div class="tabs-panel" id="panel1">
+        <table class="hover unstriped">
+            <tbody>
+            <tr>
+                <td>{% trans "Created by" %}:</td>
+                <td>{{ chapter.created_by }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Created at" %}:</td>
+                <td>{{ chapter.created_at }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Updated by" %}:</td>
+                <td>{{ chapter.updated_by }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Updated at" %}:</td>
+                <td>{{ chapter.updated_at }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+  <div class="tabs-panel is-active" id="panel2">
+      {{ chapter.text }}
+  </div>
+
+
+  <div class="tabs-panel" id="panel3">
+      <table class="hover unstriped">
+          <tbody>
+          <tr>
+              <td>{% trans "Redmine URL" %}:</td>
+              <td>{{ chapter.redmine_url }}</td>
+          </tr>
+          </tbody>
+      </table>
+
+      <form method="post" action="/redmine/import_chapter_details/">
+          {% csrf_token %}
+          <input type="hidden" name="test_id" value="{{ chapter.id }}">
+          <input type="hidden" name="testplan_id" value="{{ testplan.id }}">
+          <input type="hidden" name="redmine_url" value="{{ test.redmine_url }}">
+          <input type="hidden" name="tag" value="{{ testplan.device_type.tag }}">
+          <input type="submit" value='{% trans "Update from Redmine" %}' class="button success small" />
+      </form>
+
+  </div>
+</div>
+
+{% endblock %}
