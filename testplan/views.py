@@ -277,6 +277,17 @@ def clear_tests(request, testplan):
         return render(request, 'testplan/clear.html', {'message': message, 'testplan_id': testplan})
 
 
+@login_required
+def clear_chapters(request, testplan):
+    if request.method == 'POST':
+        Chapter.objects.filter(testplan=Testplan.objects.get(id=testplan)).delete()
+        testplan_update_timestamp(testplan, request.user)
+        return HttpResponseRedirect('/testplan/' + str(testplan) + '/')
+    else:
+        message = 'Delete all chapters in testplan #' + str(testplan) + '?'
+        return render(request, 'testplan/clear.html', {'message': message, 'testplan_id': testplan})
+
+
 @method_decorator(login_required, name='dispatch')
 class ChecklistListView(ListView):
     context_object_name = 'checklists'

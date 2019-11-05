@@ -58,7 +58,8 @@
 
 
   <div class="tabs-panel" id="panel2">
-      <p><a href="../{{ testplan.id }}/chapter/create/" class="button small">{% trans "Add Chapter" %}</a></p>
+      <p><a href="../{{ testplan.id }}/chapter/create/" class="button small">{% trans "Add Chapter" %}</a>
+      <a href="clear_chapters/" class="button small alert">{% trans "Clear Chapters" %}</a></p>
       <ul style="list-style: none">
           {% for chapter in chapters %}
           <li>
