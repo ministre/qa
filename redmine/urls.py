@@ -6,4 +6,5 @@ urlpatterns = [
     path('import_test_details/', views.import_test_details, name='import_test_details'),
     path('import_all_tests/', views.import_all_tests, name='import_all_tests'),
     path('import_chapter_details/', views.import_chapter_details, name='import_chapter_details'),
+    path('import_all_chapters/', views.import_all_chapters, name='import_all_chapters'),
 ]

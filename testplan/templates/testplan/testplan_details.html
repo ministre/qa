@@ -58,8 +58,16 @@
 
 
   <div class="tabs-panel" id="panel2">
-      <p><a href="../{{ testplan.id }}/chapter/create/" class="button small">{% trans "Add Chapter" %}</a>
-      <a href="clear_chapters/" class="button small alert">{% trans "Clear Chapters" %}</a></p>
+      <form method="post" action="/redmine/import_all_chapters/">
+          <a href="../{{ testplan.id }}/chapter/create/" class="button small">{% trans "Add Chapter" %}</a>
+          {% csrf_token %}
+          <input type="hidden" name="testplan_id" value="{{ testplan.id }}">
+          <input type="hidden" name="redmine_url" value="{{ testplan.redmine_url }}">
+          <input type="hidden" name="tag" value="{{ testplan.device_type.tag }}">
+          <input type="submit" value='{% trans "Add chapters from Redmine" %}' class="button success small" />
+          <a href="clear_chapters/" class="button small alert">{% trans "Clear Chapters" %}</a>
+      </form>
+
       <ul style="list-style: none">
           {% for chapter in chapters %}
           <li>

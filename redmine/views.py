@@ -214,6 +214,47 @@ def tests_create_from_wiki(testplan_id, redmine_url, tag):
 
 
 @login_required
+def import_all_chapters(request):
+    if request.method == "POST":
+        testplan_id = request.POST['testplan_id']
+        redmine_url = request.POST['redmine_url']
+        tag = request.POST['tag']
+        try:
+            chapters_create_from_wiki(testplan_id, redmine_url, tag, request.user)
+            testplan_update_timestamp(testplan_id, request.user)
+            return HttpResponseRedirect('/testplan/' + str(testplan_id) + '/')
+        except ValueError as e:
+            return render(request, 'redmine/error.html', {'message': e})
+    else:
+        return HttpResponseRedirect('/testplan/')
+
+
+# Import all chapters from Redmine wiki page
+def chapters_create_from_wiki(testplan_id, redmine_url, tag, user):
+    redmine = redmine_connect()
+    if not redmine_url:
+        raise ValueError("[chapters_create_from_wiki]: value <redmine_url> not set in testplan #"
+                         + str(testplan_id))
+    try:
+        project_id = redmine_url.split('/')[2]
+    except IndexError:
+        raise ValueError("[chapters_create_from_wiki]: Can't parse <project_id> from <redmine_url> in testplan #"
+                         + str(testplan_id))
+    try:
+        wiki_page = redmine.wiki_page.get('Sections', project_id=project_id)
+    except ResourceNotFoundError:
+        raise ValueError("[chapters_create_from_wiki]: Wiki page " + settings.REDMINE_URL + redmine_url + " not found")
+
+    items = item_filter(wiki_page.text, tag)
+    for item in items:
+        chapter_redmine_url = redmine_url + '/' + item.keyword
+        new_chapter = Chapter.objects.create(testplan=Testplan.objects.get(id=testplan_id), name=item.name,
+                                             redmine_url=chapter_redmine_url, created_by=user, updated_by=user)
+        chapter_details_update_from_wiki(new_chapter.id, chapter_redmine_url, tag)
+    return len(items)
+
+
+@login_required
 def import_chapter_details(request):
     if request.method == "POST":
         chapter_id = request.POST['chapter_id']
@@ -250,8 +291,8 @@ def chapter_details_update_from_wiki(chapter_id, redmine_url, tag):
                          settings.REDMINE_URL + redmine_url + ' not found')
     wiki_blocks = wiki_page.text.split('\r\n')
     chapter.name = wiki_blocks[0][4:]
-
-    chapter.text = collapse_filter(wiki_page.text, tag)
+    desc = '\r\n'.join(wiki_blocks[1:])
+    chapter.text = collapse_filter(desc, tag)
 
     chapter.save()
     return chapter.id
