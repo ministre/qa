@@ -52,4 +52,5 @@ class TestForm(ModelForm):
             'redmine_url': _('Redmine URL'),
         }
         fields = '__all__'
-        widgets = {'category': HiddenInput()}
+        widgets = {'category': HiddenInput(), 'created_by': HiddenInput(), 'created_at': HiddenInput(),
+                   'updated_by': HiddenInput(), 'updated_at': HiddenInput()}

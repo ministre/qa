@@ -30,7 +30,7 @@ def import_testplan(request):
             return render(request, 'redmine/error.html', {'message': e})
         # create tests
         redmine_url = '/projects/' + project + '/wiki'
-        tests_create_from_wiki(testplan_id, redmine_url, tag)
+        tests_create_from_wiki(testplan_id, redmine_url, tag, request.user)
         # create chapters
         chapters_create_from_wiki(testplan_id, redmine_url, tag, request.user)
         return HttpResponseRedirect('/testplan/')
@@ -69,10 +69,10 @@ def parse_testplan_head(ctx):
 
 
 class Item:
-        def __init__(self, category, keyword, name):
-            self.category = category
-            self.keyword = keyword
-            self.name = name
+    def __init__(self, category, keyword, name):
+        self.category = category
+        self.keyword = keyword
+        self.name = name
 
 
 # Parse tests from Redmine wiki page
@@ -122,7 +122,7 @@ def import_test_details(request):
         redmine_url = request.POST['redmine_url']
         tag = request.POST['tag']
         try:
-            test_details_update_from_wiki(test_id, redmine_url, tag)
+            test_details_update_from_wiki(test_id, redmine_url, tag, request.user)
             testplan_update_timestamp(testplan_id, request.user)
             return HttpResponseRedirect('/testplan/' + testplan_id + '/test/' + test_id + '/')
         except ValueError as e:
@@ -130,7 +130,7 @@ def import_test_details(request):
 
 
 # Update test details from Redmine wiki page
-def test_details_update_from_wiki(test_id, redmine_url, tag):
+def test_details_update_from_wiki(test_id, redmine_url, tag, user):
     if not redmine_url:
         raise ValueError('Test #'+str(test_id)+': Import error - REDMINE_URL not found')
     try:
@@ -157,6 +157,8 @@ def test_details_update_from_wiki(test_id, redmine_url, tag):
     test.procedure = collapse_filter(wiki_blocks[2], tag).replace("Процедура\r\n\r\n", "")
     test.expected = collapse_filter(wiki_blocks[3], tag).replace("Ожидаемый результат\r\n\r\n", "")
     test.redmine_url = redmine_url
+    test.updated_by = user
+    test.updated_at = datetime.now()
     test.save()
     return test.id
 
@@ -168,7 +170,7 @@ def import_all_tests(request):
         redmine_url = request.POST['redmine_url']
         tag = request.POST['tag']
         try:
-            tests_create_from_wiki(testplan_id, redmine_url, tag)
+            tests_create_from_wiki(testplan_id, redmine_url, tag, request.user)
             testplan_update_timestamp(testplan_id, request.user)
             return HttpResponseRedirect('/testplan/' + str(testplan_id) + '/')
         except ValueError as e:
@@ -178,7 +180,7 @@ def import_all_tests(request):
 
 
 # Import all tests from Redmine wiki page
-def tests_create_from_wiki(testplan_id, redmine_url, tag):
+def tests_create_from_wiki(testplan_id, redmine_url, tag, user):
     redmine = redmine_connect()
     if not redmine_url:
         raise ValueError("[tests_create_from_wiki]: value <redmine_url> not set in testplan #"
@@ -200,16 +202,16 @@ def tests_create_from_wiki(testplan_id, redmine_url, tag):
                                             Q(name=item.category)).id
             test_redmine_url = redmine_url + '/' + item.keyword
             new_test = Test.objects.create(category=Category.objects.get(id=category), name=item.name,
-                                           redmine_url=test_redmine_url)
-            test_details_update_from_wiki(new_test.id, test_redmine_url, tag)
+                                           redmine_url=test_redmine_url, created_by=user, updated_by=user)
+            test_details_update_from_wiki(new_test.id, test_redmine_url, tag, user)
 
         except ObjectDoesNotExist:
             # create category if not found
             new_category = Category.objects.create(name=item.category, testplan=Testplan.objects.get(id=testplan_id))
             test_redmine_url = redmine_url + '/' + item.keyword
             new_test = Test.objects.create(category=Category.objects.get(id=new_category.id), name=item.name,
-                                           redmine_url=test_redmine_url)
-            test_details_update_from_wiki(new_test.id, test_redmine_url, tag)
+                                           redmine_url=test_redmine_url, created_by=user, updated_by=user)
+            test_details_update_from_wiki(new_test.id, test_redmine_url, tag, user)
     return len(items)
 
 
@@ -250,7 +252,7 @@ def chapters_create_from_wiki(testplan_id, redmine_url, tag, user):
         chapter_redmine_url = redmine_url + '/' + item.keyword
         new_chapter = Chapter.objects.create(testplan=Testplan.objects.get(id=testplan_id), name=item.name,
                                              redmine_url=chapter_redmine_url, created_by=user, updated_by=user)
-        chapter_details_update_from_wiki(new_chapter.id, chapter_redmine_url, tag)
+        chapter_details_update_from_wiki(new_chapter.id, chapter_redmine_url, tag, user)
     return len(items)
 
 

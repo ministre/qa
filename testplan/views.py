@@ -142,7 +142,8 @@ class TestCreate(CreateView):
     template_name = 'testplan/create.html'
 
     def get_initial(self):
-        return {'category': self.kwargs.get('pk')}
+        return {'category': self.kwargs.get('pk'),
+                'created_by': self.request.user, 'updated_by': self.request.user}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -179,6 +180,9 @@ class TestUpdate(UpdateView):
         context = super().get_context_data(**kwargs)
         context['testplan_id'] = self.kwargs.get('testplan')
         return context
+
+    def get_initial(self):
+        return {'updated_by': self.request.user, 'updated_at': datetime.now}
 
     def get_success_url(self):
         testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)

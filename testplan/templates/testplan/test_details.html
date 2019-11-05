@@ -12,31 +12,54 @@
 
 
     <ul class="tabs" data-tabs id="example-tabs">
-        <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">{% trans "Name" %}</a></li>
-        <li class="tabs-title"><a data-tabs-target="panel2" href="#panel2">{% trans "Purpose" %}</a></li>
-        <li class="tabs-title"><a data-tabs-target="panel3" href="#panel3">{% trans "Procedure" %}</a></li>
-        <li class="tabs-title"><a data-tabs-target="panel4" href="#panel4">{% trans "Expected result" %}</a></li>
-        <li class="tabs-title"><a data-tabs-target="panel5" href="#panel5">{% trans "Redmine" %}</a></li>
+        <li class="tabs-title"><a data-tabs-target="panel1" href="#panel1">{% trans "General" %}</a></li>
+        <li class="tabs-title is-active"><a href="#panel2" aria-selected="true">{% trans "Name" %}</a></li>
+        <li class="tabs-title"><a data-tabs-target="panel3" href="#panel3">{% trans "Purpose" %}</a></li>
+        <li class="tabs-title"><a data-tabs-target="panel4" href="#panel4">{% trans "Procedure" %}</a></li>
+        <li class="tabs-title"><a data-tabs-target="panel5" href="#panel5">{% trans "Expected result" %}</a></li>
+        <li class="tabs-title"><a data-tabs-target="panel6" href="#panel6">{% trans "Redmine" %}</a></li>
     </ul>
 
 <div class="tabs-content" data-tabs-content="example-tabs">
-  <div class="tabs-panel is-active" id="panel1">
+  <div class="tabs-panel" id="panel1">
+        <table class="hover unstriped">
+            <tbody>
+            <tr>
+                <td>{% trans "Created by" %}:</td>
+                <td>{{ test.created_by }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Created at" %}:</td>
+                <td>{{ test.created_at }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Updated by" %}:</td>
+                <td>{{ test.updated_by }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Updated at" %}:</td>
+                <td>{{ test.updated_at }}</td>
+            </tr>
+            </tbody>
+        </table>
+  </div>
+  <div class="tabs-panel is-active" id="panel2">
     <p>{{ test.name }}</p>
   </div>
-  <div class="tabs-panel" id="panel2">
+  <div class="tabs-panel" id="panel3">
     <p>
         {% autoescape on %}
           {{ test.purpose | linebreaksbr }}
         {% endautoescape %}
     </p>
   </div>
-  <div class="tabs-panel" id="panel3">
+  <div class="tabs-panel" id="panel4">
     <p>{{ test_procedure|safe }}</p>
   </div>
-  <div class="tabs-panel" id="panel4">
+  <div class="tabs-panel" id="panel5">
     <p>{{ test_expected|safe }}</p>
   </div>
-  <div class="tabs-panel" id="panel5">
+  <div class="tabs-panel" id="panel6">
       <table class="hover unstriped">
           <tbody>
           <tr>
