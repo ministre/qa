@@ -73,12 +73,13 @@
 
   <div class="tabs-panel is-active" id="panel3">
       <form method="post" action="/redmine/import_all_tests/">
-          <a href="../{{ testplan.id }}/category/create/" class="button small">{% trans "Add Category" %}</a>
+          <a href="category/create/" class="button small">{% trans "Add Category" %}</a>
           {% csrf_token %}
           <input type="hidden" name="testplan_id" value="{{ testplan.id }}">
           <input type="hidden" name="redmine_url" value="{{ testplan.redmine_url }}">
           <input type="hidden" name="tag" value="{{ testplan.device_type.tag }}">
           <input type="submit" value='{% trans "Add tests from Redmine" %}' class="button success small" />
+          <a href="clear_tests/" class="button small alert">{% trans "Clear Tests" %}</a>
         </form>
       <br>
       {% for category in categories %}

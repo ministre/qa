@@ -7,6 +7,7 @@ from django.views.generic.edit import CreateView, UpdateView
 from testplan.models import Checklist, Testplan, Category, Chapter, Test
 from .forms import TestplanForm, CategoryForm, ChapterForm, TestForm
 from django.shortcuts import get_object_or_404
+from django.http import HttpResponseRedirect
 import textile
 from datetime import datetime
 
@@ -263,6 +264,17 @@ class ChapterUpdate(UpdateView):
     def get_success_url(self):
         testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
         return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan')})
+
+
+@login_required
+def clear_tests(request, testplan):
+    if request.method == 'POST':
+        Category.objects.filter(testplan=Testplan.objects.get(id=testplan)).delete()
+        testplan_update_timestamp(testplan, request.user)
+        return HttpResponseRedirect('/testplan/' + str(testplan) + '/')
+    else:
+        message = 'Delete all tests in testplan #' + str(testplan) + '?'
+        return render(request, 'testplan/clear.html', {'message': message, 'testplan_id': testplan})
 
 
 @method_decorator(login_required, name='dispatch')
