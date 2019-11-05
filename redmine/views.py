@@ -31,9 +31,9 @@ def import_testplan(request):
         # create tests
         redmine_url = '/projects/' + project + '/wiki'
         tests_create_from_wiki(testplan_id, redmine_url, tag)
-
+        # create chapters
+        chapters_create_from_wiki(testplan_id, redmine_url, tag, request.user)
         return HttpResponseRedirect('/testplan/')
-
     else:
         redmine = redmine_connect()
         projects = []
@@ -262,7 +262,7 @@ def import_chapter_details(request):
         redmine_url = request.POST['redmine_url']
         tag = request.POST['tag']
         try:
-            chapter_details_update_from_wiki(chapter_id, redmine_url, tag)
+            chapter_details_update_from_wiki(chapter_id, redmine_url, tag, request.user)
             testplan_update_timestamp(testplan_id, request.user)
             return HttpResponseRedirect('/testplan/' + testplan_id + '/chapter/' + chapter_id + '/')
         except ValueError as e:
@@ -270,7 +270,7 @@ def import_chapter_details(request):
 
 
 # Update chapter details from Redmine wiki page
-def chapter_details_update_from_wiki(chapter_id, redmine_url, tag):
+def chapter_details_update_from_wiki(chapter_id, redmine_url, tag, user):
     if not redmine_url:
         raise ValueError('Chapter #'+str(chapter_id)+': Import error - REDMINE_URL not found')
     try:
@@ -293,6 +293,7 @@ def chapter_details_update_from_wiki(chapter_id, redmine_url, tag):
     chapter.name = wiki_blocks[0][4:]
     desc = '\r\n'.join(wiki_blocks[1:])
     chapter.text = collapse_filter(desc, tag)
-
+    chapter.updated_by = user
+    chapter.updated_at = datetime.now()
     chapter.save()
     return chapter.id
