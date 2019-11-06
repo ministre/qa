@@ -23,4 +23,8 @@ urlpatterns = [
     path('<int:testplan>/chapter/update/<int:pk>/', views.ChapterUpdate.as_view(), name='chapter_update'),
     path('<int:testplan>/chapter/<int:pk>/', views.chapter_details, name='chapter_details'),
     path('<int:testplan>/clear_chapters/', views.clear_chapters, name='clear_chapters'),
+
+    path('<int:testplan>/config/create/<int:pk>/', views.TestConfigCreate.as_view(), name='test_config_create'),
+    path('<int:testplan>/test/<int:test>/config/delete/<int:pk>/', views.TestConfigDelete.as_view(),
+         name='test_config_delete'),
 ]

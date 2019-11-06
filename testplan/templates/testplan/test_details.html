@@ -66,12 +66,13 @@
   </div>
 
   <div class="tabs-panel" id="panel4">
+      <a href="../../config/create/{{ test.id }}/" class="button small">Add Configuration</a>
       {% for config in configs %}
       <p>{{ config.name }}</p>
-
-      <pre><code data-language="ruby">
+      <pre><code data-language="{{ config.lang }}">
 {{ config.config }}
       </code></pre>
+      <a href="config/delete/{{ config.id }}/" class="button small alert">Delete</a>
       {% endfor %}
   </div>
 

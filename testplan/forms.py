@@ -1,6 +1,7 @@
 from django.forms import ModelForm, HiddenInput
-from testplan.models import Testplan, Category, Chapter, Test
+from testplan.models import Testplan, Category, Chapter, Test, TestConfig
 from django.utils.translation import gettext_lazy as _
+from django import forms
 
 
 class TestplanForm(ModelForm):
@@ -54,3 +55,38 @@ class TestForm(ModelForm):
         fields = '__all__'
         widgets = {'category': HiddenInput(), 'created_by': HiddenInput(), 'created_at': HiddenInput(),
                    'updated_by': HiddenInput(), 'updated_at': HiddenInput()}
+
+
+class TestConfigForm(ModelForm):
+    class Meta:
+        model = TestConfig
+        labels = {
+            'name': _('Name'),
+            'lang': _('Style'),
+            'config': _('Configuration'),
+        }
+        fields = '__all__'
+        LANG = (
+            ('json', 'JSON'),
+            ('c', 'C'),
+            ('coffee', 'Coffeescript'),
+            ('csharp', 'C#'),
+            ('css', 'CSS'),
+            ('d', 'D'),
+            ('go', 'Go'),
+            ('haskell', 'Haskell'),
+            ('html', 'HTML'),
+            ('javascript', 'JavaScript'),
+            ('lua', 'Lua'),
+            ('php', 'PHP'),
+            ('python', 'Python'),
+            ('r', 'R'),
+            ('ruby', 'Ruby'),
+            ('scheme', 'Scheme'),
+            ('shell', 'Shell'),
+        )
+
+        widgets = {
+            'lang': forms.Select(choices=LANG, attrs={'class': 'form-control'}),
+            'test': HiddenInput()
+        }

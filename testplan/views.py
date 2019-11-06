@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
 from testplan.models import Testplan, Category, Chapter, Test, TestConfig
-from .forms import TestplanForm, CategoryForm, ChapterForm, TestForm
+from .forms import TestplanForm, CategoryForm, ChapterForm, TestForm, TestConfigForm
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 import textile
@@ -195,7 +195,7 @@ def test_details(request, testplan, pk):
     testplan = get_object_or_404(Testplan, id=testplan)
     test_procedure = textile.textile(test.procedure)
     test_expected = textile.textile(test.expected)
-    configs = TestConfig.objects.filter(test=test)
+    configs = TestConfig.objects.filter(test=test).order_by('id')
     return render(request, 'testplan/test_details.html', {'testplan': testplan, 'test': test,
                                                           'test_procedure': test_procedure,
                                                           'test_expected': test_expected,
@@ -305,3 +305,41 @@ def clear_chapters(request, testplan):
     else:
         message = 'Delete all chapters in testplan #' + str(testplan) + '?'
         return render(request, 'testplan/clear.html', {'message': message, 'testplan_id': testplan})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestConfigCreate(CreateView):
+    model = TestConfig
+    form_class = TestConfigForm
+    template_name = 'testplan/test_create.html'
+
+    def get_initial(self):
+        return {'test': self.kwargs.get('pk')}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['testplan_id'] = self.kwargs.get('testplan')
+        context['test_id'] = self.kwargs.get('pk')
+        return context
+
+    def get_success_url(self):
+        testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
+        return reverse('test_details', kwargs={'testplan': self.kwargs.get('testplan'),
+                                               'pk': self.kwargs.get('pk')})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestConfigDelete(DeleteView):
+    model = TestConfig
+    template_name = 'testplan/test_delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['testplan_id'] = self.kwargs.get('testplan')
+        context['test_id'] = self.kwargs.get('test')
+        return context
+
+    def get_success_url(self):
+        testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
+        return reverse('test_details', kwargs={'testplan': self.kwargs.get('testplan'),
+                                               'pk': self.kwargs.get('test')})
