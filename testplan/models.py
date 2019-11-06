@@ -66,3 +66,10 @@ class Test(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class TestConfig(models.Model):
+    name = models.CharField(max_length=1000, blank=True, null=True)
+    lang = models.CharField(max_length=40, blank=True, null=True)
+    test = models.ForeignKey(Test, related_name='test_config', on_delete=models.CASCADE, blank=True, null=True)
+    config = models.TextField(null=True, blank=True)

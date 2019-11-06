@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
-from testplan.models import Testplan, Category, Chapter, Test
+from testplan.models import Testplan, Category, Chapter, Test, TestConfig
 from .forms import TestplanForm, CategoryForm, ChapterForm, TestForm
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
@@ -195,9 +195,11 @@ def test_details(request, testplan, pk):
     testplan = get_object_or_404(Testplan, id=testplan)
     test_procedure = textile.textile(test.procedure)
     test_expected = textile.textile(test.expected)
+    configs = TestConfig.objects.filter(test=test)
     return render(request, 'testplan/test_details.html', {'testplan': testplan, 'test': test,
                                                           'test_procedure': test_procedure,
-                                                          'test_expected': test_expected})
+                                                          'test_expected': test_expected,
+                                                          'configs': configs})
 
 
 @login_required

@@ -63,7 +63,21 @@
     <p>{{ test_expected|safe }}</p>
   </div>
   <div class="tabs-panel" id="panel4">
-      <p></p>
+
+{% for config in configs %}
+
+      <p>{{ config.name }}</p>
+
+<pre><code class="language-js">
+{{ config.config }}
+</code></pre>
+
+{% endfor %}
+
+  <script src="{% static 'rainbow/dist/rainbow.js' %}"></script>
+  <script src="{% static 'rainbow/src/language/generic.js' %}"></script>
+  <script src="{% static 'rainbow/src/language/javascript.js' %}"></script>
+
   </div>
   <div class="tabs-panel" id="panel5">
       <p></p>
