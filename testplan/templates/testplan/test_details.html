@@ -9,24 +9,33 @@
     {{ test.category }}
 </p>
 
-
-
-    <ul class="tabs" data-tabs id="example-tabs">
-        <li class="tabs-title"><a data-tabs-target="panel1" href="#panel1">{% trans "General" %}</a></li>
-        <li class="tabs-title is-active"><a href="#panel2" aria-selected="true">{% trans "Name" %}</a></li>
-        <li class="tabs-title"><a data-tabs-target="panel3" href="#panel3">{% trans "Purpose" %}</a></li>
-        <li class="tabs-title"><a data-tabs-target="panel4" href="#panel4">{% trans "Procedure" %}</a></li>
-        <li class="tabs-title"><a data-tabs-target="panel5" href="#panel5">{% trans "Expected result" %}</a></li>
-        <li class="tabs-title"><a data-tabs-target="panel6" href="#panel6">{% trans "Redmine" %}</a></li>
-    </ul>
+<ul class="tabs" data-tabs id="example-tabs">
+    <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">{% trans "Info" %}</a></li>
+    <li class="tabs-title"><a data-tabs-target="panel2" href="#panel2">{% trans "Procedure" %}</a></li>
+    <li class="tabs-title"><a data-tabs-target="panel3" href="#panel3">{% trans "Expected result" %}</a></li>
+    <li class="tabs-title"><a data-tabs-target="panel4" href="#panel4">{% trans "Configuration" %}</a></li>
+    <li class="tabs-title"><a data-tabs-target="panel5" href="#panel5">{% trans "Images" %}</a></li>
+    <li class="tabs-title"><a data-tabs-target="panel6" href="#panel6">{% trans "Files" %}</a></li>
+    <li class="tabs-title"><a data-tabs-target="panel7" href="#panel7">{% trans "Checklists" %}</a></li>
+    <li class="tabs-title"><a data-tabs-target="panel8" href="#panel8">{% trans "Forms" %}</a></li>
+    <li class="tabs-title"><a data-tabs-target="panel9" href="#panel9">{% trans "Redmine" %}</a></li>
+</ul>
 
 <div class="tabs-content" data-tabs-content="example-tabs">
-  <div class="tabs-panel" id="panel1">
+  <div class="tabs-panel is-active" id="panel1">
         <table class="hover unstriped">
             <tbody>
             <tr>
+                <td>{% trans "Category" %}:</td>
+                <td>{{ test.category.name }}</td>
+            </tr>
+            <tr>
                 <td>{% trans "Test name" %}:</td>
                 <td>{{ test.name }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Purpose" %}:</td>
+                <td>{{ test.purpose }}</td>
             </tr>
             <tr>
                 <td>{% trans "Created by" %}:</td>
@@ -47,23 +56,28 @@
             </tbody>
         </table>
   </div>
-  <div class="tabs-panel is-active" id="panel2">
-    <p>{{ test.name }}</p>
-  </div>
-  <div class="tabs-panel" id="panel3">
-    <p>
-        {% autoescape on %}
-          {{ test.purpose | linebreaksbr }}
-        {% endautoescape %}
-    </p>
-  </div>
-  <div class="tabs-panel" id="panel4">
+  <div class="tabs-panel" id="panel2">
     <p>{{ test_procedure|safe }}</p>
   </div>
-  <div class="tabs-panel" id="panel5">
+  <div class="tabs-panel" id="panel3">
     <p>{{ test_expected|safe }}</p>
   </div>
+  <div class="tabs-panel" id="panel4">
+      <p></p>
+  </div>
+  <div class="tabs-panel" id="panel5">
+      <p></p>
+  </div>
   <div class="tabs-panel" id="panel6">
+      <p></p>
+  </div>
+  <div class="tabs-panel" id="panel7">
+      <p></p>
+  </div>
+  <div class="tabs-panel" id="panel8">
+      <p></p>
+  </div>
+  <div class="tabs-panel" id="panel9">
       <table class="hover unstriped">
           <tbody>
           <tr>
