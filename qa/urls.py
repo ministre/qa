@@ -13,6 +13,7 @@ urlpatterns = [
     path('device/', include('device.urls')),
     path('testplan/', include('testplan.urls')),
     path('redmine/', include('redmine.urls')),
+    path('paper/', include('paper.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 '''

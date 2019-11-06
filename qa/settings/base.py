@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'device',
     'testplan',
     'redmine',
+    'paper',
     'compressor',
 ]
 
