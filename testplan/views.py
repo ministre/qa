@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
-from testplan.models import Checklist, Testplan, Category, Chapter, Test
+from testplan.models import Testplan, Category, Chapter, Test
 from .forms import TestplanForm, CategoryForm, ChapterForm, TestForm
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
@@ -303,10 +303,3 @@ def clear_chapters(request, testplan):
     else:
         message = 'Delete all chapters in testplan #' + str(testplan) + '?'
         return render(request, 'testplan/clear.html', {'message': message, 'testplan_id': testplan})
-
-
-@method_decorator(login_required, name='dispatch')
-class ChecklistListView(ListView):
-    context_object_name = 'checklists'
-    queryset = Checklist.objects.all()
-    template_name = 'testplan/checklists.html'

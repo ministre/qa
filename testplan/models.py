@@ -4,16 +4,6 @@ from django.contrib.auth.models import User
 from datetime import datetime
 
 
-class Checklist(models.Model):
-    name = models.CharField(max_length=1000)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name_plural = "Checklists"
-
-
 class Testplan(models.Model):
     name = models.CharField(max_length=1000)
     version = models.CharField(max_length=300)
