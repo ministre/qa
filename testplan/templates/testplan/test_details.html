@@ -56,41 +56,41 @@
             </tbody>
         </table>
   </div>
+
   <div class="tabs-panel" id="panel2">
     <p>{{ test_procedure|safe }}</p>
   </div>
+
   <div class="tabs-panel" id="panel3">
     <p>{{ test_expected|safe }}</p>
   </div>
+
   <div class="tabs-panel" id="panel4">
-
-{% for config in configs %}
-
+      {% for config in configs %}
       <p>{{ config.name }}</p>
 
-<pre><code class="language-js">
+      <pre><code data-language="ruby">
 {{ config.config }}
-</code></pre>
-
-{% endfor %}
-
-  <script src="{% static 'rainbow/dist/rainbow.js' %}"></script>
-  <script src="{% static 'rainbow/src/language/generic.js' %}"></script>
-  <script src="{% static 'rainbow/src/language/javascript.js' %}"></script>
-
+      </code></pre>
+      {% endfor %}
   </div>
+
   <div class="tabs-panel" id="panel5">
       <p></p>
   </div>
+
   <div class="tabs-panel" id="panel6">
       <p></p>
   </div>
+
   <div class="tabs-panel" id="panel7">
       <p></p>
   </div>
+
   <div class="tabs-panel" id="panel8">
       <p></p>
   </div>
+
   <div class="tabs-panel" id="panel9">
       <table class="hover unstriped">
           <tbody>
@@ -112,5 +112,7 @@
 
   </div>
 </div>
+
+<script src="{% static 'rainbow/rainbow-custom.min.js' %}"></script>
 
 {% endblock %}

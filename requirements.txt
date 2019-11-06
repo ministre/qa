@@ -1,8 +1,8 @@
-Django==2.2.6
+Django==2.2.7
 psycopg2==2.8.4
 Pillow==6.2.1
 python-redmine==2.2.1
 textile==3.0.4
 django_compressor==2.3
 django-libsass==0.7
-python-docx==0.8.6
+python-docx==0.8.10
