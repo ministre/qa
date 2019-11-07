@@ -343,3 +343,24 @@ class TestConfigDelete(DeleteView):
         testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
         return reverse('test_details', kwargs={'testplan': self.kwargs.get('testplan'),
                                                'pk': self.kwargs.get('test')})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestConfigUpdate(UpdateView):
+    model = TestConfig
+    form_class = TestConfigForm
+    template_name = 'testplan/test_update.html'
+
+    def get_initial(self):
+        return {'test_id': self.kwargs.get('test')}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['testplan_id'] = self.kwargs.get('testplan')
+        context['test_id'] = self.kwargs.get('test')
+        return context
+
+    def get_success_url(self):
+        testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
+        return reverse('test_details', kwargs={'testplan': self.kwargs.get('testplan'),
+                                               'pk': self.kwargs.get('test')})
