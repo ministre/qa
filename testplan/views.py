@@ -231,6 +231,15 @@ def testplan_update_timestamp(testplan_id, user):
     return True
 
 
+# Update test fields 'updated_by' and 'updated_at'
+def test_update_timestamp(test_id, user):
+    test = Test.objects.get(id=test_id)
+    test.updated_by = user
+    test.updated_at = datetime.now()
+    test.save()
+    return True
+
+
 @method_decorator(login_required, name='dispatch')
 class ChapterCreate(CreateView):
     model = Chapter
@@ -323,6 +332,7 @@ class TestConfigCreate(CreateView):
         return context
 
     def get_success_url(self):
+        test_update_timestamp(self.kwargs.get('pk'), self.request.user)
         testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
         return reverse('test_details', kwargs={'testplan': self.kwargs.get('testplan'),
                                                'pk': self.kwargs.get('pk')})
@@ -340,6 +350,7 @@ class TestConfigDelete(DeleteView):
         return context
 
     def get_success_url(self):
+        test_update_timestamp(self.kwargs.get('test'), self.request.user)
         testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
         return reverse('test_details', kwargs={'testplan': self.kwargs.get('testplan'),
                                                'pk': self.kwargs.get('test')})
@@ -361,6 +372,7 @@ class TestConfigUpdate(UpdateView):
         return context
 
     def get_success_url(self):
+        test_update_timestamp(self.kwargs.get('test'), self.request.user)
         testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
         return reverse('test_details', kwargs={'testplan': self.kwargs.get('testplan'),
                                                'pk': self.kwargs.get('test')})
