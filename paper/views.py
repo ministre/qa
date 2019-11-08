@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from testplan.models import Testplan, Category, Test
+from testplan.models import Testplan, Category, Test, TestConfig
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from docx import Document
@@ -12,7 +12,7 @@ def make_testplan(request):
     if request.method == 'POST':
         testplan_id = request.POST['testplan_id']
         testplan = get_object_or_404(Testplan, id=testplan_id)
-        categories = Category.objects.filter(testplan=testplan)
+        categories = Category.objects.filter(testplan=testplan).order_by('id')
 
         document = Document()
         document.add_heading(testplan.name, 0)
@@ -28,7 +28,7 @@ def make_testplan(request):
         for i, category in enumerate(categories):
             document.add_heading(str(i+1) + '. ' + category.name, level=1)
 
-            tests = Test.objects.filter(category=category)
+            tests = Test.objects.filter(category=category).order_by('id')
             for j, test in enumerate(tests):
                 document.add_heading(str(i+1) + '.' + str(j+1) + '. ' + test.name, level=2)
 
@@ -51,8 +51,16 @@ def make_testplan(request):
                 table.cell(1, 1).text = extraspace_filter(test.procedure)
                 table.cell(2, 1).text = extraspace_filter(test.expected)
 
-                # document.add_paragraph('test')
-                # run.add_break()
+                # config
+
+                configs = TestConfig.objects.filter(test=test).order_by('id')
+                if configs.count():
+                    document.add_paragraph('', style='Normal')
+                    document.add_paragraph('Конфигурация:')
+
+                    for config in configs:
+                        config.config = config.config.replace('\r', '')
+                        document.add_paragraph(config.config, style='Body Text 3')
 
         document.save('demo.docx')
 
