@@ -6,3 +6,4 @@ textile==3.0.4
 django_compressor==2.3
 django-libsass==0.7
 python-docx==0.8.10
+beautifulsoup4==4.8.1

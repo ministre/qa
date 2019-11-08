@@ -6,7 +6,8 @@
 
 <p><a href="/testplan/">{% trans "Testplan" %}</a> &raquo;
     <a href="/testplan/{{ testplan.id }}/">{{ testplan.name}}</a> &raquo;
-    {{ test.category }}
+    <a href="/testplan/{{ testplan.id }}/">{{ test.category }}</a> &raquo;
+    {{ test.name }}
 </p>
 
 <ul class="tabs" data-tabs id="example-tabs">
