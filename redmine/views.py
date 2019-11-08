@@ -11,7 +11,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 import re
 from datetime import datetime
-from bs4 import BeautifulSoup
 
 
 def redmine_connect():
