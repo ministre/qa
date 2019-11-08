@@ -155,20 +155,21 @@ def test_details_update_from_wiki(test_id, redmine_url, tag, user):
     wiki_blocks = wiki_page.text.split('\nh2. ')
     test.name = wiki_blocks[0].split('h1. ')[1][0:-3]
     test.purpose = wiki_blocks[1].split('\r\n')[2]
-    test_procedure = collapse_filter(wiki_blocks[2], tag).replace("Процедура\r\n\r\n", "")
-    test.procedure = cut_additions(test_procedure)
+
+    procedure = collapse_filter(wiki_blocks[2], tag).replace("Процедура\r\n\r\n", "")
+    # parse test configs
+    configs = pick_up_test_config(procedure)
+    for config in configs:
+        new_test_config = TestConfig(test=test, name=config['name'], lang=config['style'], config=config['config'])
+        new_test_config.save()
+    # cut test configs
+    test.procedure = cut_test_config(procedure)
 
     test.expected = collapse_filter(wiki_blocks[3], tag).replace("Ожидаемый результат\r\n\r\n", "")
     test.redmine_url = redmine_url
     test.updated_by = user
     test.updated_at = datetime.now()
     test.save()
-
-    # parse test configs
-    configs = pick_up_test_config(wiki_page.text)
-    for config in configs:
-        new_test_config = TestConfig(test=test, name=config['name'], lang=config['style'], config=config['config'])
-        new_test_config.save()
 
     return test.id
 
@@ -183,7 +184,7 @@ def pick_up_test_config(ctx):
             style = s_block.split('">\r')[0]
             # config
             s_block = block.split('">\r\n')[1]
-            config = s_block.split('\n</code></pre>\r\n\r')[0]
+            config = s_block.split('\n</code></pre>')[0]
             # config description
             name = None
             if re.search('\n> ', block):
@@ -194,26 +195,19 @@ def pick_up_test_config(ctx):
     return configs
 
 
-def cut_additions(ctx):
-    # delete descriptions
-    ctx = ctx.replace('\n> ', '')
-
-    # text = ctx.split('\n> ')[1].split('\r')[0]
-    # ctx = ctx.replace('\n> ' + text + '\r', '')
+def cut_test_config(ctx):
+    blocks = ctx.split('\n</code></pre>\r')
+    for i, block in enumerate(blocks):
+        if re.search('\n<pre><code class="', block):
+            if re.search('\n> ', block):
+                cut_text = block.split('\n> ')
+                blocks[i] = block.replace('\n> ' + cut_text[1], '')
+            else:
+                cut_text = block.split('\n<pre>')
+                blocks[i] = block.replace('\n<pre>' + cut_text[1], '')
+    ctx = ''.join(blocks)
     return ctx
 
-    # delete images
-    # ctx = re.sub('\n![^>]+!\r', '', ctx)
-    # return ctx
-
-
-'''
-        blocks = ctx.split('</pre>\r\n\r')
-        for block in blocks:
-            if re.search('\n<pre>', block):
-                s_block = block.split('\n\r\n<pre>')[1]
-                config = s_block.split('</pre>\r\n\r')[0]
-'''
 
 @login_required
 def import_all_tests(request):

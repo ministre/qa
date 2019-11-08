@@ -69,7 +69,7 @@
   <div class="tabs-panel" id="panel4">
       <a href="../../config/create/{{ test.id }}/" class="button small">Add Configuration</a>
       {% for config in configs %}
-      <p>{{ config.name }}</p>
+      {% if config.name %}<p>{{ config.name }}</p>{% endif %}
       <pre><code data-language="{{ config.lang }}">
 {{ config.config }}
       </code></pre>
