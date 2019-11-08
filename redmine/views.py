@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from device.models import DeviceType
-from testplan.models import Testplan, Category, Test, Chapter
+from testplan.models import Testplan, Category, Test, Chapter, TestConfig
 from testplan.views import testplan_update_timestamp
 from redminelib import Redmine
 from qa import settings
@@ -160,7 +160,35 @@ def test_details_update_from_wiki(test_id, redmine_url, tag, user):
     test.updated_by = user
     test.updated_at = datetime.now()
     test.save()
+
+    # parse test configs
+    configs = pick_up_test_config(wiki_page.text)
+    for config in configs:
+        new_test_config = TestConfig(test=test, name=config['name'], lang=config['style'], config=config['config'])
+        new_test_config.save()
+
     return test.id
+
+
+def pick_up_test_config(ctx):
+    configs = []
+    blocks = ctx.split('\n</code></pre>\r')
+    for block in blocks:
+        if re.search('\n<pre><code class="', block):
+            # config style
+            s_block = block.split('\n<pre><code class="')[1]
+            style = s_block.split('">\r')[0]
+            # config
+            s_block = block.split('">\r\n')[1]
+            config = s_block.split('\n</code></pre>\r')[0]
+            # config description
+            name = None
+            if re.search('\n> ', block):
+                s_block = block.split('\n> ')[1]
+                name = s_block.split('\r\n\r')[0]
+            config = {'name': name, 'style': style, 'config': config}
+            configs.append(config)
+    return configs
 
 
 @login_required
