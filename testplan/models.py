@@ -64,12 +64,15 @@ class Test(models.Model):
     updated_at = models.DateTimeField(default=datetime.now, blank=True)
     redmine_url = models.CharField(max_length=1000, null=True, blank=True)
 
-    def __str__(self):
-        return self.name
-
 
 class TestConfig(models.Model):
     name = models.CharField(max_length=1000, blank=True, null=True)
     lang = models.CharField(max_length=40, blank=True, null=True)
-    test = models.ForeignKey(Test, related_name='test_config', on_delete=models.CASCADE, blank=True, null=True)
+    test = models.ForeignKey(Test, related_name='test_config', on_delete=models.CASCADE)
     config = models.TextField(null=True, blank=True)
+
+
+class TestImage(models.Model):
+    name = models.CharField(max_length=1000, blank=True, null=True)
+    test = models.ForeignKey(Test, related_name='test_image', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to="testplan/images/")

@@ -29,4 +29,10 @@ urlpatterns = [
          name='test_config_delete'),
     path('<int:testplan>/test/<int:test>/config/update/<int:pk>/', views.TestConfigUpdate.as_view(),
          name='test_config_update'),
+
+    path('<int:testplan>/image/create/<int:pk>/', views.TestImageCreate.as_view(), name='test_image_create'),
+    path('<int:testplan>/test/<int:test>/image/delete/<int:pk>/', views.TestImageDelete.as_view(),
+         name='test_image_delete'),
+    path('<int:testplan>/test/<int:test>/image/update/<int:pk>/', views.TestImageUpdate.as_view(),
+         name='test_image_update'),
 ]

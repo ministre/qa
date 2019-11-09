@@ -79,7 +79,13 @@
   </div>
 
   <div class="tabs-panel" id="panel5">
-      <p></p>
+      <a href="../../image/create/{{ test.id }}/" class="button small">Add Image</a>
+      {% for image in images %}
+      <p>{{ image.name }}</p>
+      <p><img src="{{ image.image.url }}"></p>
+      <a href="image/update/{{ image.id }}/" class="button small">Update</a>
+      <a href="image/delete/{{ image.id }}/" class="button small alert">Delete</a>
+      {% endfor %}
   </div>
 
   <div class="tabs-panel" id="panel6">
