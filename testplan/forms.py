@@ -1,5 +1,5 @@
 from django.forms import ModelForm, HiddenInput
-from testplan.models import Testplan, Category, Chapter, Test, TestConfig, TestImage
+from testplan.models import Testplan, Category, Chapter, Test, TestConfig, TestImage, TestFile
 from django.utils.translation import gettext_lazy as _
 from django import forms
 
@@ -98,6 +98,20 @@ class TestImageForm(ModelForm):
         labels = {
             'name': _('Name'),
             'image': _('Image'),
+        }
+        fields = '__all__'
+
+        widgets = {
+            'test': HiddenInput()
+        }
+
+
+class TestFileForm(ModelForm):
+    class Meta:
+        model = TestFile
+        labels = {
+            'name': _('Name'),
+            'file': _('File'),
         }
         fields = '__all__'
 

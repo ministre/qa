@@ -4,6 +4,7 @@
 .idea/
 /qa/settings/local.py
 /qa/static/
+/qa/assets/
 **/migrations/*
 /qa/media/device/*
 

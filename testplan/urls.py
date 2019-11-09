@@ -35,4 +35,10 @@ urlpatterns = [
          name='test_image_delete'),
     path('<int:testplan>/test/<int:test>/image/update/<int:pk>/', views.TestImageUpdate.as_view(),
          name='test_image_update'),
+
+    path('<int:testplan>/file/create/<int:pk>/', views.TestFileCreate.as_view(), name='test_file_create'),
+    path('<int:testplan>/test/<int:test>/file/delete/<int:pk>/', views.TestFileDelete.as_view(),
+         name='test_file_delete'),
+    path('<int:testplan>/test/<int:test>/file/update/<int:pk>/', views.TestFileUpdate.as_view(),
+         name='test_file_update'),
 ]
