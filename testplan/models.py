@@ -82,3 +82,13 @@ class TestFile(models.Model):
     name = models.CharField(max_length=1000, blank=True, null=True)
     test = models.ForeignKey(Test, related_name='test_file', on_delete=models.CASCADE)
     file = models.FileField(upload_to="testplan/files/")
+
+
+class TestChecklist(models.Model):
+    name = models.CharField(max_length=1000)
+    test = models.ForeignKey(Test, related_name='test_checklist', on_delete=models.CASCADE)
+
+
+class ChecklistItem(models.Model):
+    name = models.CharField(max_length=1000)
+    checklist = models.ForeignKey(TestChecklist, related_name='checklist_item', on_delete=models.CASCADE)

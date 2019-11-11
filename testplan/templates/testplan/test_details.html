@@ -98,7 +98,14 @@
   </div>
 
   <div class="tabs-panel" id="panel7">
-      <p></p>
+      <a href="../../checklist/create/{{ test.id }}/" class="button small">Add Checklist</a>
+      {% for checklist in checklists %}
+      <p>{{ checklist.name }}</a></p>
+      <p><i class="fi-checkbox"></i> test</p>
+      <a href="checklist/{{ checklist.id }}/item/create/" class="button small">Add Item</a>
+      <a href="checklist/update/{{ checklist.id }}/" class="button small">Update</a>
+      <a href="checklist/delete/{{ checklist.id }}/" class="button small alert">Delete</a>
+      {% endfor %}
   </div>
 
   <div class="tabs-panel" id="panel8">

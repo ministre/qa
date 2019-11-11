@@ -41,4 +41,11 @@ urlpatterns = [
          name='test_file_delete'),
     path('<int:testplan>/test/<int:test>/file/update/<int:pk>/', views.TestFileUpdate.as_view(),
          name='test_file_update'),
+
+    path('<int:testplan>/checklist/create/<int:pk>/', views.TestChecklistCreate.as_view(),
+         name='test_checklist_create'),
+    path('<int:testplan>/test/<int:test>/checklist/delete/<int:pk>/', views.TestChecklistDelete.as_view(),
+         name='test_checklist_delete'),
+    path('<int:testplan>/test/<int:test>/checklist/update/<int:pk>/', views.TestChecklistUpdate.as_view(),
+         name='test_checklist_update'),
 ]

@@ -4,8 +4,9 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
-from testplan.models import Testplan, Category, Chapter, Test, TestConfig, TestImage, TestFile
-from .forms import TestplanForm, CategoryForm, ChapterForm, TestForm, TestConfigForm, TestImageForm, TestFileForm
+from testplan.models import Testplan, Category, Chapter, Test, TestConfig, TestImage, TestFile, TestChecklist
+from .forms import TestplanForm, CategoryForm, ChapterForm, TestForm, TestConfigForm, TestImageForm, TestFileForm, \
+    TestChecklistForm
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 import textile
@@ -198,11 +199,12 @@ def test_details(request, testplan, pk):
     configs = TestConfig.objects.filter(test=test).order_by('id')
     images = TestImage.objects.filter(test=test).order_by('id')
     files = TestFile.objects.filter(test=test).order_by('id')
+    checklists = TestChecklist.objects.filter(test=test).order_by('id')
     return render(request, 'testplan/test_details.html', {'testplan': testplan, 'test': test,
                                                           'test_procedure': test_procedure,
                                                           'test_expected': test_expected,
                                                           'configs': configs, 'images': images,
-                                                          'files': files})
+                                                          'files': files, 'checklists': checklists})
 
 
 @login_required
@@ -487,6 +489,68 @@ class TestFileDelete(DeleteView):
 class TestFileUpdate(UpdateView):
     model = TestFile
     form_class = TestFileForm
+    template_name = 'testplan/test_update.html'
+
+    def get_initial(self):
+        return {'test_id': self.kwargs.get('test')}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['testplan_id'] = self.kwargs.get('testplan')
+        context['test_id'] = self.kwargs.get('test')
+        return context
+
+    def get_success_url(self):
+        test_update_timestamp(self.kwargs.get('test'), self.request.user)
+        testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
+        return reverse('test_details', kwargs={'testplan': self.kwargs.get('testplan'),
+                                               'pk': self.kwargs.get('test')})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestChecklistCreate(CreateView):
+    model = TestChecklist
+    form_class = TestChecklistForm
+    template_name = 'testplan/test_create.html'
+
+    def get_initial(self):
+        return {'test': self.kwargs.get('pk')}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['testplan_id'] = self.kwargs.get('testplan')
+        context['test_id'] = self.kwargs.get('pk')
+        return context
+
+    def get_success_url(self):
+        test_update_timestamp(self.kwargs.get('pk'), self.request.user)
+        testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
+        return reverse('test_details', kwargs={'testplan': self.kwargs.get('testplan'),
+                                               'pk': self.kwargs.get('pk')})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestChecklistDelete(DeleteView):
+    model = TestChecklist
+    template_name = 'testplan/test_delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['testplan_id'] = self.kwargs.get('testplan')
+        context['test_id'] = self.kwargs.get('test')
+        return context
+
+    def get_success_url(self):
+        test_update_timestamp(self.kwargs.get('test'), self.request.user)
+        testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
+        return reverse('test_details', kwargs={'testplan': self.kwargs.get('testplan'),
+                                               'pk': self.kwargs.get('test')})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestChecklistUpdate(UpdateView):
+    model = TestChecklist
+    form_class = TestChecklistForm
     template_name = 'testplan/test_update.html'
 
     def get_initial(self):
