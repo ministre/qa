@@ -92,3 +92,21 @@ class TestChecklist(models.Model):
 class ChecklistItem(models.Model):
     name = models.CharField(max_length=1000)
     checklist = models.ForeignKey(TestChecklist, related_name='checklist_item', on_delete=models.CASCADE)
+
+
+class TestLink(models.Model):
+    name = models.CharField(max_length=1000)
+    url = models.CharField(max_length=1000, blank=True, null=True)
+    test = models.ForeignKey(Test, related_name='test_link', on_delete=models.CASCADE)
+
+
+class Pattern(models.Model):
+    name = models.CharField(max_length=1000)
+    types = models.ManyToManyField(DeviceType, related_name='device_types', blank=True)
+    created_by = models.ForeignKey(User, related_name='pattern_created_by_user', on_delete=models.CASCADE,
+                                   blank=True, null=True)
+    created_at = models.DateTimeField(default=datetime.now, blank=True)
+    updated_by = models.ForeignKey(User, related_name='pattern_updated_by_user', on_delete=models.CASCADE,
+                                   blank=True, null=True)
+    updated_at = models.DateTimeField(default=datetime.now, blank=True)
+    redmine_url = models.CharField(max_length=1000, blank=True, null=True)

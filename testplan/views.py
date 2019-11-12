@@ -4,9 +4,10 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
-from testplan.models import Testplan, Category, Chapter, Test, TestConfig, TestImage, TestFile, TestChecklist
+from testplan.models import Testplan, Category, Chapter, Test, TestConfig, TestImage, TestFile, TestChecklist, \
+    Pattern
 from .forms import TestplanForm, CategoryForm, ChapterForm, TestForm, TestConfigForm, TestImageForm, TestFileForm, \
-    TestChecklistForm
+    TestChecklistForm, PatternForm
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 import textile
@@ -567,3 +568,25 @@ class TestChecklistUpdate(UpdateView):
         testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
         return reverse('test_details', kwargs={'testplan': self.kwargs.get('testplan'),
                                                'pk': self.kwargs.get('test')})
+
+
+# patterns
+
+@method_decorator(login_required, name='dispatch')
+class PatternListView(ListView):
+    context_object_name = 'patterns'
+    queryset = Pattern.objects.all().order_by('id')
+    template_name = 'testplan/patterns.html'
+
+
+@method_decorator(login_required, name='dispatch')
+class PatternCreate(CreateView):
+    model = Pattern
+    form_class = PatternForm
+    template_name = 'testplan/create.html'
+
+    def get_initial(self):
+        return {'created_by': self.request.user, 'updated_by': self.request.user}
+
+    def get_success_url(self):
+        return reverse('patterns')

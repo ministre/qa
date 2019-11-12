@@ -4,28 +4,22 @@
 
 {% block content %}
 
-<a href="/create/" class="button small">{% trans "Create" %}</a>
-<a href="/redmine/import_testplan/" class="button small">{% trans "Create from Redmine" %}</a>
-<a href="/p_create/" class="button small warning">{% trans "Create from Pattern" %}</a>
+<a href="create/" class="button small">{% trans "Create" %}</a>
 
-<table id="testplans" class="display" style="width:100%">
+<table id="patterns" class="display" style="width:100%">
     <thead>
     <tr>
         <th>ID</th>
         <th>{% trans "Name" %}</th>
-        <th>{% trans "Version" %}</th>
-        <th>{% trans "Tag" %}</th>
         <th>{% trans "Created by" %}</th>
     </tr>
     </thead>
     <tbody>
-    {% for testplan in testplans %}
+    {% for pattern in patterns %}
     <tr>
-        <td>{{ testplan.id }}</td>
-        <td>{{ testplan.name }}</td>
-        <td>{{ testplan.version }}</td>
-        <td>{{ testplan.device_type.tag }}</td>
-        <td>{{ testplan.created_by }}</td>
+        <td>{{ pattern.id }}</td>
+        <td>{{ pattern.name }}</td>
+        <td>{{ pattern.created_by }}</td>
     </tr>
     {% endfor %}
     </tbody>
@@ -33,8 +27,6 @@
     <tr>
         <th>ID</th>
         <th>{% trans "Name" %}</th>
-        <th>{% trans "Version" %}</th>
-        <th>{% trans "Tag" %}</th>
         <th>{% trans "Created by" %}</th>
     </tr>
     </tfoot>
@@ -42,14 +34,14 @@
 
 <script>
   $(document).ready(function() {
-      var table = $('#testplans').DataTable( {
+      var table = $('#patterns').DataTable( {
       {% if LANGUAGE_CODE == 'ru' %}
           "language": { "url": "{% static '/DataTables/i18n/Russian.json' %}" },
       {% endif %}
           "order": [[ 0, "desc" ]]
       } );
 
-      $('#testplans tbody').on('click', 'tr', function () {
+      $('#patterns tbody').on('click', 'tr', function () {
           var data = table.row( this ).data();
 		  window.open(data[0]+"/","_self");
       } );
