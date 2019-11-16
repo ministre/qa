@@ -1,5 +1,6 @@
 from django.forms import ModelForm, HiddenInput
-from testplan.models import Testplan, Category, Chapter, Test, TestConfig, TestImage, TestFile, TestChecklist, Pattern
+from testplan.models import Testplan, Category, Chapter, Test, TestConfig, TestImage, TestFile, TestChecklist, \
+    TestLink, Pattern
 from django.utils.translation import gettext_lazy as _
 from django import forms
 
@@ -125,6 +126,20 @@ class TestChecklistForm(ModelForm):
         model = TestChecklist
         labels = {
             'name': _('Name'),
+        }
+        fields = '__all__'
+
+        widgets = {
+            'test': HiddenInput()
+        }
+
+
+class TestLinkForm(ModelForm):
+    class Meta:
+        model = TestLink
+        labels = {
+            'name': _('Name'),
+            'url': _('URL'),
         }
         fields = '__all__'
 

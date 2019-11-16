@@ -115,7 +115,12 @@
   </div>
 
   <div class="tabs-panel" id="panel9">
-      <p></p>
+      <a href="../../link/create/{{ test.id }}/" class="button small">Add Link</a>
+      {% for link in links %}
+      <p><a href="{{ link.url }}">{{ link.name }}</a></p>
+      <a href="link/update/{{ link.id }}/" class="button small">Update</a>
+      <a href="link/delete/{{ link.id }}/" class="button small alert">Delete</a>
+      {% endfor %}
   </div>
 
   <div class="tabs-panel" id="panel10">

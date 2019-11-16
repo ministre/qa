@@ -96,7 +96,7 @@ class ChecklistItem(models.Model):
 
 class TestLink(models.Model):
     name = models.CharField(max_length=1000)
-    url = models.CharField(max_length=1000, blank=True, null=True)
+    url = models.CharField(max_length=1000)
     test = models.ForeignKey(Test, related_name='test_link', on_delete=models.CASCADE)
 
 
