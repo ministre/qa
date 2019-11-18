@@ -4,8 +4,12 @@ from testplan.models import Testplan, Category, Test, TestConfig
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from docx import Document
-from docx.shared import Cm, Pt, RGBColor
+from docx.shared import Cm, Pt, RGBColor, Inches
 from docx.oxml.shared import OxmlElement, qn
+from docx.enum.table import WD_TABLE_ALIGNMENT
+from docx.enum.style import WD_STYLE_TYPE
+from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
+from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT
 
 
 @login_required
@@ -16,17 +20,56 @@ def make_testplan(request):
         categories = Category.objects.filter(testplan=testplan).order_by('id')
 
         document = Document()
-        document.add_heading(testplan.name, 0)
-        document.add_paragraph('Редакция: ' + testplan.version)
-        document.add_page_break()
+
+        style = document.styles.add_style('Header Table', WD_STYLE_TYPE.TABLE)
+        style.base_style = document.styles['Table Grid']
+        style.font.name = 'Cambria'
+        style.font.size = Pt(11)
+        style.paragraph_format.space_before = Pt(2)
+        style.paragraph_format.space_after = Pt(2)
+        style.paragraph_format.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
 
         section = document.sections
         section[0].left_margin = Cm(2.5)
         section[0].right_margin = Cm(1)
-        section[0].top_margin = Cm(1)
+        section[0].top_margin = Cm(4.5)
         section[0].bottom_margin = Cm(1)
 
+        header = document.sections[0].header
+        # paragraph = header.paragraphs[0]
+        table = header.add_table(rows=0, cols=3, width=Cm(19.5))
+        table.style = 'Header Table'
+        table.alignment = WD_TABLE_ALIGNMENT.CENTER
+
+        row_cells = table.add_row().cells
+        paragraph = row_cells[0].paragraphs[0]
+        run = paragraph.add_run()
+        run.add_picture('b2c.png', width=Inches(1.25))
+        paragraph = row_cells[1].paragraphs[0]
+        run = paragraph.add_run()
+        run.add_text(testplan.name)
+        row_cells = table.add_row().cells
+        paragraph = row_cells[0].paragraphs[0]
+        run = paragraph.add_run()
+        run.add_text('Редакция: ' + testplan.version)
+        paragraph = row_cells[1].paragraphs[0]
+        run = paragraph.add_run()
+        run.add_text('МРФ "Центр" ПАО "Ростелеком"')
+
+        a = table.cell(0, 1)
+        b = table.cell(0, 2)
+        a.merge(b)
+
+        table.cell(0, 0).width = Cm(5)
+        table.cell(1, 0).width = Cm(5)
+        table.cell(0, 1).width = Cm(10.5)
+        table.cell(1, 1).width = Cm(10.5)
+        table.cell(0, 2).width = Cm(4)
+        table.cell(1, 2).width = Cm(4)
+        table.cell(0, 1).vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
+
         style = document.styles['Heading 1']
+        style.paragraph_format.space_before = Pt(5)
         style.font.size = Pt(16)
         style.font.color.rgb = RGBColor(0x77, 0x00, 0xff)
 
