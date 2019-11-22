@@ -4,8 +4,8 @@
 
 {% block content %}
 
-<form method="post" action="">
-    <a href="{% url 'types' %}" class="button small">&laquo; {% trans "Back" %}</a>
+<form method="post" action="" enctype="multipart/form-data">
+    <a href="{% url 'docums' %}" class="button small">&laquo; {% trans "Back" %}</a>
     <input type="submit" value='{% trans "Create" %}' class="button success small" />
     {% csrf_token %}
     {{ form }}

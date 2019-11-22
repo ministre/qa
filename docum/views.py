@@ -38,11 +38,6 @@ class TypeUpdate(UpdateView):
     def get_initial(self):
         return {'updated_by': self.request.user, 'updated_at': datetime.now}
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['pk'] = self.kwargs.get('pk')
-        return context
-
     def get_success_url(self):
         return reverse('types')
 
@@ -75,3 +70,25 @@ class DocumListView(ListView):
     context_object_name = 'docums'
     queryset = Docum.objects.all().order_by('id')
     template_name = 'docum/list.html'
+
+
+@method_decorator(login_required, name='dispatch')
+class DocumUpdate(UpdateView):
+    model = Docum
+    form_class = DocumForm
+    template_name = 'docum/update.html'
+
+    def get_initial(self):
+        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+
+    def get_success_url(self):
+        return reverse('docums')
+
+
+@method_decorator(login_required, name='dispatch')
+class DocumDelete(DeleteView):
+    model = Docum
+    template_name = 'docum/delete.html'
+
+    def get_success_url(self):
+        return reverse('docums')

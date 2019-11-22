@@ -9,4 +9,6 @@ urlpatterns = [
 
     path('', views.DocumListView.as_view(), name='docums'),
     path('create/', views.DocumCreate.as_view(), name='docum_create'),
+    path('<int:pk>/', views.DocumUpdate.as_view(), name='docum_update'),
+    path('delete/<int:pk>/', views.DocumDelete.as_view(), name='docum_delete'),
 ]
