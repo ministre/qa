@@ -324,62 +324,62 @@ def clear_chapters(request, testplan):
 class TestConfigCreate(CreateView):
     model = TestConfig
     form_class = TestConfigForm
-    template_name = 'test/create.html'
+    template_name = 'test_component/create.html'
 
     def get_initial(self):
-        return {'test': self.kwargs.get('pk')}
+        return {'test': self.kwargs.get('test_id')}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan')
-        context['test_id'] = self.kwargs.get('pk')
+        context['testplan_id'] = self.kwargs.get('testplan_id')
+        context['test_id'] = self.kwargs.get('test_id')
         return context
 
     def get_success_url(self):
-        test_update_timestamp(self.kwargs.get('pk'), self.request.user)
-        testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
-        return reverse('test_details', kwargs={'testplan': self.kwargs.get('testplan'),
-                                               'pk': self.kwargs.get('pk')})
+        test_update_timestamp(self.kwargs.get('test_id'), self.request.user)
+        testplan_update_timestamp(self.kwargs.get('testplan_id'), self.request.user)
+        return reverse('test_details', kwargs={'testplan_id': self.kwargs.get('testplan_id'),
+                                               'test_id': self.kwargs.get('test_id')})
 
 
 @method_decorator(login_required, name='dispatch')
 class TestConfigDelete(DeleteView):
     model = TestConfig
-    template_name = 'test/delete.html'
+    template_name = 'test_component/delete.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan')
-        context['test_id'] = self.kwargs.get('test')
+        context['testplan_id'] = self.kwargs.get('testplan_id')
+        context['test_id'] = self.kwargs.get('test_id')
         return context
 
     def get_success_url(self):
-        test_update_timestamp(self.kwargs.get('test'), self.request.user)
-        testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
-        return reverse('test_details', kwargs={'testplan': self.kwargs.get('testplan'),
-                                               'pk': self.kwargs.get('test')})
+        test_update_timestamp(self.kwargs.get('test_id'), self.request.user)
+        testplan_update_timestamp(self.kwargs.get('testplan_id'), self.request.user)
+        return reverse('test_details', kwargs={'testplan_id': self.kwargs.get('testplan_id'),
+                                               'test_id': self.kwargs.get('test_id')})
 
 
 @method_decorator(login_required, name='dispatch')
 class TestConfigUpdate(UpdateView):
     model = TestConfig
     form_class = TestConfigForm
-    template_name = 'test/update.html'
+    template_name = 'test_component/update.html'
 
     def get_initial(self):
-        return {'test_id': self.kwargs.get('test')}
+        return {'test_id': self.kwargs.get('test_id')}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan')
-        context['test_id'] = self.kwargs.get('test')
+        context['testplan_id'] = self.kwargs.get('testplan_id')
+        context['test_id'] = self.kwargs.get('test_id')
         return context
 
     def get_success_url(self):
-        test_update_timestamp(self.kwargs.get('test'), self.request.user)
-        testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
-        return reverse('test_details', kwargs={'testplan': self.kwargs.get('testplan'),
-                                               'pk': self.kwargs.get('test')})
+        test_update_timestamp(self.kwargs.get('test_id'), self.request.user)
+        testplan_update_timestamp(self.kwargs.get('testplan_id'), self.request.user)
+        return reverse('test_details', kwargs={'testplan_id': self.kwargs.get('testplan_id'),
+                                               'test_id': self.kwargs.get('test_id')})
 
 
 @method_decorator(login_required, name='dispatch')
