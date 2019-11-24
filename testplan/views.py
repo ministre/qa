@@ -77,11 +77,11 @@ def get_testlist(testplan_id):
 
 
 @login_required
-def testplan_details(request, pk):
-    testplan = get_object_or_404(Testplan, id=pk)
+def testplan_details(request, testplan_id):
+    testplan = get_object_or_404(Testplan, id=testplan_id)
     chapters = Chapter.objects.filter(testplan=testplan).order_by('id')
-    categories = get_testlist(pk)
-    amount_of_tests = count_of_tests(pk)
+    categories = get_testlist(testplan_id)
+    amount_of_tests = count_of_tests(testplan_id)
     return render(request, 'testplan/details.html', {'testplan': testplan, 'categories': categories,
                                                      'chapters': chapters, 'amount_of_tests': amount_of_tests})
 
@@ -248,54 +248,54 @@ def test_update_timestamp(test_id, user):
 class ChapterCreate(CreateView):
     model = Chapter
     form_class = ChapterForm
-    template_name = 'testplan/create.html'
+    template_name = 'test/create.html'
 
     def get_initial(self):
-        return {'testplan': self.kwargs.get('testplan'),
+        return {'testplan': self.kwargs.get('testplan_id'),
                 'created_by': self.request.user, 'updated_by': self.request.user}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan')
+        context['testplan_id'] = self.kwargs.get('testplan_id')
         return context
 
     def get_success_url(self):
-        testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
-        return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan')})
+        testplan_update_timestamp(self.kwargs.get('testplan_id'), self.request.user)
+        return reverse('testplan_details', kwargs={'testplan_id': self.kwargs.get('testplan_id')})
 
 
 @method_decorator(login_required, name='dispatch')
 class ChapterDelete(DeleteView):
     model = Chapter
-    template_name = 'testplan/delete.html'
+    template_name = 'test/delete.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan')
+        context['testplan_id'] = self.kwargs.get('testplan_id')
         return context
 
     def get_success_url(self):
-        testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
-        return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan')})
+        testplan_update_timestamp(self.kwargs.get('testplan_id'), self.request.user)
+        return reverse('testplan_details', kwargs={'testplan_id': self.kwargs.get('testplan_id')})
 
 
 @method_decorator(login_required, name='dispatch')
 class ChapterUpdate(UpdateView):
     model = Chapter
     form_class = ChapterForm
-    template_name = 'testplan/update.html'
+    template_name = 'test/update.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan')
+        context['testplan_id'] = self.kwargs.get('testplan_id')
         return context
 
     def get_initial(self):
         return {'updated_by': self.request.user, 'updated_at': datetime.now}
 
     def get_success_url(self):
-        testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
-        return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan')})
+        testplan_update_timestamp(self.kwargs.get('testplan_id'), self.request.user)
+        return reverse('testplan_details', kwargs={'testplan_id': self.kwargs.get('testplan_id')})
 
 
 @login_required
@@ -310,14 +310,14 @@ def clear_tests(request, testplan):
 
 
 @login_required
-def clear_chapters(request, testplan):
+def clear_chapters(request, testplan_id):
     if request.method == 'POST':
-        Chapter.objects.filter(testplan=Testplan.objects.get(id=testplan)).delete()
-        testplan_update_timestamp(testplan, request.user)
-        return HttpResponseRedirect('/testplan/' + str(testplan) + '/')
+        Chapter.objects.filter(testplan=Testplan.objects.get(id=testplan_id)).delete()
+        testplan_update_timestamp(testplan_id, request.user)
+        return HttpResponseRedirect('/testplan/' + str(testplan_id) + '/')
     else:
-        message = 'Delete all chapters in testplan #' + str(testplan) + '?'
-        return render(request, 'testplan/clear.html', {'message': message, 'testplan_id': testplan})
+        message = 'Delete all chapters in testplan #' + str(testplan_id) + '?'
+        return render(request, 'testplan/clear.html', {'message': message, 'testplan_id': testplan_id})
 
 
 @method_decorator(login_required, name='dispatch')
