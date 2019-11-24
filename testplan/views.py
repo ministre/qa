@@ -38,11 +38,6 @@ class TestplanDelete(DeleteView):
     model = Testplan
     template_name = 'testplan/delete.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('pk')
-        return context
-
     def get_success_url(self):
         return reverse('testplans')
 
@@ -63,7 +58,7 @@ class TestplanUpdate(UpdateView):
 
     def get_success_url(self):
         testplan_update_timestamp(self.kwargs.get('pk'), self.request.user)
-        return reverse('testplan_details', kwargs={'pk': self.kwargs.get('pk')})
+        return reverse('testplan_details', kwargs={'testplan_id': self.kwargs.get('pk')})
 
 
 def get_testlist(testplan_id):

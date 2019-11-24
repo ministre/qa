@@ -18,8 +18,8 @@
           {% csrf_token %}
           <input type="hidden" name="testplan_id" value="{{ testplan.id }}">
           <input type="submit" value='{% trans "Make .docx" %}' class="button success small" />
-            <a href="../update/{{ testplan.id }}/" class="button small">{% trans "Update" %}</a>
-            <a href="../delete/{{ testplan.id }}/" class="button alert small">{% trans "Delete" %}</a>
+            <a href="{% url 'testplan_update' pk=testplan.id %}" class="button small">{% trans "Update" %}</a>
+            <a href="{% url 'testplan_delete' pk=testplan.id %}" class="button alert small">{% trans "Delete" %}</a>
         </form>
 
         <table class="hover unstriped">
