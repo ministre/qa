@@ -79,7 +79,8 @@
       <ul style="list-style: none">
           {% for chapter in chapters %}
           <li>
-              <a href="chapter/{{ chapter.id }}/">{{ forloop.counter }}. {{ chapter.name }}</a>
+              <a href="{% url 'chapter_details' testplan_id=testplan.id chapter_id=chapter.id %}">
+                  {{ forloop.counter }}. {{ chapter.name }}</a>
               <a href="{% url 'chapter_update' testplan_id=testplan.id pk=chapter.id %}"><i class="step fi-pencil"></i></a>
               <a href="{% url 'chapter_delete' testplan_id=testplan.id pk=chapter.id %}"><i class="step fi-minus" style="color: #bc104b"></i></a>
           </li>

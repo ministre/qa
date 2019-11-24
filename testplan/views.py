@@ -202,9 +202,9 @@ def test_details(request, testplan_id, test_id):
 
 
 @login_required
-def chapter_details(request, testplan, pk):
-    chapter = get_object_or_404(Chapter, id=pk)
-    testplan = get_object_or_404(Testplan, id=testplan)
+def chapter_details(request, testplan_id, chapter_id):
+    chapter = get_object_or_404(Chapter, id=chapter_id)
+    testplan = get_object_or_404(Testplan, id=testplan_id)
     chapter_text = textile.textile(chapter.text)
     return render(request, 'chapter/details.html', {'chapter': chapter, 'testplan': testplan,
                                                     'chapter_text': chapter_text})
