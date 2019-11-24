@@ -128,7 +128,14 @@
   </div>
 
   <div class="tabs-panel" id="panel10">
-      <p></p>
+      <a href="{% url 'test_comment_create' testplan_id=testplan.id test_id=test.id %}" class="button small">{% trans "Add Comment" %}</a>
+      {% for comment in comments %}
+      <p>{{ comment.text }}</p>
+      <a href="{% url 'test_comment_update' testplan_id=testplan.id test_id=test.id pk=comment.id %}" class="button small">
+          {% trans "Update" %}</a>
+      <a href="{% url 'test_comment_delete' testplan_id=testplan.id test_id=test.id pk=comment.id %}" class="button small alert">
+          {% trans "Delete" %}</a>
+      {% endfor %}
   </div>
 
   <div class="tabs-panel" id="panel11">
