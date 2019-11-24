@@ -90,7 +90,7 @@ def testplan_details(request, pk):
 class CategoryCreate(CreateView):
     model = Category
     form_class = CategoryForm
-    template_name = 'testplan/create.html'
+    template_name = 'category/create.html'
 
     def get_initial(self):
         return {'testplan': self.kwargs.get('testplan')}
@@ -108,7 +108,7 @@ class CategoryCreate(CreateView):
 @method_decorator(login_required, name='dispatch')
 class CategoryDelete(DeleteView):
     model = Category
-    template_name = 'testplan/delete.html'
+    template_name = 'category/delete.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -124,7 +124,7 @@ class CategoryDelete(DeleteView):
 class CategoryUpdate(UpdateView):
     model = Category
     form_class = CategoryForm
-    template_name = 'testplan/update.html'
+    template_name = 'category/update.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
