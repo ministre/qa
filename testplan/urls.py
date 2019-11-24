@@ -8,9 +8,10 @@ urlpatterns = [
     path('update/<int:pk>/', views.TestplanUpdate.as_view(), name='testplan_update'),
     path('<int:testplan_id>/', views.testplan_details, name='testplan_details'),
 
-    path('<int:testplan>/category/create/', views.CategoryCreate.as_view(), name='category_create'),
-    path('<int:testplan>/category/delete/<int:pk>/', views.CategoryDelete.as_view(), name='category_delete'),
-    path('<int:testplan>/category/update/<int:pk>/', views.CategoryUpdate.as_view(), name='category_update'),
+    # categories
+    path('<int:testplan_id>/category/create/', views.CategoryCreate.as_view(), name='category_create'),
+    path('<int:testplan_id>/category/<int:pk>/delete/', views.CategoryDelete.as_view(), name='category_delete'),
+    path('<int:testplan_id>/category/<int:pk>/update/', views.CategoryUpdate.as_view(), name='category_update'),
 
     path('<int:testplan_id>/test/create/<int:pk>/', views.TestCreate.as_view(), name='test_create'),
     path('<int:testplan_id>/test/delete/<int:pk>/', views.TestDelete.as_view(), name='test_delete'),

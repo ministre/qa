@@ -67,7 +67,7 @@
 
   <div class="tabs-panel" id="panel2">
       <form method="post" action="/redmine/import_all_chapters/">
-          <a href="../{{ testplan.id }}/chapter/create/" class="button small">{% trans "Add Chapter" %}</a>
+          <a href="{% url 'chapter_create' testplan_id=testplan.id %}" class="button small">{% trans "Add Chapter" %}</a>
           {% csrf_token %}
           <input type="hidden" name="testplan_id" value="{{ testplan.id }}">
           <input type="hidden" name="redmine_url" value="{{ testplan.redmine_url }}">
@@ -90,7 +90,7 @@
 
   <div class="tabs-panel is-active" id="panel3">
       <form method="post" action="/redmine/import_all_tests/">
-          <a href="category/create/" class="button small">{% trans "Add Category" %}</a>
+          <a href="{% url 'category_create' testplan_id=testplan.id %}" class="button small">{% trans "Add Category" %}</a>
           {% csrf_token %}
           <input type="hidden" name="testplan_id" value="{{ testplan.id }}">
           <input type="hidden" name="redmine_url" value="{{ testplan.redmine_url }}">
@@ -103,8 +103,9 @@
       <ul style="list-style: none">
           <li>
               <b>{{ forloop.counter }}. {{ category.name }}</b>
-              <a href="category/update/{{ category.id }}/"><i class="step fi-pencil"></i></a>
-              <a href="category/delete/{{ category.id }}/"><i class="step fi-minus" style="color: #bc104b"></i></a>
+              <a href="{% url 'category_update' testplan_id=testplan.id pk=category.id %}"><i class="step fi-pencil"></i></a>
+              <a href="{% url 'category_delete' testplan_id=testplan.id pk=category.id %}">
+                  <i class="step fi-minus" style="color: #bc104b"></i></a>
               {% for test in category.tests %}
               <ul style="list-style: none">
                   <li>

@@ -93,16 +93,16 @@ class CategoryCreate(CreateView):
     template_name = 'category/create.html'
 
     def get_initial(self):
-        return {'testplan': self.kwargs.get('testplan')}
+        return {'testplan': self.kwargs.get('testplan_id')}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan')
+        context['testplan_id'] = self.kwargs.get('testplan_id')
         return context
 
     def get_success_url(self):
-        testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
-        return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan')})
+        testplan_update_timestamp(self.kwargs.get('testplan_id'), self.request.user)
+        return reverse('testplan_details', kwargs={'testplan_id': self.kwargs.get('testplan_id')})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -112,12 +112,12 @@ class CategoryDelete(DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan')
+        context['testplan_id'] = self.kwargs.get('testplan_id')
         return context
 
     def get_success_url(self):
-        testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
-        return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan')})
+        testplan_update_timestamp(self.kwargs.get('testplan_id'), self.request.user)
+        return reverse('testplan_details', kwargs={'testplan_id': self.kwargs.get('testplan_id')})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -128,12 +128,12 @@ class CategoryUpdate(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan')
+        context['testplan_id'] = self.kwargs.get('testplan_id')
         return context
 
     def get_success_url(self):
-        testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
-        return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan')})
+        testplan_update_timestamp(self.kwargs.get('testplan_id'), self.request.user)
+        return reverse('testplan_details', kwargs={'testplan_id': self.kwargs.get('testplan_id')})
 
 
 @method_decorator(login_required, name='dispatch')
