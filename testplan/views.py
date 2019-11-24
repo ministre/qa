@@ -2,8 +2,7 @@ from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from django.views.generic import ListView, DeleteView
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from testplan.models import Testplan, Category, Chapter, Test, TestConfig, TestImage, TestFile, TestChecklist, \
     TestLink, Pattern
 from .forms import TestplanForm, CategoryForm, ChapterForm, TestForm, TestConfigForm, TestImageForm, TestFileForm, \
@@ -18,7 +17,7 @@ from datetime import datetime
 class TestplanListView(ListView):
     context_object_name = 'testplans'
     queryset = Testplan.objects.all()
-    template_name = 'testplan/testplans.html'
+    template_name = 'testplan/list.html'
 
 
 @method_decorator(login_required, name='dispatch')
@@ -83,8 +82,8 @@ def testplan_details(request, pk):
     chapters = Chapter.objects.filter(testplan=testplan).order_by('id')
     categories = get_testlist(pk)
     amount_of_tests = count_of_tests(pk)
-    return render(request, 'testplan/testplan_details.html', {'testplan': testplan, 'categories': categories,
-                                                              'chapters': chapters, 'amount_of_tests': amount_of_tests})
+    return render(request, 'testplan/details.html', {'testplan': testplan, 'categories': categories,
+                                                     'chapters': chapters, 'amount_of_tests': amount_of_tests})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -141,7 +140,7 @@ class CategoryUpdate(UpdateView):
 class TestCreate(CreateView):
     model = Test
     form_class = TestForm
-    template_name = 'testplan/create.html'
+    template_name = 'test/create.html'
 
     def get_initial(self):
         return {'category': self.kwargs.get('pk'),
@@ -160,7 +159,7 @@ class TestCreate(CreateView):
 @method_decorator(login_required, name='dispatch')
 class TestDelete(DeleteView):
     model = Test
-    template_name = 'testplan/delete.html'
+    template_name = 'test/delete.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -176,7 +175,7 @@ class TestDelete(DeleteView):
 class TestUpdate(UpdateView):
     model = Test
     form_class = TestForm
-    template_name = 'testplan/update.html'
+    template_name = 'test/update.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -202,12 +201,9 @@ def test_details(request, testplan, pk):
     files = TestFile.objects.filter(test=test).order_by('id')
     checklists = TestChecklist.objects.filter(test=test).order_by('id')
     links = TestLink.objects.filter(test=test).order_by('id')
-    return render(request, 'testplan/test_details.html', {'testplan': testplan, 'test': test,
-                                                          'test_procedure': test_procedure,
-                                                          'test_expected': test_expected,
-                                                          'configs': configs, 'images': images,
-                                                          'files': files, 'checklists': checklists,
-                                                          'links': links})
+    return render(request, 'test/details.html', {'testplan': testplan, 'test': test, 'test_procedure': test_procedure,
+                                                 'test_expected': test_expected, 'configs': configs, 'images': images,
+                                                 'files': files, 'checklists': checklists, 'links': links})
 
 
 @login_required
@@ -215,8 +211,8 @@ def chapter_details(request, testplan, pk):
     chapter = get_object_or_404(Chapter, id=pk)
     testplan = get_object_or_404(Testplan, id=testplan)
     chapter_text = textile.textile(chapter.text)
-    return render(request, 'testplan/chapter_details.html', {'chapter': chapter, 'testplan': testplan,
-                                                             'chapter_text': chapter_text})
+    return render(request, 'chapter/details.html', {'chapter': chapter, 'testplan': testplan,
+                                                    'chapter_text': chapter_text})
 
 
 # Return amount of tests in testplan
@@ -640,7 +636,7 @@ class TestLinkUpdate(UpdateView):
 class PatternListView(ListView):
     context_object_name = 'patterns'
     queryset = Pattern.objects.all().order_by('id')
-    template_name = 'testplan/patterns.html'
+    template_name = 'pattern/list.html'
 
 
 @method_decorator(login_required, name='dispatch')

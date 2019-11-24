@@ -4,10 +4,8 @@
 
 {% block content %}
 
-<p><a href="/testplan/">{% trans "Testplan" %}</a> &raquo;
-    <a href="/testplan/{{ testplan.id}}/">{{ testplan.name }}</a>  &raquo;
-    {{ chapter.name }}
-</p>
+<p><a href="{% url 'testplans' %}">{% trans "Testplan" %}</a> &raquo;
+    <a href="{% url 'testplan_details' pk=testplan.id %}">{{ testplan.name }}</a>  &raquo; {{ chapter.name }}</p>
 
 <ul class="tabs" data-tabs id="example-tabs">
     <li class="tabs-title"><a href="#panel1" aria-selected="true">{% trans "General" %}</a></li>
