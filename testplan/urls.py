@@ -36,11 +36,13 @@ urlpatterns = [
     path('<int:testplan>/test/<int:test>/image/update/<int:pk>/', views.TestImageUpdate.as_view(),
          name='test_image_update'),
 
-    path('<int:testplan>/file/create/<int:pk>/', views.TestFileCreate.as_view(), name='test_file_create'),
-    path('<int:testplan>/test/<int:test>/file/delete/<int:pk>/', views.TestFileDelete.as_view(),
-         name='test_file_delete'),
-    path('<int:testplan>/test/<int:test>/file/update/<int:pk>/', views.TestFileUpdate.as_view(),
-         name='test_file_update'),
+    # files
+    path('<int:testplan_id>/test/<int:test_id>/file/create/',
+         views.TestFileCreate.as_view(), name='test_file_create'),
+    path('<int:testplan_id>/test/<int:test_id>/file/<int:pk>/delete/',
+         views.TestFileDelete.as_view(), name='test_file_delete'),
+    path('<int:testplan_id>/test/<int:test_id>/file/<int:pk>/update/',
+         views.TestFileUpdate.as_view(), name='test_file_update'),
 
     # checklists
     path('<int:testplan_id>/test/<int:test_id>/checklist/create/',

@@ -91,11 +91,11 @@
   </div>
 
   <div class="tabs-panel" id="panel6">
-      <a href="../../file/create/{{ test.id }}/" class="button small">Add File</a>
+      <a href="{% url 'test_file_create' testplan_id=testplan.id test_id=test.id %}" class="button small">Add File</a>
       {% for file in files %}
       <p><a href="{{ file.file.url }}">{{ file.name }}</a></p>
-      <a href="file/update/{{ file.id }}/" class="button small">Update</a>
-      <a href="file/delete/{{ file.id }}/" class="button small alert">Delete</a>
+      <a href="{% url 'test_file_update' testplan_id=testplan.id test_id=test.id pk=file.id %}" class="button small">Update</a>
+      <a href="{% url 'test_file_delete' testplan_id=testplan.id test_id=test.id pk=file.id %}" class="button small alert">Delete</a>
       {% endfor %}
   </div>
 
