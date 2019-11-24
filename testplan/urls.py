@@ -13,11 +13,12 @@ urlpatterns = [
     path('<int:testplan_id>/category/<int:pk>/delete/', views.CategoryDelete.as_view(), name='category_delete'),
     path('<int:testplan_id>/category/<int:pk>/update/', views.CategoryUpdate.as_view(), name='category_update'),
 
-    path('<int:testplan_id>/test/create/<int:pk>/', views.TestCreate.as_view(), name='test_create'),
-    path('<int:testplan_id>/test/delete/<int:pk>/', views.TestDelete.as_view(), name='test_delete'),
-    path('<int:testplan_id>/test/update/<int:pk>/', views.TestUpdate.as_view(), name='test_update'),
+    # tests
+    path('<int:testplan_id>/category/<int:category_id>/test/create/', views.TestCreate.as_view(), name='test_create'),
+    path('<int:testplan_id>/test/<int:pk>/delete/', views.TestDelete.as_view(), name='test_delete'),
+    path('<int:testplan_id>/test/<int:pk>/update/', views.TestUpdate.as_view(), name='test_update'),
     path('<int:testplan_id>/test/<int:test_id>/', views.test_details, name='test_details'),
-    path('<int:testplan_id>/clear_tests/', views.clear_tests, name='clear_tests'),
+    path('<int:testplan_id>/test/clear_all/', views.clear_tests, name='test_clear_all'),
 
     # chapters
     path('<int:testplan_id>/chapter/create/', views.ChapterCreate.as_view(), name='chapter_create'),

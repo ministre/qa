@@ -96,7 +96,7 @@
           <input type="hidden" name="redmine_url" value="{{ testplan.redmine_url }}">
           <input type="hidden" name="tag" value="{{ testplan.device_type.tag }}">
           <input type="submit" value='{% trans "Add tests from Redmine" %}' class="button success small" />
-          <a href="clear_tests/" class="button small alert">{% trans "Clear Tests" %}</a>
+          <a href="{% url 'test_clear_all' testplan_id=testplan.id %}" class="button small alert">{% trans "Clear Tests" %}</a>
         </form>
       <br>
       {% for category in categories %}
@@ -110,12 +110,13 @@
               <ul style="list-style: none">
                   <li>
                       <a href="test/{{ test.id }}/">{{forloop.parentloop.counter}}.{{ forloop.counter }}. {{ test.name }}</a>
-                      <a href="test/update/{{ test.id }}/"><i class="step fi-pencil"></i></a>
-                      <a href="test/delete/{{ test.id }}/"><i class="step fi-minus" style="color: #bc104b"></i></a>
+                      <a href="{% url 'test_update' testplan_id=testplan.id pk=test.id %}"><i class="step fi-pencil"></i></a>
+                      <a href="{% url 'test_delete' testplan_id=testplan.id pk=test.id %}"><i class="step fi-minus" style="color: #bc104b"></i></a>
                   </li>
               </ul>
               {% endfor %}
-              <blockquote><a href="test/create/{{ category.id }}/"><i class="step fi-plus"></i></a></blockquote>
+              <blockquote><a href="{% url 'test_create' testplan_id=testplan.id category_id=category.id %}">
+                  <i class="step fi-plus"></i></a></blockquote>
           </li>
       </ul>
       {% endfor %}

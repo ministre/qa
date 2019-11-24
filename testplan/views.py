@@ -143,17 +143,17 @@ class TestCreate(CreateView):
     template_name = 'test/create.html'
 
     def get_initial(self):
-        return {'category': self.kwargs.get('pk'),
+        return {'category': self.kwargs.get('category_id'),
                 'created_by': self.request.user, 'updated_by': self.request.user}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan')
+        context['testplan_id'] = self.kwargs.get('testplan_id')
         return context
 
     def get_success_url(self):
-        testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
-        return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan')})
+        testplan_update_timestamp(self.kwargs.get('testplan_id'), self.request.user)
+        return reverse('testplan_details', kwargs={'testplan_id': self.kwargs.get('testplan_id')})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -163,12 +163,12 @@ class TestDelete(DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan')
+        context['testplan_id'] = self.kwargs.get('testplan_id')
         return context
 
     def get_success_url(self):
-        testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
-        return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan')})
+        testplan_update_timestamp(self.kwargs.get('testplan_id'), self.request.user)
+        return reverse('testplan_details', kwargs={'testplan_id': self.kwargs.get('testplan_id')})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -179,15 +179,15 @@ class TestUpdate(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan')
+        context['testplan_id'] = self.kwargs.get('testplan_id')
         return context
 
     def get_initial(self):
         return {'updated_by': self.request.user, 'updated_at': datetime.now}
 
     def get_success_url(self):
-        testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
-        return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan')})
+        testplan_update_timestamp(self.kwargs.get('testplan_id'), self.request.user)
+        return reverse('testplan_details', kwargs={'testplan_id': self.kwargs.get('testplan_id')})
 
 
 @login_required
@@ -299,14 +299,14 @@ class ChapterUpdate(UpdateView):
 
 
 @login_required
-def clear_tests(request, testplan):
+def clear_tests(request, testplan_id):
     if request.method == 'POST':
-        Category.objects.filter(testplan=Testplan.objects.get(id=testplan)).delete()
-        testplan_update_timestamp(testplan, request.user)
-        return HttpResponseRedirect('/testplan/' + str(testplan) + '/')
+        Category.objects.filter(testplan=Testplan.objects.get(id=testplan_id)).delete()
+        testplan_update_timestamp(testplan_id, request.user)
+        return HttpResponseRedirect('/testplan/' + str(testplan_id) + '/')
     else:
-        message = 'Delete all tests in testplan #' + str(testplan) + '?'
-        return render(request, 'testplan/clear.html', {'message': message, 'testplan_id': testplan})
+        message = 'Delete all tests in testplan #' + str(testplan_id) + '?'
+        return render(request, 'testplan/clear.html', {'message': message, 'testplan_id': testplan_id})
 
 
 @login_required
