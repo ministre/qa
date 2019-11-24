@@ -4,9 +4,9 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from testplan.models import Testplan, Category, Chapter, Test, TestConfig, TestImage, TestFile, TestChecklist, \
-    TestLink, Pattern
+    ChecklistItem, TestLink, Pattern
 from .forms import TestplanForm, CategoryForm, ChapterForm, TestForm, TestConfigForm, TestImageForm, TestFileForm, \
-    TestChecklistForm, TestLinkForm, PatternForm
+    TestChecklistForm, ChecklistItemForm, TestLinkForm, PatternForm
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 import textile
@@ -191,9 +191,9 @@ class TestUpdate(UpdateView):
 
 
 @login_required
-def test_details(request, testplan, pk):
-    test = get_object_or_404(Test, id=pk)
-    testplan = get_object_or_404(Testplan, id=testplan)
+def test_details(request, testplan_id, test_id):
+    test = get_object_or_404(Test, id=test_id)
+    testplan = get_object_or_404(Testplan, id=testplan_id)
     test_procedure = textile.textile(test.procedure)
     test_expected = textile.textile(test.expected)
     configs = TestConfig.objects.filter(test=test).order_by('id')
@@ -510,62 +510,85 @@ class TestFileUpdate(UpdateView):
 class TestChecklistCreate(CreateView):
     model = TestChecklist
     form_class = TestChecklistForm
-    template_name = 'test/create.html'
+    template_name = 'test_component/create.html'
 
     def get_initial(self):
-        return {'test': self.kwargs.get('pk')}
+        return {'test': self.kwargs.get('test_id')}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan')
-        context['test_id'] = self.kwargs.get('pk')
+        context['testplan_id'] = self.kwargs.get('testplan_id')
+        context['test_id'] = self.kwargs.get('test_id')
         return context
 
     def get_success_url(self):
-        test_update_timestamp(self.kwargs.get('pk'), self.request.user)
-        testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
-        return reverse('test_details', kwargs={'testplan': self.kwargs.get('testplan'),
-                                               'pk': self.kwargs.get('pk')})
+        test_update_timestamp(self.kwargs.get('test_id'), self.request.user)
+        testplan_update_timestamp(self.kwargs.get('testplan_id'), self.request.user)
+        return reverse('test_details', kwargs={'testplan_id': self.kwargs.get('testplan_id'),
+                                               'test_id': self.kwargs.get('test_id')})
 
 
 @method_decorator(login_required, name='dispatch')
 class TestChecklistDelete(DeleteView):
     model = TestChecklist
-    template_name = 'test/delete.html'
+    template_name = 'test_component/delete.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan')
-        context['test_id'] = self.kwargs.get('test')
+        context['testplan_id'] = self.kwargs.get('testplan_id')
+        context['test_id'] = self.kwargs.get('test_id')
         return context
 
     def get_success_url(self):
-        test_update_timestamp(self.kwargs.get('test'), self.request.user)
-        testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
-        return reverse('test_details', kwargs={'testplan': self.kwargs.get('testplan'),
-                                               'pk': self.kwargs.get('test')})
+        test_update_timestamp(self.kwargs.get('test_id'), self.request.user)
+        testplan_update_timestamp(self.kwargs.get('testplan_id'), self.request.user)
+        return reverse('test_details', kwargs={'testplan_id': self.kwargs.get('testplan_id'),
+                                               'test_id': self.kwargs.get('test_id')})
 
 
 @method_decorator(login_required, name='dispatch')
 class TestChecklistUpdate(UpdateView):
     model = TestChecklist
     form_class = TestChecklistForm
-    template_name = 'test/update.html'
+    template_name = 'test_component/update.html'
 
     def get_initial(self):
-        return {'test_id': self.kwargs.get('test')}
+        return {'test': self.kwargs.get('test_id')}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan')
-        context['test_id'] = self.kwargs.get('test')
+        context['testplan_id'] = self.kwargs.get('testplan_id')
+        context['test_id'] = self.kwargs.get('test_id')
         return context
 
     def get_success_url(self):
-        test_update_timestamp(self.kwargs.get('test'), self.request.user)
-        testplan_update_timestamp(self.kwargs.get('testplan'), self.request.user)
-        return reverse('test_details', kwargs={'testplan': self.kwargs.get('testplan'),
-                                               'pk': self.kwargs.get('test')})
+        test_update_timestamp(self.kwargs.get('test_id'), self.request.user)
+        testplan_update_timestamp(self.kwargs.get('testplan_id'), self.request.user)
+        return reverse('test_details', kwargs={'testplan_id': self.kwargs.get('testplan_id'),
+                                               'test_id': self.kwargs.get('test_id')})
+
+
+@method_decorator(login_required, name='dispatch')
+class ChecklistItemCreate(CreateView):
+    model = ChecklistItem
+    form_class = ChecklistItemForm
+    template_name = 'test_component/create.html'
+
+    def get_initial(self):
+        return {'checklist': self.kwargs.get('checklist_id')}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['testplan_id'] = self.kwargs.get('testplan_id')
+        context['test_id'] = self.kwargs.get('test_id')
+        context['checklist_id'] = self.kwargs.get('checklist_id')
+        return context
+
+    def get_success_url(self):
+        test_update_timestamp(self.kwargs.get('test_id'), self.request.user)
+        testplan_update_timestamp(self.kwargs.get('testplan_id'), self.request.user)
+        return reverse('test_details', kwargs={'testplan_id': self.kwargs.get('testplan_id'),
+                                               'test_id': self.kwargs.get('test_id')})
 
 
 @method_decorator(login_required, name='dispatch')

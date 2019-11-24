@@ -15,7 +15,7 @@ urlpatterns = [
     path('<int:testplan>/test/create/<int:pk>/', views.TestCreate.as_view(), name='test_create'),
     path('<int:testplan>/test/delete/<int:pk>/', views.TestDelete.as_view(), name='test_delete'),
     path('<int:testplan>/test/update/<int:pk>/', views.TestUpdate.as_view(), name='test_update'),
-    path('<int:testplan>/test/<int:pk>/', views.test_details, name='test_details'),
+    path('<int:testplan_id>/test/<int:test_id>/', views.test_details, name='test_details'),
     path('<int:testplan>/clear_tests/', views.clear_tests, name='clear_tests'),
 
     path('<int:testplan>/chapter/create/', views.ChapterCreate.as_view(), name='chapter_create'),
@@ -42,15 +42,20 @@ urlpatterns = [
     path('<int:testplan>/test/<int:test>/file/update/<int:pk>/', views.TestFileUpdate.as_view(),
          name='test_file_update'),
 
-    path('<int:testplan>/checklist/create/<int:pk>/', views.TestChecklistCreate.as_view(),
-         name='test_checklist_create'),
-    path('<int:testplan>/test/<int:test>/checklist/delete/<int:pk>/', views.TestChecklistDelete.as_view(),
-         name='test_checklist_delete'),
-    path('<int:testplan>/test/<int:test>/checklist/update/<int:pk>/', views.TestChecklistUpdate.as_view(),
-         name='test_checklist_update'),
+    # checklists
+    path('<int:testplan_id>/test/<int:test_id>/checklist/create/',
+         views.TestChecklistCreate.as_view(), name='test_checklist_create'),
+    path('<int:testplan_id>/test/<int:test_id>/checklist/<int:pk>/delete/',
+         views.TestChecklistDelete.as_view(), name='test_checklist_delete'),
+    path('<int:testplan_id>/test/<int:test_id>/checklist/<int:pk>/update/',
+         views.TestChecklistUpdate.as_view(), name='test_checklist_update'),
 
-    path('<int:testplan>/link/create/<int:pk>/', views.TestLinkCreate.as_view(),
-         name='test_link_create'),
+    # checklist items
+    path('<int:testplan_id>/test/<int:test_id>/checklist/<int:checklist_id>/item/create/',
+         views.ChecklistItemCreate.as_view(), name='checklist_item_create'),
+
+    # links
+    path('<int:testplan>/link/create/<int:pk>/', views.TestLinkCreate.as_view(), name='test_link_create'),
     path('<int:testplan>/test/<int:test>/link/delete/<int:pk>/', views.TestLinkDelete.as_view(),
          name='test_link_delete'),
     path('<int:testplan>/test/<int:test>/link/update/<int:pk>/', views.TestLinkUpdate.as_view(),
