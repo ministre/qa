@@ -324,7 +324,7 @@ def clear_chapters(request, testplan):
 class TestConfigCreate(CreateView):
     model = TestConfig
     form_class = TestConfigForm
-    template_name = 'testplan/test_create.html'
+    template_name = 'test/create.html'
 
     def get_initial(self):
         return {'test': self.kwargs.get('pk')}
@@ -345,7 +345,7 @@ class TestConfigCreate(CreateView):
 @method_decorator(login_required, name='dispatch')
 class TestConfigDelete(DeleteView):
     model = TestConfig
-    template_name = 'testplan/test_delete.html'
+    template_name = 'test/delete.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -364,7 +364,7 @@ class TestConfigDelete(DeleteView):
 class TestConfigUpdate(UpdateView):
     model = TestConfig
     form_class = TestConfigForm
-    template_name = 'testplan/test_update.html'
+    template_name = 'test/update.html'
 
     def get_initial(self):
         return {'test_id': self.kwargs.get('test')}
@@ -386,7 +386,7 @@ class TestConfigUpdate(UpdateView):
 class TestImageCreate(CreateView):
     model = TestImage
     form_class = TestImageForm
-    template_name = 'testplan/test_create.html'
+    template_name = 'test/create.html'
 
     def get_initial(self):
         return {'test': self.kwargs.get('pk')}
@@ -407,7 +407,7 @@ class TestImageCreate(CreateView):
 @method_decorator(login_required, name='dispatch')
 class TestImageDelete(DeleteView):
     model = TestImage
-    template_name = 'testplan/test_delete.html'
+    template_name = 'test/delete.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -426,7 +426,7 @@ class TestImageDelete(DeleteView):
 class TestImageUpdate(UpdateView):
     model = TestImage
     form_class = TestImageForm
-    template_name = 'testplan/test_update.html'
+    template_name = 'test/update.html'
 
     def get_initial(self):
         return {'test_id': self.kwargs.get('test')}
@@ -448,7 +448,7 @@ class TestImageUpdate(UpdateView):
 class TestFileCreate(CreateView):
     model = TestFile
     form_class = TestFileForm
-    template_name = 'testplan/test_create.html'
+    template_name = 'test/create.html'
 
     def get_initial(self):
         return {'test': self.kwargs.get('pk')}
@@ -469,7 +469,7 @@ class TestFileCreate(CreateView):
 @method_decorator(login_required, name='dispatch')
 class TestFileDelete(DeleteView):
     model = TestFile
-    template_name = 'testplan/test_delete.html'
+    template_name = 'test/delete.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -488,7 +488,7 @@ class TestFileDelete(DeleteView):
 class TestFileUpdate(UpdateView):
     model = TestFile
     form_class = TestFileForm
-    template_name = 'testplan/test_update.html'
+    template_name = 'test/update.html'
 
     def get_initial(self):
         return {'test_id': self.kwargs.get('test')}
@@ -510,7 +510,7 @@ class TestFileUpdate(UpdateView):
 class TestChecklistCreate(CreateView):
     model = TestChecklist
     form_class = TestChecklistForm
-    template_name = 'testplan/test_create.html'
+    template_name = 'test/create.html'
 
     def get_initial(self):
         return {'test': self.kwargs.get('pk')}
@@ -531,7 +531,7 @@ class TestChecklistCreate(CreateView):
 @method_decorator(login_required, name='dispatch')
 class TestChecklistDelete(DeleteView):
     model = TestChecklist
-    template_name = 'testplan/test_delete.html'
+    template_name = 'test/delete.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -550,7 +550,7 @@ class TestChecklistDelete(DeleteView):
 class TestChecklistUpdate(UpdateView):
     model = TestChecklist
     form_class = TestChecklistForm
-    template_name = 'testplan/test_update.html'
+    template_name = 'test/update.html'
 
     def get_initial(self):
         return {'test_id': self.kwargs.get('test')}
@@ -572,7 +572,7 @@ class TestChecklistUpdate(UpdateView):
 class TestLinkCreate(CreateView):
     model = TestLink
     form_class = TestLinkForm
-    template_name = 'testplan/test_create.html'
+    template_name = 'test/create.html'
 
     def get_initial(self):
         return {'test': self.kwargs.get('pk')}
@@ -593,7 +593,7 @@ class TestLinkCreate(CreateView):
 @method_decorator(login_required, name='dispatch')
 class TestLinkDelete(DeleteView):
     model = TestLink
-    template_name = 'testplan/test_delete.html'
+    template_name = 'test/delete.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -612,7 +612,7 @@ class TestLinkDelete(DeleteView):
 class TestLinkUpdate(UpdateView):
     model = TestLink
     form_class = TestLinkForm
-    template_name = 'testplan/test_update.html'
+    template_name = 'test/update.html'
 
     def get_initial(self):
         return {'test_id': self.kwargs.get('test')}
