@@ -81,12 +81,12 @@
   </div>
 
   <div class="tabs-panel" id="panel5">
-      <a href="../../image/create/{{ test.id }}/" class="button small">Add Image</a>
+      <a href="{% url 'test_image_create' testplan_id=testplan.id test_id=test.id %}" class="button small">Add Image</a>
       {% for image in images %}
       <p>{{ image.name }}</p>
       <p><img src="{{ image.image.url }}"></p>
-      <a href="image/update/{{ image.id }}/" class="button small">Update</a>
-      <a href="image/delete/{{ image.id }}/" class="button small alert">Delete</a>
+      <a href="{% url 'test_image_update' testplan_id=testplan.id test_id=test.id pk=image.id %}" class="button small">Update</a>
+      <a href="{% url 'test_image_delete' testplan_id=testplan.id test_id=test.id pk=image.id %}" class="button small alert">Delete</a>
       {% endfor %}
   </div>
 

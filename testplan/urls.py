@@ -30,11 +30,13 @@ urlpatterns = [
     path('<int:testplan>/test/<int:test>/config/update/<int:pk>/', views.TestConfigUpdate.as_view(),
          name='test_config_update'),
 
-    path('<int:testplan>/image/create/<int:pk>/', views.TestImageCreate.as_view(), name='test_image_create'),
-    path('<int:testplan>/test/<int:test>/image/delete/<int:pk>/', views.TestImageDelete.as_view(),
-         name='test_image_delete'),
-    path('<int:testplan>/test/<int:test>/image/update/<int:pk>/', views.TestImageUpdate.as_view(),
-         name='test_image_update'),
+    # images
+    path('<int:testplan_id>/test/<int:test_id>/image/create/',
+         views.TestImageCreate.as_view(), name='test_image_create'),
+    path('<int:testplan_id>/test/<int:test_id>/image/<int:pk>/delete/',
+         views.TestImageDelete.as_view(), name='test_image_delete'),
+    path('<int:testplan_id>/test/<int:test_id>/image/<int:pk>/update/',
+         views.TestImageUpdate.as_view(), name='test_image_update'),
 
     # files
     path('<int:testplan_id>/test/<int:test_id>/file/create/',
