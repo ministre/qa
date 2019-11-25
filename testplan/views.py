@@ -71,6 +71,16 @@ def get_testlist(testplan_id):
     return testlist
 
 
+def get_full_checklists(test_id):
+    test = get_object_or_404(Test, id=test_id)
+    checklists = TestChecklist.objects.filter(test=test).order_by('id')
+    full_checklists = []
+    for checklist in checklists:
+        items = ChecklistItem.objects.filter(checklist=checklist).order_by('id')
+        full_checklists.append({'id': checklist.id, 'name': checklist.name, 'items': items})
+    return full_checklists
+
+
 @login_required
 def testplan_details(request, testplan_id):
     testplan = get_object_or_404(Testplan, id=testplan_id)
@@ -194,7 +204,8 @@ def test_details(request, testplan_id, test_id):
     configs = TestConfig.objects.filter(test=test).order_by('id')
     images = TestImage.objects.filter(test=test).order_by('id')
     files = TestFile.objects.filter(test=test).order_by('id')
-    checklists = TestChecklist.objects.filter(test=test).order_by('id')
+    # checklists = TestChecklist.objects.filter(test=test).order_by('id')
+    checklists = get_full_checklists(test_id)
     links = TestLink.objects.filter(test=test).order_by('id')
     comments = TestComment.objects.filter(test=test).order_by('id')
     return render(request, 'test/details.html', {'testplan': testplan, 'test': test, 'test_procedure': test_procedure,
@@ -579,6 +590,46 @@ class ChecklistItemCreate(CreateView):
         context['testplan_id'] = self.kwargs.get('testplan_id')
         context['test_id'] = self.kwargs.get('test_id')
         context['checklist_id'] = self.kwargs.get('checklist_id')
+        return context
+
+    def get_success_url(self):
+        test_update_timestamp(self.kwargs.get('test_id'), self.request.user)
+        testplan_update_timestamp(self.kwargs.get('testplan_id'), self.request.user)
+        return reverse('test_details', kwargs={'testplan_id': self.kwargs.get('testplan_id'),
+                                               'test_id': self.kwargs.get('test_id')})
+
+
+@method_decorator(login_required, name='dispatch')
+class ChecklistItemDelete(DeleteView):
+    model = ChecklistItem
+    template_name = 'test_component/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['testplan_id'] = self.kwargs.get('testplan_id')
+        context['test_id'] = self.kwargs.get('test_id')
+        return context
+
+    def get_success_url(self):
+        test_update_timestamp(self.kwargs.get('test_id'), self.request.user)
+        testplan_update_timestamp(self.kwargs.get('testplan_id'), self.request.user)
+        return reverse('test_details', kwargs={'testplan_id': self.kwargs.get('testplan_id'),
+                                               'test_id': self.kwargs.get('test_id')})
+
+
+@method_decorator(login_required, name='dispatch')
+class ChecklistItemUpdate(UpdateView):
+    model = ChecklistItem
+    form_class = ChecklistItemForm
+    template_name = 'test_component/update.html'
+
+    def get_initial(self):
+        return {'test': self.kwargs.get('test_id')}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['testplan_id'] = self.kwargs.get('testplan_id')
+        context['test_id'] = self.kwargs.get('test_id')
         return context
 
     def get_success_url(self):

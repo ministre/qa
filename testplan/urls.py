@@ -62,6 +62,10 @@ urlpatterns = [
     # checklist items
     path('<int:testplan_id>/test/<int:test_id>/checklist/<int:checklist_id>/item/create/',
          views.ChecklistItemCreate.as_view(), name='checklist_item_create'),
+    path('<int:testplan_id>/test/<int:test_id>/item/<int:pk>/delete/',
+         views.ChecklistItemDelete.as_view(), name='checklist_item_delete'),
+    path('<int:testplan_id>/test/<int:test_id>/item/<int:pk>/update/',
+         views.ChecklistItemUpdate.as_view(), name='checklist_item_update'),
 
     # links
     path('<int:testplan_id>/test/<int:test_id>/link/create/',

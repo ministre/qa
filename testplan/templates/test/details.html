@@ -101,17 +101,38 @@
 
   <div class="tabs-panel" id="panel7">
       <a href="{% url 'test_checklist_create' testplan_id=testplan.id test_id=test.id %}" class="button small">Add Checklist</a>
-      {% for checklist in checklists %}
-      <p>{{ checklist.name }}</p>
-      <p><i class="fi-checkbox"></i> test</p>
-      <a href="{% url 'checklist_item_create' testplan_id=testplan.id test_id=test.id checklist_id=checklist.id %}" class="button small">
-          Add Item</a>
-      <a href="{% url 'test_checklist_update' testplan_id=testplan.id test_id=test.id pk=checklist.id %}" class="button small">
-          Update</a>
-      <a href="{% url 'test_checklist_delete' testplan_id=testplan.id test_id=test.id pk=checklist.id %}" class="button small alert">
-          Delete</a>
 
+
+      {% for checklist in checklists %}
+      <ul style="list-style: none">
+          <li>
+              <b>{{ checklist.name }}</b>
+              <a href="{% url 'test_checklist_update' testplan_id=testplan.id test_id=test.id pk=checklist.id %}">
+                  <i class="step fi-pencil"></i></a>
+              <a href="{% url 'test_checklist_delete' testplan_id=testplan.id test_id=test.id pk=checklist.id %}">
+                  <i class="step fi-minus" style="color: #bc104b"></i></a>
+              {% for item in checklist.items %}
+              <ul style="list-style: none">
+                  <li>
+                      <i class="fi-checkbox"></i> {{ item.name }}
+                      <a href="{% url 'checklist_item_update' testplan_id=testplan.id test_id=test.id pk=item.id %}">
+                          <i class="step fi-pencil"></i></a>
+                      <a href="{% url 'checklist_item_delete' testplan_id=testplan.id test_id=test.id pk=item.id %}">
+                          <i class="step fi-minus" style="color: #bc104b"></i></a>
+                  </li>
+              </ul>
+              {% endfor %}
+              <blockquote>
+                  <a href="{% url 'checklist_item_create' testplan_id=testplan.id test_id=test.id checklist_id=checklist.id %}">
+                  <i class="step fi-plus"></i></a>
+              </blockquote>
+
+          </li>
+      </ul>
       {% endfor %}
+
+
+
   </div>
 
   <div class="tabs-panel" id="panel8">
