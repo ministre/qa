@@ -67,6 +67,22 @@ urlpatterns = [
     path('<int:testplan_id>/test/<int:test_id>/item/<int:pk>/update/',
          views.ChecklistItemUpdate.as_view(), name='checklist_item_update'),
 
+    # worksheets
+    path('<int:testplan_id>/test/<int:test_id>/worksheet/create/',
+         views.TestWorksheetCreate.as_view(), name='test_worksheet_create'),
+    path('<int:testplan_id>/test/<int:test_id>/worksheet/<int:pk>/delete/',
+         views.TestWorksheetDelete.as_view(), name='test_worksheet_delete'),
+    path('<int:testplan_id>/test/<int:test_id>/worksheet/<int:pk>/update/',
+         views.TestWorksheetUpdate.as_view(), name='test_worksheet_update'),
+
+    # worksheet items
+    path('<int:testplan_id>/test/<int:test_id>/worksheet/<int:worksheet_id>/item/create/',
+         views.WorksheetItemCreate.as_view(), name='worksheet_item_create'),
+    path('<int:testplan_id>/test/<int:test_id>/w_item/<int:pk>/delete/',
+         views.WorksheetItemDelete.as_view(), name='worksheet_item_delete'),
+    path('<int:testplan_id>/test/<int:test_id>/w_item/<int:pk>/update/',
+         views.WorksheetItemUpdate.as_view(), name='worksheet_item_update'),
+
     # links
     path('<int:testplan_id>/test/<int:test_id>/link/create/',
          views.TestLinkCreate.as_view(), name='test_link_create'),

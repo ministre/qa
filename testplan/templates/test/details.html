@@ -18,7 +18,7 @@
     <li class="tabs-title"><a data-tabs-target="panel5" href="#panel5">{% trans "Images" %}</a></li>
     <li class="tabs-title"><a data-tabs-target="panel6" href="#panel6">{% trans "Files" %}</a></li>
     <li class="tabs-title"><a data-tabs-target="panel7" href="#panel7">{% trans "Checklists" %}</a></li>
-    <li class="tabs-title"><a data-tabs-target="panel8" href="#panel8">{% trans "Forms" %}</a></li>
+    <li class="tabs-title"><a data-tabs-target="panel8" href="#panel8">{% trans "Worksheets" %}</a></li>
     <li class="tabs-title"><a data-tabs-target="panel9" href="#panel9">{% trans "Links" %}</a></li>
     <li class="tabs-title"><a data-tabs-target="panel10" href="#panel10">{% trans "Comments" %}</a></li>
     <li class="tabs-title"><a data-tabs-target="panel11" href="#panel11">{% trans "Redmine" %}</a></li>
@@ -101,8 +101,6 @@
 
   <div class="tabs-panel" id="panel7">
       <a href="{% url 'test_checklist_create' testplan_id=testplan.id test_id=test.id %}" class="button small">Add Checklist</a>
-
-
       {% for checklist in checklists %}
       <ul style="list-style: none">
           <li>
@@ -130,13 +128,37 @@
           </li>
       </ul>
       {% endfor %}
-
-
-
   </div>
 
   <div class="tabs-panel" id="panel8">
-      <p></p>
+      <a href="{% url 'test_worksheet_create' testplan_id=testplan.id test_id=test.id %}" class="button small">Add Worksheet</a>
+      {% for worksheet in worksheets %}
+      <ul style="list-style: none">
+          <li>
+              <b>{{ worksheet.name }}</b>
+              <a href="{% url 'test_worksheet_update' testplan_id=testplan.id test_id=test.id pk=worksheet.id %}">
+                  <i class="step fi-pencil"></i></a>
+              <a href="{% url 'test_worksheet_delete' testplan_id=testplan.id test_id=test.id pk=worksheet.id %}">
+                  <i class="step fi-minus" style="color: #bc104b"></i></a>
+              {% for item in worksheet.items %}
+              <ul style="list-style: none">
+                  <li>
+                      <i class="fi-checkbox"></i> {{ item.name }}
+                      <a href="{% url 'worksheet_item_update' testplan_id=testplan.id test_id=test.id pk=item.id %}">
+                          <i class="step fi-pencil"></i></a>
+                      <a href="{% url 'worksheet_item_delete' testplan_id=testplan.id test_id=test.id pk=item.id %}">
+                          <i class="step fi-minus" style="color: #bc104b"></i></a>
+                  </li>
+              </ul>
+              {% endfor %}
+              <blockquote>
+                  <a href="{% url 'worksheet_item_create' testplan_id=testplan.id test_id=test.id worksheet_id=worksheet.id %}">
+                  <i class="step fi-plus"></i></a>
+              </blockquote>
+
+          </li>
+      </ul>
+      {% endfor %}
   </div>
 
   <div class="tabs-panel" id="panel9">
