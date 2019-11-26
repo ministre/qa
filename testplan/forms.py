@@ -99,6 +99,8 @@ class TestImageForm(ModelForm):
         labels = {
             'name': _('Name'),
             'image': _('Image'),
+            'width': _('Width'),
+            'height': _('Height'),
         }
         fields = '__all__'
 

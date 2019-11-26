@@ -84,7 +84,10 @@
       <a href="{% url 'test_image_create' testplan_id=testplan.id test_id=test.id %}" class="button small">Add Image</a>
       {% for image in images %}
       <p>{{ image.name }}</p>
-      <p><img src="{{ image.image.url }}"></p>
+      <p><img src="{{ image.image.url }}"
+              {% if image.width != None %} width="{{ image.width }}" {% endif %}
+              {% if image.height != None %} height="{{ image.height }}" {% endif %}
+      ></p>
       <a href="{% url 'test_image_update' testplan_id=testplan.id test_id=test.id pk=image.id %}" class="button small">Update</a>
       <a href="{% url 'test_image_delete' testplan_id=testplan.id test_id=test.id pk=image.id %}" class="button small alert">Delete</a>
       {% endfor %}

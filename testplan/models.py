@@ -76,6 +76,8 @@ class TestImage(models.Model):
     name = models.CharField(max_length=1000, blank=True, null=True)
     test = models.ForeignKey(Test, related_name='test_image', on_delete=models.CASCADE)
     image = models.ImageField(upload_to="testplan/images/")
+    width = models.IntegerField(blank=True, null=True)
+    height = models.IntegerField(blank=True, null=True)
 
 
 class TestFile(models.Model):
