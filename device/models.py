@@ -29,6 +29,7 @@ class DeviceType(models.Model):
     desc_genitive = models.CharField(max_length=1000, null=True, blank=True)
     cf = models.ManyToManyField(CustomField, related_name='custom_fields', blank=True)
     ifaces = models.ManyToManyField(Interface, related_name='interfaces', blank=True)
+    redmine_url = models.CharField(max_length=1000, blank=True, null=True)
     created_by = models.ForeignKey(User, related_name='device_type_created_by', on_delete=models.CASCADE,
                                    blank=True, null=True)
     created_at = models.DateTimeField(default=datetime.now, blank=True)

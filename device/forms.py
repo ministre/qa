@@ -27,9 +27,10 @@ class DeviceTypeForm(ModelForm):
         labels = {
             'tag': _('Tag'),
             'desc': _('Description'),
-            'desc_genitive': _('Genitive description'),
+            'desc_genitive': _('Genitive Description'),
             'cf': _('Custom fields'),
             'ifaces': _('Interfaces'),
+            'redmine_url': _('Redmine URL'),
         }
         fields = '__all__'
         widgets = {'created_by': HiddenInput(), 'created_at': HiddenInput(),
