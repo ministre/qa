@@ -33,7 +33,7 @@ class DeviceType(models.Model):
     created_by = models.ForeignKey(User, related_name='device_type_created_by', on_delete=models.CASCADE,
                                    blank=True, null=True)
     created_at = models.DateTimeField(default=datetime.now, blank=True)
-    updated_by = models.ForeignKey(User, related_name='device_type_updated', on_delete=models.CASCADE,
+    updated_by = models.ForeignKey(User, related_name='device_type_updated_by', on_delete=models.CASCADE,
                                    blank=True, null=True)
     updated_at = models.DateTimeField(default=datetime.now, blank=True)
 
@@ -93,21 +93,6 @@ class Led(models.Model):
 
     class Meta:
         ordering = ('name',)
-
-
-class Firmware(models.Model):
-    device = models.ForeignKey(Device, on_delete=models.CASCADE)
-    version = models.CharField(max_length=300)
-    file = models.FileField(upload_to="device/fw/", blank=True, null=True)
-    desc = models.CharField(max_length=500, blank=True, null=True)
-    created_by = models.ForeignKey(User, related_name='fw_created_by_user', on_delete=models.CASCADE,
-                                   blank=True, null=True)
-
-    def __str__(self):
-        return self.version
-
-    class Meta:
-        ordering = ('version',)
 
 
 class DeviceInterface(models.Model):

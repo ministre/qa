@@ -6,10 +6,10 @@ from device.models import Device
 
 class DocumType(models.Model):
     name = models.CharField(max_length=300)
-    created_by = models.ForeignKey(User, related_name='documtype_created_by_user', on_delete=models.CASCADE,
+    created_by = models.ForeignKey(User, related_name='docum_type_created_by', on_delete=models.CASCADE,
                                    blank=True, null=True)
     created_at = models.DateTimeField(default=datetime.now, blank=True)
-    updated_by = models.ForeignKey(User, related_name='documtype_updated_by_user', on_delete=models.CASCADE,
+    updated_by = models.ForeignKey(User, related_name='docum_type_updated_by', on_delete=models.CASCADE,
                                    blank=True, null=True)
     updated_at = models.DateTimeField(default=datetime.now, blank=True)
 
@@ -18,13 +18,13 @@ class DocumType(models.Model):
 
 
 class Docum(models.Model):
-    name = models.CharField(max_length=300, blank=True, null=True)
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
     type = models.ForeignKey(DocumType, on_delete=models.CASCADE)
     file = models.FileField(upload_to="docum/files/")
-    created_by = models.ForeignKey(User, related_name='docum_created_by_user', on_delete=models.CASCADE,
+    desc = models.CharField(max_length=300, blank=True, null=True)
+    created_by = models.ForeignKey(User, related_name='docum_created_by', on_delete=models.CASCADE,
                                    blank=True, null=True)
     created_at = models.DateTimeField(default=datetime.now, blank=True)
-    updated_by = models.ForeignKey(User, related_name='docum_updated_by_user', on_delete=models.CASCADE,
+    updated_by = models.ForeignKey(User, related_name='docum_updated_by', on_delete=models.CASCADE,
                                    blank=True, null=True)
     updated_at = models.DateTimeField(default=datetime.now, blank=True)

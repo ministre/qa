@@ -32,10 +32,10 @@
                 <a href="{% url 'devices' %}">{% trans "Devices" %}</a>
             </li>
             <li>
-                <a href="/device/fw/">{% trans "FW" %}</a>
+                <a href="{% url 'firmwares' %}">{% trans "FW" %}</a>
             </li>
             <li>
-                <a href="/docum/">{% trans "Documents" %}</a>
+                <a href="{% url 'docums' %}">{% trans "Documents" %}</a>
             </li>
             <li>
                 <a href="/testplan/">{% trans "Testplans" %}</a>
@@ -69,7 +69,7 @@
                             </li>
                         </ul>
                     </li>
-                    <li><a href="#">{% trans "Document Types" %}</a></li>
+                    <li><a href="{% url 'docum_types' %}">{% trans "Document Types" %}</a></li>
                     <li><a href="#">{% trans "Testplan Patterns" %}</a></li>
                     <li><a href="#">{% trans "Docx-file Patterns" %}</a></li>
                 </ul>

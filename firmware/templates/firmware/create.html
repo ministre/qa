@@ -5,7 +5,7 @@
 {% block content %}
 
 <form method="post" action="">
-    <a href="{% url 'docum_types' %}" class="button small">&laquo; {% trans "Back" %}</a>
+    <a href="{% url 'firmwares' %}" class="button small">&laquo; {% trans "Back" %}</a>
     <input type="submit" value='{% trans "Create" %}' class="button success small" />
     {% csrf_token %}
     {{ form }}

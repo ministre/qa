@@ -19,7 +19,7 @@ class TypeCreate(CreateView):
         return {'created_by': self.request.user, 'updated_by': self.request.user}
 
     def get_success_url(self):
-        return reverse('types')
+        return reverse('docum_types')
 
 
 @method_decorator(login_required, name='dispatch')
@@ -39,7 +39,7 @@ class TypeUpdate(UpdateView):
         return {'updated_by': self.request.user, 'updated_at': datetime.now}
 
     def get_success_url(self):
-        return reverse('types')
+        return reverse('docum_types')
 
 
 @method_decorator(login_required, name='dispatch')
@@ -48,7 +48,7 @@ class TypeDelete(DeleteView):
     template_name = 'docum_type/delete.html'
 
     def get_success_url(self):
-        return reverse('types')
+        return reverse('docum_types')
 
 
 # documents

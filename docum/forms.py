@@ -18,9 +18,9 @@ class DocumForm(ModelForm):
     class Meta:
         model = Docum
         labels = {
-            'name': _('Name'),
-            'file': _('File'),
-            'file': _('Type'),
+            'file': _('Document File'),
+            'type': _('Document Type'),
+            'desc': _('Description'),
         }
         fields = '__all__'
         widgets = {'created_by': HiddenInput(), 'created_at': HiddenInput(),

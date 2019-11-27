@@ -1,8 +1,7 @@
 from django.shortcuts import render
-from device.models import CustomField, CustomValue, DeviceType, Device, DevicePhoto, Button, Led, Firmware, \
+from device.models import CustomField, CustomValue, DeviceType, Device, DevicePhoto, Button, Led, \
     Interface, DeviceInterface
-from .forms import CustomFieldForm, DeviceTypeForm, DeviceForm, DevicePhotoForm, ButtonForm, LedForm, FirmwareForm, \
-    InterfaceForm
+from .forms import CustomFieldForm, DeviceTypeForm, DeviceForm, DevicePhotoForm, ButtonForm, LedForm, InterfaceForm
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -365,42 +364,3 @@ class LedDelete(DeleteView):
 
     def get_success_url(self):
         return reverse('led_list')
-
-
-@method_decorator(login_required, name='dispatch')
-class FirmwareListView(ListView):
-    context_object_name = 'firmwares'
-    queryset = Firmware.objects.all()
-    template_name = 'device/firmware_list.html'
-
-
-@method_decorator(login_required, name='dispatch')
-class FirmwareCreate(CreateView):
-    model = Firmware
-    form_class = FirmwareForm
-    template_name = 'device/firmware_create.html'
-
-    def get_initial(self):
-        return {'created_by': self.request.user}
-
-    def get_success_url(self):
-        return reverse('firmware_list')
-
-
-@method_decorator(login_required, name='dispatch')
-class FirmwareUpdate(UpdateView):
-    model = Firmware
-    form_class = FirmwareForm
-    template_name = 'device/firmware_update.html'
-
-    def get_success_url(self):
-        return reverse('firmware_list')
-
-
-@method_decorator(login_required, name='dispatch')
-class FirmwareDelete(DeleteView):
-    model = Firmware
-    template_name = 'device/delete.html'
-
-    def get_success_url(self):
-        return reverse('firmware_list')
