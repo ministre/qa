@@ -27,10 +27,13 @@ class DeviceTypeForm(ModelForm):
         labels = {
             'tag': _('Tag'),
             'desc': _('Description'),
+            'desc_genitive': _('Genitive description'),
             'cf': _('Custom fields'),
             'ifaces': _('Interfaces'),
         }
         fields = '__all__'
+        widgets = {'created_by': HiddenInput(), 'created_at': HiddenInput(),
+                   'updated_by': HiddenInput(), 'updated_at': HiddenInput()}
 
 
 class DeviceForm(ModelForm):

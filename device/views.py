@@ -89,15 +89,18 @@ class CustomFieldDelete(DeleteView):
 @method_decorator(login_required, name='dispatch')
 class DeviceTypeListView(ListView):
     context_object_name = 'device_types'
-    queryset = DeviceType.objects.all()
-    template_name = 'device/type_list.html'
+    queryset = DeviceType.objects.all().order_by('id')
+    template_name = 'type/list.html'
 
 
 @method_decorator(login_required, name='dispatch')
 class DeviceTypeCreate(CreateView):
     model = DeviceType
     form_class = DeviceTypeForm
-    template_name = 'device/type_create.html'
+    template_name = 'type/create.html'
+
+    def get_initial(self):
+        return {'created_by': self.request.user, 'updated_by': self.request.user}
 
     def get_success_url(self):
         return reverse('type_list')
