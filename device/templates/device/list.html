@@ -14,7 +14,8 @@
         <th>{% trans "Model" %}</th>
         <th>{% trans "HW" %}</th>
         <th>{% trans "Type" %}</th>
-        <th>{% trans "Created by" %}</th>
+        <th>{% trans "Updated by" %}</th>
+        <th>{% trans "Updated at" %}</th>
     </tr>
     </thead>
     <tbody>
@@ -25,7 +26,8 @@
         <td>{{ device.model }}</td>
         <td>{{ device.hw }}</td>
         <td>{{ device.type }}</td>
-        <td>{{ device.created_by }}</td>
+        <td>{{ device.updated_by }}</td>
+        <td>{{ device.updated_at }}</td>
     </tr>
     {% endfor %}
     </tbody>
@@ -36,7 +38,8 @@
         <th>{% trans "Model" %}</th>
         <th>{% trans "HW" %}</th>
         <th>{% trans "Type" %}</th>
-        <th>{% trans "Created by" %}</th>
+        <th>{% trans "Updated by" %}</th>
+        <th>{% trans "Updated at" %}</th>
     </tr>
     </tfoot>
 </table>

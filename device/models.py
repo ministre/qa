@@ -45,12 +45,16 @@ class DeviceType(models.Model):
 
 
 class Device(models.Model):
-    vendor = models.CharField(max_length=300)
-    model = models.CharField(max_length=300)
+    vendor = models.CharField(max_length=400)
+    model = models.CharField(max_length=400)
     hw = models.CharField(max_length=100)
     type = models.ForeignKey(DeviceType, on_delete=models.CASCADE)
-    created_by = models.ForeignKey(User, related_name='created_by_user', on_delete=models.CASCADE,
+    created_by = models.ForeignKey(User, related_name='device_created_by', on_delete=models.CASCADE,
                                    blank=True, null=True)
+    created_at = models.DateTimeField(default=datetime.now, blank=True)
+    updated_by = models.ForeignKey(User, related_name='device_updated_by', on_delete=models.CASCADE,
+                                   blank=True, null=True)
+    updated_at = models.DateTimeField(default=datetime.now, blank=True)
 
     def __str__(self):
         return self.model

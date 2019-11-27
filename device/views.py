@@ -139,10 +139,10 @@ class DeviceListView(ListView):
 class DeviceCreate(CreateView):
     model = Device
     form_class = DeviceForm
-    template_name = 'device/device_create.html'
+    template_name = 'device/create.html'
 
     def get_initial(self):
-        return {'created_by': self.request.user}
+        return {'created_by': self.request.user, 'updated_by': self.request.user}
 
     def get_success_url(self):
         return reverse('devices')
@@ -152,7 +152,10 @@ class DeviceCreate(CreateView):
 class DeviceUpdate(UpdateView):
     model = Device
     form_class = DeviceForm
-    template_name = 'device/device_update.html'
+    template_name = 'device/update.html'
+
+    def get_initial(self):
+        return {'updated_by': self.request.user, 'updated_at': datetime.now}
 
     def get_success_url(self):
         return reverse('devices')

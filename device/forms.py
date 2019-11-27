@@ -46,8 +46,9 @@ class DeviceForm(ModelForm):
             'hw': _('Hardware'),
             'type': _('Type'),
         }
-        fields = ['vendor', 'model', 'hw', 'type', 'created_by']
-        widgets = {'created_by': HiddenInput()}
+        fields = '__all__'
+        widgets = {'created_by': HiddenInput(), 'created_at': HiddenInput(),
+                   'updated_by': HiddenInput(), 'updated_at': HiddenInput()}
 
 
 class DevicePhotoForm(ModelForm):
