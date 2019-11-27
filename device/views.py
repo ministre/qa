@@ -12,6 +12,7 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
+from datetime import datetime
 
 
 @method_decorator(login_required, name='dispatch')
@@ -103,26 +104,29 @@ class DeviceTypeCreate(CreateView):
         return {'created_by': self.request.user, 'updated_by': self.request.user}
 
     def get_success_url(self):
-        return reverse('type_list')
+        return reverse('device_types')
 
 
 @method_decorator(login_required, name='dispatch')
 class DeviceTypeUpdate(UpdateView):
     model = DeviceType
     form_class = DeviceTypeForm
-    template_name = 'device/type_update.html'
+    template_name = 'type/update.html'
+
+    def get_initial(self):
+        return {'updated_by': self.request.user, 'updated_at': datetime.now}
 
     def get_success_url(self):
-        return reverse('type_list')
+        return reverse('device_types')
 
 
 @method_decorator(login_required, name='dispatch')
 class DeviceTypeDelete(DeleteView):
     model = DeviceType
-    template_name = 'device/delete.html'
+    template_name = 'type/delete.html'
 
     def get_success_url(self):
-        return reverse('type_list')
+        return reverse('device_types')
 
 
 @method_decorator(login_required, name='dispatch')

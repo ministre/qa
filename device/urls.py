@@ -7,10 +7,13 @@ urlpatterns = [
     path('interface/create/', views.InterfaceCreate.as_view(), name='interface_create'),
     path('interface/<int:pk>/', views.InterfaceUpdate.as_view(), name='interface_update'),
     path('interface/<int:pk>/delete/', views.InterfaceDelete.as_view(), name='interface_delete'),
+
+    # device types
     path('type/', views.DeviceTypeListView.as_view(), name='device_types'),
     path('type/create/', views.DeviceTypeCreate.as_view(), name='device_type_create'),
-    path('type/<int:pk>/', views.DeviceTypeUpdate.as_view(), name='type_update'),
-    path('type/<int:pk>/delete/', views.DeviceTypeDelete.as_view(), name='type_delete'),
+    path('type/<int:pk>/', views.DeviceTypeUpdate.as_view(), name='device_type_update'),
+    path('type/<int:pk>/delete/', views.DeviceTypeDelete.as_view(), name='device_type_delete'),
+
     path('custom_field/', views.CustomFieldListView.as_view(), name='custom_field_list'),
     path('custom_field/create/', views.CustomFieldCreate.as_view(), name='custom_field_create'),
     path('custom_field/<int:pk>/', views.CustomFieldUpdate.as_view(), name='custom_field_update'),
