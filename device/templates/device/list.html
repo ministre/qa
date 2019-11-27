@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<a href="/device/create/" class="button">{% trans "Create" %}</a>
+<a href="{% url 'device_create' %}" class="button small">{% trans "Create" %}</a>
 
 <table id="devices" class="display" style="width:100%">
     <thead>

@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.DeviceListView.as_view(), name='device_list'),
+    path('', views.DeviceListView.as_view(), name='devices'),
     path('interface/', views.InterfaceListView.as_view(), name='interface_list'),
     path('interface/create/', views.InterfaceCreate.as_view(), name='interface_create'),
     path('interface/<int:pk>/', views.InterfaceUpdate.as_view(), name='interface_update'),
@@ -18,6 +18,8 @@ urlpatterns = [
     path('custom_field/create/', views.CustomFieldCreate.as_view(), name='custom_field_create'),
     path('custom_field/<int:pk>/', views.CustomFieldUpdate.as_view(), name='custom_field_update'),
     path('custom_field/<int:pk>/delete/', views.CustomFieldDelete.as_view(), name='custom_field_delete'),
+
+    # devices
     path('device/create/', views.DeviceCreate.as_view(), name='device_create'),
     path('device/<int:pk>/update/', views.DeviceUpdate.as_view(), name='device_update'),
     path('device/<int:pk>/update_details/', views.device_update_details, name='device_update_details'),

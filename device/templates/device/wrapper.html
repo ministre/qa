@@ -29,7 +29,7 @@
             <li class="menu-text">Quality Assurance</li>
             {% if user.is_authenticated %}
             <li>
-                <a href="/device/">{% trans "Devices" %}</a>
+                <a href="{% url 'devices' %}">{% trans "Devices" %}</a>
             </li>
             <li>
                 <a href="/device/fw/">{% trans "Firmwares" %}</a>

@@ -3,8 +3,7 @@ from device.models import CustomField, CustomValue, DeviceType, Device, DevicePh
     Interface, DeviceInterface
 from .forms import CustomFieldForm, DeviceTypeForm, DeviceForm, DevicePhotoForm, ButtonForm, LedForm, FirmwareForm, \
     InterfaceForm
-from django.views.generic import ListView, DeleteView
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
@@ -132,8 +131,8 @@ class DeviceTypeDelete(DeleteView):
 @method_decorator(login_required, name='dispatch')
 class DeviceListView(ListView):
     context_object_name = 'devices'
-    queryset = Device.objects.all()
-    template_name = 'device/device_list.html'
+    queryset = Device.objects.all().order_by('id')
+    template_name = 'device/list.html'
 
 
 @method_decorator(login_required, name='dispatch')
@@ -146,7 +145,7 @@ class DeviceCreate(CreateView):
         return {'created_by': self.request.user}
 
     def get_success_url(self):
-        return reverse('device_list')
+        return reverse('devices')
 
 
 @method_decorator(login_required, name='dispatch')
@@ -156,7 +155,7 @@ class DeviceUpdate(UpdateView):
     template_name = 'device/device_update.html'
 
     def get_success_url(self):
-        return reverse('device_list')
+        return reverse('devices')
 
 
 @method_decorator(login_required, name='dispatch')
@@ -165,7 +164,7 @@ class DeviceDelete(DeleteView):
     template_name = 'device/delete.html'
 
     def get_success_url(self):
-        return reverse('device_list')
+        return reverse('devices')
 
 
 def get_device_custom_values(device_id):
