@@ -85,26 +85,6 @@ class DevicePhoto(models.Model):
     desc = models.CharField(max_length=500)
 
 
-class Button(models.Model):
-    name = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        ordering = ('name',)
-
-
-class Led(models.Model):
-    name = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        ordering = ('name',)
-
-
 class DeviceInterface(models.Model):
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
     interface = models.ForeignKey(Interface, on_delete=models.CASCADE)

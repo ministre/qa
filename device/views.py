@@ -1,8 +1,6 @@
 from django.shortcuts import render
-from .models import CustomField, CustomValue, DeviceType, Vendor, Device, DevicePhoto, Button, Led, \
-    Interface, DeviceInterface
-from .forms import CustomFieldForm, DeviceTypeForm, VendorForm, DeviceForm, DevicePhotoForm, ButtonForm, LedForm, \
-    InterfaceForm
+from .models import CustomField, CustomValue, DeviceType, Vendor, Device, DevicePhoto, Interface, DeviceInterface
+from .forms import CustomFieldForm, DeviceTypeForm, VendorForm, DeviceForm, DevicePhotoForm, InterfaceForm
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -335,75 +333,3 @@ class DevicePhotoDelete(DeleteView):
 
     def get_success_url(self):
         return reverse('photo_list')
-
-
-@method_decorator(login_required, name='dispatch')
-class ButtonListView(ListView):
-    context_object_name = 'buttons'
-    queryset = Button.objects.all()
-    template_name = 'device/button_list.html'
-
-
-@method_decorator(login_required, name='dispatch')
-class ButtonCreate(CreateView):
-    model = Button
-    form_class = ButtonForm
-    template_name = 'device/button_create.html'
-
-    def get_success_url(self):
-        return reverse('button_list')
-
-
-@method_decorator(login_required, name='dispatch')
-class ButtonUpdate(UpdateView):
-    model = Button
-    form_class = ButtonForm
-    template_name = 'device/button_update.html'
-
-    def get_success_url(self):
-        return reverse('button_list')
-
-
-@method_decorator(login_required, name='dispatch')
-class ButtonDelete(DeleteView):
-    model = Button
-    template_name = 'device/delete.html'
-
-    def get_success_url(self):
-        return reverse('button_list')
-
-
-@method_decorator(login_required, name='dispatch')
-class LedListView(ListView):
-    context_object_name = 'leds'
-    queryset = Led.objects.all()
-    template_name = 'device/led_list.html'
-
-
-@method_decorator(login_required, name='dispatch')
-class LedCreate(CreateView):
-    model = Led
-    form_class = LedForm
-    template_name = 'device/led_create.html'
-
-    def get_success_url(self):
-        return reverse('led_list')
-
-
-@method_decorator(login_required, name='dispatch')
-class LedUpdate(UpdateView):
-    model = Led
-    form_class = LedForm
-    template_name = 'device/led_update.html'
-
-    def get_success_url(self):
-        return reverse('led_list')
-
-
-@method_decorator(login_required, name='dispatch')
-class LedDelete(DeleteView):
-    model = Led
-    template_name = 'device/delete.html'
-
-    def get_success_url(self):
-        return reverse('led_list')
