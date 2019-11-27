@@ -3,10 +3,6 @@ from . import views
 
 urlpatterns = [
     path('', views.DeviceListView.as_view(), name='devices'),
-    path('interface/', views.InterfaceListView.as_view(), name='interface_list'),
-    path('interface/create/', views.InterfaceCreate.as_view(), name='interface_create'),
-    path('interface/<int:pk>/', views.InterfaceUpdate.as_view(), name='interface_update'),
-    path('interface/<int:pk>/delete/', views.InterfaceDelete.as_view(), name='interface_delete'),
 
     # device types
     path('type/', views.DeviceTypeListView.as_view(), name='device_types'),
@@ -29,7 +25,6 @@ urlpatterns = [
     path('device/create/', views.DeviceCreate.as_view(), name='device_create'),
     path('device/<int:pk>/update/', views.DeviceUpdate.as_view(), name='device_update'),
     path('device/<int:pk>/update_details/', views.device_update_details, name='device_update_details'),
-    path('device/<int:pk>/update_interfaces/', views.device_update_interfaces, name='device_update_interfaces'),
     path('device/<int:pk>/delete/', views.DeviceDelete.as_view(), name='device_delete'),
     path('device/<int:pk>/', views.device_show, name='device_show'),
 

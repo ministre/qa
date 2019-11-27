@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from .models import CustomField, CustomValue, DeviceType, Vendor, Device, DevicePhoto, Interface, DeviceInterface
-from .forms import CustomFieldForm, DeviceTypeForm, VendorForm, DeviceForm, DevicePhotoForm, InterfaceForm
+from .models import CustomField, CustomValue, DeviceType, Vendor, Device, DevicePhoto
+from .forms import CustomFieldForm, DeviceTypeForm, VendorForm, DeviceForm, DevicePhotoForm
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -10,42 +10,6 @@ from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
 from datetime import datetime
-
-
-@method_decorator(login_required, name='dispatch')
-class InterfaceListView(ListView):
-    context_object_name = 'interfaces'
-    queryset = Interface.objects.all()
-    template_name = 'device/interface_list.html'
-
-
-@method_decorator(login_required, name='dispatch')
-class InterfaceCreate(CreateView):
-    model = Interface
-    form_class = InterfaceForm
-    template_name = 'device/interface_create.html'
-
-    def get_success_url(self):
-        return reverse('interface_list')
-
-
-@method_decorator(login_required, name='dispatch')
-class InterfaceUpdate(UpdateView):
-    model = Interface
-    form_class = InterfaceForm
-    template_name = 'device/interface_update.html'
-
-    def get_success_url(self):
-        return reverse('interface_list')
-
-
-@method_decorator(login_required, name='dispatch')
-class InterfaceDelete(DeleteView):
-    model = Interface
-    template_name = 'device/delete.html'
-
-    def get_success_url(self):
-        return reverse('interface_list')
 
 
 @method_decorator(login_required, name='dispatch')
@@ -236,39 +200,11 @@ def set_device_custom_value(device_id, field_id, value):
                                          defaults={'value': value})
 
 
-def get_device_interfaces(device_id):
-    device_interfaces = []
-
-    class DeviceIface:
-        def __init__(self, iface_id, iface_name, iface_quantity):
-            self.iface_id = iface_id
-            self.iface_name = iface_name
-            self.iface_quantity = iface_quantity
-
-    device = get_object_or_404(Device, pk=device_id)
-    interfaces = Interface.objects.filter(interfaces__id=device.type.id).order_by('id')
-    for interface in interfaces:
-        try:
-            quantity = DeviceInterface.objects.get(Q(interface=interface) & Q(device=device)).quantity
-        except ObjectDoesNotExist:
-            quantity = 0
-        device_interfaces.append(DeviceIface(interface.id, interface.name, quantity))
-    return device_interfaces
-
-
-def set_device_interface(device_id, iface_id, quantity):
-    DeviceInterface.objects.update_or_create(device=Device.objects.get(id=device_id),
-                                             interface=Interface.objects.get(id=iface_id),
-                                             defaults={'quantity': quantity})
-
-
 @login_required
 def device_show(request, pk):
     device = get_object_or_404(Device, pk=pk)
     custom_properties = get_device_custom_values(pk)
-    interfaces = get_device_interfaces(pk)
-    return render(request, 'device/device_show.html', {'device': device, 'custom_properties': custom_properties,
-                                                       'interfaces': interfaces})
+    return render(request, 'device/device_show.html', {'device': device, 'custom_properties': custom_properties})
 
 
 @login_required
@@ -283,20 +219,6 @@ def device_update_details(request, pk):
         custom_properties = get_device_custom_values(pk)
         return render(request, 'device/device_update_details.html', {'device': device,
                                                                      'custom_properties': custom_properties})
-
-
-@login_required
-def device_update_interfaces(request, pk):
-    if request.method == 'POST':
-        for item in request.POST.dict().items():
-            if item[0] != 'csrfmiddlewaretoken':
-                set_device_interface(pk, int(item[0]), item[1])
-        return HttpResponseRedirect('/device/' + str(pk) + '/')
-    else:
-        device = get_object_or_404(Device, pk=pk)
-        interfaces = get_device_interfaces(pk)
-        return render(request, 'device/device_update_interfaces.html', {'device': device,
-                                                                        'interfaces': interfaces})
 
 
 @method_decorator(login_required, name='dispatch')

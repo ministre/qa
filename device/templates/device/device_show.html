@@ -6,7 +6,6 @@
 
 <a href="/" class="button">&laquo; {% trans "Back" %}</a>
 <a href="/device/{{ device.id }}/update/" class="button">{% trans "Update" %}</a>
-<a href="/device/{{ device.id }}/update_interfaces/" class="button">{% trans "Update Interfaces" %}</a>
 <a href="/device/{{ device.id }}/update_details/" class="button">{% trans "Update Details" %}</a>
 <a href="/device/fw/add/{{ device.id }}/" class="button">{% trans "Add Firmware" %}</a>
 <a href="/device/{{ device.id }}/delete/" class="button alert">{% trans "Delete" %}</a>
@@ -37,21 +36,6 @@
                         <div class="cell medium-6 large-4">{% trans "Type" %}:</div>
                         <div class="cell medium-6 large-8">{{ device.type }}</div>
                     </div>
-                </div>
-            </li>
-
-            <li class="accordion-item is-active" data-accordion-item>
-                <a href="#" class="accordion-title">{% trans "Interfaces" %}</a>
-                <div class="accordion-content" data-tab-content>
-                    {% for interface in interfaces %}
-                        {% if interface.iface_quantity > 1 %}
-                        {{ interface.iface_quantity }}
-                        {% endif %}
-
-                        {% if interface.iface_quantity > 0 %}
-                        {{ interface.iface_name }}<br>
-                        {% endif %}
-                    {% endfor %}
                 </div>
             </li>
 
