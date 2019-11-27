@@ -1,7 +1,8 @@
 from django.shortcuts import render
-from device.models import CustomField, CustomValue, DeviceType, Device, DevicePhoto, Button, Led, \
+from .models import CustomField, CustomValue, DeviceType, Vendor, Device, DevicePhoto, Button, Led, \
     Interface, DeviceInterface
-from .forms import CustomFieldForm, DeviceTypeForm, DeviceForm, DevicePhotoForm, ButtonForm, LedForm, InterfaceForm
+from .forms import CustomFieldForm, DeviceTypeForm, VendorForm, DeviceForm, DevicePhotoForm, ButtonForm, LedForm, \
+    InterfaceForm
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -125,6 +126,48 @@ class DeviceTypeDelete(DeleteView):
 
     def get_success_url(self):
         return reverse('device_types')
+
+
+@method_decorator(login_required, name='dispatch')
+class VendorListView(ListView):
+    context_object_name = 'vendors'
+    queryset = Vendor.objects.all().order_by('id')
+    template_name = 'vendor/list.html'
+
+
+@method_decorator(login_required, name='dispatch')
+class VendorCreate(CreateView):
+    model = Vendor
+    form_class = VendorForm
+    template_name = 'vendor/create.html'
+
+    def get_initial(self):
+        return {'created_by': self.request.user, 'updated_by': self.request.user}
+
+    def get_success_url(self):
+        return reverse('vendors')
+
+
+@method_decorator(login_required, name='dispatch')
+class VendorUpdate(UpdateView):
+    model = Vendor
+    form_class = VendorForm
+    template_name = 'vendor/update.html'
+
+    def get_initial(self):
+        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+
+    def get_success_url(self):
+        return reverse('vendors')
+
+
+@method_decorator(login_required, name='dispatch')
+class VendorDelete(DeleteView):
+    model = Vendor
+    template_name = 'vendor/delete.html'
+
+    def get_success_url(self):
+        return reverse('vendors')
 
 
 @method_decorator(login_required, name='dispatch')

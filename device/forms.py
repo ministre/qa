@@ -1,5 +1,5 @@
 from django.forms import ModelForm, HiddenInput
-from device.models import DeviceType, CustomField, Device, DevicePhoto, Button, Led, Interface
+from device.models import DeviceType, Vendor, CustomField, Device, DevicePhoto, Button, Led, Interface
 from django.utils.translation import gettext_lazy as _
 
 
@@ -31,6 +31,17 @@ class DeviceTypeForm(ModelForm):
             'cf': _('Custom fields'),
             'ifaces': _('Interfaces'),
             'redmine_url': _('Redmine URL'),
+        }
+        fields = '__all__'
+        widgets = {'created_by': HiddenInput(), 'created_at': HiddenInput(),
+                   'updated_by': HiddenInput(), 'updated_at': HiddenInput()}
+
+
+class VendorForm(ModelForm):
+    class Meta:
+        model = Vendor
+        labels = {
+            'name': _('Name'),
         }
         fields = '__all__'
         widgets = {'created_by': HiddenInput(), 'created_at': HiddenInput(),

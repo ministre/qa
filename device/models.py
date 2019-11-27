@@ -40,12 +40,22 @@ class DeviceType(models.Model):
     def __str__(self):
         return self.desc
 
-    class Meta:
-        ordering = ('desc',)
+
+class Vendor(models.Model):
+    name = models.CharField(max_length=400)
+    created_by = models.ForeignKey(User, related_name='vendor_created_by', on_delete=models.CASCADE,
+                                   blank=True, null=True)
+    created_at = models.DateTimeField(default=datetime.now, blank=True)
+    updated_by = models.ForeignKey(User, related_name='vendor_updated_by', on_delete=models.CASCADE,
+                                   blank=True, null=True)
+    updated_at = models.DateTimeField(default=datetime.now, blank=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Device(models.Model):
-    vendor = models.CharField(max_length=400)
+    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     model = models.CharField(max_length=400)
     hw = models.CharField(max_length=100)
     type = models.ForeignKey(DeviceType, on_delete=models.CASCADE)

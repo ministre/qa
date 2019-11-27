@@ -23,7 +23,6 @@
 
 
 <div class="top-bar">
-
     <div class="top-bar-left">
         <ul class="dropdown menu" data-dropdown-menu>
             <li class="menu-text">Quality Assurance</li>
@@ -38,7 +37,7 @@
                 <a href="{% url 'docums' %}">{% trans "Documents" %}</a>
             </li>
             <li>
-                <a href="/testplan/">{% trans "Testplans" %}</a>
+                <a href="{% url 'testplans' %}">{% trans "Testplans" %}</a>
             </li>
             <li>
                 <a href="#">{% trans "Protocols" %}</a>
@@ -50,7 +49,7 @@
                 <a href="#">{% trans "Handbook" %}</a>
                 <ul class="menu vertical">
                     <li>
-                        <a href="#">{% trans "Vendors" %}</a>
+                        <a href="{% url 'vendors' %}">{% trans "Vendors" %}</a>
                     </li>
                     <li>
                         <a href="{% url 'device_types' %}">{% trans "Device Types" %}</a>
@@ -74,7 +73,6 @@
                     <li><a href="#">{% trans "Docx-file Patterns" %}</a></li>
                 </ul>
             </li>
-
             {% endif %}
         </ul>
     </div>
@@ -101,12 +99,9 @@
             {% else %}
             <li><a href="{% url 'login'%}?next={{request.path}}" class="button">{% trans "Sign in" %}</a></li>
             {% endif %}
-
         </ul>
         </form>
     </div>
-
-
 </div>
 
 <br>
