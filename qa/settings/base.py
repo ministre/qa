@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'firmware',
     'docum',
     'testplan',
+    'testplan_pattern',
     'redmine',
     'paper',
     'compressor',

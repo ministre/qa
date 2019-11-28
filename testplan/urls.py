@@ -98,8 +98,4 @@ urlpatterns = [
          views.TestCommentDelete.as_view(), name='test_comment_delete'),
     path('<int:testplan_id>/test/<int:test_id>/comment/<int:pk>/update/',
          views.TestCommentUpdate.as_view(), name='test_comment_update'),
-
-    # patterns
-    path('pattern/', views.PatternListView.as_view(), name='patterns'),
-    path('pattern/create/', views.PatternCreate.as_view(), name='pattern_create'),
 ]
