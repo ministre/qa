@@ -12,3 +12,9 @@ class Pattern(models.Model):
     created_at = models.DateTimeField(default=datetime.now, blank=True)
     updated_by = models.ForeignKey(User, related_name='pattern_updated', on_delete=models.CASCADE, blank=True, null=True)
     updated_at = models.DateTimeField(default=datetime.now, blank=True)
+
+
+class Title(models.Model):
+    pattern = models.ForeignKey(Pattern, on_delete=models.CASCADE)
+    device_type = models.ForeignKey(DeviceType, on_delete=models.CASCADE)
+    name = models.CharField(max_length=1000)

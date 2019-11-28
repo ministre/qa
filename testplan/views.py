@@ -1,13 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.utils.decorators import method_decorator
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
-from testplan.models import Testplan, Category, Chapter, Test, TestConfig, TestImage, TestFile, TestChecklist, \
+from .models import Testplan, Category, Chapter, Test, TestConfig, TestImage, TestFile, TestChecklist, \
     ChecklistItem, TestWorksheet, WorksheetItem, TestLink, TestComment
 from .forms import TestplanForm, CategoryForm, ChapterForm, TestForm, TestConfigForm, TestImageForm, TestFileForm, \
     TestChecklistForm, ChecklistItemForm, TestWorksheetForm, WorksheetItemForm, TestLinkForm, TestCommentForm
-from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 import textile
 from datetime import datetime

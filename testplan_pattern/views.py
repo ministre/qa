@@ -2,6 +2,7 @@ from django.utils.decorators import method_decorator
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
+from django.shortcuts import get_object_or_404, render
 from .models import Pattern
 from .forms import PatternForm
 from datetime import datetime
@@ -47,3 +48,9 @@ class PatternDelete(DeleteView):
 
     def get_success_url(self):
         return reverse('patterns')
+
+
+@login_required
+def pattern_details(request, pattern_id):
+    pattern = get_object_or_404(Pattern, id=pattern_id)
+    return render(request, 'pattern/details.html', {'pattern': pattern})
