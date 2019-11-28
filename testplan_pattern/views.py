@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.shortcuts import get_object_or_404, render
 from .models import Pattern
+from device.models import DeviceType
 from .forms import PatternForm
 from datetime import datetime
 
@@ -53,4 +54,5 @@ class PatternDelete(DeleteView):
 @login_required
 def pattern_details(request, pattern_id):
     pattern = get_object_or_404(Pattern, id=pattern_id)
-    return render(request, 'pattern/details.html', {'pattern': pattern})
+    tags = DeviceType.objects.filter(device_types__id=pattern.id).order_by('id')
+    return render(request, 'pattern/details.html', {'pattern': pattern, 'tags': tags})
