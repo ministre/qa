@@ -18,3 +18,6 @@ class Title(models.Model):
     pattern = models.ForeignKey(Pattern, on_delete=models.CASCADE)
     device_type = models.ForeignKey(DeviceType, on_delete=models.CASCADE)
     name = models.CharField(max_length=1000)
+
+    class Meta:
+        unique_together = ('pattern', 'device_type',)

@@ -24,6 +24,9 @@ class DeviceType(models.Model):
     def __str__(self):
         return self.desc
 
+    class Meta:
+        ordering = ('desc',)
+
 
 class Vendor(models.Model):
     name = models.CharField(max_length=400)
