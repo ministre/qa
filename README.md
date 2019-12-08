@@ -1,2 +1,0 @@
-# Quality Assurance
-Experimental version
