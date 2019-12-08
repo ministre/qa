@@ -1,0 +1,653 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-12-08 17:13+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: .\device\forms.py:10 .\device\forms.py:35
+#: .\device\templates\device\custom_field_list.html:13
+#: .\device\templates\device\custom_field_list.html:27
+#: .\device\templates\vendor\list.html:13
+#: .\device\templates\vendor\list.html:31 .\docum\forms.py:10
+#: .\docum\templates\docum_type\list.html:12
+#: .\docum\templates\docum_type\list.html:34 .\testplan\forms.py:12
+#: .\testplan\forms.py:27 .\testplan\forms.py:38 .\testplan\forms.py:50
+#: .\testplan\forms.py:65 .\testplan\forms.py:100 .\testplan\forms.py:116
+#: .\testplan\forms.py:130 .\testplan\forms.py:143 .\testplan\forms.py:156
+#: .\testplan\forms.py:169 .\testplan\forms.py:182
+#: .\testplan\templates\testplan\list.html:15
+#: .\testplan\templates\testplan\list.html:37 .\testplan_pattern\forms.py:10
+#: .\testplan_pattern\templates\pattern\list.html:12
+#: .\testplan_pattern\templates\pattern\list.html:30
+msgid "Name"
+msgstr "Название"
+
+#: .\device\forms.py:19 .\device\templates\type\list.html:13
+#: .\device\templates\type\list.html:33
+#: .\redmine\templates\redmine\import_testplan.html:18
+#: .\testplan\templates\testplan\list.html:17
+#: .\testplan\templates\testplan\list.html:39
+msgid "Tag"
+msgstr "Тег"
+
+#: .\device\forms.py:20 .\device\forms.py:62
+#: .\device\templates\device\photo_list.html:16
+#: .\device\templates\device\photo_list.html:32
+#: .\device\templates\type\list.html:14 .\device\templates\type\list.html:34
+#: .\docum\forms.py:23 .\firmware\forms.py:16
+#: .\testplan\templates\chapter\details.html:12
+msgid "Description"
+msgstr "Описание"
+
+#: .\device\forms.py:21
+msgid "Genitive Description"
+msgstr "Описание в родительном падеже"
+
+#: .\device\forms.py:22
+msgid "Custom fields"
+msgstr "Настраиваемые поля"
+
+#: .\device\forms.py:23
+msgid "Interfaces"
+msgstr "Интерфейсы"
+
+#: .\device\forms.py:24 .\testplan\forms.py:15 .\testplan\forms.py:37
+#: .\testplan\forms.py:54 .\testplan\templates\chapter\details.html:54
+#: .\testplan\templates\test\details.html:191
+#: .\testplan\templates\testplan\details.html:56 .\testplan_pattern\forms.py:12
+msgid "Redmine URL"
+msgstr "Redmine URL"
+
+#: .\device\forms.py:46 .\device\templates\device\device_show.html:24
+#: .\device\templates\device\list.html:13
+#: .\device\templates\device\list.html:37
+msgid "Vendor"
+msgstr "Вендор"
+
+#: .\device\forms.py:47 .\device\templates\device\device_show.html:28
+#: .\device\templates\device\list.html:14
+#: .\device\templates\device\list.html:38
+#: .\device\templates\device\photo_list.html:15
+#: .\device\templates\device\photo_list.html:31
+msgid "Model"
+msgstr "Модель"
+
+#: .\device\forms.py:48
+msgid "Hardware"
+msgstr "Аппаратная ревизия"
+
+#: .\device\forms.py:49 .\device\templates\device\device_show.html:36
+#: .\device\templates\device\list.html:16
+#: .\device\templates\device\list.html:40
+msgid "Type"
+msgstr "Тип"
+
+#: .\device\forms.py:60 .\docum\templates\docum\list.html:12
+#: .\docum\templates\docum\list.html:36 .\firmware\forms.py:10
+#: .\firmware\templates\firmware\list.html:14
+#: .\firmware\templates\firmware\list.html:34
+msgid "Device"
+msgstr "Оборудование"
+
+#: .\device\forms.py:61
+msgid "Photo"
+msgstr "Фото"
+
+#: .\device\templates\device\create.html:8
+#: .\device\templates\device\custom_field_create.html:7
+#: .\device\templates\device\custom_field_update.html:7
+#: .\device\templates\device\delete.html:10
+#: .\device\templates\device\device_show.html:7
+#: .\device\templates\device\device_update_details.html:9
+#: .\device\templates\device\photo_create.html:7
+#: .\device\templates\device\photo_update.html:7
+#: .\device\templates\device\update.html:8
+#: .\device\templates\type\create.html:8 .\device\templates\type\delete.html:10
+#: .\device\templates\type\update.html:8
+#: .\device\templates\vendor\create.html:8
+#: .\device\templates\vendor\delete.html:10
+#: .\device\templates\vendor\update.html:8
+#: .\docum\templates\docum\create.html:8 .\docum\templates\docum\delete.html:10
+#: .\docum\templates\docum\update.html:9
+#: .\docum\templates\docum_type\create.html:8
+#: .\docum\templates\docum_type\delete.html:10
+#: .\docum\templates\docum_type\update.html:9
+#: .\firmware\templates\firmware\create.html:8
+#: .\firmware\templates\firmware\delete.html:10
+#: .\firmware\templates\firmware\update.html:8
+#: .\redmine\templates\redmine\error.html:7
+#: .\redmine\templates\redmine\import_testplan.html:8
+#: .\testplan\templates\category\create.html:8
+#: .\testplan\templates\category\delete.html:10
+#: .\testplan\templates\category\update.html:8
+#: .\testplan\templates\test\create.html:8
+#: .\testplan\templates\test\delete.html:10
+#: .\testplan\templates\test\update.html:8
+#: .\testplan\templates\test_component\create.html:8
+#: .\testplan\templates\test_component\delete.html:10
+#: .\testplan\templates\test_component\update.html:8
+#: .\testplan\templates\testplan\clear.html:10
+#: .\testplan\templates\testplan\create.html:8
+#: .\testplan\templates\testplan\delete.html:10
+#: .\testplan\templates\testplan\update.html:9
+#: .\testplan_pattern\templates\pattern\create.html:8
+#: .\testplan_pattern\templates\pattern\delete.html:10
+#: .\testplan_pattern\templates\pattern\update.html:9
+msgid "Back"
+msgstr "Назад"
+
+#: .\device\templates\device\create.html:9
+#: .\device\templates\device\custom_field_create.html:14
+#: .\device\templates\device\custom_field_list.html:7
+#: .\device\templates\device\list.html:7
+#: .\device\templates\device\photo_create.html:14
+#: .\device\templates\device\photo_list.html:9
+#: .\device\templates\type\create.html:9 .\device\templates\type\list.html:7
+#: .\device\templates\vendor\create.html:9
+#: .\device\templates\vendor\list.html:7 .\docum\templates\docum\create.html:9
+#: .\docum\templates\docum\list.html:6
+#: .\docum\templates\docum_type\create.html:9
+#: .\docum\templates\docum_type\list.html:6
+#: .\firmware\templates\firmware\create.html:9
+#: .\firmware\templates\firmware\list.html:7
+#: .\redmine\templates\redmine\import_testplan.html:9
+#: .\testplan\templates\category\create.html:9
+#: .\testplan\templates\test\create.html:9
+#: .\testplan\templates\test_component\create.html:9
+#: .\testplan\templates\testplan\create.html:9
+#: .\testplan\templates\testplan\list.html:7
+#: .\testplan_pattern\templates\pattern\create.html:9
+#: .\testplan_pattern\templates\pattern\list.html:6
+msgid "Create"
+msgstr "Создать"
+
+#: .\device\templates\device\custom_field_create.html:9
+msgid "New custom field"
+msgstr "Создать"
+
+#: .\device\templates\device\custom_field_update.html:9
+msgid "Update custom field"
+msgstr "Редактировать"
+
+#: .\device\templates\device\custom_field_update.html:14
+#: .\device\templates\device\device_show.html:8
+#: .\device\templates\device\device_update_details.html:10
+#: .\device\templates\device\photo_update.html:14
+#: .\device\templates\device\update.html:9
+#: .\device\templates\type\update.html:9
+#: .\device\templates\vendor\update.html:9
+#: .\docum\templates\docum\update.html:10
+#: .\docum\templates\docum_type\update.html:10
+#: .\firmware\templates\firmware\update.html:9
+#: .\testplan\templates\category\update.html:9
+#: .\testplan\templates\test\details.html:181
+#: .\testplan\templates\test\update.html:9
+#: .\testplan\templates\test_component\update.html:9
+#: .\testplan\templates\testplan\details.html:21
+#: .\testplan\templates\testplan\update.html:10
+#: .\testplan_pattern\templates\pattern\details.html:9
+#: .\testplan_pattern\templates\pattern\update.html:10
+msgid "Update"
+msgstr "Редактировать"
+
+#: .\device\templates\device\custom_field_update.html:15
+#: .\device\templates\device\device_show.html:11
+#: .\device\templates\device\device_show.html:98
+#: .\device\templates\device\photo_update.html:15
+#: .\device\templates\type\update.html:10
+#: .\device\templates\vendor\update.html:10
+#: .\docum\templates\docum\update.html:11
+#: .\docum\templates\docum_type\update.html:11
+#: .\testplan\templates\test\details.html:183
+#: .\testplan\templates\testplan\details.html:22
+#: .\testplan_pattern\templates\pattern\details.html:10
+#: .\testplan_pattern\templates\pattern\update.html:11
+msgid "Delete"
+msgstr "Удалить"
+
+#: .\device\templates\device\delete.html:9
+#: .\device\templates\type\delete.html:9
+#: .\device\templates\vendor\delete.html:9
+#: .\docum\templates\docum\delete.html:9
+#: .\docum\templates\docum_type\delete.html:9
+#: .\firmware\templates\firmware\delete.html:9
+#: .\testplan\templates\category\delete.html:9
+#: .\testplan\templates\test\delete.html:9
+#: .\testplan\templates\test_component\delete.html:9
+#: .\testplan\templates\testplan\delete.html:9
+#: .\testplan_pattern\templates\pattern\delete.html:9
+msgid "Are you sure you want to delete"
+msgstr "Вы уверены, что хотите удалить"
+
+#: .\device\templates\device\delete.html:11
+#: .\device\templates\type\delete.html:11
+#: .\device\templates\vendor\delete.html:11
+#: .\docum\templates\docum\delete.html:11
+#: .\docum\templates\docum_type\delete.html:11
+#: .\firmware\templates\firmware\delete.html:11
+#: .\testplan\templates\category\delete.html:11
+#: .\testplan\templates\test\delete.html:11
+#: .\testplan\templates\test_component\delete.html:11
+#: .\testplan\templates\testplan\clear.html:11
+#: .\testplan\templates\testplan\delete.html:11
+#: .\testplan_pattern\templates\pattern\delete.html:11
+msgid "Confirm"
+msgstr "Удалить"
+
+#: .\device\templates\device\device_show.html:9
+msgid "Update Details"
+msgstr "Редактировать"
+
+#: .\device\templates\device\device_show.html:10
+msgid "Add Firmware"
+msgstr "Добавить ПО"
+
+#: .\device\templates\device\device_show.html:20
+msgid "General Information"
+msgstr "Основная информация"
+
+#: .\device\templates\device\device_show.html:32
+#: .\device\templates\device\list.html:15
+#: .\device\templates\device\list.html:39
+msgid "HW"
+msgstr "HW"
+
+#: .\device\templates\device\device_show.html:43
+msgid "Additional Information"
+msgstr "Дополнительная информация"
+
+#: .\device\templates\device\device_show.html:55
+msgid "Firmware"
+msgstr "ПО"
+
+#: .\device\templates\device\device_show.html:63
+msgid "Documentation"
+msgstr "Документация"
+
+#: .\device\templates\device\device_show.html:70
+msgid "Test Reports"
+msgstr "ПМИ"
+
+#: .\device\templates\device\device_show.html:97
+msgid "Add"
+msgstr "Добавить"
+
+#: .\device\templates\device\list.html:17
+#: .\device\templates\device\list.html:41 .\device\templates\type\list.html:15
+#: .\device\templates\type\list.html:35 .\device\templates\vendor\list.html:14
+#: .\device\templates\vendor\list.html:32 .\docum\templates\docum\list.html:16
+#: .\docum\templates\docum\list.html:40
+#: .\docum\templates\docum_type\list.html:15
+#: .\docum\templates\docum_type\list.html:37
+#: .\firmware\templates\firmware\list.html:15
+#: .\firmware\templates\firmware\list.html:35
+#: .\testplan\templates\chapter\details.html:33
+#: .\testplan\templates\test\details.html:52
+#: .\testplan\templates\testplan\details.html:48
+#: .\testplan\templates\testplan\list.html:18
+#: .\testplan\templates\testplan\list.html:40
+#: .\testplan_pattern\templates\pattern\list.html:13
+#: .\testplan_pattern\templates\pattern\list.html:31
+msgid "Updated by"
+msgstr "Обновлено"
+
+#: .\device\templates\device\list.html:18
+#: .\device\templates\device\list.html:42 .\device\templates\type\list.html:16
+#: .\device\templates\type\list.html:36 .\device\templates\vendor\list.html:15
+#: .\device\templates\vendor\list.html:33 .\docum\templates\docum\list.html:17
+#: .\docum\templates\docum\list.html:41
+#: .\docum\templates\docum_type\list.html:16
+#: .\docum\templates\docum_type\list.html:38
+#: .\firmware\templates\firmware\list.html:16
+#: .\firmware\templates\firmware\list.html:36
+#: .\testplan\templates\chapter\details.html:37
+#: .\testplan\templates\test\details.html:56
+#: .\testplan\templates\testplan\details.html:52
+#: .\testplan\templates\testplan\list.html:19
+#: .\testplan\templates\testplan\list.html:41
+#: .\testplan_pattern\templates\pattern\list.html:14
+#: .\testplan_pattern\templates\pattern\list.html:32
+msgid "Updated at"
+msgstr "Последнее изменение"
+
+#: .\device\templates\device\photo_create.html:9
+msgid "New device photo"
+msgstr "Добавить"
+
+#: .\device\templates\device\photo_list.html:7
+msgid "Photos"
+msgstr "Фото"
+
+#: .\device\templates\device\photo_update.html:9
+msgid "Update device photo"
+msgstr "Редактировать"
+
+#: .\device\templates\device\wrapper.html:28
+msgid "Devices"
+msgstr "Оборудование"
+
+#: .\device\templates\device\wrapper.html:31
+msgid "FW"
+msgstr "ПО"
+
+#: .\device\templates\device\wrapper.html:34
+msgid "Documents"
+msgstr "Документация"
+
+#: .\device\templates\device\wrapper.html:37
+msgid "Testplans"
+msgstr "ПМИ"
+
+#: .\device\templates\device\wrapper.html:40
+msgid "Protocols"
+msgstr "Протоколы"
+
+#: .\device\templates\device\wrapper.html:43
+msgid "RFI"
+msgstr "ТТ"
+
+#: .\device\templates\device\wrapper.html:46
+msgid "Handbook"
+msgstr "Справочник"
+
+#: .\device\templates\device\wrapper.html:49
+msgid "Vendors"
+msgstr "Вендоры"
+
+#: .\device\templates\device\wrapper.html:52 .\testplan_pattern\forms.py:11
+msgid "Device Types"
+msgstr "Типы устройств"
+
+#: .\device\templates\device\wrapper.html:55
+msgid "Custom Fields"
+msgstr "Настраиваемые поля"
+
+#: .\device\templates\device\wrapper.html:60
+msgid "Chipsets"
+msgstr "Чипсеты"
+
+#: .\device\templates\device\wrapper.html:63
+msgid "Chipset Types"
+msgstr "Типы чипсетов"
+
+#: .\device\templates\device\wrapper.html:67
+msgid "Document Types"
+msgstr "Типы документации"
+
+#: .\device\templates\device\wrapper.html:68
+msgid "Testplan Patterns"
+msgstr "Шаблоны ПМИ"
+
+#: .\device\templates\device\wrapper.html:69
+msgid "Docx Profiles"
+msgstr "Профили Docx"
+
+#: .\device\templates\device\wrapper.html:94
+msgid "Sign out"
+msgstr "Выход"
+
+#: .\device\templates\device\wrapper.html:96
+#: .\device\templates\registration\login.html:32
+msgid "Sign in"
+msgstr "Вход"
+
+#: .\device\templates\registration\login.html:22
+msgid "Hey. How you doing?"
+msgstr "Авторизация"
+
+#: .\docum\forms.py:21
+msgid "Document File"
+msgstr "Файл"
+
+#: .\docum\forms.py:22 .\docum\templates\docum\list.html:13
+#: .\docum\templates\docum\list.html:37
+msgid "Document Type"
+msgstr "Тип документа"
+
+#: .\docum\templates\docum\list.html:14 .\docum\templates\docum\list.html:38
+#: .\docum\templates\docum_type\list.html:13
+#: .\docum\templates\docum_type\list.html:35
+#: .\testplan\templates\chapter\details.html:25
+#: .\testplan\templates\test\details.html:44
+#: .\testplan\templates\testplan\details.html:40
+msgid "Создано"
+msgstr ""
+
+#: .\docum\templates\docum\list.html:15 .\docum\templates\docum\list.html:39
+#: .\docum\templates\docum_type\list.html:14
+#: .\docum\templates\docum_type\list.html:36
+#: .\testplan\templates\chapter\details.html:29
+#: .\testplan\templates\test\details.html:48
+#: .\testplan\templates\testplan\details.html:44
+msgid "Created at"
+msgstr "Дата создания"
+
+#: .\firmware\forms.py:11 .\firmware\templates\firmware\list.html:13
+#: .\firmware\templates\firmware\list.html:33
+#: .\testplan\templates\testplan\list.html:16
+#: .\testplan\templates\testplan\list.html:38
+msgid "Version"
+msgstr "Версия"
+
+#: .\firmware\forms.py:12 .\testplan\forms.py:117
+msgid "File"
+msgstr "Файл"
+
+#: .\firmware\forms.py:13
+msgid "Checksum"
+msgstr "Чек-сумма"
+
+#: .\firmware\forms.py:14
+msgid "CLI System Information"
+msgstr "Вывод системной информации в CLI"
+
+#: .\firmware\forms.py:15
+msgid "WebUI System Information"
+msgstr "Вывод системной информации в WebUI"
+
+#: .\qa\settings\base.py:134
+msgid "English"
+msgstr "English"
+
+#: .\qa\settings\base.py:135
+msgid "Russian"
+msgstr "Русский"
+
+#: .\redmine\templates\redmine\import_testplan.html:11
+#: .\testplan\templates\chapter\details.html:7
+#: .\testplan\templates\test\details.html:7
+#: .\testplan\templates\testplan\details.html:7
+msgid "Testplan"
+msgstr "ПМИ"
+
+#: .\testplan\forms.py:13 .\testplan\templates\testplan\details.html:32
+msgid "Document version"
+msgstr "Редакция"
+
+#: .\testplan\forms.py:14
+msgid "Device Type"
+msgstr "Тип оборудования"
+
+#: .\testplan\forms.py:39 .\testplan\forms.py:196
+msgid "Text"
+msgstr "Текст"
+
+#: .\testplan\forms.py:51 .\testplan\templates\test\details.html:40
+msgid "Purpose"
+msgstr "Цель"
+
+#: .\testplan\forms.py:52 .\testplan\templates\test\details.html:15
+msgid "Procedure"
+msgstr "Процедура"
+
+#: .\testplan\forms.py:53 .\testplan\templates\test\details.html:16
+msgid "Expected result"
+msgstr "Ожидаемый результат"
+
+#: .\testplan\forms.py:66
+msgid "Style"
+msgstr "Подсветка синтаксиса"
+
+#: .\testplan\forms.py:67 .\testplan\templates\test\details.html:17
+msgid "Configuration"
+msgstr "Конфигурация"
+
+#: .\testplan\forms.py:101
+msgid "Image"
+msgstr "Изображение"
+
+#: .\testplan\forms.py:102
+msgid "Width"
+msgstr "Ширина"
+
+#: .\testplan\forms.py:103
+msgid "Height"
+msgstr "Высота"
+
+#: .\testplan\forms.py:183
+msgid "URL"
+msgstr "URL"
+
+#: .\testplan\templates\chapter\details.html:11
+#: .\testplan\templates\testplan\details.html:10
+msgid "General"
+msgstr "Основная информация"
+
+#: .\testplan\templates\chapter\details.html:13
+#: .\testplan\templates\test\details.html:24
+msgid "Redmine"
+msgstr "Redmine"
+
+#: .\testplan\templates\chapter\details.html:21
+msgid "Chapter name"
+msgstr "Название рздела"
+
+#: .\testplan\templates\chapter\details.html:66
+#: .\testplan\templates\test\details.html:203
+msgid "Update from Redmine"
+msgstr "Импорт из Redmine"
+
+#: .\testplan\templates\test\details.html:14
+msgid "Info"
+msgstr "Информация"
+
+#: .\testplan\templates\test\details.html:18
+msgid "Images"
+msgstr "Изображения"
+
+#: .\testplan\templates\test\details.html:19
+msgid "Files"
+msgstr "Файлы"
+
+#: .\testplan\templates\test\details.html:20
+msgid "Checklists"
+msgstr "Чек-листы"
+
+#: .\testplan\templates\test\details.html:21
+msgid "Worksheets"
+msgstr "Формы"
+
+#: .\testplan\templates\test\details.html:22
+msgid "Links"
+msgstr "Ссылки"
+
+#: .\testplan\templates\test\details.html:23
+msgid "Comments"
+msgstr "Комментарии"
+
+#: .\testplan\templates\test\details.html:32
+msgid "Category"
+msgstr "Категория"
+
+#: .\testplan\templates\test\details.html:36
+msgid "Test name"
+msgstr "Название теста"
+
+#: .\testplan\templates\test\details.html:177
+msgid "Add Comment"
+msgstr "Добавить комментарий"
+
+#: .\testplan\templates\testplan\details.html:11
+msgid "Terms and Conditions"
+msgstr "Общие положения"
+
+#: .\testplan\templates\testplan\details.html:12
+#: .\testplan_pattern\templates\pattern\details.html:15
+msgid "Tests"
+msgstr "Тесты"
+
+#: .\testplan\templates\testplan\details.html:20
+msgid "Make .docx"
+msgstr "Собрать .docx"
+
+#: .\testplan\templates\testplan\details.html:28
+msgid "Document name"
+msgstr "Название документа"
+
+#: .\testplan\templates\testplan\details.html:36
+msgid "Device type"
+msgstr "Тип оборудования"
+
+#: .\testplan\templates\testplan\details.html:60
+msgid "Tests amount"
+msgstr "Количество тестов"
+
+#: .\testplan\templates\testplan\details.html:70
+msgid "Add Chapter"
+msgstr "Добавить раздел"
+
+#: .\testplan\templates\testplan\details.html:75
+msgid "Add chapters from Redmine"
+msgstr "Импорт разделов из Redmine"
+
+#: .\testplan\templates\testplan\details.html:76
+msgid "Clear Chapters"
+msgstr "Очистить разделы"
+
+#: .\testplan\templates\testplan\details.html:94
+msgid "Add Category"
+msgstr "Добавить категорию"
+
+#: .\testplan\templates\testplan\details.html:99
+msgid "Add tests from Redmine"
+msgstr "Добавить тесты из Redmine"
+
+#: .\testplan\templates\testplan\details.html:100
+msgid "Clear Tests"
+msgstr "Очистить тесты"
+
+#: .\testplan\templates\testplan\list.html:8
+msgid "Create from Redmine"
+msgstr "Создать из Redmine"
+
+#: .\testplan\templates\testplan\list.html:9
+msgid "Create from Pattern"
+msgstr "Создать из шаблона"
+
+#: .\testplan_pattern\templates\pattern\details.html:7
+msgid "Testplan Pattern"
+msgstr "Шаблоны ПМИ"
+
+#: .\testplan_pattern\templates\pattern\details.html:13
+msgid "Titles"
+msgstr "Заголовки"
+
+#: .\testplan_pattern\templates\pattern\details.html:14
+msgid "Versions"
+msgstr "Редакции"
