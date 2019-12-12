@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'testplan_pattern',
     'redmine',
     'paper',
+    'feature',
 ]
 
 MIDDLEWARE = [

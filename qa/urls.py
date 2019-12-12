@@ -30,4 +30,5 @@ urlpatterns = [
     path('pattern/', include('testplan_pattern.urls')),
     path('redmine/', include('redmine.urls')),
     path('paper/', include('paper.urls')),
+    path('feature/', include('feature.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
