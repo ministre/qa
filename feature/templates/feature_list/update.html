@@ -6,8 +6,8 @@
 
 <form method="post" action="">
 
-<a href="{% url 'feature_lists' %}" class="button small">&laquo; {% trans "Back" %}</a>
-<input type="submit" value='{% trans "Update" %}' class="button success small" />
+<a href="{% url 'feature_list_details' pk=object.id %}" class="button small">&laquo; {% trans "Back" %}</a>
+<input type="submit" value='{% trans "Save" %}' class="button success small" />
 <a href="{% url 'feature_list_delete' pk=object.id %}" class="button alert small">{% trans "Delete" %}</a>
 
 {% csrf_token %}

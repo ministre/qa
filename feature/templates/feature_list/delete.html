@@ -6,8 +6,8 @@
 
 <form method="post">
     {% csrf_token %}
-    <p>{% trans "Are you sure you want to delete" %} "<b>{{ object }}</b>"?</p>
-    <a href="{% url 'feature_lists' %}" class="button small">{% trans "Back" %}</a>
+    <p>{% trans "Are you sure you want to delete" %} <b>{{ object }}</b>?</p>
+    <a href="{% url 'feature_list_details' pk=object.id %}" class="button small">{% trans "Back" %}</a>
     <input type="submit" value='{% trans "Confirm" %}' class="button alert small" />
 </form>
 

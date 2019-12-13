@@ -305,7 +305,7 @@ msgstr "Добавить"
 #: .\testplan_pattern\templates\pattern\list.html:13
 #: .\testplan_pattern\templates\pattern\list.html:31
 msgid "Updated by"
-msgstr "Обновлено"
+msgstr "Автор изменений"
 
 #: .\device\templates\device\list.html:18
 #: .\device\templates\device\list.html:42 .\device\templates\type\list.html:16
@@ -324,7 +324,7 @@ msgstr "Обновлено"
 #: .\testplan_pattern\templates\pattern\list.html:14
 #: .\testplan_pattern\templates\pattern\list.html:32
 msgid "Updated at"
-msgstr "Последнее изменение"
+msgstr "Дата последнего изменения"
 
 #: .\device\templates\device\photo_create.html:9
 msgid "New device photo"
@@ -359,8 +359,8 @@ msgid "Protocols"
 msgstr "Протоколы"
 
 #: .\device\templates\device\wrapper.html:43
-msgid "RFI"
-msgstr "ТТ"
+msgid "TR"
+msgstr "Технические требования"
 
 #: .\device\templates\device\wrapper.html:46
 msgid "Handbook"
@@ -443,7 +443,7 @@ msgstr "Дата создания"
 #: .\testplan\templates\testplan\list.html:16
 #: .\testplan\templates\testplan\list.html:38
 msgid "Version"
-msgstr "Версия"
+msgstr "Редакция"
 
 #: .\firmware\forms.py:12 .\testplan\forms.py:117
 msgid "File"

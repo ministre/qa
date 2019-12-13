@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
@@ -48,3 +48,11 @@ class FeatureListDelete(DeleteView):
 
     def get_success_url(self):
         return reverse('feature_lists')
+
+
+@login_required
+def feature_list_details(request, pk):
+    feature_list = get_object_or_404(FeatureList, id=pk)
+#    chapters = Chapter.objects.filter(testplan=testplan).order_by('id')
+#    categories = get_testlist(testplan_id)
+    return render(request, 'feature_list/details.html', {'feature_list': feature_list})

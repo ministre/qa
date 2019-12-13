@@ -1,0 +1,34 @@
+{% extends "device/wrapper.html" %}
+
+{% load i18n static %}
+
+{% block content %}
+
+<p><a href="{% url 'feature_lists' %}">{% trans "TR" %}</a> &raquo; {{ feature_list.name}}
+<a href="{% url 'feature_list_update' pk=feature_list.id %}"><i class="step fi-pencil"></i></a></p>
+
+<ul class="tabs" data-tabs id="example-tabs">
+    <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">{% trans "List" %}</a></li>
+    <li class="tabs-title"><a data-tabs-target="panel2" href="#panel2">{% trans "Document" %}</a></li>
+    <li class="tabs-title"><a data-tabs-target="panel3" href="#panel3">{% trans "Redmine" %}</a></li>
+</ul>
+
+<div class="tabs-content" data-tabs-content="example-tabs">
+    <div class="tabs-panel is-active" id="panel1">
+        panel 1
+    </div>
+
+    <div class="tabs-panel" id="panel2">
+        <a href="#" class="button small">{% trans "Build .docx file" %}</a>
+    </div>
+
+    <div class="tabs-panel" id="panel3">
+        {% if feature_list.redmine_url == None %}
+        <p>{% trans "Redmine project path not set" %}</p>
+        {% endif %}
+        <a href="#" class="button small {% if feature_list.redmine_url == None %}disabled{% endif %}">{% trans "Import" %}</a>
+        <a href="#" class="button small {% if feature_list.redmine_url == None %}disabled{% endif %}">{% trans "Export" %}</a>
+    </div>
+</div>
+
+{% endblock %}

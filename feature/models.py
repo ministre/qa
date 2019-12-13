@@ -18,3 +18,14 @@ class FeatureList(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class FeatureListCategory(models.Model):
+    feature_list = models.ForeignKey(FeatureList, on_delete=models.CASCADE, null=True)
+    name = models.CharField(max_length=1000)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = "Feature List Categories"
