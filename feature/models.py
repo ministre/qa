@@ -29,3 +29,8 @@ class FeatureListCategory(models.Model):
 
     class Meta:
         verbose_name_plural = "Feature List Categories"
+
+
+class FeatureListItem(models.Model):
+    feature_list_category = models.ForeignKey(FeatureListCategory, on_delete=models.CASCADE)
+    name = models.CharField(max_length=1000)

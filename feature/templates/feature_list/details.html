@@ -15,7 +15,30 @@
 
 <div class="tabs-content" data-tabs-content="example-tabs">
     <div class="tabs-panel is-active" id="panel1">
-        panel 1
+        <a href="{% url 'feature_list_category_create' feature_list_id=feature_list.id %}">
+            <i class="step fi-plus"></i></a>
+        {% for category in categories %}
+        <ul style="list-style: none">
+            <li>
+                <b>{{ forloop.counter }}. {{ category.name }}</b>
+                <a href="{% url 'feature_list_category_update' feature_list_id=feature_list.id pk=category.id %}"><i class="step fi-pencil"></i></a>
+                <a href="{% url 'feature_list_category_delete' feature_list_id=feature_list.id pk=category.id %}">
+                    <i class="step fi-minus" style="color: #bc104b"></i></a>
+                {% for item in category.items %}
+                <ul style="list-style: none">
+                    <li>
+                        <a href="#">
+                            {{forloop.parentloop.counter}}.{{ forloop.counter }}. {{ item.name }}</a>
+                        <a href="#"><i class="step fi-pencil"></i></a>
+                        <a href="#"><i class="step fi-minus" style="color: #bc104b"></i></a>
+                    </li>
+                </ul>
+                {% endfor %}
+                <blockquote><a href="#">
+                    <i class="step fi-plus"></i></a></blockquote>
+            </li>
+        </ul>
+        {% endfor %}
     </div>
 
     <div class="tabs-panel" id="panel2">
