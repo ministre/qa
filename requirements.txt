@@ -1,6 +1,6 @@
-Django==3.0
+Django==3.0.3
 psycopg2==2.8.4
-Pillow==6.2.1
+Pillow==7.0.0
 python-redmine==2.2.1
 python-docx==0.8.10
-textile==3.0.4
+textile==4.0.1

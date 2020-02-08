@@ -15,6 +15,7 @@ class Testplan(models.Model):
                                    blank=True, null=True)
     updated_at = models.DateTimeField(default=datetime.now, blank=True)
     redmine_url = models.CharField(max_length=1000, blank=True, null=True)
+    members = models.ManyToManyField(User, related_name='members', blank=True)
 
     def __str__(self):
         return self.name
