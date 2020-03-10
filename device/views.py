@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import CustomField, CustomValue, DeviceType, Vendor, Device, DevicePhoto
+from .models import CustomField, CustomFieldItem, CustomValue, DeviceType, Vendor, Device, DevicePhoto
 from .forms import CustomFieldForm, DeviceTypeForm, VendorForm, DeviceForm, DevicePhotoForm
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.urls import reverse
@@ -52,6 +52,14 @@ class CustomFieldDelete(DeleteView):
 
     def get_success_url(self):
         return reverse('custom_fields')
+
+
+@login_required
+def custom_field_details(request, pk):
+    custom_field = get_object_or_404(CustomField, id=pk)
+    custom_field_items = CustomFieldItem.objects.filter(custom_field=custom_field).order_by('id')
+    return render(request, 'custom_field/details.html', {'custom_field': custom_field,
+                                                         'custom_field_items': custom_field_items})
 
 
 @method_decorator(login_required, name='dispatch')

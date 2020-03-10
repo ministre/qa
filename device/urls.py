@@ -18,7 +18,8 @@ urlpatterns = [
 
     path('custom_field/', views.CustomFieldListView.as_view(), name='custom_fields'),
     path('custom_field/create/', views.CustomFieldCreate.as_view(), name='custom_field_create'),
-    path('custom_field/<int:pk>/', views.CustomFieldUpdate.as_view(), name='custom_field_update'),
+    path('custom_field/update/<int:pk>/', views.CustomFieldUpdate.as_view(), name='custom_field_update'),
+    path('custom_field/<int:pk>/', views.custom_field_details, name='custom_field_details'),
     path('custom_field/<int:pk>/delete/', views.CustomFieldDelete.as_view(), name='custom_field_delete'),
 
     # devices

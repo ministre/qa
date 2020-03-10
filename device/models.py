@@ -16,6 +16,14 @@ class CustomField(models.Model):
         return self.name
 
 
+class CustomFieldItem(models.Model):
+    name = models.CharField(max_length=1000)
+    custom_field = models.ForeignKey(CustomField, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+
 class DeviceType(models.Model):
     tag = models.CharField(max_length=100)
     desc = models.CharField(max_length=1000)
