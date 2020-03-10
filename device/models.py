@@ -19,6 +19,10 @@ class CustomField(models.Model):
 class CustomFieldItem(models.Model):
     name = models.CharField(max_length=1000)
     custom_field = models.ForeignKey(CustomField, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(User, related_name='item_c', on_delete=models.CASCADE, blank=True, null=True)
+    created_at = models.DateTimeField(default=datetime.now, blank=True)
+    updated_by = models.ForeignKey(User, related_name='item_u', on_delete=models.CASCADE, blank=True, null=True)
+    updated_at = models.DateTimeField(default=datetime.now, blank=True)
 
     def __str__(self):
         return self.name
