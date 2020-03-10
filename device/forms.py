@@ -1,6 +1,7 @@
 from django.forms import ModelForm, HiddenInput
 from device.models import DeviceType, Vendor, CustomField, Device, DevicePhoto
 from django.utils.translation import gettext_lazy as _
+from django import forms
 
 
 class CustomFieldForm(ModelForm):
@@ -8,8 +9,23 @@ class CustomFieldForm(ModelForm):
         model = CustomField
         labels = {
             'name': _('Name'),
+            'desc': _('Description'),
+            'type': _('Value Type'),
         }
         fields = '__all__'
+
+        TYPE = (
+            ('text', 'Text'),
+            ('number', 'Number'),
+            ('listbox', 'Listbox'),
+            ('checkbox', 'Checkbox'),
+        )
+
+        widgets = {
+            'type': forms.Select(choices=TYPE, attrs={'class': 'form-control'}),
+            'created_by': HiddenInput(), 'created_at': HiddenInput(),
+            'updated_by': HiddenInput(), 'updated_at': HiddenInput()
+        }
 
 
 class DeviceTypeForm(ModelForm):

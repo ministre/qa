@@ -16,36 +16,42 @@ from datetime import datetime
 class CustomFieldListView(ListView):
     context_object_name = 'custom_fields'
     queryset = CustomField.objects.all()
-    template_name = 'device/custom_field_list.html'
+    template_name = 'custom_field/list.html'
 
 
 @method_decorator(login_required, name='dispatch')
 class CustomFieldCreate(CreateView):
     model = CustomField
     form_class = CustomFieldForm
-    template_name = 'device/custom_field_create.html'
+    template_name = 'custom_field/create.html'
+
+    def get_initial(self):
+        return {'created_by': self.request.user, 'updated_by': self.request.user}
 
     def get_success_url(self):
-        return reverse('custom_field_list')
+        return reverse('custom_fields')
 
 
 @method_decorator(login_required, name='dispatch')
 class CustomFieldUpdate(UpdateView):
     model = CustomField
     form_class = CustomFieldForm
-    template_name = 'device/custom_field_update.html'
+    template_name = 'custom_field/update.html'
+
+    def get_initial(self):
+        return {'updated_by': self.request.user, 'updated_at': datetime.now}
 
     def get_success_url(self):
-        return reverse('custom_field_list')
+        return reverse('custom_fields')
 
 
 @method_decorator(login_required, name='dispatch')
 class CustomFieldDelete(DeleteView):
     model = CustomField
-    template_name = 'device/delete.html'
+    template_name = 'custom_field/delete.html'
 
     def get_success_url(self):
-        return reverse('custom_field_list')
+        return reverse('custom_fields')
 
 
 @method_decorator(login_required, name='dispatch')

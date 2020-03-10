@@ -5,6 +5,12 @@ from datetime import datetime
 
 class CustomField(models.Model):
     name = models.CharField(max_length=500)
+    desc = models.CharField(max_length=1000, blank=True, null=True)
+    type = models.CharField(max_length=10, default='Text')
+    created_by = models.ForeignKey(User, related_name='field_c', on_delete=models.CASCADE, blank=True, null=True)
+    created_at = models.DateTimeField(default=datetime.now, blank=True)
+    updated_by = models.ForeignKey(User, related_name='field_u', on_delete=models.CASCADE, blank=True, null=True)
+    updated_at = models.DateTimeField(default=datetime.now, blank=True)
 
     def __str__(self):
         return self.name
