@@ -6,9 +6,12 @@
 
 <p><a href="{% url 'custom_fields' %}">{% trans "Custom Fields" %}</a> &raquo; {{ custom_field.name}}</p>
 
-<p><a href="{% url 'custom_field_update' pk=custom_field.id %}" class="button small">{% trans "Update" %}</a>
-<a href="{% url 'custom_field_item_create' custom_field_id=custom_field.id %}" class="button small">{% trans "Add Item" %}</a></p>
+<a href="{% url 'custom_field_update' pk=custom_field.id %}" class="button small">{% trans "Update" %}</a>
 
+{% if custom_field.type == 'listbox' or custom_field.type == 'checkbox' %}
+<a href="{% url 'custom_field_item_create' custom_field_id=custom_field.id %}" class="button small">{% trans "Add Item" %}</a>
+
+<h3>{% trans "Items" %}</h3>
 
 <table id="custom_field_items" class="display" style="width:100%">
     <thead>
@@ -50,11 +53,13 @@
 
       $('#custom_field_items tbody').on('click', 'tr', function () {
           var data = table.row( this ).data();
-		  window.open(data[0]+"/","_self");
+		  window.open("item/"+data[0]+"/update/","_self");
       } );
   } );
 </script>
 
 <script type="text/javascript" src="{% static 'DataTables/datatables.js' %}"></script>
+
+{% endif %}
 
 {% endblock %}

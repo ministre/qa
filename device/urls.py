@@ -24,6 +24,10 @@ urlpatterns = [
     path('custom_field/<int:pk>/delete/', views.CustomFieldDelete.as_view(), name='custom_field_delete'),
     path('custom_field/<int:custom_field_id>/item/create/',
          views.CustomFieldItemCreate.as_view(), name='custom_field_item_create'),
+    path('custom_field/<int:custom_field_id>/item/<int:pk>/delete/',
+         views.CustomFieldItemDelete.as_view(), name='custom_field_item_delete'),
+    path('custom_field/<int:custom_field_id>/item/<int:pk>/update/',
+         views.CustomFieldItemUpdate.as_view(), name='custom_field_item_update'),
 
     # devices
     path('device/create/', views.DeviceCreate.as_view(), name='device_create'),

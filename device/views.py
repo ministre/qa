@@ -42,7 +42,7 @@ class CustomFieldUpdate(UpdateView):
         return {'updated_by': self.request.user, 'updated_at': datetime.now}
 
     def get_success_url(self):
-        return reverse('custom_fields')
+        return reverse('custom_field_details', kwargs={'pk': self.kwargs.get('pk')})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -71,6 +71,40 @@ class CustomFieldItemCreate(CreateView):
     def get_initial(self):
         return {'custom_field': self.kwargs.get('custom_field_id'),
                 'created_by': self.request.user, 'updated_by': self.request.user}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['custom_field_id'] = self.kwargs.get('custom_field_id')
+        return context
+
+    def get_success_url(self):
+        custom_field_update_timestamp(self.kwargs.get('custom_field_id'), self.request.user)
+        return reverse('custom_field_details', kwargs={'pk': self.kwargs.get('custom_field_id')})
+
+
+@method_decorator(login_required, name='dispatch')
+class CustomFieldItemDelete(DeleteView):
+    model = CustomFieldItem
+    template_name = 'custom_field_item/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['custom_field_id'] = self.kwargs.get('custom_field_id')
+        return context
+
+    def get_success_url(self):
+        custom_field_update_timestamp(self.kwargs.get('custom_field_id'), self.request.user)
+        return reverse('custom_field_details', kwargs={'pk': self.kwargs.get('custom_field_id')})
+
+
+@method_decorator(login_required, name='dispatch')
+class CustomFieldItemUpdate(UpdateView):
+    model = CustomFieldItem
+    form_class = CustomFieldItemForm
+    template_name = 'custom_field_item/update.html'
+
+    def get_initial(self):
+        return {'updated_by': self.request.user, 'updated_at': datetime.now}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
