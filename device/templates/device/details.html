@@ -65,6 +65,15 @@
 
     <div class="tabs-panel" id="panel3">
         <a href="{% url 'firmware_create' device_id=device.id %}" class="button small">{% trans "Add" %}</a>
+
+        <p>
+            {% for fw in fws %}
+            <a href="{% url 'firmware_update' device_id=device.id pk=fw.id %}">{{ fw.version }}</a>
+            <a href="{% url 'firmware_delete' device_id=device.id pk=fw.id %}"><i class="step fi-minus" style="color: #bc104b"></i></a>
+            <br>
+            {% endfor %}
+        </p>
+
     </div>
 
     <div class="tabs-panel" id="panel4">

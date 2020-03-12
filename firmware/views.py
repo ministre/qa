@@ -27,13 +27,6 @@ class FirmwareCreate(CreateView):
 
 
 @method_decorator(login_required, name='dispatch')
-class FirmwareListView(ListView):
-    context_object_name = 'firmwares'
-    queryset = Firmware.objects.all().order_by('id')
-    template_name = 'firmware/list.html'
-
-
-@method_decorator(login_required, name='dispatch')
 class FirmwareUpdate(UpdateView):
     model = Firmware
     form_class = FirmwareForm
@@ -42,8 +35,13 @@ class FirmwareUpdate(UpdateView):
     def get_initial(self):
         return {'updated_by': self.request.user, 'updated_at': datetime.now}
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['device_id'] = self.kwargs.get('device_id')
+        return context
+
     def get_success_url(self):
-        return reverse('firmwares')
+        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id')})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -51,5 +49,10 @@ class FirmwareDelete(DeleteView):
     model = Firmware
     template_name = 'firmware/delete.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['device_id'] = self.kwargs.get('device_id')
+        return context
+
     def get_success_url(self):
-        return reverse('firmwares')
+        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id')})

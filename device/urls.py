@@ -30,11 +30,11 @@ urlpatterns = [
          views.CustomFieldItemUpdate.as_view(), name='custom_field_item_update'),
 
     # devices
-    path('device/create/', views.DeviceCreate.as_view(), name='device_create'),
-    path('device/<int:pk>/update/', views.DeviceUpdate.as_view(), name='device_update'),
-    path('device/<int:pk>/update_details/', views.device_update_details, name='device_update_details'),
-    path('device/<int:pk>/delete/', views.DeviceDelete.as_view(), name='device_delete'),
-    path('device/<int:pk>/', views.device_details, name='device_details'),
+    path('create/', views.DeviceCreate.as_view(), name='device_create'),
+    path('<int:pk>/update/', views.DeviceUpdate.as_view(), name='device_update'),
+    path('<int:pk>/update_details/', views.device_update_details, name='device_update_details'),
+    path('<int:pk>/delete/', views.DeviceDelete.as_view(), name='device_delete'),
+    path('<int:pk>/', views.device_details, name='device_details'),
 
     # device photos
     path('photo/', views.DevicePhotoListView.as_view(), name='photo_list'),
