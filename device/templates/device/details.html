@@ -4,11 +4,93 @@
 
 {% block content %}
 
-<a href="/" class="button">&laquo; {% trans "Back" %}</a>
-<a href="/device/{{ device.id }}/update/" class="button">{% trans "Update" %}</a>
+<p><a href="{% url 'devices' %}">{% trans "Devices" %}</a> &raquo; {{ device.vendor }} {{ device.model }} ({{ device.hw }})</p>
+
+<ul class="tabs" data-tabs id="example-tabs">
+    <li class="tabs-title"><a href="#panel1" aria-selected="true">{% trans "General" %}</a></li>
+    <li class="tabs-title is-active"><a data-tabs-target="panel2" href="#panel2">{% trans "Specifications" %}</a></li>
+    <li class="tabs-title"><a data-tabs-target="panel3" href="#panel3">{% trans "Firmware" %}</a></li>
+    <li class="tabs-title"><a data-tabs-target="panel4" href="#panel4">{% trans "Photo" %}</a></li>
+    <li class="tabs-title"><a data-tabs-target="panel5" href="#panel5">{% trans "Documentation" %}</a></li>
+    <li class="tabs-title"><a data-tabs-target="panel6" href="#panel6">{% trans "Protocols" %}</a></li>
+    <li class="tabs-title"><a data-tabs-target="panel7" href="#panel7">{% trans "Redmine" %}</a></li>
+</ul>
+
+<div class="tabs-content" data-tabs-content="example-tabs">
+    <div class="tabs-panel" id="panel1">
+        <a href="{% url 'device_update' pk=device.id %}" class="button small">{% trans "Update" %}</a>
+        <a href="{% url 'device_delete' pk=device.id %}" class="button alert small">{% trans "Delete" %}</a>
+
+        <table class="hover unstriped">
+            <tbody>
+            <tr>
+                <td>{% trans "Type" %}:</td>
+                <td>{{ device.type }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Vendor" %}:</td>
+                <td>{{ device.vendor }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Model" %}:</td>
+                <td>{{ device.model }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "HW" %}:</td>
+                <td>{{ device.hw }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Created by" %}:</td>
+                <td>{{ device.created_by }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Created at" %}:</td>
+                <td>{{ device.created_at }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Updated by" %}:</td>
+                <td>{{ device.updated_by }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Updated at" %}:</td>
+                <td>{{ device.updated_at }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="tabs-panel is-active" id="panel2">
+        panel2
+    </div>
+
+    <div class="tabs-panel" id="panel3">
+        panel3
+    </div>
+
+    <div class="tabs-panel" id="panel4">
+        panel4
+    </div>
+
+    <div class="tabs-panel" id="panel5">
+        panel5
+    </div>
+
+    <div class="tabs-panel" id="panel6">
+        panel6
+    </div>
+
+    <div class="tabs-panel" id="panel7">
+        panel7
+    </div>
+
+</div>
+
+
+<p><br><br><br><br><br><br></p>
+
+
 <a href="/device/{{ device.id }}/update_details/" class="button">{% trans "Update Details" %}</a>
 <a href="/device/fw/add/{{ device.id }}/" class="button">{% trans "Add Firmware" %}</a>
-<a href="/device/{{ device.id }}/delete/" class="button alert">{% trans "Delete" %}</a>
 
 <div class="grid-x grid-margin-x">
     <div class="cell medium-6 large-8">
@@ -81,8 +163,6 @@
             </li>
 
         </ul>
-
-
 
 
     </div>

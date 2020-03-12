@@ -34,7 +34,7 @@ urlpatterns = [
     path('device/<int:pk>/update/', views.DeviceUpdate.as_view(), name='device_update'),
     path('device/<int:pk>/update_details/', views.device_update_details, name='device_update_details'),
     path('device/<int:pk>/delete/', views.DeviceDelete.as_view(), name='device_delete'),
-    path('device/<int:pk>/', views.device_show, name='device_show'),
+    path('device/<int:pk>/', views.device_details, name='device_details'),
 
     # device photos
     path('photo/', views.DevicePhotoListView.as_view(), name='photo_list'),

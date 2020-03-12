@@ -62,6 +62,7 @@ class Device(models.Model):
     model = models.CharField(max_length=400)
     hw = models.CharField(max_length=100)
     type = models.ForeignKey(DeviceType, on_delete=models.CASCADE)
+    redmine_url = models.CharField(max_length=1000, blank=True, null=True)
     created_by = models.ForeignKey(User, related_name='device_created', on_delete=models.CASCADE, blank=True, null=True)
     created_at = models.DateTimeField(default=datetime.now, blank=True)
     updated_by = models.ForeignKey(User, related_name='device_updated', on_delete=models.CASCADE, blank=True, null=True)

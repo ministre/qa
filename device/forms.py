@@ -48,7 +48,6 @@ class DeviceTypeForm(ModelForm):
             'desc': _('Description'),
             'desc_genitive': _('Genitive Description'),
             'cf': _('Custom fields'),
-            'ifaces': _('Interfaces'),
             'redmine_url': _('Redmine URL'),
         }
         fields = '__all__'
@@ -75,6 +74,7 @@ class DeviceForm(ModelForm):
             'model': _('Model'),
             'hw': _('Hardware'),
             'type': _('Type'),
+            'redmine_url': _('Redmine URL'),
         }
         fields = '__all__'
         widgets = {'created_by': HiddenInput(), 'created_at': HiddenInput(),

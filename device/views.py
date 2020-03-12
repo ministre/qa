@@ -277,10 +277,10 @@ def set_device_custom_value(device_id, field_id, value):
 
 
 @login_required
-def device_show(request, pk):
+def device_details(request, pk):
     device = get_object_or_404(Device, pk=pk)
     custom_properties = get_device_custom_values(pk)
-    return render(request, 'device/device_show.html', {'device': device, 'custom_properties': custom_properties})
+    return render(request, 'device/details.html', {'device': device, 'custom_properties': custom_properties})
 
 
 @login_required
