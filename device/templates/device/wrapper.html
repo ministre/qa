@@ -28,7 +28,7 @@
                 <a href="{% url 'devices' %}">{% trans "Devices" %}</a>
             </li>
             <li>
-                <a href="{% url 'firmwares' %}">{% trans "FW" %}</a>
+                <a href="{% url 'firmwares' %}">{% trans "Firmware" %}</a>
             </li>
             <li>
                 <a href="{% url 'docums' %}">{% trans "Documents" %}</a>
@@ -38,9 +38,6 @@
             </li>
             <li>
                 <a href="#">{% trans "Protocols" %}</a>
-            </li>
-            <li>
-                <a href="{% url 'feature_lists' %}">{% trans "TR" %}</a>
             </li>
             <li>
                 <a href="#">{% trans "Handbook" %}</a>
@@ -53,6 +50,9 @@
                         <ul class="menu horizontal">
                             <li>
                                 <a href="{% url 'custom_fields' %}">{% trans "Custom Fields" %}</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'feature_lists' %}">{% trans "Technical Requirements" %}</a>
                             </li>
                         </ul>
                     </li>
