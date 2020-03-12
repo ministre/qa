@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .models import CustomField, CustomFieldItem, CustomValue, DeviceType, Vendor, Device, DevicePhoto
 from firmware.models import Firmware
+from docum.models import Docum
 from .forms import CustomFieldForm, CustomFieldItemForm, DeviceTypeForm, VendorForm, DeviceForm, DevicePhotoForm
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.urls import reverse
@@ -281,8 +282,9 @@ def set_device_custom_value(device_id, field_id, value):
 def device_details(request, pk):
     device = get_object_or_404(Device, pk=pk)
     fws = Firmware.objects.filter(device=device)
+    docums = Docum.objects.filter(device=device)
     custom_properties = get_device_custom_values(pk)
-    return render(request, 'device/details.html', {'device': device, 'fws': fws,
+    return render(request, 'device/details.html', {'device': device, 'fws': fws, 'docums': docums,
                                                    'custom_properties': custom_properties})
 
 

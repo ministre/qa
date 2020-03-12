@@ -59,17 +59,16 @@ class DocumCreate(CreateView):
     template_name = 'docum/create.html'
 
     def get_initial(self):
-        return {'created_by': self.request.user, 'updated_by': self.request.user}
+        return {'device': self.kwargs.get('device_id'),
+                'created_by': self.request.user, 'updated_by': self.request.user}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['device_id'] = self.kwargs.get('device_id')
+        return context
 
     def get_success_url(self):
-        return reverse('docums')
-
-
-@method_decorator(login_required, name='dispatch')
-class DocumListView(ListView):
-    context_object_name = 'docums'
-    queryset = Docum.objects.all().order_by('id')
-    template_name = 'docum/list.html'
+        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id')})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -81,8 +80,13 @@ class DocumUpdate(UpdateView):
     def get_initial(self):
         return {'updated_by': self.request.user, 'updated_at': datetime.now}
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['device_id'] = self.kwargs.get('device_id')
+        return context
+
     def get_success_url(self):
-        return reverse('docums')
+        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id')})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -90,5 +94,10 @@ class DocumDelete(DeleteView):
     model = Docum
     template_name = 'docum/delete.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['device_id'] = self.kwargs.get('device_id')
+        return context
+
     def get_success_url(self):
-        return reverse('docums')
+        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id')})
