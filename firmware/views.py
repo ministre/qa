@@ -14,10 +14,16 @@ class FirmwareCreate(CreateView):
     template_name = 'firmware/create.html'
 
     def get_initial(self):
-        return {'created_by': self.request.user, 'updated_by': self.request.user}
+        return {'device': self.kwargs.get('device_id'),
+                'created_by': self.request.user, 'updated_by': self.request.user}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['device_id'] = self.kwargs.get('device_id')
+        return context
 
     def get_success_url(self):
-        return reverse('firmwares')
+        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id')})
 
 
 @method_decorator(login_required, name='dispatch')

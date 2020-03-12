@@ -7,14 +7,14 @@ class FirmwareForm(ModelForm):
     class Meta:
         model = Firmware
         labels = {
-            'device': _('Device'),
             'version': _('Version'),
+            'desc': _('Description'),
             'file': _('File'),
             'checksum': _('Checksum'),
             'sysinfo_cli': _('CLI System Information'),
             'sysinfo_snapshot': _('WebUI System Information'),
-            'desc': _('Description'),
         }
         fields = '__all__'
-        widgets = {'created_by': HiddenInput(), 'created_at': HiddenInput(),
+        widgets = {'device': HiddenInput(),
+                   'created_by': HiddenInput(), 'created_at': HiddenInput(),
                    'updated_by': HiddenInput(), 'updated_at': HiddenInput()}

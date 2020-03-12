@@ -64,7 +64,7 @@
     </div>
 
     <div class="tabs-panel" id="panel3">
-        panel3
+        <a href="{% url 'firmware_create' device_id=device.id %}" class="button small">{% trans "Add" %}</a>
     </div>
 
     <div class="tabs-panel" id="panel4">
@@ -90,37 +90,12 @@
 
 
 <a href="/device/{{ device.id }}/update_details/" class="button">{% trans "Update Details" %}</a>
-<a href="/device/fw/add/{{ device.id }}/" class="button">{% trans "Add Firmware" %}</a>
 
 <div class="grid-x grid-margin-x">
     <div class="cell medium-6 large-8">
 
 
         <ul class="accordion" data-accordion data-multi-expand="true">
-            <li class="accordion-item is-active" data-accordion-item>
-                <!-- Accordion tab title -->
-                <a href="#" class="accordion-title">{% trans "General Information" %}</a>
-                <!-- Accordion tab content: it would start in the open state due to using the `is-active` state class. -->
-                <div class="accordion-content" data-tab-content>
-                    <div class="grid-x">
-                        <div class="cell medium-6 large-4">{% trans "Vendor" %}:</div>
-                        <div class="cell medium-6 large-8">{{ device.vendor }}</div>
-                    </div>
-                    <div class="grid-x">
-                        <div class="cell medium-6 large-4">{% trans "Model" %}:</div>
-                        <div class="cell medium-6 large-8">{{ device.model }}</div>
-                    </div>
-                    <div class="grid-x">
-                        <div class="cell medium-6 large-4">{% trans "HW" %}:</div>
-                        <div class="cell medium-6 large-8">{{ device.hw }}</div>
-                    </div>
-                    <div class="grid-x">
-                        <div class="cell medium-6 large-4">{% trans "Type" %}:</div>
-                        <div class="cell medium-6 large-8">{{ device.type }}</div>
-                    </div>
-                </div>
-            </li>
-
             <li class="accordion-item is-active" data-accordion-item>
                 <a href="#" class="accordion-title">{% trans "Additional Information" %}</a>
                 <div class="accordion-content" data-tab-content>
@@ -133,34 +108,6 @@
                 </div>
             </li>
 
-            <li class="accordion-item is-active" data-accordion-item>
-                <a href="#" class="accordion-title">{% trans "Firmware" %}</a>
-                <div class="accordion-content" data-tab-content>
-                    <p>There is no firmware for this device. You can
-                        <a href="/device/fw/create/">add it</a>.</p>
-                </div>
-            </li>
-
-            <li class="accordion-item is-active" data-accordion-item>
-                <a href="#" class="accordion-title">{% trans "Documentation" %}</a>
-                <div class="accordion-content" data-tab-content>
-                    <p>Not found</p>
-                </div>
-            </li>
-
-            <li class="accordion-item is-active" data-accordion-item>
-                <a href="#" class="accordion-title">{% trans "Test Reports" %}</a>
-                <div class="accordion-content" data-tab-content>
-                    <p>Not found</p>
-                </div>
-            </li>
-
-            <li class="accordion-item is-active" data-accordion-item>
-                <a href="#" class="accordion-title">Redmine</a>
-                <div class="accordion-content" data-tab-content>
-                    <p>Not found</p>
-                </div>
-            </li>
 
         </ul>
 
