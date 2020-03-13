@@ -283,9 +283,10 @@ def device_details(request, pk):
     device = get_object_or_404(Device, pk=pk)
     fws = Firmware.objects.filter(device=device)
     docums = Docum.objects.filter(device=device)
+    photos = DevicePhoto.objects.filter(device=device)
     custom_properties = get_device_custom_values(pk)
     return render(request, 'device/details.html', {'device': device, 'fws': fws, 'docums': docums,
-                                                   'custom_properties': custom_properties})
+                                                   'photos': photos, 'custom_properties': custom_properties})
 
 
 @login_required
@@ -313,26 +314,48 @@ class DevicePhotoListView(ListView):
 class DevicePhotoCreate(CreateView):
     model = DevicePhoto
     form_class = DevicePhotoForm
-    template_name = 'device/photo_create.html'
+    template_name = 'photo/create.html'
+
+    def get_initial(self):
+        return {'device': self.kwargs.get('device_id'),
+                'created_by': self.request.user, 'updated_by': self.request.user}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['device_id'] = self.kwargs.get('device_id')
+        return context
 
     def get_success_url(self):
-        return reverse('photo_list')
+        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id')})
 
 
 @method_decorator(login_required, name='dispatch')
 class DevicePhotoUpdate(UpdateView):
     model = DevicePhoto
     form_class = DevicePhotoForm
-    template_name = 'device/photo_update.html'
+    template_name = 'photo/update.html'
+
+    def get_initial(self):
+        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['device_id'] = self.kwargs.get('device_id')
+        return context
 
     def get_success_url(self):
-        return reverse('photo_list')
+        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id')})
 
 
 @method_decorator(login_required, name='dispatch')
 class DevicePhotoDelete(DeleteView):
     model = DevicePhoto
-    template_name = 'device/delete.html'
+    template_name = 'photo/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['device_id'] = self.kwargs.get('device_id')
+        return context
 
     def get_success_url(self):
-        return reverse('photo_list')
+        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id')})

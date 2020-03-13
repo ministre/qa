@@ -85,8 +85,10 @@ class DevicePhotoForm(ModelForm):
     class Meta:
         model = DevicePhoto
         labels = {
-            'device': _('Device'),
             'photo': _('Photo'),
             'desc': _('Description'),
         }
         fields = '__all__'
+        widgets = {'device': HiddenInput(),
+                   'created_by': HiddenInput(), 'created_at': HiddenInput(),
+                   'updated_by': HiddenInput(), 'updated_at': HiddenInput()}
