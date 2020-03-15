@@ -8,18 +8,44 @@
     <a href="{% url 'device_details' pk=device.id %}" class="button small">&laquo; {% trans "Back" %}</a>
     <input type="submit" value='{% trans "Update" %}' class="button success small" />
 
-
     {% csrf_token %}
     {% for spec in specs %}
 
+      {% if spec.type == 'text' %}
+        <label for="id_custom_field_{{ spec.id }}">{{ spec.name }}:</label>
+        <input type="text" name="{{ spec.id }}" value="{{ spec.value }}" maxlength="1000"
+               id="id_custom_field_{{ spec.id }}">
+      {% endif %}
 
-    <label for="id_hw">{{ spec.name }}:</label>
-    <input type="text" name="hw" value="v1.0.0" maxlength="10000" required="" id="id_hw">
+      {% if spec.type == 'number' %}
+        <label for="id_custom_field_{{ spec.id }}">{{ spec.name }}:</label>
+        <input type="number" name="{{ spec.id }}" value="{{ spec.value }}"
+               id="id_custom_field_{{ spec.id }}">
+      {% endif %}
 
+      {% if spec.type == 'listbox' %}
+        <label for="id_custom_field_{{ spec.id }}">{{ spec.name }}:</label>
+        <select name="{{ spec.id }}" id="id_custom_field_{{ spec.id }}">
+            <option value="">---------</option>
+            {% for item in spec.items %}
+              <option {% if item.selected == True %} selected{% endif %} value="{{ item.id }}">{{ item.name }}</option>
+            {% endfor %}
+        </select>
+      {% endif %}
 
+      {% if spec.type == 'checkbox' %}
+            <h6>{{ spec.name }}:</h6>
+            <ul style="list-style: none">
+            {% for item in spec.items %}
+                <li>
+                    <input type="checkbox" name="{{ item.id }}" value="{{ item.name }}" id="id_custom_field_{{ item.id }}"
+                           {% if item.selected == True %} checked{% endif %}> {{ item.name }}
+                </li>
+            {% endfor %}
+            </ul>
+      {% endif %}
 
     {% endfor %}
-
 </form>
 
 {% endblock %}

@@ -278,11 +278,12 @@ def set_device_custom_value(device_id, field_id, value):
                                          defaults={'value': value})
 
 
-class SpecificationList:
+class Specification:
     def __init__(self):
-        self.specs = []
+        self.specs = []  # [{'name': <>, 'values': [<>, ]}]
+        self.form_metadata = []
+        # [{'name': <>, 'type': <>, 'id': <>, 'value': <>, 'items': [{'name': <>, 'id': <>, 'selected': <bool>}, ]}]
 
-    # return [{'name': name, 'values': [value1, value2 ... value n]}]
     def get_values(self, device):
         for field in CustomField.objects.filter(custom_fields__id=device.type.id).order_by('name'):
             values = []
@@ -291,15 +292,26 @@ class SpecificationList:
                     values.append(value.item)
                 else:
                     values.append(value.value)
-            self.specs.append({'name': field.name, 'value_type': field.type, 'values': values})
+            self.specs.append({'name': field.name, 'values': values})
         return self.specs
 
-    # return [{'name': name, 'type': type, 'value': value, 'items': [{'item_value': item_value, 'selected': bool}, ]}]
     def get_form_metadata(self, device):
-        self.specs = []
-        self.specs.append({'name': 'Индикаторы', 'type': 'number', 'value': '20', 'items': []})
-        self.specs.append({'name': 'Кнопки', 'type': 'number', 'value': '30', 'items': []})
-        return self.specs
+        for field in CustomField.objects.filter(custom_fields__id=device.type.id).order_by('name'):
+            items = []
+            if field.type == 'text' or field.type == 'number':
+                value = CustomValue.objects.get(Q(field=field) & Q(device=device))
+                self.form_metadata.append({'name': field.name, 'type': field.type, 'id': field.id, 'value': value.value,
+                                           'items': items})
+            if field.type == 'listbox' or field.type == 'checkbox':
+                for item in CustomFieldItem.objects.filter(custom_field=field):
+                    try:
+                        CustomValue.objects.get(Q(item=item) & Q(device=device))
+                        items.append({'name': item.name, 'id': item.id, 'selected': True})
+                    except ObjectDoesNotExist:
+                        items.append({'name': item.name, 'id': item.id, 'selected': False})
+                self.form_metadata.append({'name': field.name, 'type': field.type, 'id': field.id, 'value': None,
+                                           'items': items})
+        return self.form_metadata
 
 
 @login_required
@@ -308,10 +320,7 @@ def device_details(request, pk):
     fws = Firmware.objects.filter(device=device)
     docums = Docum.objects.filter(device=device)
     photos = DevicePhoto.objects.filter(device=device)
-    # custom_properties = get_device_custom_values(pk)
-
-    specs = SpecificationList().get_values(device)
-
+    specs = Specification().get_values(device)
     return render(request, 'device/details.html', {'device': device, 'fws': fws, 'docums': docums,
                                                    'specs': specs, 'photos': photos})
 
@@ -322,7 +331,7 @@ def device_update_spec(request, pk):
         pass
     else:
         device = get_object_or_404(Device, pk=pk)
-        specs = SpecificationList().get_form_metadata(device)
+        specs = Specification().get_form_metadata(device)
         return render(request, 'device/update_spec.html', {'device': device, 'specs': specs})
 
 
