@@ -284,7 +284,7 @@ class Specification:
         self.form_metadata = []
         # [{'name': <>, 'type': <>, 'id': <>, 'value': <>, 'items': [{'name': <>, 'id': <>, 'selected': <bool>}, ]}]
 
-    def get_values(self, device):
+    def get_values(self, device: Device):
         for field in CustomField.objects.filter(custom_fields__id=device.type.id).order_by('name'):
             values = []
             for value in CustomValue.objects.filter(Q(field=field) & Q(device=device)):
@@ -295,13 +295,17 @@ class Specification:
             self.specs.append({'name': field.name, 'values': values})
         return self.specs
 
-    def get_form_metadata(self, device):
+    def get_form_metadata(self, device: Device):
         for field in CustomField.objects.filter(custom_fields__id=device.type.id).order_by('name'):
             items = []
             if field.type == 'text' or field.type == 'number':
-                value = CustomValue.objects.get(Q(field=field) & Q(device=device))
-                self.form_metadata.append({'name': field.name, 'type': field.type, 'id': field.id, 'value': value.value,
-                                           'items': items})
+                try:
+                    value = CustomValue.objects.get(Q(field=field) & Q(device=device))
+                    self.form_metadata.append({'name': field.name, 'type': field.type, 'id': field.id,
+                                               'value': value.value, 'items': items})
+                except ObjectDoesNotExist:
+                    self.form_metadata.append({'name': field.name, 'type': field.type, 'id': field.id,
+                                               'value': '', 'items': items})
             if field.type == 'listbox' or field.type == 'checkbox':
                 for item in CustomFieldItem.objects.filter(custom_field=field):
                     try:
@@ -312,6 +316,9 @@ class Specification:
                 self.form_metadata.append({'name': field.name, 'type': field.type, 'id': field.id, 'value': None,
                                            'items': items})
         return self.form_metadata
+
+    def update_values(self, device: Device, field_id: int, values: list):
+        pass
 
 
 @login_required
@@ -328,7 +335,7 @@ def device_details(request, pk):
 @login_required
 def device_update_spec(request, pk):
     if request.method == 'POST':
-        pass
+        return render(request, 'device/debug.html', {'message': request.POST.dict().items()})
     else:
         device = get_object_or_404(Device, pk=pk)
         specs = Specification().get_form_metadata(device)
