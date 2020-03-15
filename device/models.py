@@ -73,12 +73,10 @@ class Device(models.Model):
 
 
 class CustomValue(models.Model):
-    value = models.CharField(max_length=1000)
     field = models.ForeignKey(CustomField, on_delete=models.CASCADE)
+    item = models.ForeignKey(CustomFieldItem, on_delete=models.CASCADE, blank=True, null=True)
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.value
+    value = models.CharField(max_length=1000, blank=True, null=True)
 
 
 class DevicePhoto(models.Model):

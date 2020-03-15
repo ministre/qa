@@ -1,0 +1,25 @@
+{% extends "device/wrapper.html" %}
+
+{% load i18n static %}
+
+{% block content %}
+
+<form method="post" action="">
+    <a href="{% url 'device_details' pk=device.id %}" class="button small">&laquo; {% trans "Back" %}</a>
+    <input type="submit" value='{% trans "Update" %}' class="button success small" />
+
+
+    {% csrf_token %}
+    {% for spec in specs %}
+
+
+    <label for="id_hw">{{ spec.name }}:</label>
+    <input type="text" name="hw" value="v1.0.0" maxlength="10000" required="" id="id_hw">
+
+
+
+    {% endfor %}
+
+</form>
+
+{% endblock %}

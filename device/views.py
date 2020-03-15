@@ -278,15 +278,52 @@ def set_device_custom_value(device_id, field_id, value):
                                          defaults={'value': value})
 
 
+class SpecificationList:
+    def __init__(self):
+        self.specs = []
+
+    # return [{'name': name, 'values': [value1, value2 ... value n]}]
+    def get_values(self, device):
+        for field in CustomField.objects.filter(custom_fields__id=device.type.id).order_by('name'):
+            values = []
+            for value in CustomValue.objects.filter(Q(field=field) & Q(device=device)):
+                if value.item:
+                    values.append(value.item)
+                else:
+                    values.append(value.value)
+            self.specs.append({'name': field.name, 'value_type': field.type, 'values': values})
+        return self.specs
+
+    # return [{'name': name, 'type': type, 'value': value, 'items': [{'item_value': item_value, 'selected': bool}, ]}]
+    def get_form_metadata(self, device):
+        self.specs = []
+        self.specs.append({'name': 'Индикаторы', 'type': 'number', 'value': '20', 'items': []})
+        self.specs.append({'name': 'Кнопки', 'type': 'number', 'value': '30', 'items': []})
+        return self.specs
+
+
 @login_required
 def device_details(request, pk):
     device = get_object_or_404(Device, pk=pk)
     fws = Firmware.objects.filter(device=device)
     docums = Docum.objects.filter(device=device)
     photos = DevicePhoto.objects.filter(device=device)
-    custom_properties = get_device_custom_values(pk)
+    # custom_properties = get_device_custom_values(pk)
+
+    specs = SpecificationList().get_values(device)
+
     return render(request, 'device/details.html', {'device': device, 'fws': fws, 'docums': docums,
-                                                   'photos': photos, 'custom_properties': custom_properties})
+                                                   'specs': specs, 'photos': photos})
+
+
+@login_required
+def device_update_spec(request, pk):
+    if request.method == 'POST':
+        pass
+    else:
+        device = get_object_or_404(Device, pk=pk)
+        specs = SpecificationList().get_form_metadata(device)
+        return render(request, 'device/update_spec.html', {'device': device, 'specs': specs})
 
 
 @login_required
