@@ -317,8 +317,23 @@ class Specification:
                                            'items': items})
         return self.form_metadata
 
-    def update_values(self, device: Device, field_id: int, values: list):
-        pass
+    def update_value(self, device: Device, field_id: int, value: str):
+        field = CustomField.objects.get(id=field_id)
+        if field.type == 'text' or field.type == 'number':
+            if value:
+                CustomValue.objects.update_or_create(device=device, field=field, defaults={"value": value})
+            else:
+                CustomValue.objects.filter(Q(device=device) & Q(field=field)).delete()
+            return True
+        elif field.type == 'listbox':
+            if value:
+                CustomValue.objects.update_or_create(device=device, field=field,
+                                                     defaults={"item": CustomFieldItem.objects.get(id=value)})
+            else:
+                CustomValue.objects.filter(Q(device=device) & Q(field=field)).delete()
+        elif field.type == 'checkbox':
+            pass
+        return True
 
 
 @login_required
@@ -334,11 +349,16 @@ def device_details(request, pk):
 
 @login_required
 def device_update_spec(request, pk):
+    device = get_object_or_404(Device, pk=pk)
+    s = Specification()
     if request.method == 'POST':
-        return render(request, 'device/debug.html', {'message': request.POST.dict().items()})
+        for item in request.POST.dict().items():
+            if item[0] != 'csrfmiddlewaretoken':
+                s.update_value(device, int(item[0]), item[1])
+        return HttpResponseRedirect('/device/' + str(pk) + '/')
+        # return render(request, 'device/debug.html', {'message': message})
     else:
-        device = get_object_or_404(Device, pk=pk)
-        specs = Specification().get_form_metadata(device)
+        specs = s.get_form_metadata(device)
         return render(request, 'device/update_spec.html', {'device': device, 'specs': specs})
 
 
