@@ -259,7 +259,7 @@ class Specification:
         # [{'name': <>, 'type': <>, 'id': <>, 'value': <>, 'items': [{'name': <>, 'id': <>, 'selected': <bool>}, ]}]
 
     def get_values(self, device: Device):
-        for field in CustomField.objects.filter(custom_fields__id=device.type.id).order_by('name'):
+        for field in CustomField.objects.filter(custom_fields__id=device.type.id).order_by('id'):
             values = []
             for value in CustomValue.objects.filter(Q(field=field) & Q(device=device)):
                 if value.item:
@@ -270,7 +270,7 @@ class Specification:
         return self.specs
 
     def get_form_metadata(self, device: Device):
-        for field in CustomField.objects.filter(custom_fields__id=device.type.id).order_by('name'):
+        for field in CustomField.objects.filter(custom_fields__id=device.type.id).order_by('id'):
             items = []
             if field.type == 'text' or field.type == 'number':
                 try:
