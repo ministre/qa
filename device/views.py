@@ -252,32 +252,6 @@ class DeviceDelete(DeleteView):
         return reverse('devices')
 
 
-def get_device_custom_values(device_id):
-    custom_properties = []
-
-    class CustomProperty:
-        def __init__(self, field_id, field_name, value_name):
-            self.field_id = field_id
-            self.field_name = field_name
-            self.value_name = value_name
-
-    device = get_object_or_404(Device, pk=device_id)
-    custom_fields = CustomField.objects.filter(custom_fields__id=device.type.id).order_by('id')
-    for custom_field in custom_fields:
-        try:
-            custom_value = CustomValue.objects.get(Q(field=custom_field) & Q(device=device))
-        except ObjectDoesNotExist:
-            custom_value = ""
-        custom_properties.append(CustomProperty(custom_field.id, custom_field.name, custom_value))
-    return custom_properties
-
-
-def set_device_custom_value(device_id, field_id, value):
-    CustomValue.objects.update_or_create(device=Device.objects.get(id=device_id),
-                                         field=CustomField.objects.get(id=field_id),
-                                         defaults={'value': value})
-
-
 class Specification:
     def __init__(self):
         self.specs = []  # [{'name': <>, 'values': [<>, ]}]
@@ -335,6 +309,14 @@ class Specification:
             pass
         return True
 
+    def update_checkbox(self, device: Device, field_id: int, item_id: int):
+        if item_id == 0:
+            CustomValue.objects.filter(Q(device=device) & Q(field=CustomField.objects.get(id=field_id))).delete()
+        else:
+            CustomValue.objects.create(device=device, field=CustomField.objects.get(id=field_id),
+                                       item=CustomFieldItem.objects.get(id=item_id))
+        return True
+
 
 @login_required
 def device_details(request, pk):
@@ -353,27 +335,15 @@ def device_update_spec(request, pk):
     s = Specification()
     if request.method == 'POST':
         for item in request.POST.dict().items():
-            if item[0] != 'csrfmiddlewaretoken':
+            if item[0] != 'csrfmiddlewaretoken' and not item[0].startswith('checkbox_'):
                 s.update_value(device, int(item[0]), item[1])
+            if item[0].startswith('checkbox_'):
+                checkbox_item = item[0].split('_')
+                s.update_checkbox(device, int(checkbox_item[1]), int(checkbox_item[2]))
         return HttpResponseRedirect('/device/' + str(pk) + '/')
-        # return render(request, 'device/debug.html', {'message': message})
     else:
         specs = s.get_form_metadata(device)
         return render(request, 'device/update_spec.html', {'device': device, 'specs': specs})
-
-
-@login_required
-def device_update_details(request, pk):
-    if request.method == 'POST':
-        for item in request.POST.dict().items():
-            if item[0] != 'csrfmiddlewaretoken':
-                set_device_custom_value(pk, int(item[0]), item[1])
-        return HttpResponseRedirect('/device/' + str(pk) + '/')
-    else:
-        device = get_object_or_404(Device, pk=pk)
-        custom_properties = get_device_custom_values(pk)
-        return render(request, 'device/device_update_details.html', {'device': device,
-                                                                     'custom_properties': custom_properties})
 
 
 @method_decorator(login_required, name='dispatch')

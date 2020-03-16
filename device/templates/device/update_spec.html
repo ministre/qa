@@ -36,9 +36,10 @@
       {% if spec.type == 'checkbox' %}
             <h6>{{ spec.name }}:</h6>
             <ul style="list-style: none">
+                <input hidden name="checkbox_{{ spec.id }}_0" value="0">
             {% for item in spec.items %}
                 <li>
-                    <input type="checkbox" name="{{ item.id }}" value="{{ item.name }}" id="id_custom_field_{{ item.id }}"
+                    <input type="checkbox" name="checkbox_{{ spec.id }}_{{ item.id }}" value="1" id="id_custom_field_{{ item.id }}"
                            {% if item.selected == True %} checked{% endif %}> {{ item.name }}
                 </li>
             {% endfor %}
