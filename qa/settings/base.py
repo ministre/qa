@@ -39,13 +39,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'device',
-    'firmware',
     'docum',
+    'firmware',
+    'feature',
+    'paper',
+    'protocol',
+    'redmine',
     'testplan',
     'testplan_pattern',
-    'redmine',
-    'paper',
-    'feature',
 ]
 
 MIDDLEWARE = [
