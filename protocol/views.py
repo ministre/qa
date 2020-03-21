@@ -10,6 +10,7 @@ from testplan.models import Testplan
 from device.models import Device
 from datetime import datetime
 from django import forms
+from django.shortcuts import get_object_or_404
 
 
 @method_decorator(login_required, name='dispatch')
@@ -86,3 +87,8 @@ class ProtocolDelete(DeleteView):
 
     def get_success_url(self):
         return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id')})
+
+
+def protocol_details(request, pk):
+    protocol = get_object_or_404(Protocol, id=pk)
+    return render(request, 'protocol/details.html', {'protocol': protocol})

@@ -1,0 +1,9 @@
+{% extends "device/wrapper.html" %}
+
+{% load i18n %}
+
+{% block content %}
+
+<p><a href="{% url 'protocols' %}">{% trans "Protocols" %}</a> &raquo; {{ protocol.device.vendor }} {{ protocol.device }} ({{ protocol.device.hw }})</p>
+
+{% endblock %}
