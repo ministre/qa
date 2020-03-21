@@ -9,6 +9,7 @@ from firmware.models import Firmware
 from testplan.models import Testplan
 from device.models import Device
 from datetime import datetime
+from django import forms
 
 
 @method_decorator(login_required, name='dispatch')
@@ -33,6 +34,9 @@ class ProtocolCreate(CreateView):
         device = Device.objects.get(id=self.kwargs.get('device_id'))
         form.fields['firmware'].queryset = Firmware.objects.filter(device=device)
         form.fields['testplan'].queryset = Testplan.objects.filter(device_type=device.type)
+        form.fields['completed'].widget = forms.HiddenInput()
+        form.fields['status'].widget = forms.HiddenInput()
+        form.fields['scan'].widget = forms.HiddenInput()
         return form
 
     def get_context_data(self, **kwargs):
@@ -53,6 +57,13 @@ class ProtocolUpdate(UpdateView):
 
     def get_initial(self):
         return {'updated_by': self.request.user, 'updated_at': datetime.now}
+
+    def get_form(self, form_class=ProtocolForm):
+        form = super(ProtocolUpdate, self).get_form(form_class)
+        device = Device.objects.get(id=self.kwargs.get('device_id'))
+        form.fields['firmware'].queryset = Firmware.objects.filter(device=device)
+        form.fields['testplan'].widget = forms.HiddenInput()
+        return form
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
