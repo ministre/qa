@@ -118,6 +118,60 @@
 
     <div class="tabs-panel" id="panel6">
         <a href="{% url 'protocol_create' device_id=device.id %}" class="button small">{% trans "Create" %}</a>
+        {% if protocols %}
+        <table id="protocols" class="display" style="width:100%">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>{% trans "Firmware" %}</th>
+                <th>{% trans "Status" %}</th>
+                <th>{% trans "Started" %}</th>
+                <th>{% trans "Completed" %}</th>
+                <th>{% trans "Created by" %}</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+        {% endif %}
+            {% for protocol in protocols %}
+        <tr>
+            <td>{{ protocol.id }}</td>
+            <td>{{ protocol.firmware }}</td>
+            <td>
+                {% if protocol.status == None %}
+                Testing in progress
+                {% else %}
+                {{ protocol.status }}
+                {% endif %}
+            </td>
+            <td>{{ protocol.started }}</td>
+            <td>
+                {% if protocol.completed != None %}
+                {{ protocol.completed }}
+                {% endif %}
+            </td>
+            <td>{{ protocol.created_by }}</td>
+            <td>
+                <a href="{% url 'protocol_update' device_id=device.id pk=protocol.id %}"><i class="step fi-pencil"></i></a>
+                <a href="{% url 'protocol_delete' device_id=device.id pk=protocol.id %}"><i class="step fi-minus" style="color: #bc104b"></i></a>
+            </td>
+        </tr>
+            {% endfor %}
+        {% if protocols %}
+            </tbody>
+            <tfoot>
+            <tr>
+                <th>ID</th>
+                <th>{% trans "Firmware" %}</th>
+                <th>{% trans "Status" %}</th>
+                <th>{% trans "Started" %}</th>
+                <th>{% trans "Completed" %}</th>
+                <th>{% trans "Created by" %}</th>
+                <th></th>
+            </tr>
+            </tfoot>
+        </table>
+        {% endif %}
     </div>
 
     <div class="tabs-panel" id="panel7">
@@ -131,5 +185,23 @@
         </table>
     </div>
 </div>
+
+<script>
+  $(document).ready(function() {
+      var table = $('#protocols').DataTable( {
+      {% if LANGUAGE_CODE == 'ru' %}
+          "language": { "url": "{% static '/DataTables/i18n/Russian.json' %}" },
+      {% endif %}
+          "order": [[ 0, "desc" ]]
+      } );
+
+      $('#protocols tbody').on('click', 'tr', function () {
+          var data = table.row( this ).data();
+		  window.open("/protocol/"+data[0]+"/","_self");
+      } );
+  } );
+</script>
+
+<script type="text/javascript" src="{% static 'DataTables/datatables.js' %}"></script>
 
 {% endblock %}

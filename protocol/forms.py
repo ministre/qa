@@ -12,7 +12,7 @@ class ProtocolForm(ModelForm):
             'firmware': _('Firmware'),
             'started': _('Date of start'),
             'completed': _('Date of completion'),
-            'resolution': _('Resolution'),
+            'status': _('Status'),
             'scan': _('Scan-copy of protocol'),
         }
         fields = '__all__'

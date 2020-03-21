@@ -8,6 +8,7 @@ from django.urls import reverse
 from firmware.models import Firmware
 from testplan.models import Testplan
 from device.models import Device
+from datetime import datetime
 
 
 @method_decorator(login_required, name='dispatch')
@@ -42,3 +43,35 @@ class ProtocolCreate(CreateView):
     def get_success_url(self):
         return reverse('protocols')
         # return reverse('protocol_details', kwargs={'pk': self.kwargs.get('device_id')})
+
+
+@method_decorator(login_required, name='dispatch')
+class ProtocolUpdate(UpdateView):
+    model = Protocol
+    form_class = ProtocolForm
+    template_name = 'protocol/update.html'
+
+    def get_initial(self):
+        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['device_id'] = self.kwargs.get('device_id')
+        return context
+
+    def get_success_url(self):
+        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id')})
+
+
+@method_decorator(login_required, name='dispatch')
+class ProtocolDelete(DeleteView):
+    model = Protocol
+    template_name = 'protocol/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['device_id'] = self.kwargs.get('device_id')
+        return context
+
+    def get_success_url(self):
+        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id')})

@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .models import CustomField, CustomFieldItem, CustomValue, DeviceType, Vendor, Device, DevicePhoto
 from firmware.models import Firmware
 from docum.models import Docum
+from protocol.models import Protocol
 from .forms import CustomFieldForm, CustomFieldItemForm, DeviceTypeForm, VendorForm, DeviceForm, DevicePhotoForm
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.urls import reverse
@@ -321,12 +322,13 @@ class Specification:
 @login_required
 def device_details(request, pk):
     device = get_object_or_404(Device, pk=pk)
-    fws = Firmware.objects.filter(device=device)
-    docums = Docum.objects.filter(device=device)
-    photos = DevicePhoto.objects.filter(device=device)
     specs = Specification().get_values(device)
-    return render(request, 'device/details.html', {'device': device, 'fws': fws, 'docums': docums,
-                                                   'specs': specs, 'photos': photos})
+    fws = Firmware.objects.filter(device=device)
+    photos = DevicePhoto.objects.filter(device=device)
+    docums = Docum.objects.filter(device=device)
+    protocols = Protocol.objects.filter(device=device)
+    return render(request, 'device/details.html', {'device': device, 'specs': specs, 'fws': fws,
+                                                   'photos': photos, 'docums': docums, 'protocols': protocols})
 
 
 @login_required
