@@ -178,8 +178,8 @@
         <table class="hover unstriped">
             <tbody>
             <tr>
-                <td>{% trans "Project URL" %}:</td>
-                <td>{{ device.redmine_url }}</td>
+                <td>{% trans "Project Wiki page" %}:</td>
+                <td><a href="{{ redmine_url }}{{ device.redmine_url }}/wiki">{{ redmine_url }}{{ device.redmine_url }}/wiki</a></td>
             </tr>
             </tbody>
         </table>

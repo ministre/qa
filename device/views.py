@@ -13,6 +13,7 @@ from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
 from datetime import datetime
+from django.conf import settings
 
 
 @method_decorator(login_required, name='dispatch')
@@ -328,7 +329,8 @@ def device_details(request, pk):
     docums = Docum.objects.filter(device=device)
     protocols = Protocol.objects.filter(device=device)
     return render(request, 'device/details.html', {'device': device, 'specs': specs, 'fws': fws,
-                                                   'photos': photos, 'docums': docums, 'protocols': protocols})
+                                                   'photos': photos, 'docums': docums, 'protocols': protocols,
+                                                   'redmine_url': settings.REDMINE_URL})
 
 
 @login_required
