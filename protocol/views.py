@@ -2,11 +2,11 @@ from django.shortcuts import render
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
-from .models import Protocol
+from .models import Protocol, TestResult
 from .forms import ProtocolForm
 from django.urls import reverse
 from firmware.models import Firmware
-from testplan.models import Testplan
+from testplan.models import Testplan, Category, Test
 from device.models import Device
 from datetime import datetime
 from django import forms
@@ -46,8 +46,16 @@ class ProtocolCreate(CreateView):
         return context
 
     def get_success_url(self):
-        return reverse('protocols')
-        # return reverse('protocol_details', kwargs={'pk': self.kwargs.get('device_id')})
+        create_results(self.object)
+        return reverse('protocol_details', kwargs={'pk': self.object.id})
+
+
+def create_results(protocol: Protocol):
+    for category in Category.objects.filter(testplan=protocol.testplan).order_by("-id"):
+        for test in Test.objects.filter(category=category).order_by("-id"):
+            new_result = TestResult(test=test, protocol=protocol)
+            new_result.save()
+    return True
 
 
 @method_decorator(login_required, name='dispatch')
@@ -91,4 +99,5 @@ class ProtocolDelete(DeleteView):
 
 def protocol_details(request, pk):
     protocol = get_object_or_404(Protocol, id=pk)
-    return render(request, 'protocol/details.html', {'protocol': protocol})
+    results = TestResult.objects.filter(protocol=protocol).order_by('id')
+    return render(request, 'protocol/details.html', {'protocol': protocol, 'results': results})

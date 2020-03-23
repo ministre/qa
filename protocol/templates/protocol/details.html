@@ -1,6 +1,6 @@
 {% extends "device/wrapper.html" %}
 
-{% load i18n %}
+{% load i18n static %}
 
 {% block content %}
 
@@ -28,7 +28,7 @@
             </tr>
             <tr>
                 <td>{% trans "Testplan" %}:</td>
-                <td>{{ protocol.testplan }}</td>
+                <td>{{ protocol.testplan }} ({{ protocol.testplan.version }})</td>
             </tr>
             <tr>
                 <td>{% trans "Firmware" %}:</td>
@@ -39,11 +39,11 @@
                 <td>{{ protocol.status }}</td>
             </tr>
             <tr>
-                <td>{% trans "Started" %}:</td>
+                <td>{% trans "Started at" %}:</td>
                 <td>{{ protocol.started }}</td>
             </tr>
             <tr>
-                <td>{% trans "Completed" %}:</td>
+                <td>{% trans "Completed at" %}:</td>
                 <td>{{ protocol.completed }}</td>
             </tr>
             <tr>
@@ -67,7 +67,36 @@
     </div>
 
     <div class="tabs-panel is-active" id="panel2">
-        panel2
+        <table id="results" class="display" style="width:100%">
+            <thead>
+            <tr>
+                <th width="1%">№</th>
+                <th width="60px">{% trans "Results" %}</th>
+                <th>{% trans "Tests" %}</th>
+                <th width="20%">{% trans "Categories" %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for result in results %}
+            <tr>
+                <td align="center">{{ result.id }}</td>
+                <td align="center">
+                    {% if result.result == 1 %}
+                      <img src="{% static '/img/nok.png' %}" width="25" height="25">
+                    {% endif %}
+                    {% if result.result == 2 %}
+                      <img src="{% static '/img/w_yellow.png' %}" width="25" height="25">
+                    {% endif %}
+                    {% if result.result == 3 %}
+                      <img src="{% static '/img/ok.png' %}" width="25" height="25">
+                    {% endif %}
+                </td>
+                <td>{{ result.test.name }}</td>
+                <td><span style="color:gray"><small><i>{{ result.test.category.name }}</i></small></span></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
 
     <div class="tabs-panel" id="panel3">
@@ -83,5 +112,24 @@
     </div>
 
 </div>
+
+<script>
+  $(document).ready(function() {
+      var table = $('#results').DataTable( {
+          "paging":  false,
+      {% if LANGUAGE_CODE == 'ru' %}
+          "language": { "url": "{% static '/DataTables/i18n/Russian.json' %}" },
+      {% endif %}
+          "order": [[ 0, "desc" ]]
+      } );
+
+      $('#results tbody').on('click', 'tr', function () {
+          var data = table.row( this ).data();
+		  window.open("/protocol/result/"+data[0]+"/","_self");
+      } );
+  } );
+</script>
+
+<script type="text/javascript" src="{% static 'DataTables/datatables.js' %}"></script>
 
 {% endblock %}
