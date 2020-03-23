@@ -6,4 +6,82 @@
 
 <p><a href="{% url 'protocols' %}">{% trans "Protocols" %}</a> &raquo; {{ protocol.device.vendor }} {{ protocol.device }} ({{ protocol.device.hw }})</p>
 
+<ul class="tabs" data-tabs id="example-tabs">
+    <li class="tabs-title"><a href="#panel1" aria-selected="true">{% trans "General" %}</a></li>
+    <li class="tabs-title is-active"><a data-tabs-target="panel2" href="#panel2">{% trans "Results" %}</a></li>
+    <li class="tabs-title"><a data-tabs-target="panel3" href="#panel3">{% trans "Statistics" %}</a></li>
+    <li class="tabs-title"><a data-tabs-target="panel4" href="#panel4">{% trans "Docx" %}</a></li>
+    <li class="tabs-title"><a data-tabs-target="panel5" href="#panel5">{% trans "Redmine" %}</a></li>
+</ul>
+
+<div class="tabs-content" data-tabs-content="example-tabs">
+
+    <div class="tabs-panel" id="panel1">
+        <a href="{% url 'protocol_update' device_id=protocol.device.id pk=protocol.id %}" class="button small">{% trans "Update" %}</a>
+        <a href="{% url 'protocol_delete' device_id=protocol.device.id pk=protocol.id %}" class="button alert small">{% trans "Delete" %}</a>
+
+        <table class="hover unstriped">
+            <tbody>
+            <tr>
+                <td>{% trans "Device" %}:</td>
+                <td>{{ protocol.device.vendor }} {{ protocol.device.model }} ({{ protocol.device.hw }})</td>
+            </tr>
+            <tr>
+                <td>{% trans "Testplan" %}:</td>
+                <td>{{ protocol.testplan }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Firmware" %}:</td>
+                <td>{{ protocol.firmware }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Status" %}:</td>
+                <td>{{ protocol.status }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Started" %}:</td>
+                <td>{{ protocol.started }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Completed" %}:</td>
+                <td>{{ protocol.completed }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Created by" %}:</td>
+                <td>{{ protocol.created_by }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Created at" %}:</td>
+                <td>{{ protocol.created_at }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Updated by" %}:</td>
+                <td>{{ protocol.updated_by }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Updated at" %}:</td>
+                <td>{{ protocol.updated_at }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="tabs-panel is-active" id="panel2">
+        panel2
+    </div>
+
+    <div class="tabs-panel" id="panel3">
+        panel3
+    </div>
+
+    <div class="tabs-panel" id="panel4">
+        panel4
+    </div>
+
+    <div class="tabs-panel" id="panel5">
+        panel5
+    </div>
+
+</div>
+
 {% endblock %}
