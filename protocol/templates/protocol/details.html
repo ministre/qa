@@ -71,9 +71,9 @@
             <thead>
             <tr>
                 <th width="1%">№</th>
-                <th width="60px">{% trans "Results" %}</th>
-                <th>{% trans "Tests" %}</th>
-                <th width="20%">{% trans "Categories" %}</th>
+                <th width="50px">{% trans "Result" %}</th>
+                <th>{% trans "Test" %}</th>
+                <th width="20%">{% trans "Category" %}</th>
             </tr>
             </thead>
             <tbody>
@@ -82,13 +82,16 @@
                 <td align="center">{{ result.id }}</td>
                 <td align="center">
                     {% if result.result == 1 %}
-                      <img src="{% static '/img/nok.png' %}" width="25" height="25">
+                      <img src="{% static '/img/nok.png' %}" width="25" height="25" alt="failed">
                     {% endif %}
                     {% if result.result == 2 %}
-                      <img src="{% static '/img/w_yellow.png' %}" width="25" height="25">
+                      <img src="{% static '/img/w_yellow.png' %}" width="25" height="25" alt="warning">
                     {% endif %}
                     {% if result.result == 3 %}
-                      <img src="{% static '/img/ok.png' %}" width="25" height="25">
+                      <img src="{% static '/img/ok.png' %}" width="25" height="25" alt="ok">
+                    {% endif %}
+                    {% if not result.result %}
+                    <img src="{% static '/img/qu.png' %}" width="20" height="20" alt="untested">
                     {% endif %}
                 </td>
                 <td>{{ result.test.name }}</td>
