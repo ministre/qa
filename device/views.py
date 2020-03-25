@@ -1,9 +1,10 @@
 from django.shortcuts import render
-from .models import CustomField, CustomFieldItem, CustomValue, DeviceType, Vendor, Device, DevicePhoto
+from .models import CustomField, CustomFieldItem, CustomValue, DeviceType, Vendor, Device, DevicePhoto, Sample
 from firmware.models import Firmware
 from docum.models import Docum
 from protocol.models import Protocol
-from .forms import CustomFieldForm, CustomFieldItemForm, DeviceTypeForm, VendorForm, DeviceForm, DevicePhotoForm
+from .forms import CustomFieldForm, CustomFieldItemForm, DeviceTypeForm, VendorForm, DeviceForm, DevicePhotoForm, \
+    SampleForm
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -327,10 +328,11 @@ def device_details(request, pk):
     fws = Firmware.objects.filter(device=device)
     photos = DevicePhoto.objects.filter(device=device)
     docums = Docum.objects.filter(device=device)
+    samples = Sample.objects.filter(device=device)
     protocols = Protocol.objects.filter(device=device)
     return render(request, 'device/details.html', {'device': device, 'specs': specs, 'fws': fws,
-                                                   'photos': photos, 'docums': docums, 'protocols': protocols,
-                                                   'redmine_url': settings.REDMINE_URL})
+                                                   'photos': photos, 'docums': docums, 'samples': samples,
+                                                   'protocols': protocols, 'redmine_url': settings.REDMINE_URL})
 
 
 @login_required
@@ -398,6 +400,57 @@ class DevicePhotoUpdate(UpdateView):
 class DevicePhotoDelete(DeleteView):
     model = DevicePhoto
     template_name = 'photo/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['device_id'] = self.kwargs.get('device_id')
+        return context
+
+    def get_success_url(self):
+        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id')})
+
+
+@method_decorator(login_required, name='dispatch')
+class SampleCreate(CreateView):
+    model = Sample
+    form_class = SampleForm
+    template_name = 'sample/create.html'
+
+    def get_initial(self):
+        return {'device': self.kwargs.get('device_id'),
+                'created_by': self.request.user, 'updated_by': self.request.user}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['device_id'] = self.kwargs.get('device_id')
+        return context
+
+    def get_success_url(self):
+        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id')})
+
+
+@method_decorator(login_required, name='dispatch')
+class SampleUpdate(UpdateView):
+    model = Sample
+    form_class = SampleForm
+    template_name = 'sample/update.html'
+
+    def get_initial(self):
+        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['device_id'] = self.kwargs.get('device_id')
+        return context
+
+    def get_success_url(self):
+        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id')})
+
+
+@method_decorator(login_required, name='dispatch')
+class SampleDelete(DeleteView):
+    model = Sample
+    template_name = 'sample/delete.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

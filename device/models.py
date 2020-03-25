@@ -87,3 +87,16 @@ class DevicePhoto(models.Model):
     created_at = models.DateTimeField(default=datetime.now, blank=True)
     updated_by = models.ForeignKey(User, related_name='photo_u', on_delete=models.CASCADE, blank=True, null=True)
     updated_at = models.DateTimeField(default=datetime.now, blank=True)
+
+
+class Sample(models.Model):
+    device = models.ForeignKey(Device, on_delete=models.CASCADE)
+    sn = models.CharField(max_length=50)
+    desc = models.CharField(max_length=500, blank=True, null=True)
+    created_by = models.ForeignKey(User, related_name='sample_c', on_delete=models.CASCADE, blank=True, null=True)
+    created_at = models.DateTimeField(default=datetime.now, blank=True)
+    updated_by = models.ForeignKey(User, related_name='sample_u', on_delete=models.CASCADE, blank=True, null=True)
+    updated_at = models.DateTimeField(default=datetime.now, blank=True)
+
+    def __str__(self):
+        return self.sn

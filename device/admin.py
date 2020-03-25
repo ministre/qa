@@ -1,5 +1,5 @@
 from django.contrib import admin
-from device.models import CustomField, CustomFieldItem, CustomValue, DeviceType, Vendor, Device, DevicePhoto
+from device.models import CustomField, CustomFieldItem, CustomValue, DeviceType, Vendor, Device, DevicePhoto, Sample
 
 admin.site.register(CustomField)
 admin.site.register(CustomFieldItem)
@@ -8,3 +8,4 @@ admin.site.register(DeviceType)
 admin.site.register(Vendor)
 admin.site.register(Device)
 admin.site.register(DevicePhoto)
+admin.site.register(Sample)

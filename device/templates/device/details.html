@@ -12,8 +12,9 @@
     <li class="tabs-title"><a data-tabs-target="panel3" href="#panel3">{% trans "Firmware" %}</a></li>
     <li class="tabs-title"><a data-tabs-target="panel4" href="#panel4">{% trans "Photo" %}</a></li>
     <li class="tabs-title"><a data-tabs-target="panel5" href="#panel5">{% trans "Documentation" %}</a></li>
-    <li class="tabs-title"><a data-tabs-target="panel6" href="#panel6">{% trans "Protocols" %}</a></li>
-    <li class="tabs-title"><a data-tabs-target="panel7" href="#panel7">{% trans "Redmine" %}</a></li>
+    <li class="tabs-title"><a data-tabs-target="panel6" href="#panel6">{% trans "Samples" %}</a></li>
+    <li class="tabs-title"><a data-tabs-target="panel7" href="#panel7">{% trans "Protocols" %}</a></li>
+    <li class="tabs-title"><a data-tabs-target="panel8" href="#panel8">{% trans "Redmine" %}</a></li>
 </ul>
 
 <div class="tabs-content" data-tabs-content="example-tabs">
@@ -104,7 +105,6 @@
 
     <div class="tabs-panel" id="panel5">
         <a href="{% url 'docum_create' device_id=device.id %}" class="button small">{% trans "Add" %}</a>
-
         <p>
             {% for docum in docums %}
             {{ docum.type }}<br>
@@ -113,11 +113,36 @@
             <br>
             {% endfor %}
         </p>
-
     </div>
 
     <div class="tabs-panel" id="panel6">
-        <a href="{% url 'protocol_create' device_id=device.id %}" class="button small">{% trans "Create" %}</a>
+        <a href="{% url 'sample_create' device_id=device.id %}" class="button small">{% trans "Add" %}</a>
+        {% if samples %}
+        <table id="samples" class="display" style="width:100%">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>{% trans "Serial Number" %}</th>
+                <th>{% trans "Description" %}</th>
+            </tr>
+            </thead>
+            <tbody>
+        {% endif %}
+            {% for sample in samples %}
+        <tr>
+            <td>{{ sample.id }}</td>
+            <td>{{ sample.sn }}</td>
+            <td>{{ sample.desc }}</td>
+        </tr>
+            {% endfor %}
+        {% if samples %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+
+    <div class="tabs-panel" id="panel7">
+        <a href="{% url 'protocol_create' device_id=device.id %}" class="button small">{% trans "Add" %}</a>
         {% if protocols %}
         <table id="protocols" class="display" style="width:100%">
             <thead>
@@ -159,22 +184,11 @@
             {% endfor %}
         {% if protocols %}
             </tbody>
-            <tfoot>
-            <tr>
-                <th>ID</th>
-                <th>{% trans "Firmware" %}</th>
-                <th>{% trans "Status" %}</th>
-                <th>{% trans "Started" %}</th>
-                <th>{% trans "Completed" %}</th>
-                <th>{% trans "Created by" %}</th>
-                <th></th>
-            </tr>
-            </tfoot>
         </table>
         {% endif %}
     </div>
 
-    <div class="tabs-panel" id="panel7">
+    <div class="tabs-panel" id="panel8">
         <table class="hover unstriped">
             <tbody>
             <tr>
@@ -189,6 +203,7 @@
 <script>
   $(document).ready(function() {
       var table = $('#protocols').DataTable( {
+          "paging":  false,
       {% if LANGUAGE_CODE == 'ru' %}
           "language": { "url": "{% static '/DataTables/i18n/Russian.json' %}" },
       {% endif %}
@@ -198,6 +213,23 @@
       $('#protocols tbody').on('click', 'tr', function () {
           var data = table.row( this ).data();
 		  window.open("/protocol/"+data[0]+"/","_self");
+      } );
+  } );
+</script>
+
+<script>
+  $(document).ready(function() {
+      var table = $('#samples').DataTable( {
+          "paging":  false,
+      {% if LANGUAGE_CODE == 'ru' %}
+          "language": { "url": "{% static '/DataTables/i18n/Russian.json' %}" },
+      {% endif %}
+          "order": [[ 0, "desc" ]]
+      } );
+
+      $('#samples tbody').on('click', 'tr', function () {
+          var data = table.row( this ).data();
+		  window.open("/sample/{{ device.id }}/update/"+data[0]+"/","_self");
       } );
   } );
 </script>
