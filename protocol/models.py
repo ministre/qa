@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
-from device.models import Device
+from device.models import Device, Sample
 from testplan.models import Testplan, Test
 from firmware.models import Firmware
 
@@ -20,6 +20,7 @@ class Protocol(models.Model):
     started = models.DateField(default=datetime.now, blank=True)
     completed = models.DateField(blank=True, null=True)
     status = models.ForeignKey(Resolution, on_delete=models.CASCADE, blank=True, null=True)
+    sample = models.ForeignKey(Sample, on_delete=models.CASCADE, blank=True, null=True)
     scan = models.FileField(upload_to="protocol/files/", blank=True, null=True)
     created_by = models.ForeignKey(User, related_name='protocol_c', on_delete=models.CASCADE, blank=True, null=True)
     created_at = models.DateTimeField(default=datetime.now, blank=True)

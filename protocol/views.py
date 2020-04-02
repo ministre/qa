@@ -7,7 +7,7 @@ from .forms import ProtocolForm
 from django.urls import reverse
 from firmware.models import Firmware
 from testplan.models import Testplan, Category, Test
-from device.models import Device
+from device.models import Device, Sample
 from datetime import datetime
 from django import forms
 from django.shortcuts import get_object_or_404
@@ -34,6 +34,7 @@ class ProtocolCreate(CreateView):
         form = super(ProtocolCreate, self).get_form(form_class)
         device = Device.objects.get(id=self.kwargs.get('device_id'))
         form.fields['firmware'].queryset = Firmware.objects.filter(device=device)
+        form.fields['sample'].queryset = Sample.objects.filter(device=device)
         form.fields['testplan'].queryset = Testplan.objects.filter(device_type=device.type)
         form.fields['completed'].widget = forms.HiddenInput()
         form.fields['status'].widget = forms.HiddenInput()
@@ -71,6 +72,7 @@ class ProtocolUpdate(UpdateView):
         form = super(ProtocolUpdate, self).get_form(form_class)
         device = Device.objects.get(id=self.kwargs.get('device_id'))
         form.fields['firmware'].queryset = Firmware.objects.filter(device=device)
+        form.fields['sample'].queryset = Sample.objects.filter(device=device)
         form.fields['testplan'].widget = forms.HiddenInput()
         return form
 

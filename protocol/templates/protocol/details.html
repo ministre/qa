@@ -39,6 +39,18 @@
                 <td>{{ protocol.status }}</td>
             </tr>
             <tr>
+                <td>{% trans "Sample SN" %}:</td>
+                <td>{{ protocol.sample }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Sample User Password" %}:</td>
+                <td>{{ protocol.sample.user_password }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Sample Support Password" %}:</td>
+                <td>{{ protocol.sample.support_password }}</td>
+            </tr>
+            <tr>
                 <td>{% trans "Started at" %}:</td>
                 <td>{{ protocol.started }}</td>
             </tr>

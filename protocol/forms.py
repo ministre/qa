@@ -13,6 +13,7 @@ class ProtocolForm(ModelForm):
             'started': _('Date of start'),
             'completed': _('Date of completion'),
             'status': _('Status'),
+            'sample': _('Sample'),
             'scan': _('Scan-copy of protocol'),
         }
         fields = '__all__'
