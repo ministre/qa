@@ -123,6 +123,10 @@
             <tr>
                 <th>ID</th>
                 <th>{% trans "Serial Number" %}</th>
+                <th>{% trans "User Login" %}</th>
+                <th>{% trans "User Password" %}</th>
+                <th>{% trans "Support Login" %}</th>
+                <th>{% trans "Support Password" %}</th>
                 <th>{% trans "Description" %}</th>
             </tr>
             </thead>
@@ -132,7 +136,14 @@
         <tr>
             <td>{{ sample.id }}</td>
             <td>{{ sample.sn }}</td>
-            <td>{{ sample.desc }}</td>
+            <td>{{ sample.user_login }}</td>
+            <td>{{ sample.user_password }}</td>
+            <td>{{ sample.support_login }}</td>
+            <td>{{ sample.support_password }}</td>
+            <td>{% if sample.desc %}
+                  {{ sample.desc }}
+                {% endif %}
+            </td>
         </tr>
             {% endfor %}
         {% if samples %}

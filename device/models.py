@@ -92,7 +92,11 @@ class DevicePhoto(models.Model):
 class Sample(models.Model):
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
     sn = models.CharField(max_length=50)
-    desc = models.CharField(max_length=500, blank=True, null=True)
+    desc = models.CharField(max_length=1000, blank=True, null=True)
+    user_login = models.CharField(max_length=100, blank=True, null=True)
+    user_password = models.CharField(max_length=100, blank=True, null=True)
+    support_login = models.CharField(max_length=100, blank=True, null=True)
+    support_password = models.CharField(max_length=100, blank=True, null=True)
     created_by = models.ForeignKey(User, related_name='sample_c', on_delete=models.CASCADE, blank=True, null=True)
     created_at = models.DateTimeField(default=datetime.now, blank=True)
     updated_by = models.ForeignKey(User, related_name='sample_u', on_delete=models.CASCADE, blank=True, null=True)

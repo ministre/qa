@@ -100,6 +100,10 @@ class SampleForm(ModelForm):
         labels = {
             'sn': _('Serial Number'),
             'desc': _('Description'),
+            'user_login': _('User Login'),
+            'user_password': _('User Password'),
+            'support_login': _('Support Login'),
+            'support_password': _('Support Password'),
         }
         fields = '__all__'
         widgets = {'device': HiddenInput(),
