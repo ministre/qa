@@ -4,19 +4,21 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from .models import Testplan, Category, Chapter, Test, TestConfig, TestImage, TestFile, TestChecklist, \
-    ChecklistItem, TestWorksheet, WorksheetItem, TestLink, TestComment
+    ChecklistItem, TestWorksheet, WorksheetItem, TestLink, TestComment, Pattern
 from .forms import TestplanForm, CategoryForm, ChapterForm, TestForm, TestConfigForm, TestImageForm, TestFileForm, \
-    TestChecklistForm, ChecklistItemForm, TestWorksheetForm, WorksheetItemForm, TestLinkForm, TestCommentForm
+    TestChecklistForm, ChecklistItemForm, TestWorksheetForm, WorksheetItemForm, TestLinkForm, TestCommentForm, \
+    PatternForm
 from django.http import HttpResponseRedirect
 import textile
 from datetime import datetime
 
 
-@method_decorator(login_required, name='dispatch')
-class TestplanListView(ListView):
-    context_object_name = 'testplans'
-    queryset = Testplan.objects.all()
-    template_name = 'testplan/list.html'
+@login_required
+def testplan_list(request, tab_id):
+    testplans = Testplan.objects.all().order_by("id")
+    patterns = Pattern.objects.all().order_by("id")
+    return render(request, 'testplan/list.html', {'testplans': testplans, 'patterns': patterns,
+                                                  'tab_id': tab_id})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -895,3 +897,16 @@ class TestCommentUpdate(UpdateView):
         testplan_update_timestamp(self.kwargs.get('testplan_id'), self.request.user)
         return reverse('test_details', kwargs={'testplan_id': self.kwargs.get('testplan_id'),
                                                'test_id': self.kwargs.get('test_id')})
+
+
+@method_decorator(login_required, name='dispatch')
+class PatternCreate(CreateView):
+    model = Pattern
+    form_class = PatternForm
+    template_name = 'pattern/create.html'
+
+    def get_initial(self):
+        return {'created_by': self.request.user, 'updated_by': self.request.user}
+
+    def get_success_url(self):
+        return reverse('testplans')

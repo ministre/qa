@@ -27,7 +27,6 @@ urlpatterns = [
     path('firmware/', include('firmware.urls')),
     path('docum/', include('docum.urls')),
     path('testplan/', include('testplan.urls')),
-    path('pattern/', include('testplan_pattern.urls')),
     path('redmine/', include('redmine.urls')),
     path('paper/', include('paper.urls')),
     path('feature/', include('feature.urls')),

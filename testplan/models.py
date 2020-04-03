@@ -116,3 +116,25 @@ class TestLink(models.Model):
 class TestComment(models.Model):
     text = models.TextField(max_length=100000)
     test = models.ForeignKey(Test, related_name='test_comment', on_delete=models.CASCADE)
+
+
+# Testplan Patterns
+
+
+class Pattern(models.Model):
+    name = models.CharField(max_length=1000)
+    types = models.ManyToManyField(DeviceType, related_name='device_types', blank=True)
+    redmine_url = models.CharField(max_length=1000, blank=True, null=True)
+    created_by = models.ForeignKey(User, related_name='pattern_c', on_delete=models.CASCADE, blank=True, null=True)
+    created_at = models.DateTimeField(default=datetime.now, blank=True)
+    updated_by = models.ForeignKey(User, related_name='pattern_u', on_delete=models.CASCADE, blank=True, null=True)
+    updated_at = models.DateTimeField(default=datetime.now, blank=True)
+
+
+class PatternTitle(models.Model):
+    pattern = models.ForeignKey(Pattern, on_delete=models.CASCADE)
+    device_type = models.ForeignKey(DeviceType, on_delete=models.CASCADE)
+    name = models.CharField(max_length=1000)
+
+    class Meta:
+        unique_together = ('pattern', 'device_type',)

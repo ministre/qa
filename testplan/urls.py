@@ -2,8 +2,11 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.TestplanListView.as_view(), name='testplans'),
-    path('create/', views.TestplanCreate.as_view(), name='testplan_create'),
+    path('list/<int:tab_id>/', views.testplan_list, name='testplans'),
+
+    path('create_testplan/', views.TestplanCreate.as_view(), name='create_testplan'),
+    path('create_pattern/', views.PatternCreate.as_view(), name='create_pattern'),
+
     path('<int:pk>/delete/', views.TestplanDelete.as_view(), name='testplan_delete'),
     path('<int:pk>/update/', views.TestplanUpdate.as_view(), name='testplan_update'),
     path('<int:testplan_id>/', views.testplan_details, name='testplan_details'),

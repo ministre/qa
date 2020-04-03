@@ -4,6 +4,9 @@
 
 {% block content %}
 
+<a href="{% url 'import_testplan' %}" class="button small">{% trans "Create from Redmine" %}</a>
+<a href="/p_create/" class="button small warning">{% trans "Create from Pattern" %}</a>
+
 <form method="post" action="">
     <a href="{% url 'testplans' %}" class="button small">&laquo; {% trans "Back" %}</a>
     <input type="submit" value='{% trans "Create" %}' class="button success small" />

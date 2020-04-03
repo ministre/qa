@@ -92,6 +92,25 @@
     <div class="tabs-panel" id="panel4">
         <a href="{% url 'photo_create' device_id=device.id %}" class="button small">{% trans "Add" %}</a>
 
+        {% if photos %}
+
+        <div class="product-image-gallery">
+            <ul class="menu product-thumbs align-center">
+                {% for photo in photos %}
+                  <li> <a class="sim-thumb" data-image="{{ photo.photo.url }}">
+                      <img src="{{ photo.photo.url }}" height="100" width="100" alt="{{ photo.desc }}"></a> </li>
+                {% endfor %}
+            </ul>
+
+            <p align="center">
+                <img class="pdp-product-image" id="main-product-image" src="{{ photos.0.photo.url }}"
+                     alt="" style="max-width: 800px">
+            </p>
+            <br>
+
+        </div>
+        {% endif %}
+
         <p>
             {% for photo in photos %}
             {{ photo.desc }}<br>
@@ -243,6 +262,12 @@
 		  window.open("/sample/{{ device.id }}/update/"+data[0]+"/","_self");
       } );
   } );
+</script>
+
+<script>
+$('.sim-thumb').on('click', function() {
+  $('#main-product-image').attr('src', $(this).data('image'));
+})
 </script>
 
 <script type="text/javascript" src="{% static 'DataTables/datatables.js' %}"></script>
