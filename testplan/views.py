@@ -241,8 +241,7 @@ def chapter_details(request, testplan_id, chapter_id):
 
 def tests_count(testplan: Testplan):
     count = 0
-    categories = Category.objects.filter(testplan=testplan)
-    for category in categories:
+    for category in Category.objects.filter(testplan=testplan):
         tests = Test.objects.filter(category=category)
         count += tests.count()
     return count
