@@ -101,6 +101,11 @@ def testplan_details(request, testplan_id):
     return render(request, 'testplan/details.html', {'testplan': testplan, 'categories': categories,
                                                      'chapters': chapters, 'amount_of_tests': amount_of_tests})
 
+@login_required
+def pattern_details(request, pattern_id):
+    pattern = get_object_or_404(Pattern, id=pattern_id)
+    return render(request, 'pattern/details.html', {'pattern': pattern})
+
 
 @method_decorator(login_required, name='dispatch')
 class CategoryCreate(CreateView):

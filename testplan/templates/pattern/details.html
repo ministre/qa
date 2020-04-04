@@ -1,0 +1,9 @@
+{% extends "device/wrapper.html" %}
+
+{% load i18n static %}
+
+{% block content %}
+
+<p><a href="{% url 'testplans' tab_id=2 %}">{% trans "Patterns" %}</a> &raquo; {{ pattern.name}}</p>
+
+{% endblock %}

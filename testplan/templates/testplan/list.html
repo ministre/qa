@@ -6,15 +6,15 @@
 
 <ul class="tabs" data-tabs id="example-tabs">
     <li class="tabs-title {% if tab_id == 1 %} is-active{% endif %}">
-        <a href="#p_testplans" aria-selected="true">{% trans "Testplans" %}</a></li>
+        <a href="#testplans" aria-selected="true">{% trans "Testplans" %}</a></li>
     <li class="tabs-title {% if tab_id == 2 %} is-active{% endif %}">
-        <a data-tabs-target="p_patterns" href="#p_patterns">{% trans "Patterns" %}</a></li>
+        <a data-tabs-target="patterns" href="#patterns">{% trans "Patterns" %}</a></li>
 </ul>
 
 <div class="tabs-content" data-tabs-content="example-tabs">
-    <div class="tabs-panel {% if tab_id == 1 %}is-active{% endif %}" id="p_testplans">
+    <div class="tabs-panel {% if tab_id == 1 %}is-active{% endif %}" id="testplans">
         <a href="{% url 'create_testplan' %}" class="button small">{% trans "Create" %}</a>
-        <table id="testplans" class="display" style="width:100%">
+        <table id="t" class="display" style="width:100%">
             <thead>
             <tr>
                 <th>ID</th>
@@ -26,21 +26,21 @@
             </thead>
             <tbody>
             {% for testplan in testplans %}
-            <tr>
-                <td>{{ testplan.id }}</td>
-                <td>{{ testplan.name }}</td>
-                <td>{{ testplan.version }}</td>
+            <tr data-href="{% url 'testplan_details' testplan_id=testplan.id %}">
+                <td width="1%">{{ testplan.id }}</td>
+                <td width="60%">{{ testplan.name }}</td>
+                <td width="7%">{{ testplan.version }}</td>
                 <td>{{ testplan.device_type.tag }}</td>
-                <td>{{ testplan.updated_at }} ({{ testplan.updated_by }})</td>
+                <td width="19%">{{ testplan.updated_at }} ({{ testplan.updated_by }})</td>
             </tr>
             {% endfor %}
             </tbody>
         </table>
     </div>
 
-    <div class="tabs-panel {% if tab_id == 2 %}is-active{% endif %}" id="p_patterns">
+    <div class="tabs-panel {% if tab_id == 2 %}is-active{% endif %}" id="patterns">
         <a href="{% url 'create_pattern' %}" class="button small">{% trans "Create" %}</a>
-        <table id="patterns" class="display" style="width:100%">
+        <table id="p" class="display" style="width:100%">
             <thead>
             <tr>
                 <th>ID</th>
@@ -50,10 +50,10 @@
             </thead>
             <tbody>
             {% for pattern in patterns %}
-            <tr>
-                <td>{{ pattern.id }}</td>
+            <tr data-href="{% url 'pattern_details' pattern_id=pattern.id %}">
+                <td width="1%">{{ pattern.id }}</td>
                 <td>{{ pattern.name }}</td>
-                <td>{{ pattern.updated_at }} ({{ pattern.updated_by }})</td>
+                <td width="19%">{{ pattern.updated_at }} ({{ pattern.updated_by }})</td>
             </tr>
             {% endfor %}
             </tbody>
@@ -62,36 +62,26 @@
 </div>
 
 <script>
-  $(document).ready(function() {
-      var table = $('#testplans').DataTable( {
-      {% if LANGUAGE_CODE == 'ru' %}
-          "language": { "url": "{% static '/DataTables/i18n/Russian.json' %}" },
-      {% endif %}
-          "pageLength": 100,
-          "order": [[ 0, "desc" ]]
-      } );
+    $(document).ready(function() {
+        var table = $('table').DataTable( {
 
-      $('#testplans tbody').on('click', 'tr', function () {
-          var data = table.row( this ).data();
-		  window.open(data[0]+"/","_self");
-      } );
-  } );
+        {% if LANGUAGE_CODE == 'ru' %}
+            "language": { "url": "{% static '/DataTables/i18n/Russian.json' %}" },
+        {% endif %}
 
-  $(document).ready(function() {
-      var table = $('#patterns').DataTable( {
-      {% if LANGUAGE_CODE == 'ru' %}
-          "language": { "url": "{% static '/DataTables/i18n/Russian.json' %}" },
-      {% endif %}
-          "pageLength": 100,
-          "order": [[ 0, "desc" ]]
-      } );
+            "pageLength": 100,
+            "order": [[ 0, "desc" ]]
+        });
+    });
 
-      $('#patterns tbody').on('click', 'tr', function () {
-          var data = table.row( this ).data();
-		  window.open(data[0]+"/","_self");
-      } );
-  } );
-
+    document.addEventListener("DOMContentLoaded", () => {
+        const rows = document.querySelectorAll("tr[data-href]");
+        rows.forEach(row => {
+            row.addEventListener("click", () => {
+                window.location.href = row.dataset.href;
+            });
+        });
+    });
 </script>
 
 <script type="text/javascript" src="{% static 'DataTables/datatables.js' %}"></script>
