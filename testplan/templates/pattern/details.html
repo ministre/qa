@@ -6,4 +6,23 @@
 
 <p><a href="{% url 'testplans' tab_id=2 %}">{% trans "Patterns" %}</a> &raquo; {{ pattern.name}}</p>
 
+<ul class="tabs" data-tabs id="pattern-tabs">
+    <li class="tabs-title is-active"><a href="#general" aria-selected="true">{% trans "General" %}</a></li>
+    <li class="tabs-title"><a data-tabs-target="headings" href="#headings">{% trans "Headings" %}</a></li>
+    <li class="tabs-title"><a data-tabs-target="redmine" href="#redmine">{% trans "Redmine" %}</a></li>
+</ul>
+
+<div class="tabs-content" data-tabs-content="pattern-tabs">
+    <div class="tabs-panel is-active" id="general">
+        <a href="{% url 'pattern_update' pk=pattern.id %}" class="button small">{% trans "Update" %}</a>
+        <a href="{% url 'pattern_delete' pk=pattern.id %}" class="button alert small">{% trans "Delete" %}</a>
+    </div>
+    <div class="tabs-panel" id="headings">
+        2
+    </div>
+    <div class="tabs-panel" id="redmine">
+        3
+    </div>
+</div>
+
 {% endblock %}

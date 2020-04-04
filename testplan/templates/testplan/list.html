@@ -13,7 +13,7 @@
 
 <div class="tabs-content" data-tabs-content="example-tabs">
     <div class="tabs-panel {% if tab_id == 1 %}is-active{% endif %}" id="testplans">
-        <a href="{% url 'create_testplan' %}" class="button small">{% trans "Create" %}</a>
+        <a href="{% url 'testplan_create' %}" class="button small">{% trans "Create" %}</a>
         <table id="t" class="display" style="width:100%">
             <thead>
             <tr>
@@ -39,7 +39,7 @@
     </div>
 
     <div class="tabs-panel {% if tab_id == 2 %}is-active{% endif %}" id="patterns">
-        <a href="{% url 'create_pattern' %}" class="button small">{% trans "Create" %}</a>
+        <a href="{% url 'pattern_create' %}" class="button small">{% trans "Create" %}</a>
         <table id="p" class="display" style="width:100%">
             <thead>
             <tr>

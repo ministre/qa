@@ -130,6 +130,14 @@ class Pattern(models.Model):
     updated_by = models.ForeignKey(User, related_name='pattern_u', on_delete=models.CASCADE, blank=True, null=True)
     updated_at = models.DateTimeField(default=datetime.now, blank=True)
 
+    def __str__(self):
+        return self.name
+
+    def update_timestamp(self, user):
+        self.updated_by = user
+        self.updated_at = datetime.now()
+        return True
+
 
 class PatternTitle(models.Model):
     pattern = models.ForeignKey(Pattern, on_delete=models.CASCADE)

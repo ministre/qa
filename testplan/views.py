@@ -912,3 +912,27 @@ class PatternCreate(CreateView):
 
     def get_success_url(self):
         return reverse('pattern_details', kwargs={'pk': self.object.id})
+
+
+@method_decorator(login_required, name='dispatch')
+class PatternDelete(DeleteView):
+    model = Pattern
+    template_name = 'pattern/delete.html'
+
+    def get_success_url(self):
+        return reverse('testplans', kwargs={'tab_id': 2})
+
+
+@method_decorator(login_required, name='dispatch')
+class PatternUpdate(UpdateView):
+    model = Pattern
+    form_class = PatternForm
+    template_name = 'pattern/update.html'
+
+    def get_initial(self):
+        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+
+    def get_success_url(self):
+        pattern = get_object_or_404(Pattern, id=self.object.id)
+        pattern.update_timestamp(self.request.user)
+        return reverse('pattern_details', kwargs={'pk': self.object.id})

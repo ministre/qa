@@ -3,16 +3,14 @@ from . import views
 
 urlpatterns = [
     path('list/<int:tab_id>/', views.testplan_list, name='testplans'),
-
     path('t/<int:pk>/', views.testplan_details, name='testplan_details'),
     path('p/<int:pk>/', views.pattern_details, name='pattern_details'),
-
-    path('create_testplan/', views.TestplanCreate.as_view(), name='create_testplan'),
-    path('create_pattern/', views.PatternCreate.as_view(), name='create_pattern'),
-
-    path('<int:pk>/delete/', views.TestplanDelete.as_view(), name='testplan_delete'),
-    path('<int:pk>/update/', views.TestplanUpdate.as_view(), name='testplan_update'),
-
+    path('t_create/', views.TestplanCreate.as_view(), name='testplan_create'),
+    path('p_create/', views.PatternCreate.as_view(), name='pattern_create'),
+    path('t_update/<int:pk>/', views.TestplanUpdate.as_view(), name='testplan_update'),
+    path('p_update/<int:pk>/', views.PatternUpdate.as_view(), name='pattern_update'),
+    path('t_delete/<int:pk>/', views.TestplanDelete.as_view(), name='testplan_delete'),
+    path('p_delete/<int:pk>/', views.PatternDelete.as_view(), name='pattern_delete'),
 
     # categories
     path('<int:testplan_id>/category/create/', views.CategoryCreate.as_view(), name='category_create'),
