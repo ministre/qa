@@ -124,7 +124,7 @@ class TestComment(models.Model):
 class Pattern(models.Model):
     name = models.CharField(max_length=1000)
     types = models.ManyToManyField(DeviceType, related_name='device_types', blank=True)
-    redmine_url = models.CharField(max_length=1000, blank=True, null=True)
+    redmine_project = models.CharField(max_length=1000, blank=True, null=True)
     created_by = models.ForeignKey(User, related_name='pattern_c', on_delete=models.CASCADE, blank=True, null=True)
     created_at = models.DateTimeField(default=datetime.now, blank=True)
     updated_by = models.ForeignKey(User, related_name='pattern_u', on_delete=models.CASCADE, blank=True, null=True)

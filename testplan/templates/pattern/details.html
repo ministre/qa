@@ -20,9 +20,21 @@
     <div class="tabs-panel" id="headings">
         2
     </div>
+
     <div class="tabs-panel" id="redmine">
-        3
+        {% if pattern.redmine_project %}
+            <a href="#" class="button small">{% trans "Export" %}</a>
+            <table>
+                <tr>
+                    <td>Project ID:</td>
+                    <td>{{ pattern.redmine_project }}</td>
+                </tr>
+            </table>
+        {% else %}
+            <a href="{% url 'pattern_update' pk=pattern.id %}">{% trans "Project ID is not set" %}</a>
+        {% endif %}
     </div>
+
 </div>
 
 {% endblock %}
