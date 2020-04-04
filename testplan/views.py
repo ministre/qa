@@ -62,8 +62,7 @@ class TestplanUpdate(UpdateView):
         return reverse('testplan_details', kwargs={'testplan_id': self.kwargs.get('pk')})
 
 
-def get_testlist(testplan_id):
-    testplan = get_object_or_404(Testplan, id=testplan_id)
+def get_testlist(testplan: Testplan):
     categories = Category.objects.filter(testplan=testplan).order_by('id')
     testlist = []
     for category in categories:
@@ -93,17 +92,18 @@ def get_full_worksheets(test_id):
 
 
 @login_required
-def testplan_details(request, testplan_id):
-    testplan = get_object_or_404(Testplan, id=testplan_id)
+def testplan_details(request, pk):
+    testplan = get_object_or_404(Testplan, id=pk)
     chapters = Chapter.objects.filter(testplan=testplan).order_by('id')
-    categories = get_testlist(testplan_id)
-    amount_of_tests = count_of_tests(testplan_id)
+    categories = get_testlist(testplan)
+    amount_of_tests = tests_count(testplan)
     return render(request, 'testplan/details.html', {'testplan': testplan, 'categories': categories,
                                                      'chapters': chapters, 'amount_of_tests': amount_of_tests})
 
+
 @login_required
-def pattern_details(request, pattern_id):
-    pattern = get_object_or_404(Pattern, id=pattern_id)
+def pattern_details(request, pk):
+    pattern = get_object_or_404(Pattern, id=pk)
     return render(request, 'pattern/details.html', {'pattern': pattern})
 
 
@@ -239,14 +239,12 @@ def chapter_details(request, testplan_id, chapter_id):
                                                     'chapter_text': chapter_text})
 
 
-# Return amount of tests in testplan
-def count_of_tests(testplan_id):
+def tests_count(testplan: Testplan):
     count = 0
-    categories = Category.objects.filter(testplan=Testplan.objects.get(id=testplan_id))
+    categories = Category.objects.filter(testplan=testplan)
     for category in categories:
-        tests = Test.objects.filter(category=Category.objects.get(id=category.id))
-        for test in tests:
-            count += 1
+        tests = Test.objects.filter(category=category)
+        count += tests.count()
     return count
 
 
@@ -914,4 +912,4 @@ class PatternCreate(CreateView):
         return {'created_by': self.request.user, 'updated_by': self.request.user}
 
     def get_success_url(self):
-        return reverse('testplans')
+        return reverse('pattern_details', kwargs={'pk': self.object.id})

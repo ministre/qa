@@ -26,7 +26,7 @@
             </thead>
             <tbody>
             {% for testplan in testplans %}
-            <tr data-href="{% url 'testplan_details' testplan_id=testplan.id %}">
+            <tr data-href="{% url 'testplan_details' pk=testplan.id %}">
                 <td width="1%">{{ testplan.id }}</td>
                 <td width="60%">{{ testplan.name }}</td>
                 <td width="7%">{{ testplan.version }}</td>
@@ -50,7 +50,7 @@
             </thead>
             <tbody>
             {% for pattern in patterns %}
-            <tr data-href="{% url 'pattern_details' pattern_id=pattern.id %}">
+            <tr data-href="{% url 'pattern_details' pk=pattern.id %}">
                 <td width="1%">{{ pattern.id }}</td>
                 <td>{{ pattern.name }}</td>
                 <td width="19%">{{ pattern.updated_at }} ({{ pattern.updated_by }})</td>

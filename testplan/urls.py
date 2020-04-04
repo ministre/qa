@@ -4,8 +4,8 @@ from . import views
 urlpatterns = [
     path('list/<int:tab_id>/', views.testplan_list, name='testplans'),
 
-    path('t/<int:testplan_id>/', views.testplan_details, name='testplan_details'),
-    path('p/<int:pattern_id>/', views.pattern_details, name='pattern_details'),
+    path('t/<int:pk>/', views.testplan_details, name='testplan_details'),
+    path('p/<int:pk>/', views.pattern_details, name='pattern_details'),
 
     path('create_testplan/', views.TestplanCreate.as_view(), name='create_testplan'),
     path('create_pattern/', views.PatternCreate.as_view(), name='create_pattern'),
