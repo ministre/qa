@@ -50,17 +50,13 @@ class TestplanUpdate(UpdateView):
     form_class = TestplanForm
     template_name = 'testplan/update.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('pk')
-        return context
-
     def get_initial(self):
         return {'updated_by': self.request.user, 'updated_at': datetime.now}
 
     def get_success_url(self):
-        testplan_update_timestamp(self.kwargs.get('pk'), self.request.user)
-        return reverse('testplan_details', kwargs={'testplan_id': self.kwargs.get('pk')})
+        testplan = get_object_or_404(Testplan, id=self.object.id)
+        testplan.update_timestamp(self.request.user)
+        return reverse('testplan_details', kwargs={'pk': self.object.id})
 
 
 def get_testlist(testplan: Testplan):
@@ -98,8 +94,10 @@ def testplan_details(request, pk):
     chapters = Chapter.objects.filter(testplan=testplan).order_by('id')
     categories = get_testlist(testplan)
     amount_of_tests = tests_count(testplan)
+    r = RedmineProject(testplan.redmine_project)
     return render(request, 'testplan/details.html', {'testplan': testplan, 'categories': categories,
-                                                     'chapters': chapters, 'amount_of_tests': amount_of_tests})
+                                                     'chapters': chapters, 'amount_of_tests': amount_of_tests,
+                                                     'redmine_wiki': r.get_wiki_url()})
 
 
 @login_required

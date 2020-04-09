@@ -14,7 +14,7 @@
     <li class="tabs-title"><a data-tabs-target="panel5" href="#panel5">{% trans "Documentation" %}</a></li>
     <li class="tabs-title"><a data-tabs-target="panel6" href="#panel6">{% trans "Samples" %}</a></li>
     <li class="tabs-title"><a data-tabs-target="panel7" href="#panel7">{% trans "Protocols" %}</a></li>
-    <li class="tabs-title"><a data-tabs-target="panel8" href="#panel8">{% trans "Redmine" %}</a></li>
+    <li class="tabs-title"><a data-tabs-target="redmine" href="#redmine">{% trans "Redmine" %}</a></li>
 </ul>
 
 <div class="tabs-content" data-tabs-content="example-tabs">
@@ -218,20 +218,28 @@
         {% endif %}
     </div>
 
-    <div class="tabs-panel" id="panel8">
-        <table class="hover unstriped">
-            <tbody>
-            <tr>
-                <td>{% trans "Project Wiki page" %}:</td>
-                {% if redmine_wiki.0 %}
-                <td><a href="{{ redmine_wiki.1 }}">{{ redmine_wiki.1 }}</a></td>
-                {% else %}
-                <td>{{ redmine_wiki.1 }}</td>
-                {% endif %}
-            </tr>
-            </tbody>
-        </table>
-    </div>
+  <div class="tabs-panel" id="redmine">
+      {% if device.redmine_project %}
+      <a href="#" class="button small">{% trans "Export" %}</a>
+      <table>
+          <tr>
+              <td>{% trans "Project ID" %}:</td>
+              <td>{{ device.redmine_project }}</td>
+          </tr>
+          <tr>
+              <td>{% trans "Project Wiki" %}:</td>
+              {% if redmine_wiki.0 %}
+              <td><a href="{{ redmine_wiki.1 }}">{{ redmine_wiki.1 }}</a></td>
+              {% else %}
+              <td>{{ redmine_wiki.1 }}</td>
+              {% endif %}
+          </tr>
+      </table>
+      {% else %}
+      <a href="{% url 'device_update' pk=device.id %}">{% trans "Project ID is not set" %}</a>
+      {% endif %}
+  </div>
+
 </div>
 
 <script>

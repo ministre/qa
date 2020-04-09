@@ -23,10 +23,14 @@
 
     <div class="tabs-panel" id="redmine">
         {% if pattern.redmine_project %}
-            <a href="#" class="button small">{% trans "Export" %}</a>
-            <table>
+        <a href="#" class="button small">{% trans "Export" %}</a>
+        <table>
             <tr>
-                <td>{% trans "Project Wiki page" %}:</td>
+                <td>{% trans "Project ID" %}:</td>
+                <td>{{ pattern.redmine_project }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Project Wiki" %}:</td>
                 {% if redmine_wiki.0 %}
                 <td><a href="{{ redmine_wiki.1 }}">{{ redmine_wiki.1 }}</a></td>
                 {% else %}

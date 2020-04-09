@@ -10,6 +10,7 @@
     <li class="tabs-title"><a href="#panel1" aria-selected="true">{% trans "General" %}</a></li>
     <li class="tabs-title"><a data-tabs-target="panel2" href="#panel2">{% trans "Terms and Conditions" %}</a></li>
     <li class="tabs-title is-active"><a data-tabs-target="panel3" href="#panel3">{% trans "Tests" %}</a></li>
+    <li class="tabs-title"><a data-tabs-target="redmine" href="#redmine">{% trans "Redmine" %}</a></li>
 </ul>
 
 <div class="tabs-content" data-tabs-content="example-tabs">
@@ -51,10 +52,6 @@
             <tr>
                 <td>{% trans "Updated at" %}:</td>
                 <td>{{ testplan.updated_at }}</td>
-            </tr>
-            <tr>
-                <td>{% trans "Redmine URL" %}:</td>
-                <td>{{ testplan.redmine_url }}</td>
             </tr>
             <tr>
                 <td>{% trans "Tests amount" %}:</td>
@@ -123,6 +120,29 @@
       </ul>
       {% endfor %}
   </div>
+
+  <div class="tabs-panel" id="redmine">
+      {% if testplan.redmine_project %}
+      <a href="#" class="button small">{% trans "Export" %}</a>
+      <table>
+          <tr>
+              <td>{% trans "Project ID" %}:</td>
+              <td>{{ testplan.redmine_project }}</td>
+          </tr>
+          <tr>
+              <td>{% trans "Project Wiki" %}:</td>
+              {% if redmine_wiki.0 %}
+              <td><a href="{{ redmine_wiki.1 }}">{{ redmine_wiki.1 }}</a></td>
+              {% else %}
+              <td>{{ redmine_wiki.1 }}</td>
+              {% endif %}
+          </tr>
+      </table>
+      {% else %}
+      <a href="{% url 'testplan_update' pk=testplan.id %}">{% trans "Project ID is not set" %}</a>
+      {% endif %}
+  </div>
+
 </div>
 
 {% endblock %}

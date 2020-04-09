@@ -12,10 +12,9 @@ class TestplanForm(ModelForm):
             'name': _('Name'),
             'version': _('Document version'),
             'device_type': _('Device Type'),
-            'redmine_url': _('Redmine URL'),
+            'redmine_project': _('Redmine Project ID'),
         }
-        fields = ['name', 'version', 'device_type', 'redmine_url', 'created_by', 'created_at',
-                  'updated_by', 'updated_at']
+        fields = '__all__'
         widgets = {'created_by': HiddenInput(), 'created_at': HiddenInput(),
                    'updated_by': HiddenInput(), 'updated_at': HiddenInput()}
 

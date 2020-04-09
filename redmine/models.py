@@ -17,7 +17,7 @@ class RedmineProject(object):
         except ConnectionError:
             return [False, 'Connection Error']
         except ResourceNotFoundError:
-            return [False, 'Wiki not found']
+            return [False, 'Not found']
         except ForbiddenError:
             return [False, 'Requested resource is forbidden']
         except AuthError:
