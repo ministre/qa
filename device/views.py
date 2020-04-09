@@ -15,6 +15,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
 from datetime import datetime
 from django.conf import settings
+from redmine.models import RedmineProject
 
 
 @method_decorator(login_required, name='dispatch')
@@ -330,9 +331,10 @@ def device_details(request, pk):
     docums = Docum.objects.filter(device=device)
     samples = Sample.objects.filter(device=device)
     protocols = Protocol.objects.filter(device=device)
+    r = RedmineProject(device.redmine_project)
     return render(request, 'device/details.html', {'device': device, 'specs': specs, 'fws': fws,
                                                    'photos': photos, 'docums': docums, 'samples': samples,
-                                                   'protocols': protocols, 'redmine_url': settings.REDMINE_URL})
+                                                   'protocols': protocols, 'redmine_wiki': r.get_wiki_url()})
 
 
 @login_required

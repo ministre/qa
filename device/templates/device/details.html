@@ -223,8 +223,11 @@
             <tbody>
             <tr>
                 <td>{% trans "Project Wiki page" %}:</td>
-                <td><a href="{{ redmine_url }}/projects/{{ device.redmine_project }}/wiki">
-                    {{ redmine_url }}/projects/{{ device.redmine_project }}/wiki</a></td>
+                {% if redmine_wiki.0 %}
+                <td><a href="{{ redmine_wiki.1 }}">{{ redmine_wiki.1 }}</a></td>
+                {% else %}
+                <td>{{ redmine_wiki.1 }}</td>
+                {% endif %}
             </tr>
             </tbody>
         </table>

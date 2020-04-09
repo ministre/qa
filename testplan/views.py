@@ -11,6 +11,7 @@ from .forms import TestplanForm, CategoryForm, ChapterForm, TestForm, TestConfig
 from django.http import HttpResponseRedirect
 import textile
 from datetime import datetime
+from redmine.models import RedmineProject
 
 
 @login_required
@@ -104,7 +105,8 @@ def testplan_details(request, pk):
 @login_required
 def pattern_details(request, pk):
     pattern = get_object_or_404(Pattern, id=pk)
-    return render(request, 'pattern/details.html', {'pattern': pattern})
+    r = RedmineProject(pattern.redmine_project)
+    return render(request, 'pattern/details.html', {'pattern': pattern, 'redmine_wiki': r.get_wiki_url()})
 
 
 @method_decorator(login_required, name='dispatch')
