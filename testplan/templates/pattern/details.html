@@ -16,6 +16,24 @@
     <div class="tabs-panel is-active" id="general">
         <a href="{% url 'pattern_update' pk=pattern.id %}" class="button small">{% trans "Update" %}</a>
         <a href="{% url 'pattern_delete' pk=pattern.id %}" class="button alert small">{% trans "Delete" %}</a>
+
+                <table class="hover unstriped">
+            <tbody>
+            <tr>
+                <td>{% trans "Pattern name" %}:</td>
+                <td>{{ pattern.name }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Created" %}:</td>
+                <td>{{ pattern.created_at }} ({{ pattern.created_by }})</td>
+            </tr>
+            <tr>
+                <td>{% trans "Last Update" %}:</td>
+                <td>{{ pattern.updated_at }} ({{ pattern.updated_by }})</td>
+            </tr>
+            </tbody>
+        </table>
+
     </div>
     <div class="tabs-panel" id="headings">
         2

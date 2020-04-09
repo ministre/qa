@@ -41,20 +41,12 @@
                 <td>{{ device.hw }}</td>
             </tr>
             <tr>
-                <td>{% trans "Created by" %}:</td>
-                <td>{{ device.created_by }}</td>
+                <td>{% trans "Created" %}:</td>
+                <td>{{ device.created_at }} ({{ device.created_by }})</td>
             </tr>
             <tr>
-                <td>{% trans "Created at" %}:</td>
-                <td>{{ device.created_at }}</td>
-            </tr>
-            <tr>
-                <td>{% trans "Updated by" %}:</td>
-                <td>{{ device.updated_by }}</td>
-            </tr>
-            <tr>
-                <td>{% trans "Updated at" %}:</td>
-                <td>{{ device.updated_at }}</td>
+                <td>{% trans "Last Update" %}:</td>
+                <td>{{ device.updated_at }} ({{ device.updated_by }})</td>
             </tr>
             </tbody>
         </table>
