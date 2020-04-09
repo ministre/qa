@@ -74,7 +74,7 @@ class DeviceForm(ModelForm):
             'model': _('Model'),
             'hw': _('Hardware'),
             'type': _('Type'),
-            'redmine_url': _('Redmine URL'),
+            'redmine_project': _('Redmine Project ID'),
         }
         fields = '__all__'
         widgets = {'created_by': HiddenInput(), 'created_at': HiddenInput(),
