@@ -15,6 +15,32 @@
     <div class="tabs-panel is-active" id="general">
         <a href="{% url 'device_type_update' pk=device_type.id %}" class="button small">{% trans "Update" %}</a>
         <a href="{% url 'device_type_delete' pk=device_type.id %}" class="button alert small">{% trans "Delete" %}</a>
+
+                <table class="hover unstriped">
+            <tbody>
+            <tr>
+                <td>{% trans "Tag" %}:</td>
+                <td>{{ device_type.tag }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Description" %}:</td>
+                <td>{{ device_type.desc }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Genitive Description" %}:</td>
+                <td>{{ device_type.desc_genitive }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Created" %}:</td>
+                <td>{{ device_type.created_at }} ({{ device_type.created_by }})</td>
+            </tr>
+            <tr>
+                <td>{% trans "Last Update" %}:</td>
+                <td>{{ device_type.updated_at }} ({{ device_type.updated_by }})</td>
+            </tr>
+            </tbody>
+        </table>
+
     </div>
 
   <div class="tabs-panel" id="redmine">
@@ -35,7 +61,7 @@
           </tr>
       </table>
       {% else %}
-      <a href="{% url 'device_update' pk=device.id %}">{% trans "Project ID is not set" %}</a>
+      <a href="{% url 'device_type_update' pk=device_type.id %}">{% trans "Project ID is not set" %}</a>
       {% endif %}
   </div>
 </div>

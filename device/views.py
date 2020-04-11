@@ -147,7 +147,7 @@ class DeviceTypeCreate(CreateView):
         return {'created_by': self.request.user, 'updated_by': self.request.user}
 
     def get_success_url(self):
-        return reverse('device_types')
+        return reverse('device_type_details', kwargs={'pk': self.object.id})
 
 
 @method_decorator(login_required, name='dispatch')
