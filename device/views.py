@@ -160,7 +160,7 @@ class DeviceTypeUpdate(UpdateView):
         return {'updated_by': self.request.user, 'updated_at': datetime.now}
 
     def get_success_url(self):
-        return reverse('device_types')
+        return reverse('device_type_details', kwargs={'pk': self.object.id})
 
 
 @method_decorator(login_required, name='dispatch')

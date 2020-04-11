@@ -9,7 +9,7 @@ urlpatterns = [
     path('type/create/', views.DeviceTypeCreate.as_view(), name='device_type_create'),
     path('type/<int:pk>/', views.device_type_details, name='device_type_details'),
     path('type/update/<int:pk>/', views.DeviceTypeUpdate.as_view(), name='device_type_update'),
-    path('type/<int:pk>/delete/', views.DeviceTypeDelete.as_view(), name='device_type_delete'),
+    path('type/delete/<int:pk>/', views.DeviceTypeDelete.as_view(), name='device_type_delete'),
 
     # device vendors
     path('vendor/', views.VendorListView.as_view(), name='vendors'),
