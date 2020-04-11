@@ -323,6 +323,14 @@ class Specification:
 
 
 @login_required
+def device_type_details(request, pk):
+    device_type = get_object_or_404(DeviceType, pk=pk)
+    r = RedmineProject(device_type.redmine_project)
+    return render(request, 'type/details.html', {'device_type': device_type,
+                                                 'redmine_wiki': r.get_wiki_url()})
+
+
+@login_required
 def device_details(request, pk):
     device = get_object_or_404(Device, pk=pk)
     specs = Specification().get_values(device)

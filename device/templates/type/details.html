@@ -1,0 +1,43 @@
+{% extends "device/wrapper.html" %}
+
+{% load i18n static %}
+
+{% block content %}
+
+<p><a href="{% url 'device_types' %}">{% trans "Device Types" %}</a> &raquo; {{ device_type }}</p>
+
+<ul class="tabs" data-tabs id="type-tabs">
+    <li class="tabs-title is-active"><a href="#general" aria-selected="true">{% trans "General" %}</a></li>
+    <li class="tabs-title"><a data-tabs-target="redmine" href="#redmine">{% trans "Redmine" %}</a></li>
+</ul>
+
+<div class="tabs-content" data-tabs-content="type-tabs">
+    <div class="tabs-panel is-active" id="general">
+        <a href="{% url 'device_type_update' pk=device_type.id %}" class="button small">{% trans "Update" %}</a>
+        <a href="{% url 'device_type_delete' pk=device_type.id %}" class="button alert small">{% trans "Delete" %}</a>
+    </div>
+
+  <div class="tabs-panel" id="redmine">
+      {% if device_type.redmine_project %}
+      <a href="#" class="button small">{% trans "Export" %}</a>
+      <table>
+          <tr>
+              <td>{% trans "Project ID" %}:</td>
+              <td>{{ device_type.redmine_project }}</td>
+          </tr>
+          <tr>
+              <td>{% trans "Project Wiki" %}:</td>
+              {% if redmine_wiki.0 %}
+              <td><a href="{{ redmine_wiki.1 }}">{{ redmine_wiki.1 }}</a></td>
+              {% else %}
+              <td>{{ redmine_wiki.1 }}</td>
+              {% endif %}
+          </tr>
+      </table>
+      {% else %}
+      <a href="{% url 'device_update' pk=device.id %}">{% trans "Project ID is not set" %}</a>
+      {% endif %}
+  </div>
+</div>
+
+{% endblock %}
