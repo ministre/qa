@@ -3,9 +3,15 @@
 {% load i18n static %}
 
 {% block content %}
-<a href="{% url 'docum_type_create' %}" class="button small">{% trans "Create" %}</a>
 
-<table id="docum_types" class="display" style="width:100%">
+<p><a href="{% url 'custom_fields' %}">{% trans "Custom Fields" %}</a> &raquo; {{ custom_field.name}}</p>
+
+<a href="{% url 'custom_field_update' pk=custom_field.id %}" class="button small">{% trans "Update" %}</a>
+
+{% if custom_field.type == 'listbox' or custom_field.type == 'checkbox' %}
+<a href="{% url 'custom_field_item_create' custom_field_id=custom_field.id %}" class="button small">{% trans "Add" %}</a>
+
+<table id="custom_field_items" class="display" style="width:100%">
     <thead>
     <tr>
         <th>ID</th>
@@ -14,11 +20,11 @@
     </tr>
     </thead>
     <tbody>
-    {% for type in types %}
-    <tr data-href="{% url 'docum_type_update' pk=type.id %}">
-        <td>{{ type.id }}</td>
-        <td>{{ type.name }}</td>
-        <td>{{ type.updated_at }} ({{ type.updated_by }})</td>
+    {% for custom_field_item in custom_field_items %}
+    <tr data-href="{% url 'custom_field_item_update' custom_field_id=custom_field.id pk=custom_field_item.id %}">
+        <td>{{ custom_field_item.id }}</td>
+        <td>{{ custom_field_item.name }}</td>
+        <td>{{ custom_field_item.updated_at }} ({{ custom_field_item.updated_by }})</td>
     </tr>
     {% endfor %}
     </tbody>
@@ -26,7 +32,7 @@
 
 <script>
     $(document).ready(function() {
-        var table = $('#docum_types').DataTable({
+        var table = $('#custom_field_items').DataTable({
         {% if LANGUAGE_CODE == 'ru' %}
             "language": { "url": "{% static '/DataTables/i18n/Russian.json' %}" },
         {% endif %}
@@ -46,5 +52,7 @@
 </script>
 
 <script type="text/javascript" src="{% static 'DataTables/datatables.js' %}"></script>
+
+{% endif %}
 
 {% endblock %}

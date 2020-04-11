@@ -64,8 +64,8 @@ class CustomFieldDelete(DeleteView):
 def custom_field_details(request, pk):
     custom_field = get_object_or_404(CustomField, id=pk)
     custom_field_items = CustomFieldItem.objects.filter(custom_field=custom_field).order_by('id')
-    return render(request, 'custom_field/details.html', {'custom_field': custom_field,
-                                                         'custom_field_items': custom_field_items})
+    return render(request, 'custom_field_item/list.html', {'custom_field': custom_field,
+                                                           'custom_field_items': custom_field_items})
 
 
 @method_decorator(login_required, name='dispatch')
