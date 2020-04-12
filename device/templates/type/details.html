@@ -45,11 +45,21 @@
 
   <div class="tabs-panel" id="redmine">
       {% if device_type.redmine_project %}
-      <a href="#" class="button small">{% trans "Export" %}</a>
+
+      <form method="post" action="{% url 'export_device_type' %}">
+          {% csrf_token %}
+          <input type="hidden" name="device_type" value="{{ device_type.id }}">
+          <input type="submit" value='{% trans "Export" %}' class="button success small" />
+      </form>
+
       <table>
           <tr>
               <td>{% trans "Project ID" %}:</td>
               <td>{{ device_type.redmine_project }}</td>
+          </tr>
+          <tr>
+              <td>{% trans "Project Name" %}:</td>
+              <td>{{ device_type.redmine_project_name }}</td>
           </tr>
           <tr>
               <td>{% trans "Project Wiki" %}:</td>

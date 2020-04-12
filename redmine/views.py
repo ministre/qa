@@ -11,6 +11,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 import re
 from datetime import datetime
+from django.shortcuts import get_object_or_404
+from .models import RedmineProject
 
 
 def redmine_connect():
@@ -344,3 +346,10 @@ def chapter_details_update_from_wiki(chapter_id, redmine_url, tag, user):
     chapter.updated_at = datetime.now()
     chapter.save()
     return chapter.id
+
+
+def export_device_type(request):
+    if request.method == "POST":
+        device_type = get_object_or_404(DeviceType, id=request.POST['device_type'])
+        r = RedmineProject(device_type.redmine_project).create_or_update_project(device_type.redmine_project_name)
+        return render(request, 'redmine/debug.html', {'message': r})

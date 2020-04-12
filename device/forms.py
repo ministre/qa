@@ -49,6 +49,7 @@ class DeviceTypeForm(ModelForm):
             'desc_genitive': _('Genitive Description'),
             'cf': _('Custom fields'),
             'redmine_project': _('Redmine Project ID'),
+            'redmine_project_name': _('Redmine Project Name'),
         }
         fields = '__all__'
         widgets = {'created_by': HiddenInput(), 'created_at': HiddenInput(),
