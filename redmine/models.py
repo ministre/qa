@@ -2,6 +2,7 @@ from redminelib import Redmine
 from qa import settings
 from redminelib.exceptions import ResourceNotFoundError, ForbiddenError, AuthError
 from requests.exceptions import ConnectionError
+from device.models import DeviceType
 
 
 class RedmineProject(object):
@@ -35,12 +36,15 @@ class RedmineProject(object):
         else:
             return [False, self.get_project()[1]]
 
-    def create_or_update_project(self, project_name: str):
+    def export_device_type(self, device_type: DeviceType):
         if self.get_project()[0]:
-            self.redmine.project.update(self.get_project()[1], name=project_name)
+            self.redmine.project.update(self.get_project()[1], name=device_type.redmine_project_name)
+            self.redmine.wiki_page.update('Wiki', project_id=self.project_id, text='h1. ' + device_type.desc)
             return [True, 'Project updated successfully']
         elif self.get_project()[1] == 'Project not found':
-            self.redmine.project.create(name=project_name, identifier=self.project_id, inherit_members=True)
+            self.redmine.project.create(name=device_type.redmine_project_name, identifier=self.project_id,
+                                        inherit_members=True)
+            self.redmine.wiki_page.update('Wiki', project_id=self.project_id, text='h1. ' + device_type.desc)
             return [True, 'Project created']
         else:
             return [False, self.get_project()[1]]
