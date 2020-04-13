@@ -7,12 +7,12 @@
 <p><a href="{% url 'device_types' %}">{% trans "Device Types" %}</a> &raquo; {{ device_type }}</p>
 
 <ul class="tabs" data-tabs id="type-tabs">
-    <li class="tabs-title is-active"><a href="#general" aria-selected="true">{% trans "General" %}</a></li>
-    <li class="tabs-title"><a data-tabs-target="redmine" href="#redmine">{% trans "Redmine" %}</a></li>
+    <li class="tabs-title{% if tab_id == 1 %} is-active{% endif %}"><a href="#general" aria-selected="true">{% trans "General" %}</a></li>
+    <li class="tabs-title{% if tab_id == 2 %} is-active{% endif %}"><a data-tabs-target="redmine" href="#redmine">{% trans "Redmine" %}</a></li>
 </ul>
 
 <div class="tabs-content" data-tabs-content="type-tabs">
-    <div class="tabs-panel is-active" id="general">
+    <div class="tabs-panel{% if tab_id == 1 %} is-active{% endif %}" id="general">
         <a href="{% url 'device_type_update' pk=device_type.id %}" class="button small">{% trans "Update" %}</a>
         <a href="{% url 'device_type_delete' pk=device_type.id %}" class="button alert small">{% trans "Delete" %}</a>
 
@@ -43,7 +43,7 @@
 
     </div>
 
-  <div class="tabs-panel" id="redmine">
+  <div class="tabs-panel{% if tab_id == 2 %} is-active{% endif %}" id="redmine">
       {% if device_type.redmine_project %}
 
       <form method="post" action="{% url 'export_device_type' %}">

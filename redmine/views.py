@@ -13,6 +13,7 @@ import re
 from datetime import datetime
 from django.shortcuts import get_object_or_404
 from .models import RedmineProject
+from django.urls import reverse
 
 
 def redmine_connect():
@@ -352,4 +353,5 @@ def export_device_type(request):
     if request.method == "POST":
         device_type = get_object_or_404(DeviceType, id=request.POST['device_type'])
         r = RedmineProject(device_type.redmine_project).create_or_update_project(device_type.redmine_project_name)
-        return render(request, 'redmine/debug.html', {'message': r})
+        # return HttpResponseRedirect(reverse('device_type_details', kwargs={'pk': device_type.id}))
+        return render(request, 'redmine/device_type.html', {'message': r, 'device_type_id': device_type.id})

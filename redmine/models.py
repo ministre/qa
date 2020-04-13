@@ -38,7 +38,7 @@ class RedmineProject(object):
     def create_or_update_project(self, project_name: str):
         if self.get_project()[0]:
             self.redmine.project.update(self.get_project()[1], name=project_name)
-            return [True, 'Project updated']
+            return [True, 'Project updated successfully']
         elif self.get_project()[1] == 'Project not found':
             self.redmine.project.create(name=project_name, identifier=self.project_id, inherit_members=True)
             return [True, 'Project created']

@@ -147,7 +147,7 @@ class DeviceTypeCreate(CreateView):
         return {'created_by': self.request.user, 'updated_by': self.request.user}
 
     def get_success_url(self):
-        return reverse('device_type_details', kwargs={'pk': self.object.id})
+        return reverse('device_type_details', kwargs={'pk': self.object.id, 'tab_id': 1})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -160,7 +160,7 @@ class DeviceTypeUpdate(UpdateView):
         return {'updated_by': self.request.user, 'updated_at': datetime.now}
 
     def get_success_url(self):
-        return reverse('device_type_details', kwargs={'pk': self.object.id})
+        return reverse('device_type_details', kwargs={'pk': self.object.id, 'tab_id': 1})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -323,11 +323,12 @@ class Specification:
 
 
 @login_required
-def device_type_details(request, pk):
+def device_type_details(request, pk, tab_id):
     device_type = get_object_or_404(DeviceType, pk=pk)
     r = RedmineProject(device_type.redmine_project)
     return render(request, 'type/details.html', {'device_type': device_type,
-                                                 'redmine_wiki': r.get_wiki_url()})
+                                                 'redmine_wiki': r.get_wiki_url(),
+                                                 'tab_id': tab_id})
 
 
 @login_required
