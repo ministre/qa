@@ -82,7 +82,7 @@ class ProtocolUpdate(UpdateView):
         return context
 
     def get_success_url(self):
-        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id')})
+        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id'), 'tab_id': 7})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -96,7 +96,7 @@ class ProtocolDelete(DeleteView):
         return context
 
     def get_success_url(self):
-        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id')})
+        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id'), 'tab_id': 7})
 
 
 def protocol_details(request, pk):

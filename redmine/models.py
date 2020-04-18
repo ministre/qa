@@ -2,7 +2,7 @@ from redminelib import Redmine
 from qa import settings
 from redminelib.exceptions import ResourceNotFoundError, ForbiddenError, AuthError
 from requests.exceptions import ConnectionError
-from device.models import DeviceType
+from device.models import DeviceType, Device
 
 
 class RedmineProject(object):
@@ -48,3 +48,6 @@ class RedmineProject(object):
             return [True, 'Project created']
         else:
             return [False, self.get_project()[1]]
+
+    def export_device(self, device: Device):
+        pass

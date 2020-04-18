@@ -353,5 +353,4 @@ def export_device_type(request):
     if request.method == "POST":
         device_type = get_object_or_404(DeviceType, id=request.POST['device_type'])
         r = RedmineProject(device_type.redmine_project).export_device_type(device_type)
-        # return HttpResponseRedirect(reverse('device_type_details', kwargs={'pk': device_type.id}))
         return render(request, 'redmine/device_type.html', {'message': r, 'device_type_id': device_type.id})

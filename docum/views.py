@@ -68,7 +68,7 @@ class DocumCreate(CreateView):
         return context
 
     def get_success_url(self):
-        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id')})
+        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id'), 'tab_id': 5})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -86,7 +86,7 @@ class DocumUpdate(UpdateView):
         return context
 
     def get_success_url(self):
-        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id')})
+        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id'), 'tab_id': 5})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -100,4 +100,4 @@ class DocumDelete(DeleteView):
         return context
 
     def get_success_url(self):
-        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id')})
+        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id'), 'tab_id': 5})

@@ -14,7 +14,6 @@ from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
 from datetime import datetime
-from django.conf import settings
 from redmine.models import RedmineProject
 
 
@@ -231,7 +230,7 @@ class DeviceCreate(CreateView):
         return {'created_by': self.request.user, 'updated_by': self.request.user}
 
     def get_success_url(self):
-        return reverse('devices')
+        return reverse('device_update_spec', kwargs={'pk': self.object.id})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -244,7 +243,7 @@ class DeviceUpdate(UpdateView):
         return {'updated_by': self.request.user, 'updated_at': datetime.now}
 
     def get_success_url(self):
-        return reverse('device_details', kwargs={'pk': self.kwargs.get('pk')})
+        return reverse('device_details', kwargs={'pk': self.kwargs.get('pk'), 'tab_id': 1})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -332,7 +331,7 @@ def device_type_details(request, pk, tab_id):
 
 
 @login_required
-def device_details(request, pk):
+def device_details(request, pk, tab_id):
     device = get_object_or_404(Device, pk=pk)
     specs = Specification().get_values(device)
     fws = Firmware.objects.filter(device=device)
@@ -343,7 +342,8 @@ def device_details(request, pk):
     r = RedmineProject(device.redmine_project)
     return render(request, 'device/details.html', {'device': device, 'specs': specs, 'fws': fws,
                                                    'photos': photos, 'docums': docums, 'samples': samples,
-                                                   'protocols': protocols, 'redmine_wiki': r.get_wiki_url()})
+                                                   'protocols': protocols, 'redmine_wiki': r.get_wiki_url(),
+                                                   'tab_id': tab_id})
 
 
 @login_required
@@ -357,7 +357,7 @@ def device_update_spec(request, pk):
             if item[0].startswith('checkbox_'):
                 checkbox_item = item[0].split('_')
                 s.update_checkbox(device, int(checkbox_item[1]), int(checkbox_item[2]))
-        return HttpResponseRedirect('/device/' + str(pk) + '/')
+        return HttpResponseRedirect(reverse('device_details', kwargs={'pk': pk, 'tab_id': 2}))
     else:
         specs = s.get_form_metadata(device)
         return render(request, 'device/update_spec.html', {'device': device, 'specs': specs})
@@ -386,7 +386,7 @@ class DevicePhotoCreate(CreateView):
         return context
 
     def get_success_url(self):
-        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id')})
+        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id'), 'tab_id': 4})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -404,7 +404,7 @@ class DevicePhotoUpdate(UpdateView):
         return context
 
     def get_success_url(self):
-        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id')})
+        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id'), 'tab_id': 4})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -418,7 +418,7 @@ class DevicePhotoDelete(DeleteView):
         return context
 
     def get_success_url(self):
-        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id')})
+        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id'), 'tab_id': 4})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -437,7 +437,7 @@ class SampleCreate(CreateView):
         return context
 
     def get_success_url(self):
-        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id')})
+        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id'), 'tab_id': 6})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -455,7 +455,7 @@ class SampleUpdate(UpdateView):
         return context
 
     def get_success_url(self):
-        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id')})
+        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id'), 'tab_id': 6})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -469,4 +469,4 @@ class SampleDelete(DeleteView):
         return context
 
     def get_success_url(self):
-        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id')})
+        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id'), 'tab_id': 6})

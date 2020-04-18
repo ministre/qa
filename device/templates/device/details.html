@@ -6,19 +6,27 @@
 
 <p><a href="{% url 'devices' %}">{% trans "Devices" %}</a> &raquo; {{ device.vendor }} {{ device.model }} ({{ device.hw }})</p>
 
-<ul class="tabs" data-tabs id="example-tabs">
-    <li class="tabs-title"><a href="#panel1" aria-selected="true">{% trans "General" %}</a></li>
-    <li class="tabs-title is-active"><a data-tabs-target="panel2" href="#panel2">{% trans "Specifications" %}</a></li>
-    <li class="tabs-title"><a data-tabs-target="panel3" href="#panel3">{% trans "Firmware" %}</a></li>
-    <li class="tabs-title"><a data-tabs-target="panel4" href="#panel4">{% trans "Photo" %}</a></li>
-    <li class="tabs-title"><a data-tabs-target="panel5" href="#panel5">{% trans "Documentation" %}</a></li>
-    <li class="tabs-title"><a data-tabs-target="panel6" href="#panel6">{% trans "Samples" %}</a></li>
-    <li class="tabs-title"><a data-tabs-target="panel7" href="#panel7">{% trans "Protocols" %}</a></li>
-    <li class="tabs-title"><a data-tabs-target="redmine" href="#redmine">{% trans "Redmine" %}</a></li>
+<ul class="tabs" data-tabs id="device-tabs">
+    <li class="tabs-title{% if tab_id == 1 %} is-active{% endif %}">
+        <a href="#general" aria-selected="true">{% trans "General" %}</a></li>
+    <li class="tabs-title{% if tab_id == 2 %} is-active{% endif %}">
+        <a data-tabs-target="spec" href="#spec">{% trans "Specifications" %}</a></li>
+    <li class="tabs-title{% if tab_id == 3 %} is-active{% endif %}">
+        <a data-tabs-target="firmware" href="#firmware">{% trans "Firmware" %}</a></li>
+    <li class="tabs-title{% if tab_id == 4 %} is-active{% endif %}">
+        <a data-tabs-target="photo" href="#photo">{% trans "Photo" %}</a></li>
+    <li class="tabs-title{% if tab_id == 5 %} is-active{% endif %}">
+        <a data-tabs-target="doc" href="#doc">{% trans "Documentation" %}</a></li>
+    <li class="tabs-title{% if tab_id == 6 %} is-active{% endif %}">
+        <a data-tabs-target="samples" href="#samples">{% trans "Samples" %}</a></li>
+    <li class="tabs-title{% if tab_id == 7 %} is-active{% endif %}">
+        <a data-tabs-target="protocols" href="#protocols">{% trans "Protocols" %}</a></li>
+    <li class="tabs-title{% if tab_id == 8 %} is-active{% endif %}">
+        <a data-tabs-target="redmine" href="#redmine">{% trans "Redmine" %}</a></li>
 </ul>
 
-<div class="tabs-content" data-tabs-content="example-tabs">
-    <div class="tabs-panel" id="panel1">
+<div class="tabs-content" data-tabs-content="device-tabs">
+    <div class="tabs-panel{% if tab_id == 1 %} is-active{% endif %}" id="general">
         <a href="{% url 'device_update' pk=device.id %}" class="button small">{% trans "Update" %}</a>
         <a href="{% url 'device_delete' pk=device.id %}" class="button alert small">{% trans "Delete" %}</a>
 
@@ -52,7 +60,7 @@
         </table>
     </div>
 
-    <div class="tabs-panel is-active" id="panel2">
+    <div class="tabs-panel{% if tab_id == 2 %} is-active{% endif %}" id="spec">
         <a href="{% url 'device_update_spec' pk=device.id %}" class="button small">{% trans "Update" %}</a>
         {% for spec in specs %}
         <ul style="list-style: none">
@@ -68,7 +76,7 @@
         {% endfor %}
     </div>
 
-    <div class="tabs-panel" id="panel3">
+    <div class="tabs-panel{% if tab_id == 3 %} is-active{% endif %}" id="firmware">
         <a href="{% url 'firmware_create' device_id=device.id %}" class="button small">{% trans "Add" %}</a>
 
         <p>
@@ -81,7 +89,7 @@
 
     </div>
 
-    <div class="tabs-panel" id="panel4">
+    <div class="tabs-panel{% if tab_id == 4 %} is-active{% endif %}" id="photo">
         <a href="{% url 'photo_create' device_id=device.id %}" class="button small">{% trans "Add" %}</a>
 
         {% if photos %}
@@ -114,7 +122,7 @@
 
     </div>
 
-    <div class="tabs-panel" id="panel5">
+    <div class="tabs-panel{% if tab_id == 5 %} is-active{% endif %}" id="doc">
         <a href="{% url 'docum_create' device_id=device.id %}" class="button small">{% trans "Add" %}</a>
         <p>
             {% for docum in docums %}
@@ -126,10 +134,10 @@
         </p>
     </div>
 
-    <div class="tabs-panel" id="panel6">
+    <div class="tabs-panel{% if tab_id == 6 %} is-active{% endif %}" id="samples">
         <a href="{% url 'sample_create' device_id=device.id %}" class="button small">{% trans "Add" %}</a>
         {% if samples %}
-        <table id="samples" class="display" style="width:100%">
+        <table id="t_samples" class="display" style="width:100%">
             <thead>
             <tr>
                 <th>ID</th>
@@ -144,7 +152,7 @@
             <tbody>
         {% endif %}
             {% for sample in samples %}
-        <tr>
+        <tr data-href="{% url 'sample_update' device_id=device.id pk=sample.id %}">
             <td>{{ sample.id }}</td>
             <td>{{ sample.sn }}</td>
             <td>{{ sample.user_login }}</td>
@@ -163,10 +171,10 @@
         {% endif %}
     </div>
 
-    <div class="tabs-panel" id="panel7">
+    <div class="tabs-panel{% if tab_id == 7 %} is-active{% endif %}" id="protocols">
         <a href="{% url 'protocol_create' device_id=device.id %}" class="button small">{% trans "Add" %}</a>
         {% if protocols %}
-        <table id="protocols" class="display" style="width:100%">
+        <table id="t_protocols" class="display" style="width:100%">
             <thead>
             <tr>
                 <th>ID</th>
@@ -181,7 +189,7 @@
             <tbody>
         {% endif %}
             {% for protocol in protocols %}
-        <tr>
+        <tr data-href="{% url 'protocol_details' pk=protocol.id %}">
             <td>{{ protocol.id }}</td>
             <td>{{ protocol.firmware }}</td>
             <td>
@@ -210,7 +218,7 @@
         {% endif %}
     </div>
 
-  <div class="tabs-panel" id="redmine">
+  <div class="tabs-panel{% if tab_id == 8 %} is-active{% endif %}" id="redmine">
       {% if device.redmine_project %}
       <a href="#" class="button small">{% trans "Export" %}</a>
       <table>
@@ -235,37 +243,26 @@
 </div>
 
 <script>
-  $(document).ready(function() {
-      var table = $('#protocols').DataTable( {
-          "paging":  false,
-      {% if LANGUAGE_CODE == 'ru' %}
-          "language": { "url": "{% static '/DataTables/i18n/Russian.json' %}" },
-      {% endif %}
-          "order": [[ 0, "desc" ]]
-      } );
+    $(document).ready(function() {
+        var table = $('table').DataTable( {
 
-      $('#protocols tbody').on('click', 'tr', function () {
-          var data = table.row( this ).data();
-		  window.open("/protocol/"+data[0]+"/","_self");
-      } );
-  } );
-</script>
+        {% if LANGUAGE_CODE == 'ru' %}
+            "language": { "url": "{% static '/DataTables/i18n/Russian.json' %}" },
+        {% endif %}
 
-<script>
-  $(document).ready(function() {
-      var table = $('#samples').DataTable( {
-          "paging":  false,
-      {% if LANGUAGE_CODE == 'ru' %}
-          "language": { "url": "{% static '/DataTables/i18n/Russian.json' %}" },
-      {% endif %}
-          "order": [[ 0, "desc" ]]
-      } );
+            "pageLength": 100,
+            "order": [[ 0, "desc" ]]
+        });
+    });
 
-      $('#samples tbody').on('click', 'tr', function () {
-          var data = table.row( this ).data();
-		  window.open("/sample/{{ device.id }}/update/"+data[0]+"/","_self");
-      } );
-  } );
+    document.addEventListener("DOMContentLoaded", () => {
+        const rows = document.querySelectorAll("tr[data-href]");
+        rows.forEach(row => {
+            row.addEventListener("click", () => {
+                window.location.href = row.dataset.href;
+            });
+        });
+    });
 </script>
 
 <script>
