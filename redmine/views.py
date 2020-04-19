@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from device.models import DeviceType
+from device.models import DeviceType, Device
 from testplan.models import Testplan, Category, Test, Chapter, TestConfig
 from testplan.views import testplan_update_timestamp
 from redminelib import Redmine
@@ -354,3 +354,10 @@ def export_device_type(request):
         device_type = get_object_or_404(DeviceType, id=request.POST['device_type'])
         r = RedmineProject(device_type.redmine_project).export_device_type(device_type)
         return render(request, 'redmine/device_type.html', {'message': r, 'device_type_id': device_type.id})
+
+
+def export_device(request):
+    if request.method == "POST":
+        device = get_object_or_404(Device, id=request.POST['device'])
+        r = RedmineProject(device.redmine_project).export_device(device)
+        return render(request, 'redmine/device.html', {'message': r, 'device_id': device.id})

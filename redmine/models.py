@@ -50,4 +50,28 @@ class RedmineProject(object):
             return [False, self.get_project()[1]]
 
     def export_device(self, device: Device):
-        pass
+
+        wiki_text = '__%{color:white}' + device.type.redmine_project + \
+                    '%__\n\n---\n\nh1. ' + device.vendor.name + ' ' + device.model + '\n' +\
+                    '\nh2. Внешний вид\n' + \
+                    '\nh2. Общая информация\n' + \
+                    '\n| Производитель: | ' + device.vendor.name + ' |\n| Модель: | ' + \
+                    device.model + ' |\n| Версия Hardware: | ' + device.hw + ' |\n' + \
+                    '\nh2. Технические характеристики\n' + \
+                    '\nh2. Тестовые образцы\n' + \
+                    '\nh2. Результаты испытаний\n'
+
+        if self.get_project()[0]:
+            self.redmine.project.update(self.get_project()[1], name=device.vendor.name + ' ' + device.model)
+            self.redmine.wiki_page.update('Wiki', project_id=self.project_id, text=wiki_text)
+            return [True, 'Project updated successfully']
+
+        elif self.get_project()[1] == 'Project not found':
+            parent_id = self.redmine.project.get(device.type.redmine_project).id
+            self.redmine.project.create(name=device.vendor.name + ' ' + device.model,
+                                        identifier=self.project_id,
+                                        parent_id=parent_id,
+                                        inherit_members=True)
+
+            self.redmine.wiki_page.update('Wiki', project_id=self.project_id, text=wiki_text)
+            return [True, 'Project created']
