@@ -2,7 +2,7 @@ from redminelib import Redmine
 from qa import settings
 from redminelib.exceptions import ResourceNotFoundError, ForbiddenError, AuthError
 from requests.exceptions import ConnectionError
-from device.models import DeviceType, Device
+from device.models import DeviceType, Device, Specification
 
 
 class RedmineProject(object):
@@ -51,6 +51,13 @@ class RedmineProject(object):
 
     def export_device(self, device: Device):
 
+        specs = Specification().get_values(device)
+        s = ''
+        for spec in specs:
+            s += '\nh3. ' + spec['name'] + '\n\n'
+            for value in spec['values']:
+                s += '* ' + value.name + '\n'
+
         wiki_text = '__%{color:white}' + device.type.redmine_project + \
                     '%__\n\n---\n\nh1. ' + device.vendor.name + ' ' + device.model + '\n' +\
                     '\nh2. Внешний вид\n' + \
@@ -58,6 +65,7 @@ class RedmineProject(object):
                     '\n| Производитель: | ' + device.vendor.name + ' |\n| Модель: | ' + \
                     device.model + ' |\n| Версия Hardware: | ' + device.hw + ' |\n' + \
                     '\nh2. Технические характеристики\n' + \
+                    '\n' + s + '\n' \
                     '\nh2. Тестовые образцы\n' + \
                     '\nh2. Результаты испытаний\n'
 

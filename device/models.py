@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
+from django.db.models import Q
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class CustomField(models.Model):
@@ -105,3 +107,69 @@ class Sample(models.Model):
 
     def __str__(self):
         return self.sn
+
+
+class Specification:
+    def __init__(self):
+        self.specs = []  # [{'name': <>, 'values': [<>, ]}]
+        self.form_metadata = []
+        # [{'name': <>, 'type': <>, 'id': <>, 'value': <>, 'items': [{'name': <>, 'id': <>, 'selected': <bool>}, ]}]
+
+    def get_values(self, device: Device):
+        for field in CustomField.objects.filter(custom_fields__id=device.type.id).order_by('id'):
+            values = []
+            for value in CustomValue.objects.filter(Q(field=field) & Q(device=device)):
+                if value.item:
+                    values.append(value.item)
+                else:
+                    values.append(value.value)
+            self.specs.append({'name': field.name, 'values': values})
+        return self.specs
+
+    def get_form_metadata(self, device: Device):
+        for field in CustomField.objects.filter(custom_fields__id=device.type.id).order_by('id'):
+            items = []
+            if field.type == 'text' or field.type == 'number':
+                try:
+                    value = CustomValue.objects.get(Q(field=field) & Q(device=device))
+                    self.form_metadata.append({'name': field.name, 'type': field.type, 'id': field.id,
+                                               'value': value.value, 'items': items})
+                except ObjectDoesNotExist:
+                    self.form_metadata.append({'name': field.name, 'type': field.type, 'id': field.id,
+                                               'value': '', 'items': items})
+            if field.type == 'listbox' or field.type == 'checkbox':
+                for item in CustomFieldItem.objects.filter(custom_field=field):
+                    try:
+                        CustomValue.objects.get(Q(item=item) & Q(device=device))
+                        items.append({'name': item.name, 'id': item.id, 'selected': True})
+                    except ObjectDoesNotExist:
+                        items.append({'name': item.name, 'id': item.id, 'selected': False})
+                self.form_metadata.append({'name': field.name, 'type': field.type, 'id': field.id, 'value': None,
+                                           'items': items})
+        return self.form_metadata
+
+    def update_value(self, device: Device, field_id: int, value: str):
+        field = CustomField.objects.get(id=field_id)
+        if field.type == 'text' or field.type == 'number':
+            if value:
+                CustomValue.objects.update_or_create(device=device, field=field, defaults={"value": value})
+            else:
+                CustomValue.objects.filter(Q(device=device) & Q(field=field)).delete()
+            return True
+        elif field.type == 'listbox':
+            if value:
+                CustomValue.objects.update_or_create(device=device, field=field,
+                                                     defaults={"item": CustomFieldItem.objects.get(id=value)})
+            else:
+                CustomValue.objects.filter(Q(device=device) & Q(field=field)).delete()
+        elif field.type == 'checkbox':
+            pass
+        return True
+
+    def update_checkbox(self, device: Device, field_id: int, item_id: int):
+        if item_id == 0:
+            CustomValue.objects.filter(Q(device=device) & Q(field=CustomField.objects.get(id=field_id))).delete()
+        else:
+            CustomValue.objects.create(device=device, field=CustomField.objects.get(id=field_id),
+                                       item=CustomFieldItem.objects.get(id=item_id))
+        return True
