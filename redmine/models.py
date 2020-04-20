@@ -2,7 +2,7 @@ from redminelib import Redmine
 from qa import settings
 from redminelib.exceptions import ResourceNotFoundError, ForbiddenError, AuthError
 from requests.exceptions import ConnectionError
-from device.models import DeviceType, Device, Specification
+from device.models import DeviceType, Device, Specification, Sample
 
 
 class RedmineProject(object):
@@ -58,6 +58,15 @@ class RedmineProject(object):
             for value in spec['values']:
                 s += '* ' + value.name + '\n'
 
+        samples = Sample.objects.filter(device=device)
+        sm = ''
+        for sample in samples:
+            sm += '\nh3. ' + sample.sn + '\n\n' + \
+                '| User login: | ' + sample.user_login + '|\n' + \
+                '| User password: | ' + sample.user_password + '|\n' + \
+                '| Support login: | ' + sample.support_login + '|\n' + \
+                '| Support password: | ' + sample.support_password + '|\n'
+
         wiki_text = '__%{color:white}' + device.type.redmine_project + \
                     '%__\n\n---\n\nh1. ' + device.vendor.name + ' ' + device.model + '\n' +\
                     '\nh2. Внешний вид\n' + \
@@ -65,8 +74,9 @@ class RedmineProject(object):
                     '\n| Производитель: | ' + device.vendor.name + ' |\n| Модель: | ' + \
                     device.model + ' |\n| Версия Hardware: | ' + device.hw + ' |\n' + \
                     '\nh2. Технические характеристики\n' + \
-                    '\n' + s + '\n' \
+                    '\n' + s + '\n' + \
                     '\nh2. Тестовые образцы\n' + \
+                    '\n' + sm + '\n' + \
                     '\nh2. Результаты испытаний\n'
 
         if self.get_project()[0]:
