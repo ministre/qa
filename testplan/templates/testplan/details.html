@@ -86,7 +86,7 @@
           <input type="hidden" name="redmine_url" value="{{ testplan.redmine_url }}">
           <input type="hidden" name="tag" value="{{ testplan.device_type.tag }}">
           <input type="submit" value='{% trans "Add tests from Redmine" %}' class="button success small" />
-          <a href="{% url 'test_clear_all' testplan_id=testplan.id %}" class="button small alert">{% trans "Clear Tests" %}</a>
+          <a href="{% url 'clear_tests' testplan_id=testplan.id %}" class="button small alert">{% trans "Clear Tests" %}</a>
         </form>
       <br>
       {% for category in categories %}

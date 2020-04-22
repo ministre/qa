@@ -325,7 +325,7 @@ def clear_tests(request, testplan_id):
     if request.method == 'POST':
         Category.objects.filter(testplan=Testplan.objects.get(id=testplan_id)).delete()
         testplan_update_timestamp(testplan_id, request.user)
-        return HttpResponseRedirect('/testplan/' + str(testplan_id) + '/')
+        return HttpResponseRedirect(reverse('testplan_details', kwargs={'pk': testplan_id}))
     else:
         message = 'Delete all tests in testplan #' + str(testplan_id) + '?'
         return render(request, 'testplan/clear.html', {'message': message, 'testplan_id': testplan_id})

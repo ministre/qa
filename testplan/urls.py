@@ -22,7 +22,7 @@ urlpatterns = [
     path('<int:testplan_id>/test/<int:pk>/delete/', views.TestDelete.as_view(), name='test_delete'),
     path('<int:testplan_id>/test/<int:pk>/update/', views.TestUpdate.as_view(), name='test_update'),
     path('<int:testplan_id>/test/<int:pk>/', views.test_details, name='test_details'),
-    path('<int:testplan_id>/test/clear_all/', views.clear_tests, name='test_clear_all'),
+    path('<int:testplan_id>/clear_tests/', views.clear_tests, name='clear_tests'),
 
     # chapters
     path('<int:testplan_id>/chapter/create/', views.ChapterCreate.as_view(), name='chapter_create'),
