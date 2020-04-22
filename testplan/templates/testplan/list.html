@@ -50,7 +50,7 @@
             </thead>
             <tbody>
             {% for pattern in patterns %}
-            <tr data-href="{% url 'pattern_details' pk=pattern.id %}">
+            <tr data-href="{% url 'pattern_details' pk=pattern.id tab_id=1 %}">
                 <td width="1%">{{ pattern.id }}</td>
                 <td>{{ pattern.name }}</td>
                 <td width="19%">{{ pattern.updated_at }} ({{ pattern.updated_by }})</td>

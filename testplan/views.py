@@ -101,10 +101,11 @@ def testplan_details(request, pk, tab_id):
 
 
 @login_required
-def pattern_details(request, pk):
+def pattern_details(request, pk, tab_id):
     pattern = get_object_or_404(Pattern, id=pk)
     r = RedmineProject(pattern.redmine_project)
-    return render(request, 'pattern/details.html', {'pattern': pattern, 'redmine_wiki': r.get_wiki_url()})
+    return render(request, 'pattern/details.html', {'tab_id': tab_id, 'pattern': pattern,
+                                                    'redmine_wiki': r.get_wiki_url()})
 
 
 @method_decorator(login_required, name='dispatch')

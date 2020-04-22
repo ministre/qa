@@ -7,13 +7,16 @@
 <p><a href="{% url 'testplans' tab_id=2 %}">{% trans "Patterns" %}</a> &raquo; {{ pattern.name}}</p>
 
 <ul class="tabs" data-tabs id="pattern-tabs">
-    <li class="tabs-title is-active"><a href="#general" aria-selected="true">{% trans "General" %}</a></li>
-    <li class="tabs-title"><a data-tabs-target="headings" href="#headings">{% trans "Headings" %}</a></li>
-    <li class="tabs-title"><a data-tabs-target="redmine" href="#redmine">{% trans "Redmine" %}</a></li>
+    <li class="tabs-title {% if tab_id == 1 %} is-active{% endif %}">
+        <a data-tabs-target="general" href="#general">{% trans "General" %}</a></li>
+    <li class="tabs-title {% if tab_id == 2 %} is-active{% endif %}">
+        <a data-tabs-target="head" href="#head">{% trans "Headings" %}</a></li>
+    <li class="tabs-title {% if tab_id == 3 %} is-active{% endif %}">
+        <a data-tabs-target="redmine" href="#redmine">{% trans "Redmine" %}</a></li>
 </ul>
 
 <div class="tabs-content" data-tabs-content="pattern-tabs">
-    <div class="tabs-panel is-active" id="general">
+    <div class="tabs-panel {% if tab_id == 1 %}is-active{% endif %}" id="general">
         <a href="{% url 'pattern_update' pk=pattern.id %}" class="button small">{% trans "Update" %}</a>
         <a href="{% url 'pattern_delete' pk=pattern.id %}" class="button alert small">{% trans "Delete" %}</a>
 
@@ -35,11 +38,11 @@
         </table>
 
     </div>
-    <div class="tabs-panel" id="headings">
+    <div class="tabs-panel {% if tab_id == 2 %}is-active{% endif %}" id="head">
         2
     </div>
 
-    <div class="tabs-panel" id="redmine">
+    <div class="tabs-panel {% if tab_id == 3 %}is-active{% endif %}" id="redmine">
         {% if pattern.redmine_project %}
         <a href="#" class="button small">{% trans "Export" %}</a>
         <table>
