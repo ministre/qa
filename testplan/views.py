@@ -32,7 +32,7 @@ class TestplanCreate(CreateView):
         return {'created_by': self.request.user, 'updated_by': self.request.user}
 
     def get_success_url(self):
-        return reverse('testplans')
+        return reverse('testplan_details', kwargs={'pk': self.object.id})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -123,7 +123,7 @@ class CategoryCreate(CreateView):
 
     def get_success_url(self):
         testplan_update_timestamp(self.kwargs.get('testplan_id'), self.request.user)
-        return reverse('testplan_details', kwargs={'testplan_id': self.kwargs.get('testplan_id')})
+        return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan_id')})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -138,7 +138,7 @@ class CategoryDelete(DeleteView):
 
     def get_success_url(self):
         testplan_update_timestamp(self.kwargs.get('testplan_id'), self.request.user)
-        return reverse('testplan_details', kwargs={'testplan_id': self.kwargs.get('testplan_id')})
+        return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan_id')})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -154,7 +154,7 @@ class CategoryUpdate(UpdateView):
 
     def get_success_url(self):
         testplan_update_timestamp(self.kwargs.get('testplan_id'), self.request.user)
-        return reverse('testplan_details', kwargs={'testplan_id': self.kwargs.get('testplan_id')})
+        return reverse('testplan_details', kwargs={'pk': self.kwargs.get('testplan_id')})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -174,7 +174,8 @@ class TestCreate(CreateView):
 
     def get_success_url(self):
         testplan_update_timestamp(self.kwargs.get('testplan_id'), self.request.user)
-        return reverse('testplan_details', kwargs={'testplan_id': self.kwargs.get('testplan_id')})
+        return reverse('test_details', kwargs={'testplan_id': self.kwargs.get('testplan_id'),
+                                               'pk': self.object.id})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -212,16 +213,16 @@ class TestUpdate(UpdateView):
 
 
 @login_required
-def test_details(request, testplan_id, test_id):
-    test = get_object_or_404(Test, id=test_id)
+def test_details(request, testplan_id, pk):
+    test = get_object_or_404(Test, id=pk)
     testplan = get_object_or_404(Testplan, id=testplan_id)
     test_procedure = textile.textile(test.procedure)
     test_expected = textile.textile(test.expected)
     configs = TestConfig.objects.filter(test=test).order_by('id')
     images = TestImage.objects.filter(test=test).order_by('id')
     files = TestFile.objects.filter(test=test).order_by('id')
-    checklists = get_full_checklists(test_id)
-    worksheets = get_full_worksheets(test_id)
+    checklists = get_full_checklists(pk)
+    worksheets = get_full_worksheets(pk)
     links = TestLink.objects.filter(test=test).order_by('id')
     comments = TestComment.objects.filter(test=test).order_by('id')
     return render(request, 'test/details.html', {'testplan': testplan, 'test': test, 'test_procedure': test_procedure,
