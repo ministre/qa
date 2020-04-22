@@ -23,6 +23,7 @@ class Testplan(models.Model):
     def update_timestamp(self, user):
         self.updated_by = user
         self.updated_at = datetime.now()
+        self.save()
         return True
 
 

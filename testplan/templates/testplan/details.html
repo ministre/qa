@@ -14,18 +14,15 @@
     <li class="tabs-title {% if tab_id == 3 %} is-active{% endif %}">
         <a data-tabs-target="tests" href="#tests">{% trans "Tests" %}</a></li>
     <li class="tabs-title {% if tab_id == 4 %} is-active{% endif %}">
+        <a data-tabs-target="docx" href="#docx">{% trans "Docx" %}</a></li>
+    <li class="tabs-title {% if tab_id == 5 %} is-active{% endif %}">
         <a data-tabs-target="redmine" href="#redmine">{% trans "Redmine" %}</a></li>
 </ul>
 
 <div class="tabs-content" data-tabs-content="testplan-tabs">
     <div class="tabs-panel {% if tab_id == 1 %}is-active{% endif %}" id="general">
-        <form method="post" action="/paper/testplan/">
-          {% csrf_token %}
-          <input type="hidden" name="testplan_id" value="{{ testplan.id }}">
-          <input type="submit" value='{% trans "Make .docx" %}' class="button success small" />
-            <a href="{% url 'testplan_update' pk=testplan.id %}" class="button small">{% trans "Update" %}</a>
-            <a href="{% url 'testplan_delete' pk=testplan.id %}" class="button alert small">{% trans "Delete" %}</a>
-        </form>
+        <a href="{% url 'testplan_update' pk=testplan.id %}" class="button small">{% trans "Update" %}</a>
+        <a href="{% url 'testplan_delete' pk=testplan.id %}" class="button alert small">{% trans "Delete" %}</a>
 
         <table class="hover unstriped">
             <tbody>
@@ -60,13 +57,14 @@
 
   <div class="tabs-panel {% if tab_id == 2 %}is-active{% endif %}" id="terms">
       <form method="post" action="/redmine/import_all_chapters/">
-          <a href="{% url 'chapter_create' testplan_id=testplan.id %}" class="button small">{% trans "Add Chapter" %}</a>
+          <a href="{% url 'chapter_create' testplan_id=testplan.id %}" class="button small">{% trans "Add" %}</a>
           {% csrf_token %}
           <input type="hidden" name="testplan_id" value="{{ testplan.id }}">
           <input type="hidden" name="redmine_url" value="{{ testplan.redmine_url }}">
           <input type="hidden" name="tag" value="{{ testplan.device_type.tag }}">
           <input type="submit" value='{% trans "Add chapters from Redmine" %}' class="button success small" />
-          <a href="{% url 'chapter_clear_all' testplan_id=testplan.id %}" class="button small alert">{% trans "Clear Chapters" %}</a>
+          <a href="{% url 'clear_chapters' testplan_id=testplan.id %}" class="button small alert">
+              {% trans "Clear" %}</a>
       </form>
 
       <ul style="list-style: none">
@@ -84,13 +82,13 @@
 
   <div class="tabs-panel {% if tab_id == 3 %}is-active{% endif %}" id="tests">
       <form method="post" action="/redmine/import_all_tests/">
-          <a href="{% url 'category_create' testplan_id=testplan.id %}" class="button small">{% trans "Add Category" %}</a>
+          <a href="{% url 'category_create' testplan_id=testplan.id %}" class="button small">{% trans "Add" %}</a>
           {% csrf_token %}
           <input type="hidden" name="testplan_id" value="{{ testplan.id }}">
           <input type="hidden" name="redmine_url" value="{{ testplan.redmine_url }}">
           <input type="hidden" name="tag" value="{{ testplan.device_type.tag }}">
           <input type="submit" value='{% trans "Add tests from Redmine" %}' class="button success small" />
-          <a href="{% url 'clear_tests' testplan_id=testplan.id %}" class="button small alert">{% trans "Clear Tests" %}</a>
+          <a href="{% url 'clear_tests' testplan_id=testplan.id %}" class="button small alert">{% trans "Clear" %}</a>
         </form>
       <br>
       {% for category in categories %}
@@ -105,8 +103,6 @@
                   <li>
                       <a href="{% url 'test_details' testplan_id=testplan.id pk=test.id %}">
                           {{forloop.parentloop.counter}}.{{ forloop.counter }}. {{ test.name }}</a>
-                      <a href="{% url 'test_update' testplan_id=testplan.id pk=test.id %}"><i class="step fi-pencil"></i></a>
-                      <a href="{% url 'test_delete' testplan_id=testplan.id pk=test.id %}"><i class="step fi-minus" style="color: #bc104b"></i></a>
                   </li>
               </ul>
               {% endfor %}
@@ -117,7 +113,15 @@
       {% endfor %}
   </div>
 
-  <div class="tabs-panel {% if tab_id == 4 %}is-active{% endif %}" id="redmine">
+  <div class="tabs-panel {% if tab_id == 4 %}is-active{% endif %}" id="docx">
+      <form method="post" action="/paper/testplan/">
+          {% csrf_token %}
+          <input type="hidden" name="testplan_id" value="{{ testplan.id }}">
+          <input type="submit" value='{% trans "Build" %}' class="button success small" />
+      </form>
+  </div>
+
+  <div class="tabs-panel {% if tab_id == 5 %}is-active{% endif %}" id="redmine">
       {% if testplan.redmine_project %}
       <a href="#" class="button small">{% trans "Export" %}</a>
       <table>

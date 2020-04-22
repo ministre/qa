@@ -4,8 +4,8 @@
 
 {% block content %}
 
-<p><a href="{% url 'testplans' %}">{% trans "Testplan" %}</a> &raquo;
-    <a href="{% url 'testplan_details' pk=testplan.id %}">{{ testplan.name }}</a>  &raquo; {{ chapter.name }}</p>
+<p><a href="{% url 'testplans' tab_id=1 %}">{% trans "Testplan" %}</a> &raquo;
+    <a href="{% url 'testplan_details' pk=testplan.id tab_id=2 %}">{{ testplan.name }}</a>  &raquo; {{ chapter.name }}</p>
 
 <ul class="tabs" data-tabs id="example-tabs">
     <li class="tabs-title"><a href="#panel1" aria-selected="true">{% trans "General" %}</a></li>
@@ -22,20 +22,12 @@
                 <td>{{ chapter.name }}</td>
             </tr>
             <tr>
-                <td>{% trans "Created by" %}:</td>
-                <td>{{ chapter.created_by }}</td>
+                <td>{% trans "Created" %}:</td>
+                <td>{{ chapter.created_at }} ({{ chapter.created_by }})</td>
             </tr>
             <tr>
-                <td>{% trans "Created at" %}:</td>
-                <td>{{ chapter.created_at }}</td>
-            </tr>
-            <tr>
-                <td>{% trans "Updated by" %}:</td>
-                <td>{{ chapter.updated_by }}</td>
-            </tr>
-            <tr>
-                <td>{% trans "Updated at" %}:</td>
-                <td>{{ chapter.updated_at }}</td>
+                <td>{% trans "Last Update" %}:</td>
+                <td>{{ chapter.updated_at }} ({{ chapter.updated_by }})</td>
             </tr>
             </tbody>
         </table>

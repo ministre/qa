@@ -29,7 +29,7 @@ urlpatterns = [
     path('<int:testplan_id>/chapter/<int:pk>/delete/', views.ChapterDelete.as_view(), name='chapter_delete'),
     path('<int:testplan_id>/chapter/<int:pk>/update/', views.ChapterUpdate.as_view(), name='chapter_update'),
     path('<int:testplan_id>/chapter/<int:chapter_id>/', views.chapter_details, name='chapter_details'),
-    path('<int:testplan_id>/chapter/clear_all/', views.clear_chapters, name='chapter_clear_all'),
+    path('<int:testplan_id>/clear_chapters/', views.clear_chapters, name='clear_chapters'),
 
     # configs
     path('<int:testplan_id>/test/<int:test_id>/config/create/',

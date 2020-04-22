@@ -5,13 +5,13 @@
 {% block content %}
 
 <p><a href="{% url 'testplans' tab_id=1 %}">{% trans "Testplan" %}</a> &raquo;
-    <a href="{% url 'testplan_details' pk=testplan.id %}">{{ testplan.name}}</a> &raquo;
-    <a href="{% url 'testplan_details' pk=testplan.id %}">{{ test.category }}</a> &raquo;
+    <a href="{% url 'testplan_details' pk=testplan.id tab_id=3 %}">{{ testplan.name}}</a> &raquo;
+    <a href="{% url 'testplan_details' pk=testplan.id tab_id=3 %}">{{ test.category }}</a> &raquo;
     {{ test.name }}
 </p>
 
-<ul class="tabs" data-tabs id="example-tabs">
-    <li class="tabs-title is-active"><a href="#panel1" aria-selected="true">{% trans "Info" %}</a></li>
+<ul class="tabs" data-tabs id="test-tabs">
+    <li class="tabs-title is-active"><a href="#general" aria-selected="true">{% trans "General" %}</a></li>
     <li class="tabs-title"><a data-tabs-target="panel2" href="#panel2">{% trans "Procedure" %}</a></li>
     <li class="tabs-title"><a data-tabs-target="panel3" href="#panel3">{% trans "Expected result" %}</a></li>
     <li class="tabs-title"><a data-tabs-target="panel4" href="#panel4">{% trans "Configuration" %}</a></li>
@@ -24,8 +24,10 @@
     <li class="tabs-title"><a data-tabs-target="panel11" href="#panel11">{% trans "Redmine" %}</a></li>
 </ul>
 
-<div class="tabs-content" data-tabs-content="example-tabs">
-  <div class="tabs-panel is-active" id="panel1">
+<div class="tabs-content" data-tabs-content="test-tabs">
+  <div class="tabs-panel is-active" id="general">
+        <a href="{% url 'test_update' testplan_id=testplan.id pk=test.id %}" class="button small">{% trans "Update" %}</a>
+        <a href="{% url 'test_delete' testplan_id=testplan.id pk=test.id %}" class="button alert small">{% trans "Delete" %}</a>
         <table class="hover unstriped">
             <tbody>
             <tr>
@@ -41,20 +43,12 @@
                 <td>{{ test.purpose }}</td>
             </tr>
             <tr>
-                <td>{% trans "Created by" %}:</td>
-                <td>{{ test.created_by }}</td>
+                <td>{% trans "Created" %}:</td>
+                <td>{{ test.created_at }} ({{ test.created_by }})</td>
             </tr>
             <tr>
-                <td>{% trans "Created at" %}:</td>
-                <td>{{ test.created_at }}</td>
-            </tr>
-            <tr>
-                <td>{% trans "Updated by" %}:</td>
-                <td>{{ test.updated_by }}</td>
-            </tr>
-            <tr>
-                <td>{% trans "Updated at" %}:</td>
-                <td>{{ test.updated_at }}</td>
+                <td>{% trans "Last Update" %}:</td>
+                <td>{{ test.updated_at }} ({{ test.updated_by }})</td>
             </tr>
             </tbody>
         </table>
