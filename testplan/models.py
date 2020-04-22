@@ -130,6 +130,7 @@ class TestComment(models.Model):
 class Pattern(models.Model):
     name = models.CharField(max_length=1000)
     types = models.ManyToManyField(DeviceType, related_name='device_types', blank=True)
+    redmine_parent = models.CharField(max_length=1000, blank=True, null=True)
     redmine_project = models.CharField(max_length=1000, blank=True, null=True)
     created_by = models.ForeignKey(User, related_name='pattern_c', on_delete=models.CASCADE, blank=True, null=True)
     created_at = models.DateTimeField(default=datetime.now, blank=True)
@@ -142,6 +143,7 @@ class Pattern(models.Model):
     def update_timestamp(self, user):
         self.updated_by = user
         self.updated_at = datetime.now()
+        self.save()
         return True
 
 

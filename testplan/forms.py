@@ -207,6 +207,7 @@ class PatternForm(ModelForm):
         labels = {
             'name': _('Name'),
             'device_type': _('Device Type'),
+            'redmine_parent': _('Redmine Parent Project ID'),
             'redmine_project': _('Redmine Project ID'),
         }
         fields = '__all__'

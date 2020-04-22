@@ -55,7 +55,7 @@ class TestplanUpdate(UpdateView):
 
     def get_success_url(self):
         testplan = get_object_or_404(Testplan, id=self.object.id)
-        testplan.update_timestamp(self.request.user)
+        testplan.update_timestamp(user=self.request.user)
         return reverse('testplan_details', kwargs={'pk': self.object.id, 'tab_id': 1})
 
 
@@ -918,7 +918,7 @@ class PatternCreate(CreateView):
         return {'created_by': self.request.user, 'updated_by': self.request.user}
 
     def get_success_url(self):
-        return reverse('pattern_details', kwargs={'pk': self.object.id})
+        return reverse('pattern_details', kwargs={'pk': self.object.id, 'tab_id': 1})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -941,5 +941,5 @@ class PatternUpdate(UpdateView):
 
     def get_success_url(self):
         pattern = get_object_or_404(Pattern, id=self.object.id)
-        pattern.update_timestamp(self.request.user)
-        return reverse('pattern_details', kwargs={'pk': self.object.id})
+        pattern.update_timestamp(user=self.request.user)
+        return reverse('pattern_details', kwargs={'pk': pattern.id, 'tab_id': 1})
