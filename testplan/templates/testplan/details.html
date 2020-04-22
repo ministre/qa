@@ -6,15 +6,19 @@
 
 <p><a href="{% url 'testplans' tab_id=1 %}">{% trans "Testplans" %}</a> &raquo; {{ testplan.name}}</p>
 
-<ul class="tabs" data-tabs id="example-tabs">
-    <li class="tabs-title"><a href="#panel1" aria-selected="true">{% trans "General" %}</a></li>
-    <li class="tabs-title"><a data-tabs-target="panel2" href="#panel2">{% trans "Terms and Conditions" %}</a></li>
-    <li class="tabs-title is-active"><a data-tabs-target="panel3" href="#panel3">{% trans "Tests" %}</a></li>
-    <li class="tabs-title"><a data-tabs-target="redmine" href="#redmine">{% trans "Redmine" %}</a></li>
+<ul class="tabs" data-tabs id="testplan-tabs">
+    <li class="tabs-title {% if tab_id == 1 %} is-active{% endif %}">
+        <a data-tabs-target="general" href="#general">{% trans "General" %}</a></li>
+    <li class="tabs-title {% if tab_id == 2 %} is-active{% endif %}">
+        <a data-tabs-target="terms" href="#terms">{% trans "Terms and Conditions" %}</a></li>
+    <li class="tabs-title {% if tab_id == 3 %} is-active{% endif %}">
+        <a data-tabs-target="tests" href="#tests">{% trans "Tests" %}</a></li>
+    <li class="tabs-title {% if tab_id == 4 %} is-active{% endif %}">
+        <a data-tabs-target="redmine" href="#redmine">{% trans "Redmine" %}</a></li>
 </ul>
 
-<div class="tabs-content" data-tabs-content="example-tabs">
-    <div class="tabs-panel" id="panel1">
+<div class="tabs-content" data-tabs-content="testplan-tabs">
+    <div class="tabs-panel {% if tab_id == 1 %}is-active{% endif %}" id="general">
         <form method="post" action="/paper/testplan/">
           {% csrf_token %}
           <input type="hidden" name="testplan_id" value="{{ testplan.id }}">
@@ -54,7 +58,7 @@
     </div>
 
 
-  <div class="tabs-panel" id="panel2">
+  <div class="tabs-panel {% if tab_id == 2 %}is-active{% endif %}" id="terms">
       <form method="post" action="/redmine/import_all_chapters/">
           <a href="{% url 'chapter_create' testplan_id=testplan.id %}" class="button small">{% trans "Add Chapter" %}</a>
           {% csrf_token %}
@@ -78,7 +82,7 @@
   </div>
 
 
-  <div class="tabs-panel is-active" id="panel3">
+  <div class="tabs-panel {% if tab_id == 3 %}is-active{% endif %}" id="tests">
       <form method="post" action="/redmine/import_all_tests/">
           <a href="{% url 'category_create' testplan_id=testplan.id %}" class="button small">{% trans "Add Category" %}</a>
           {% csrf_token %}
@@ -113,7 +117,7 @@
       {% endfor %}
   </div>
 
-  <div class="tabs-panel" id="redmine">
+  <div class="tabs-panel {% if tab_id == 4 %}is-active{% endif %}" id="redmine">
       {% if testplan.redmine_project %}
       <a href="#" class="button small">{% trans "Export" %}</a>
       <table>

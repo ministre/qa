@@ -32,7 +32,7 @@ class TestplanCreate(CreateView):
         return {'created_by': self.request.user, 'updated_by': self.request.user}
 
     def get_success_url(self):
-        return reverse('testplan_details', kwargs={'pk': self.object.id})
+        return reverse('testplan_details', kwargs={'pk': self.object.id, 'tab_id': 3})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -89,13 +89,13 @@ def get_full_worksheets(test_id):
 
 
 @login_required
-def testplan_details(request, pk):
+def testplan_details(request, pk, tab_id):
     testplan = get_object_or_404(Testplan, id=pk)
     chapters = Chapter.objects.filter(testplan=testplan).order_by('id')
     categories = get_testlist(testplan)
     amount_of_tests = tests_count(testplan)
     r = RedmineProject(testplan.redmine_project)
-    return render(request, 'testplan/details.html', {'testplan': testplan, 'categories': categories,
+    return render(request, 'testplan/details.html', {'tab_id': tab_id, 'testplan': testplan, 'categories': categories,
                                                      'chapters': chapters, 'amount_of_tests': amount_of_tests,
                                                      'redmine_wiki': r.get_wiki_url()})
 
