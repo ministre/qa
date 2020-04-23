@@ -6,28 +6,41 @@
 
 <p><a href="{% url 'testplans' tab_id=1 %}">{% trans "Testplan" %}</a> &raquo;
     <a href="{% url 'testplan_details' pk=testplan.id tab_id=3 %}">{{ testplan.name}}</a> &raquo;
-    <a href="{% url 'testplan_details' pk=testplan.id tab_id=3 %}">{{ test.category }}</a> &raquo;
+    <a href="{% url 'category_update' testplan_id=testplan.id pk=test.category.id %}">{{ test.category }}</a> &raquo;
     {{ test.name }}
 </p>
 
 <ul class="tabs" data-tabs id="test-tabs">
-    <li class="tabs-title is-active"><a href="#general" aria-selected="true">{% trans "General" %}</a></li>
-    <li class="tabs-title"><a data-tabs-target="panel2" href="#panel2">{% trans "Procedure" %}</a></li>
-    <li class="tabs-title"><a data-tabs-target="panel3" href="#panel3">{% trans "Expected result" %}</a></li>
-    <li class="tabs-title"><a data-tabs-target="panel4" href="#panel4">{% trans "Configuration" %}</a></li>
-    <li class="tabs-title"><a data-tabs-target="panel5" href="#panel5">{% trans "Images" %}</a></li>
-    <li class="tabs-title"><a data-tabs-target="panel6" href="#panel6">{% trans "Files" %}</a></li>
-    <li class="tabs-title"><a data-tabs-target="panel7" href="#panel7">{% trans "Checklists" %}</a></li>
-    <li class="tabs-title"><a data-tabs-target="panel8" href="#panel8">{% trans "Worksheets" %}</a></li>
-    <li class="tabs-title"><a data-tabs-target="panel9" href="#panel9">{% trans "Links" %}</a></li>
-    <li class="tabs-title"><a data-tabs-target="panel10" href="#panel10">{% trans "Comments" %}</a></li>
-    <li class="tabs-title"><a data-tabs-target="panel11" href="#panel11">{% trans "Redmine" %}</a></li>
+    <li class="tabs-title {% if tab_id == 1 %} is-active{% endif %}">
+        <a data-tabs-target="general" href="#general">{% trans "General" %}</a></li>
+    <li class="tabs-title {% if tab_id == 2 %} is-active{% endif %}">
+        <a data-tabs-target="procedure" href="#procedure">{% trans "Procedure" %}</a></li>
+    <li class="tabs-title {% if tab_id == 3 %} is-active{% endif %}">
+        <a data-tabs-target="expected" href="#expected">{% trans "Expected result" %}</a></li>
+    <li class="tabs-title {% if tab_id == 4 %} is-active{% endif %}">
+        <a data-tabs-target="configs" href="#configs">{% trans "Configurations" %}</a></li>
+    <li class="tabs-title {% if tab_id == 5 %} is-active{% endif %}">
+        <a data-tabs-target="images" href="#images">{% trans "Images" %}</a></li>
+    <li class="tabs-title {% if tab_id == 6 %} is-active{% endif %}">
+        <a data-tabs-target="files" href="#files">{% trans "Files" %}</a></li>
+    <li class="tabs-title {% if tab_id == 7 %} is-active{% endif %}">
+        <a data-tabs-target="checklists" href="#checklists">{% trans "Checklists" %}</a></li>
+    <li class="tabs-title {% if tab_id == 8 %} is-active{% endif %}">
+        <a data-tabs-target="worksheets" href="#worksheets">{% trans "Worksheets" %}</a></li>
+    <li class="tabs-title {% if tab_id == 9 %} is-active{% endif %}">
+        <a data-tabs-target="links" href="#links">{% trans "Links" %}</a></li>
+    <li class="tabs-title {% if tab_id == 10 %} is-active{% endif %}">
+        <a data-tabs-target="comments" href="#comments">{% trans "Comments" %}</a></li>
+    <li class="tabs-title {% if tab_id == 11 %} is-active{% endif %}">
+        <a data-tabs-target="redmine" href="#redmine">{% trans "Redmine" %}</a></li>
 </ul>
 
 <div class="tabs-content" data-tabs-content="test-tabs">
-  <div class="tabs-panel is-active" id="general">
-        <a href="{% url 'test_update' testplan_id=testplan.id pk=test.id %}" class="button small">{% trans "Update" %}</a>
-        <a href="{% url 'test_delete' testplan_id=testplan.id pk=test.id %}" class="button alert small">{% trans "Delete" %}</a>
+    <div class="tabs-panel {% if tab_id == 1 %}is-active{% endif %}" id="general">
+        <a href="{% url 'test_update' testplan_id=testplan.id pk=test.id %}" class="button small">
+            {% trans "Update" %}</a>
+        <a href="{% url 'test_delete' testplan_id=testplan.id pk=test.id %}" class="button alert small">
+            {% trans "Delete" %}</a>
         <table class="hover unstriped">
             <tbody>
             <tr>
@@ -54,28 +67,30 @@
         </table>
   </div>
 
-  <div class="tabs-panel" id="panel2">
+  <div class="tabs-panel {% if tab_id == 2 %}is-active{% endif %}" id="procedure">
     <p>{{ test_procedure|safe }}</p>
   </div>
 
-  <div class="tabs-panel" id="panel3">
+  <div class="tabs-panel {% if tab_id == 3 %}is-active{% endif %}" id="expected">
     <p>{{ test_expected|safe }}</p>
   </div>
 
-  <div class="tabs-panel" id="panel4">
-      <a href="{% url 'test_config_create' testplan_id=testplan.id test_id=test.id %}" class="button small">Add Configuration</a>
+  <div class="tabs-panel {% if tab_id == 4 %}is-active{% endif %}" id="configs">
+      <a href="{% url 'test_config_create' testplan_id=testplan.id test_id=test.id %}" class="button small">
+          {% trans "Add" %}</a>
       {% for config in configs %}
       {% if config.name %}<p>{{ config.name }}</p>{% endif %}
       <pre><code data-language="{{ config.lang }}">
-{{ config.config }}
+          {{ config.config }}
       </code></pre>
       <a href="{% url 'test_config_update' testplan_id=testplan.id test_id=test.id pk=config.id %}" class="button small">Update</a>
       <a href="{% url 'test_config_delete' testplan_id=testplan.id test_id=test.id pk=config.id %}" class="button small alert">Delete</a>
       {% endfor %}
   </div>
 
-  <div class="tabs-panel" id="panel5">
-      <a href="{% url 'test_image_create' testplan_id=testplan.id test_id=test.id %}" class="button small">Add Image</a>
+  <div class="tabs-panel {% if tab_id == 5 %}is-active{% endif %}" id="images">
+      <a href="{% url 'test_image_create' testplan_id=testplan.id test_id=test.id %}" class="button small">
+          {% trans "Add" %}</a>
       {% for image in images %}
       <p>{{ image.name }}</p>
       <p><img src="{{ image.image.url }}"
@@ -87,8 +102,9 @@
       {% endfor %}
   </div>
 
-  <div class="tabs-panel" id="panel6">
-      <a href="{% url 'test_file_create' testplan_id=testplan.id test_id=test.id %}" class="button small">Add File</a>
+  <div class="tabs-panel {% if tab_id == 6 %}is-active{% endif %}" id="files">
+      <a href="{% url 'test_file_create' testplan_id=testplan.id test_id=test.id %}" class="button small">
+          {% trans "Add" %}</a>
       {% for file in files %}
       <p><a href="{{ file.file.url }}">{{ file.name }}</a></p>
       <a href="{% url 'test_file_update' testplan_id=testplan.id test_id=test.id pk=file.id %}" class="button small">Update</a>
@@ -96,8 +112,9 @@
       {% endfor %}
   </div>
 
-  <div class="tabs-panel" id="panel7">
-      <a href="{% url 'test_checklist_create' testplan_id=testplan.id test_id=test.id %}" class="button small">Add Checklist</a>
+  <div class="tabs-panel {% if tab_id == 7 %}is-active{% endif %}" id="checklists">
+      <a href="{% url 'test_checklist_create' testplan_id=testplan.id test_id=test.id %}" class="button small">
+          {% trans "Add" %}</a>
       {% for checklist in checklists %}
       <ul style="list-style: none">
           <li>
@@ -127,8 +144,9 @@
       {% endfor %}
   </div>
 
-  <div class="tabs-panel" id="panel8">
-      <a href="{% url 'test_worksheet_create' testplan_id=testplan.id test_id=test.id %}" class="button small">Add Worksheet</a>
+  <div class="tabs-panel {% if tab_id == 8 %}is-active{% endif %}" id="worksheets">
+      <a href="{% url 'test_worksheet_create' testplan_id=testplan.id test_id=test.id %}" class="button small">
+          {% trans "Add" %}</a>
       {% for worksheet in worksheets %}
       <ul style="list-style: none">
           <li>
@@ -158,8 +176,9 @@
       {% endfor %}
   </div>
 
-  <div class="tabs-panel" id="panel9">
-      <a href="{% url 'test_link_create' testplan_id=testplan.id test_id=test.id %}" class="button small">Add Link</a>
+  <div class="tabs-panel {% if tab_id == 9 %}is-active{% endif %}" id="links">
+      <a href="{% url 'test_link_create' testplan_id=testplan.id test_id=test.id %}" class="button small">
+          {% trans "Add" %}</a>
       {% for link in links %}
       <p><a href="{{ link.url }}">{{ link.name }}</a></p>
       <a href="{% url 'test_link_update' testplan_id=testplan.id test_id=test.id pk=link.id %}" class="button small">Update</a>
@@ -167,8 +186,9 @@
       {% endfor %}
   </div>
 
-  <div class="tabs-panel" id="panel10">
-      <a href="{% url 'test_comment_create' testplan_id=testplan.id test_id=test.id %}" class="button small">{% trans "Add Comment" %}</a>
+  <div class="tabs-panel {% if tab_id == 10 %}is-active{% endif %}" id="comments">
+      <a href="{% url 'test_comment_create' testplan_id=testplan.id test_id=test.id %}" class="button small">
+          {% trans "Add" %}</a>
       {% for comment in comments %}
       <p>{{ comment.text }}</p>
       <a href="{% url 'test_comment_update' testplan_id=testplan.id test_id=test.id pk=comment.id %}" class="button small">
@@ -178,12 +198,12 @@
       {% endfor %}
   </div>
 
-  <div class="tabs-panel" id="panel11">
+  <div class="tabs-panel {% if tab_id == 11 %}is-active{% endif %}" id="redmine">
       <table class="hover unstriped">
           <tbody>
           <tr>
-              <td>{% trans "Redmine URL" %}:</td>
-              <td>{{ test.redmine_url }}</td>
+              <td>{% trans "Redmine Wiki" %}:</td>
+              <td>{{ test.redmine_wiki }}</td>
           </tr>
           </tbody>
       </table>

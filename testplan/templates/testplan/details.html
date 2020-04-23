@@ -101,7 +101,7 @@
               {% for test in category.tests %}
               <ul style="list-style: none">
                   <li>
-                      <a href="{% url 'test_details' testplan_id=testplan.id pk=test.id %}">
+                      <a href="{% url 'test_details' testplan_id=testplan.id pk=test.id tab_id=1 %}">
                           {{forloop.parentloop.counter}}.{{ forloop.counter }}. {{ test.name }}</a>
                   </li>
               </ul>

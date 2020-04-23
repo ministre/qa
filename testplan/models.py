@@ -63,13 +63,19 @@ class Test(models.Model):
     purpose = models.TextField(max_length=5000, null=True, blank=True)
     procedure = models.TextField(null=True, blank=True)
     expected = models.TextField(null=True, blank=True)
-    created_by = models.ForeignKey(User, related_name='test_created_by_user', on_delete=models.CASCADE,
+    created_by = models.ForeignKey(User, related_name='test_c', on_delete=models.CASCADE,
                                    blank=True, null=True)
     created_at = models.DateTimeField(default=datetime.now, blank=True)
-    updated_by = models.ForeignKey(User, related_name='test_updated_by_user', on_delete=models.CASCADE,
+    updated_by = models.ForeignKey(User, related_name='test_u', on_delete=models.CASCADE,
                                    blank=True, null=True)
     updated_at = models.DateTimeField(default=datetime.now, blank=True)
-    redmine_url = models.CharField(max_length=1000, null=True, blank=True)
+    redmine_wiki = models.CharField(max_length=1000, null=True, blank=True)
+
+    def update_timestamp(self, user):
+        self.updated_by = user
+        self.updated_at = datetime.now()
+        self.save()
+        return True
 
 
 class TestConfig(models.Model):

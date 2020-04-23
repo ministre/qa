@@ -10,8 +10,10 @@
     <li class="tabs-title {% if tab_id == 1 %} is-active{% endif %}">
         <a data-tabs-target="general" href="#general">{% trans "General" %}</a></li>
     <li class="tabs-title {% if tab_id == 2 %} is-active{% endif %}">
-        <a data-tabs-target="head" href="#head">{% trans "Headings" %}</a></li>
+        <a data-tabs-target="titles" href="#titles">{% trans "Titles" %}</a></li>
     <li class="tabs-title {% if tab_id == 3 %} is-active{% endif %}">
+        <a data-tabs-target="tests" href="#tests">{% trans "Tests" %}</a></li>
+    <li class="tabs-title {% if tab_id == 4 %} is-active{% endif %}">
         <a data-tabs-target="redmine" href="#redmine">{% trans "Redmine" %}</a></li>
 </ul>
 
@@ -38,11 +40,15 @@
         </table>
 
     </div>
-    <div class="tabs-panel {% if tab_id == 2 %}is-active{% endif %}" id="head">
+    <div class="tabs-panel {% if tab_id == 2 %}is-active{% endif %}" id="titles">
         2
     </div>
 
-    <div class="tabs-panel {% if tab_id == 3 %}is-active{% endif %}" id="redmine">
+    <div class="tabs-panel {% if tab_id == 3 %}is-active{% endif %}" id="tests">
+        3
+    </div>
+
+    <div class="tabs-panel {% if tab_id == 4 %}is-active{% endif %}" id="redmine">
         {% if pattern.redmine_project %}
 
         <form method="post" action="{% url 'export_pattern' %}">
