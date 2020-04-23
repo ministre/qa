@@ -2,7 +2,6 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from device.models import DeviceType, Device
 from testplan.models import Testplan, Category, Test, Chapter, TestConfig, Pattern
-from testplan.views import testplan_update_timestamp
 from redminelib import Redmine
 from qa import settings
 from redminelib.exceptions import ResourceAttrError, ResourceNotFoundError
@@ -126,7 +125,8 @@ def import_test_details(request):
         tag = request.POST['tag']
         try:
             test_details_update_from_wiki(test_id, redmine_url, tag, request.user)
-            testplan_update_timestamp(testplan_id, request.user)
+            testplan = get_object_or_404(Testplan, id=testplan_id)
+            testplan.update_timestamp(user=request.user)
             return HttpResponseRedirect('/testplan/' + testplan_id + '/test/' + test_id + '/')
         except ValueError as e:
             return render(request, 'redmine/error.html', {'message': e})
@@ -219,7 +219,8 @@ def import_all_tests(request):
         tag = request.POST['tag']
         try:
             tests_create_from_wiki(testplan_id, redmine_url, tag, request.user)
-            testplan_update_timestamp(testplan_id, request.user)
+            testplan = get_object_or_404(Testplan, id=testplan_id)
+            testplan.update_timestamp(user=request.user)
             return HttpResponseRedirect('/testplan/' + str(testplan_id) + '/')
         except ValueError as e:
             return render(request, 'redmine/error.html', {'message': e})
@@ -271,7 +272,8 @@ def import_all_chapters(request):
         tag = request.POST['tag']
         try:
             chapters_create_from_wiki(testplan_id, redmine_url, tag, request.user)
-            testplan_update_timestamp(testplan_id, request.user)
+            testplan = get_object_or_404(Testplan, id=testplan_id)
+            testplan.update_timestamp(user=request.user)
             return HttpResponseRedirect('/testplan/' + str(testplan_id) + '/')
         except ValueError as e:
             return render(request, 'redmine/error.html', {'message': e})
@@ -313,7 +315,8 @@ def import_chapter_details(request):
         tag = request.POST['tag']
         try:
             chapter_details_update_from_wiki(chapter_id, redmine_url, tag, request.user)
-            testplan_update_timestamp(testplan_id, request.user)
+            testplan = get_object_or_404(Testplan, id=testplan_id)
+            testplan.update_timestamp(user=request.user)
             return HttpResponseRedirect('/testplan/' + testplan_id + '/chapter/' + chapter_id + '/')
         except ValueError as e:
             return render(request, 'redmine/error.html', {'message': e})

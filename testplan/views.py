@@ -255,24 +255,6 @@ def tests_count(testplan: Testplan):
     return count
 
 
-# Update testplan fields 'updated_by' and 'updated_at'
-def testplan_update_timestamp(testplan_id, user):
-    testplan = Testplan.objects.get(id=testplan_id)
-    testplan.updated_by = user
-    testplan.updated_at = datetime.now()
-    testplan.save()
-    return True
-
-
-# Update test fields 'updated_by' and 'updated_at'
-def test_update_timestamp(test_id, user):
-    test = Test.objects.get(id=test_id)
-    test.updated_by = user
-    test.updated_at = datetime.now()
-    test.save()
-    return True
-
-
 @method_decorator(login_required, name='dispatch')
 class ChapterCreate(CreateView):
     model = Chapter
