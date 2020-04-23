@@ -95,4 +95,19 @@ class RedmineProject(object):
             return [True, 'Project created']
 
     def export_pattern(self, pattern: Pattern):
+
+        wiki_text = 'h1. ' + pattern.name
+
+        if self.get_project()[0]:
+            self.redmine.project.update(self.get_project()[1], name=pattern.name)
+            self.redmine.wiki_page.update('Wiki', project_id=self.project_id, text=wiki_text)
+            return [True, 'Project updated successfully']
+
+        elif self.get_project()[1] == 'Project not found':
+            parent_id = self.redmine.project.get(pattern.redmine_parent).id
+            self.redmine.project.create(name=pattern.name,
+                                        identifier=self.project_id,
+                                        parent_id=parent_id,
+                                        inherit_members=True)
+            self.redmine.wiki_page.update('Wiki', project_id=self.project_id, text=wiki_text)
         return [True, 'Project created']
