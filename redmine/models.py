@@ -3,6 +3,7 @@ from qa import settings
 from redminelib.exceptions import ResourceNotFoundError, ForbiddenError, AuthError
 from requests.exceptions import ConnectionError
 from device.models import DeviceType, Device, Specification, Sample
+from testplan.models import Pattern
 
 
 class RedmineProject(object):
@@ -50,7 +51,6 @@ class RedmineProject(object):
             return [False, self.get_project()[1]]
 
     def export_device(self, device: Device):
-
         specs = Specification().get_values(device)
         s = ''
         for spec in specs:
@@ -93,3 +93,6 @@ class RedmineProject(object):
 
             self.redmine.wiki_page.update('Wiki', project_id=self.project_id, text=wiki_text)
             return [True, 'Project created']
+
+    def export_pattern(self, pattern: Pattern):
+        return [True, 'Project created']

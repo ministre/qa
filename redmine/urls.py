@@ -9,4 +9,5 @@ urlpatterns = [
     path('import_all_chapters/', views.import_all_chapters, name='import_all_chapters'),
     path('export_device_type/', views.export_device_type, name='export_device_type'),
     path('export_device/', views.export_device, name='export_device'),
+    path('export_pattern/', views.export_pattern, name='export_pattern'),
 ]

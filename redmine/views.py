@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from device.models import DeviceType, Device
-from testplan.models import Testplan, Category, Test, Chapter, TestConfig
+from testplan.models import Testplan, Category, Test, Chapter, TestConfig, Pattern
 from testplan.views import testplan_update_timestamp
 from redminelib import Redmine
 from qa import settings
@@ -349,15 +349,31 @@ def chapter_details_update_from_wiki(chapter_id, redmine_url, tag, user):
     return chapter.id
 
 
+@login_required
 def export_device_type(request):
     if request.method == "POST":
         device_type = get_object_or_404(DeviceType, id=request.POST['device_type'])
         r = RedmineProject(device_type.redmine_project).export_device_type(device_type)
         return render(request, 'redmine/device_type.html', {'message': r, 'device_type_id': device_type.id})
+    else:
+        return HttpResponseRedirect(reverse('device_types'))
 
 
+@login_required
 def export_device(request):
     if request.method == "POST":
         device = get_object_or_404(Device, id=request.POST['device'])
         r = RedmineProject(device.redmine_project).export_device(device)
         return render(request, 'redmine/device.html', {'message': r, 'device_id': device.id})
+    else:
+        return HttpResponseRedirect(reverse('devices'))
+
+
+@login_required
+def export_pattern(request):
+    if request.method == "POST":
+        pattern = get_object_or_404(Pattern, id=request.POST['pattern'])
+        r = RedmineProject(pattern.redmine_project).export_pattern(pattern)
+        return render(request, 'redmine/pattern.html', {'message': r, 'pattern_id': pattern.id})
+    else:
+        return HttpResponseRedirect(reverse('testplans', kwargs={'tab_id': 2}))

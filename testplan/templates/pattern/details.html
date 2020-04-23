@@ -20,7 +20,7 @@
         <a href="{% url 'pattern_update' pk=pattern.id %}" class="button small">{% trans "Update" %}</a>
         <a href="{% url 'pattern_delete' pk=pattern.id %}" class="button alert small">{% trans "Delete" %}</a>
 
-                <table class="hover unstriped">
+        <table class="hover unstriped">
             <tbody>
             <tr>
                 <td>{% trans "Pattern name" %}:</td>
@@ -44,8 +44,18 @@
 
     <div class="tabs-panel {% if tab_id == 3 %}is-active{% endif %}" id="redmine">
         {% if pattern.redmine_project %}
-        <a href="#" class="button small">{% trans "Export" %}</a>
+
+        <form method="post" action="{% url 'export_pattern' %}">
+            {% csrf_token %}
+            <input type="hidden" name="pattern" value="{{ pattern.id }}">
+            <input type="submit" value='{% trans "Export" %}' class="button success small" />
+        </form>
+
         <table>
+            <tr>
+                <td>{% trans "Parent Project ID" %}:</td>
+                <td>{{ pattern.redmine_parent }}</td>
+            </tr>
             <tr>
                 <td>{% trans "Project ID" %}:</td>
                 <td>{{ pattern.redmine_project }}</td>
