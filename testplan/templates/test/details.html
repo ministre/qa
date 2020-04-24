@@ -200,14 +200,20 @@
 
   <div class="tabs-panel {% if tab_id == 11 %}is-active{% endif %}" id="redmine">
       {% if testplan.redmine_project %}
-      <a href="#" class="button small">{% trans "Export" %}</a>
+
+      <form method="post" action="{% url 'export_test' %}">
+          {% csrf_token %}
+          <input type="hidden" name="test" value="{{ test.id }}">
+          <input type="submit" value='{% trans "Export" %}' class="button success small" />
+      </form>
+
       <table>
           <tr>
               <td>{% trans "Project ID" %}:</td>
               <td>{{ testplan.redmine_project }}</td>
           </tr>
           <tr>
-              <td>{% trans "Project Wiki" %}:</td>
+              <td>{% trans "Wiki" %}:</td>
               {% if redmine_wiki.0 %}
               <td><a href="{{ redmine_wiki.1 }}">{{ redmine_wiki.1 }}</a></td>
               {% else %}

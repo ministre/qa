@@ -11,4 +11,5 @@ urlpatterns = [
     path('export_device/', views.export_device, name='export_device'),
     path('export_pattern/', views.export_pattern, name='export_pattern'),
     path('export_testplan/', views.export_testplan, name='export_testplan'),
+    path('export_test/', views.export_test, name='export_test'),
 ]

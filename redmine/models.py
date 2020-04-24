@@ -25,11 +25,14 @@ class RedmineProject(object):
         except ForbiddenError:
             return [False, 'Requested project resource is forbidden']
 
-    def get_wiki_url(self):
+    def get_wiki_url(self, wiki_title: str):
         if self.get_project()[0]:
             try:
-                self.redmine.wiki_page.get('Wiki', project_id=self.project_id)
-                return [True, settings.REDMINE_URL + '/projects/' + self.project_id + '/wiki/']
+                self.redmine.wiki_page.get(wiki_title, project_id=self.project_id)
+                if wiki_title == 'wiki':
+                    return [True, settings.REDMINE_URL + '/projects/' + self.project_id + '/wiki/']
+                else:
+                    return [True, settings.REDMINE_URL + '/projects/' + self.project_id + '/wiki/' + wiki_title]
             except ResourceNotFoundError:
                 return [False, 'Wiki not found']
             except ForbiddenError:
@@ -138,3 +141,24 @@ class RedmineProject(object):
                                         inherit_members=True)
             self.redmine.wiki_page.update('Wiki', project_id=self.project_id, text=wiki_text)
         return [True, 'Project created']
+
+    def export_test(self, test: Test):
+
+        wiki_text = 'h1. ' + test.name + '\n' + \
+                    '\nh2. Цель\n\n' + test.purpose + '\n' + \
+                    '\nh2. Процедура\n\n' + test.procedure + '\n' + \
+                    '\nh2. Ожидаемый результат\n\n' + test.expected + '\n' + \
+                    '\nh2. Ссылки\n'
+
+        if self.get_project()[0]:
+            if self.get_wiki_url(test.redmine_wiki)[0]:
+                self.redmine.wiki_page.update(test.redmine_wiki, project_id=test.category.testplan.redmine_project,
+                                              text=wiki_text)
+                return [True, 'Wiki updated successfully']
+            else:
+                self.redmine.wiki_page.create(project_id=test.category.testplan.redmine_project,
+                                              title=test.redmine_wiki, text=wiki_text, parent_title='wiki')
+                return [True, 'Wiki created successfully']
+
+        elif self.get_project()[1] == 'Project not found':
+            return [False, 'Project not found']

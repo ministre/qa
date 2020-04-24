@@ -97,7 +97,7 @@ def testplan_details(request, pk, tab_id):
     r = RedmineProject(testplan.redmine_project)
     return render(request, 'testplan/details.html', {'tab_id': tab_id, 'testplan': testplan, 'categories': categories,
                                                      'chapters': chapters, 'amount_of_tests': amount_of_tests,
-                                                     'redmine_wiki': r.get_wiki_url()})
+                                                     'redmine_wiki': r.get_wiki_url('wiki')})
 
 
 @login_required
@@ -105,7 +105,7 @@ def pattern_details(request, pk, tab_id):
     pattern = get_object_or_404(Pattern, id=pk)
     r = RedmineProject(pattern.redmine_project)
     return render(request, 'pattern/details.html', {'tab_id': tab_id, 'pattern': pattern,
-                                                    'redmine_wiki': r.get_wiki_url()})
+                                                    'redmine_wiki': r.get_wiki_url('wiki')})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -237,7 +237,7 @@ def test_details(request, testplan_id, pk, tab_id):
                                                  'configs': configs, 'images': images, 'files': files,
                                                  'checklists': checklists, 'worksheets': worksheets,
                                                  'links': links, 'comments': comments,
-                                                 'redmine_wiki': r.get_wiki_url()})
+                                                 'redmine_wiki': r.get_wiki_url(test.redmine_wiki)})
 
 
 @login_required

@@ -390,3 +390,14 @@ def export_testplan(request):
         return render(request, 'redmine/testplan.html', {'message': r, 'testplan_id': testplan.id})
     else:
         return HttpResponseRedirect(reverse('testplans', kwargs={'tab_id': 1}))
+
+
+@login_required
+def export_test(request):
+    if request.method == "POST":
+        test = get_object_or_404(Test, id=request.POST['test'])
+        r = RedmineProject(test.category.testplan.redmine_project).export_test(test)
+        return render(request, 'redmine/test.html', {'message': r, 'testplan_id': test.category.testplan.id,
+                                                     'test_id': test.id})
+    else:
+        return HttpResponseRedirect(reverse('testplans', kwargs={'tab_id': 1}))
