@@ -123,7 +123,12 @@
 
   <div class="tabs-panel {% if tab_id == 5 %}is-active{% endif %}" id="redmine">
       {% if testplan.redmine_project %}
-      <a href="#" class="button small">{% trans "Export" %}</a>
+
+      <form method="post" action="{% url 'export_testplan' %}">
+          {% csrf_token %}
+          <input type="hidden" name="testplan" value="{{ testplan.id }}">
+          <input type="submit" value='{% trans "Export" %}' class="button success small" />
+      </form>
 
       <table>
           <tr>

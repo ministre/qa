@@ -3,7 +3,7 @@ from qa import settings
 from redminelib.exceptions import ResourceNotFoundError, ForbiddenError, AuthError
 from requests.exceptions import ConnectionError
 from device.models import DeviceType, Device, Specification, Sample
-from testplan.models import Pattern
+from testplan.models import Pattern, Testplan, Category, Test
 
 
 class RedmineProject(object):
@@ -106,6 +106,33 @@ class RedmineProject(object):
         elif self.get_project()[1] == 'Project not found':
             parent_id = self.redmine.project.get(pattern.redmine_parent).id
             self.redmine.project.create(name=pattern.name,
+                                        identifier=self.project_id,
+                                        parent_id=parent_id,
+                                        inherit_members=True)
+            self.redmine.wiki_page.update('Wiki', project_id=self.project_id, text=wiki_text)
+        return [True, 'Project created']
+
+    def export_testplan(self, testplan: Testplan):
+
+        categories = Category.objects.filter(testplan=testplan).order_by('id')
+        wiki_testlist = ''
+        for category in categories:
+            wiki_testlist += '\nh2. ' + category.name + '\n'
+            tests = Test.objects.filter(category=category).order_by('id')
+            for test in tests:
+                wiki_testlist += '\n* [[' + test.redmine_wiki + '|' + test.name + ']]'
+            wiki_testlist += '\n'
+
+        wiki_text = 'h1. ' + testplan.name + '\n' + wiki_testlist
+
+        if self.get_project()[0]:
+            self.redmine.project.update(self.get_project()[1], name=testplan.name)
+            self.redmine.wiki_page.update('Wiki', project_id=self.project_id, text=wiki_text)
+            return [True, 'Project updated successfully']
+
+        elif self.get_project()[1] == 'Project not found':
+            parent_id = self.redmine.project.get(testplan.redmine_parent).id
+            self.redmine.project.create(name=testplan.name,
                                         identifier=self.project_id,
                                         parent_id=parent_id,
                                         inherit_members=True)

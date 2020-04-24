@@ -10,4 +10,5 @@ urlpatterns = [
     path('export_device_type/', views.export_device_type, name='export_device_type'),
     path('export_device/', views.export_device, name='export_device'),
     path('export_pattern/', views.export_pattern, name='export_pattern'),
+    path('export_testplan/', views.export_testplan, name='export_testplan'),
 ]
