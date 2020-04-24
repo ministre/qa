@@ -258,7 +258,7 @@ def device_type_details(request, pk, tab_id):
     device_type = get_object_or_404(DeviceType, pk=pk)
     r = RedmineProject(device_type.redmine_project)
     return render(request, 'type/details.html', {'device_type': device_type,
-                                                 'redmine_wiki': r.get_wiki_url(),
+                                                 'redmine_wiki': r.get_wiki_url('wiki'),
                                                  'tab_id': tab_id})
 
 
@@ -274,7 +274,7 @@ def device_details(request, pk, tab_id):
     r = RedmineProject(device.redmine_project)
     return render(request, 'device/details.html', {'device': device, 'specs': specs, 'fws': fws,
                                                    'photos': photos, 'docums': docums, 'samples': samples,
-                                                   'protocols': protocols, 'redmine_wiki': r.get_wiki_url(),
+                                                   'protocols': protocols, 'redmine_wiki': r.get_wiki_url('wiki'),
                                                    'tab_id': tab_id})
 
 
