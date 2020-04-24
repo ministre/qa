@@ -231,11 +231,13 @@ def test_details(request, testplan_id, pk, tab_id):
     worksheets = get_full_worksheets(pk)
     links = TestLink.objects.filter(test=test).order_by('id')
     comments = TestComment.objects.filter(test=test).order_by('id')
+    r = RedmineProject(testplan.redmine_project)
     return render(request, 'test/details.html', {'tab_id': tab_id, 'testplan': testplan, 'test': test,
                                                  'test_procedure': test_procedure, 'test_expected': test_expected,
                                                  'configs': configs, 'images': images, 'files': files,
                                                  'checklists': checklists, 'worksheets': worksheets,
-                                                 'links': links, 'comments': comments})
+                                                 'links': links, 'comments': comments,
+                                                 'redmine_wiki': r.get_wiki_url()})
 
 
 @login_required

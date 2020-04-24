@@ -14,6 +14,7 @@ class Testplan(models.Model):
     updated_by = models.ForeignKey(User, related_name='testplan_updated_by_user', on_delete=models.CASCADE,
                                    blank=True, null=True)
     updated_at = models.DateTimeField(default=datetime.now, blank=True)
+    redmine_parent = models.CharField(max_length=1000, blank=True, null=True)
     redmine_project = models.CharField(max_length=1000, blank=True, null=True)
     members = models.ManyToManyField(User, related_name='members', blank=True)
 

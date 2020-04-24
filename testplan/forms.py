@@ -12,11 +12,16 @@ class TestplanForm(ModelForm):
             'name': _('Name'),
             'version': _('Document version'),
             'device_type': _('Device Type'),
+            'redmine_parent': _('Redmine Parent Project ID'),
             'redmine_project': _('Redmine Project ID'),
         }
         fields = '__all__'
         widgets = {'created_by': HiddenInput(), 'created_at': HiddenInput(),
                    'updated_by': HiddenInput(), 'updated_at': HiddenInput()}
+
+    def __init__(self, *args, **kwargs):
+        super(TestplanForm, self).__init__(*args, **kwargs)
+        self.fields['redmine_parent'].initial = 'testplans'
 
 
 class CategoryForm(ModelForm):
@@ -206,10 +211,14 @@ class PatternForm(ModelForm):
         model = Pattern
         labels = {
             'name': _('Name'),
-            'device_type': _('Device Type'),
+            'types': _('Device Types'),
             'redmine_parent': _('Redmine Parent Project ID'),
             'redmine_project': _('Redmine Project ID'),
         }
         fields = '__all__'
         widgets = {'created_by': HiddenInput(), 'created_at': HiddenInput(),
                    'updated_by': HiddenInput(), 'updated_at': HiddenInput()}
+
+    def __init__(self, *args, **kwargs):
+        super(PatternForm, self).__init__(*args, **kwargs)
+        self.fields['redmine_parent'].initial = 'patterns'

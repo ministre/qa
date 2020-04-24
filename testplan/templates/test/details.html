@@ -199,13 +199,21 @@
   </div>
 
   <div class="tabs-panel {% if tab_id == 11 %}is-active{% endif %}" id="redmine">
-      <table class="hover unstriped">
-          <tbody>
+      {% if testplan.redmine_project %}
+      <a href="#" class="button small">{% trans "Export" %}</a>
+      <table>
           <tr>
-              <td>{% trans "Redmine Wiki" %}:</td>
-              <td>{{ test.redmine_wiki }}</td>
+              <td>{% trans "Project ID" %}:</td>
+              <td>{{ testplan.redmine_project }}</td>
           </tr>
-          </tbody>
+          <tr>
+              <td>{% trans "Project Wiki" %}:</td>
+              {% if redmine_wiki.0 %}
+              <td><a href="{{ redmine_wiki.1 }}">{{ redmine_wiki.1 }}</a></td>
+              {% else %}
+              <td>{{ redmine_wiki.1 }}</td>
+              {% endif %}
+          </tr>
       </table>
 
       <form method="post" action="/redmine/import_test_details/">
@@ -216,6 +224,10 @@
           <input type="hidden" name="tag" value="{{ testplan.device_type.tag }}">
           <input type="submit" value='{% trans "Update from Redmine" %}' class="button success small" />
       </form>
+
+      {% else %}
+        <a href="{% url 'testplan_update' pk=testplan.id %}">{% trans "Project ID is not set" %}</a>
+      {% endif %}
 
   </div>
 </div>

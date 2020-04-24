@@ -124,13 +124,18 @@
   <div class="tabs-panel {% if tab_id == 5 %}is-active{% endif %}" id="redmine">
       {% if testplan.redmine_project %}
       <a href="#" class="button small">{% trans "Export" %}</a>
+
       <table>
+          <tr>
+              <td>{% trans "Parent Project ID" %}:</td>
+              <td>{{ testplan.redmine_parent }}</td>
+          </tr>
           <tr>
               <td>{% trans "Project ID" %}:</td>
               <td>{{ testplan.redmine_project }}</td>
           </tr>
           <tr>
-              <td>{% trans "Project Wiki" %}:</td>
+              <td>{% trans "Wiki" %}:</td>
               {% if redmine_wiki.0 %}
               <td><a href="{{ redmine_wiki.1 }}">{{ redmine_wiki.1 }}</a></td>
               {% else %}
@@ -138,6 +143,7 @@
               {% endif %}
           </tr>
       </table>
+
       {% else %}
       <a href="{% url 'testplan_update' pk=testplan.id %}">{% trans "Project ID is not set" %}</a>
       {% endif %}
