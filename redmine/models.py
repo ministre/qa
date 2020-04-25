@@ -116,7 +116,6 @@ class RedmineProject(object):
         return [True, 'Project created']
 
     def export_testplan(self, testplan: Testplan):
-
         categories = Category.objects.filter(testplan=testplan).order_by('id')
         wiki_testlist = ''
         for category in categories:
@@ -125,12 +124,12 @@ class RedmineProject(object):
             for test in tests:
                 wiki_testlist += '\n* [[' + test.redmine_wiki + '|' + test.name + ']]'
             wiki_testlist += '\n'
-
         wiki_text = 'h1. ' + testplan.name + '\n' + wiki_testlist
 
         if self.get_project()[0]:
             self.redmine.project.update(self.get_project()[1], name=testplan.name)
-            self.redmine.wiki_page.update('Wiki', project_id=self.project_id, text=wiki_text)
+            self.redmine.wiki_page.update('wiki', project_id=self.project_id, text=wiki_text)
+            self.export_all_tests(testplan)
             return [True, 'Project updated successfully']
 
         elif self.get_project()[1] == 'Project not found':
@@ -139,8 +138,9 @@ class RedmineProject(object):
                                         identifier=self.project_id,
                                         parent_id=parent_id,
                                         inherit_members=True)
-            self.redmine.wiki_page.update('Wiki', project_id=self.project_id, text=wiki_text)
-        return [True, 'Project created']
+            self.redmine.wiki_page.update('wiki', project_id=self.project_id, text=wiki_text)
+            self.export_all_tests(testplan)
+            return [True, 'Project created']
 
     def export_test(self, test: Test):
 
@@ -162,3 +162,11 @@ class RedmineProject(object):
 
         elif self.get_project()[1] == 'Project not found':
             return [False, 'Project not found']
+
+    def export_all_tests(self, testplan: Testplan):
+        categories = Category.objects.filter(testplan=testplan).order_by('id')
+        for category in categories:
+            tests = Test.objects.filter(category=category).order_by('id')
+            for test in tests:
+                self.export_test(test)
+        return True
