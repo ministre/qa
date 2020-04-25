@@ -3,7 +3,7 @@ from qa import settings
 from redminelib.exceptions import ResourceNotFoundError, ForbiddenError, AuthError
 from requests.exceptions import ConnectionError
 from device.models import DeviceType, Device, Specification, Sample
-from testplan.models import Pattern, Testplan, Category, Test, TestConfig
+from testplan.models import Pattern, Testplan, Category, Test, TestConfig, TestLink
 
 
 class RedmineProject(object):
@@ -112,12 +112,21 @@ class RedmineProject(object):
         else:
             wiki_configs = ''
 
+        links = TestLink.objects.filter(test=test)
+        if links.count():
+            wiki_links = '\nh2. Ссылки\n'
+            for link in links:
+                wiki_links += '\n> ' + link.name + '\n' + \
+                              '\n' + link.url + '\n'
+        else:
+            wiki_links = ''
+
         wiki_text = 'h1. ' + test.name + '\n' + \
                     '\nh2. Цель\n\n' + test.purpose + '\n' + \
                     '\nh2. Процедура\n\n' + test.procedure + '\n' + \
                     wiki_configs + \
                     '\nh2. Ожидаемый результат\n\n' + test.expected + '\n' + \
-                    '\nh2. Ссылки\n'
+                    wiki_links
         if self.get_project()[0]:
             if self.get_wiki_url(test.redmine_wiki)[0]:
                 self.redmine.wiki_page.update(test.redmine_wiki, project_id=test.category.testplan.redmine_project,

@@ -178,7 +178,14 @@
       <a href="{% url 'test_link_create' testplan_id=testplan.id test_id=test.id %}" class="button small">
           {% trans "Add" %}</a>
       {% for link in links %}
-      <p><a href="{{ link.url }}">{{ link.name }}</a></p>
+
+      <table>
+          <tr>
+              <td width="200px">{{ link.name }}</td>
+              <td><a href="{{ link.url }}">{{ link.url }}</a></td>
+          </tr>
+      </table>
+
       <a href="{% url 'test_link_update' testplan_id=testplan.id test_id=test.id pk=link.id %}" class="button small">Update</a>
       <a href="{% url 'test_link_delete' testplan_id=testplan.id test_id=test.id pk=link.id %}" class="button small alert">Delete</a>
       {% endfor %}
