@@ -3,7 +3,8 @@ from qa import settings
 from redminelib.exceptions import ResourceNotFoundError, ForbiddenError, AuthError
 from requests.exceptions import ConnectionError
 from device.models import DeviceType, Device, Specification, Sample
-from testplan.models import Pattern, Testplan, Category, Test, TestConfig, TestLink, TestWorksheet, TestWorksheetItem
+from testplan.models import Pattern, Testplan, Category, Test, TestConfig, TestLink, TestWorksheet, TestWorksheetItem, \
+    TestComment
 
 
 class RedmineProject(object):
@@ -53,14 +54,14 @@ class RedmineProject(object):
             return [False, self.get_project()[1]]
 
     def export_device(self, device: Device):
-        specs = Specification().get_values(device)
+        specs = Specification().get_values(device).order_by('id')
         s = ''
         for spec in specs:
             s += '\nh3. ' + spec['name'] + '\n\n'
             for value in spec['values']:
                 s += '* ' + value.name + '\n'
 
-        samples = Sample.objects.filter(device=device)
+        samples = Sample.objects.filter(device=device).order_by('id')
         sm = ''
         for sample in samples:
             sm += '\nh3. ' + sample.sn + '\n\n' + \
@@ -96,7 +97,7 @@ class RedmineProject(object):
             return [True, 'Project created']
 
     def export_test(self, test: Test):
-        configs = TestConfig.objects.filter(test=test)
+        configs = TestConfig.objects.filter(test=test).order_by('id')
         if configs.count():
             wiki_configs = '\nh3. Конфигурация\n'
             for config in configs:
@@ -112,7 +113,7 @@ class RedmineProject(object):
         else:
             wiki_configs = ''
 
-        links = TestLink.objects.filter(test=test)
+        links = TestLink.objects.filter(test=test).order_by('id')
         if links.count():
             wiki_links = '\nh2. Ссылки\n'
             for link in links:
@@ -121,7 +122,7 @@ class RedmineProject(object):
         else:
             wiki_links = ''
 
-        worksheets = TestWorksheet.objects.filter(test=test)
+        worksheets = TestWorksheet.objects.filter(test=test).order_by('id')
         wiki_worksheets = ''
         for worksheet in worksheets:
             if worksheet.type == 'text':
@@ -139,13 +140,23 @@ class RedmineProject(object):
                     wiki_worksheets += '\n* ' + worksheet_item.name
                 wiki_worksheets += '\n'
 
+        comments = TestComment.objects.filter(test=test).order_by('id')
+        if comments.count():
+            wiki_comments = '\nh2. Комментарии\n'
+            for comment in comments:
+                wiki_comments += '\n> ' + comment.name + '\n' + \
+                                 '\n' + comment.text + '\n'
+        else:
+            wiki_comments = ''
+
         wiki_text = 'h1. ' + test.name + '\n' + \
                     '\nh2. Цель\n\n' + test.purpose + '\n' + \
                     '\nh2. Процедура\n\n' + test.procedure + '\n' + \
                     wiki_configs + \
                     '\nh2. Ожидаемый результат\n\n' + test.expected + '\n' + \
                     wiki_worksheets + \
-                    wiki_links
+                    wiki_links +\
+                    wiki_comments
 
         if self.get_project()[0]:
             if self.get_wiki_url(test.redmine_wiki)[0]:

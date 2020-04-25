@@ -148,7 +148,9 @@
 
       <table>
           <tr>
-              <td width="200px">{{ link.name }}</td>
+              <td>{{ link.name }}</td>
+          </tr>
+          <tr>
               <td><a href="{{ link.url }}">{{ link.url }}</a></td>
           </tr>
       </table>
@@ -163,7 +165,7 @@
           {% trans "Add" %}</a>
       {% for comment in comments %}
         <h5>{{ comment.name }}</h5>
-        <p>{{ comment.text }}</p>
+        <p>{{ comment.text|safe }}</p>
         <a href="{% url 'test_comment_update' testplan_id=testplan.id test_id=test.id pk=comment.id %}" class="button small">
             {% trans "Update" %}</a>
         <a href="{% url 'test_comment_delete' testplan_id=testplan.id test_id=test.id pk=comment.id %}"
