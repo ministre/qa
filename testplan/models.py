@@ -91,16 +91,6 @@ class TestFile(models.Model):
     file = models.FileField(upload_to="testplan/files/")
 
 
-class TestChecklist(models.Model):
-    name = models.CharField(max_length=1000)
-    test = models.ForeignKey(Test, related_name='test_checklist', on_delete=models.CASCADE)
-
-
-class TestChecklistItem(models.Model):
-    name = models.CharField(max_length=1000)
-    checklist = models.ForeignKey(TestChecklist, related_name='checklist_item', on_delete=models.CASCADE)
-
-
 class TestWorksheet(models.Model):
     name = models.CharField(max_length=1000)
     test = models.ForeignKey(Test, related_name='test_worksheet', on_delete=models.CASCADE)
@@ -119,6 +109,7 @@ class TestLink(models.Model):
 
 
 class TestComment(models.Model):
+    name = models.CharField(max_length=1000, blank=True, null=True)
     text = models.TextField(max_length=100000)
     test = models.ForeignKey(Test, related_name='test_comment', on_delete=models.CASCADE)
 

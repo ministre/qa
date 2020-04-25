@@ -13,17 +13,17 @@
     <li class="tabs-title {% if tab_id == 1 %} is-active{% endif %}">
         <a data-tabs-target="general" href="#general">{% trans "General" %}</a></li>
     <li class="tabs-title {% if tab_id == 2 %} is-active{% endif %}">
-        <a data-tabs-target="procedure" href="#procedure">{% trans "Procedure" %}</a></li>
+        <a data-tabs-target="purpose" href="#purpose">{% trans "Purpose" %}</a></li>
     <li class="tabs-title {% if tab_id == 3 %} is-active{% endif %}">
-        <a data-tabs-target="expected" href="#expected">{% trans "Expected result" %}</a></li>
+        <a data-tabs-target="procedure" href="#procedure">{% trans "Procedure" %}</a></li>
     <li class="tabs-title {% if tab_id == 4 %} is-active{% endif %}">
-        <a data-tabs-target="configs" href="#configs">{% trans "Configurations" %}</a></li>
+        <a data-tabs-target="expected" href="#expected">{% trans "Expected result" %}</a></li>
     <li class="tabs-title {% if tab_id == 5 %} is-active{% endif %}">
-        <a data-tabs-target="images" href="#images">{% trans "Images" %}</a></li>
+        <a data-tabs-target="configs" href="#configs">{% trans "Configurations" %}</a></li>
     <li class="tabs-title {% if tab_id == 6 %} is-active{% endif %}">
-        <a data-tabs-target="files" href="#files">{% trans "Files" %}</a></li>
+        <a data-tabs-target="images" href="#images">{% trans "Images" %}</a></li>
     <li class="tabs-title {% if tab_id == 7 %} is-active{% endif %}">
-        <a data-tabs-target="checklists" href="#checklists">{% trans "Checklists" %}</a></li>
+        <a data-tabs-target="files" href="#files">{% trans "Files" %}</a></li>
     <li class="tabs-title {% if tab_id == 8 %} is-active{% endif %}">
         <a data-tabs-target="worksheets" href="#worksheets">{% trans "Worksheets" %}</a></li>
     <li class="tabs-title {% if tab_id == 9 %} is-active{% endif %}">
@@ -51,10 +51,6 @@
                 <td>{{ test.name }}</td>
             </tr>
             <tr>
-                <td>{% trans "Purpose" %}:</td>
-                <td>{{ test.purpose }}</td>
-            </tr>
-            <tr>
                 <td>{% trans "Created" %}:</td>
                 <td>{{ test.created_at }} ({{ test.created_by }})</td>
             </tr>
@@ -66,15 +62,19 @@
         </table>
   </div>
 
-  <div class="tabs-panel {% if tab_id == 2 %}is-active{% endif %}" id="procedure">
+  <div class="tabs-panel {% if tab_id == 2 %}is-active{% endif %}" id="purpose">
+    <p>{{ test.purpose }}</p>
+  </div>
+
+  <div class="tabs-panel {% if tab_id == 3 %}is-active{% endif %}" id="procedure">
     <p>{{ test_procedure|safe }}</p>
   </div>
 
-  <div class="tabs-panel {% if tab_id == 3 %}is-active{% endif %}" id="expected">
+  <div class="tabs-panel {% if tab_id == 4 %}is-active{% endif %}" id="expected">
     <p>{{ test_expected|safe }}</p>
   </div>
 
-  <div class="tabs-panel {% if tab_id == 4 %}is-active{% endif %}" id="configs">
+  <div class="tabs-panel {% if tab_id == 5 %}is-active{% endif %}" id="configs">
       <a href="{% url 'test_config_create' testplan_id=testplan.id test_id=test.id %}" class="button small">
           {% trans "Add" %}</a>
       {% for config in configs %}
@@ -85,7 +85,7 @@
       {% endfor %}
   </div>
 
-  <div class="tabs-panel {% if tab_id == 5 %}is-active{% endif %}" id="images">
+  <div class="tabs-panel {% if tab_id == 6 %}is-active{% endif %}" id="images">
       <a href="{% url 'test_image_create' testplan_id=testplan.id test_id=test.id %}" class="button small">
           {% trans "Add" %}</a>
       {% for image in images %}
@@ -99,45 +99,13 @@
       {% endfor %}
   </div>
 
-  <div class="tabs-panel {% if tab_id == 6 %}is-active{% endif %}" id="files">
+  <div class="tabs-panel {% if tab_id == 7 %}is-active{% endif %}" id="files">
       <a href="{% url 'test_file_create' testplan_id=testplan.id test_id=test.id %}" class="button small">
           {% trans "Add" %}</a>
       {% for file in files %}
       <p><a href="{{ file.file.url }}">{{ file.name }}</a></p>
       <a href="{% url 'test_file_update' testplan_id=testplan.id test_id=test.id pk=file.id %}" class="button small">Update</a>
       <a href="{% url 'test_file_delete' testplan_id=testplan.id test_id=test.id pk=file.id %}" class="button small alert">Delete</a>
-      {% endfor %}
-  </div>
-
-  <div class="tabs-panel {% if tab_id == 7 %}is-active{% endif %}" id="checklists">
-      <a href="{% url 'test_checklist_create' testplan_id=testplan.id test_id=test.id %}" class="button small">
-          {% trans "Add" %}</a>
-      {% for checklist in checklists %}
-      <ul style="list-style: none">
-          <li>
-              <b>{{ checklist.name }}</b>
-              <a href="{% url 'test_checklist_update' testplan_id=testplan.id test_id=test.id pk=checklist.id %}">
-                  <i class="step fi-pencil"></i></a>
-              <a href="{% url 'test_checklist_delete' testplan_id=testplan.id test_id=test.id pk=checklist.id %}">
-                  <i class="step fi-minus" style="color: #bc104b"></i></a>
-              {% for item in checklist.items %}
-              <ul style="list-style: none">
-                  <li>
-                      <i class="fi-checkbox"></i> {{ item.name }}
-                      <a href="{% url 'checklist_item_update' testplan_id=testplan.id test_id=test.id pk=item.id %}">
-                          <i class="step fi-pencil"></i></a>
-                      <a href="{% url 'checklist_item_delete' testplan_id=testplan.id test_id=test.id pk=item.id %}">
-                          <i class="step fi-minus" style="color: #bc104b"></i></a>
-                  </li>
-              </ul>
-              {% endfor %}
-              <blockquote>
-                  <a href="{% url 'checklist_item_create' testplan_id=testplan.id test_id=test.id checklist_id=checklist.id %}">
-                  <i class="step fi-plus"></i></a>
-              </blockquote>
-
-          </li>
-      </ul>
       {% endfor %}
   </div>
 
@@ -194,11 +162,12 @@
       <a href="{% url 'test_comment_create' testplan_id=testplan.id test_id=test.id %}" class="button small">
           {% trans "Add" %}</a>
       {% for comment in comments %}
-      <p>{{ comment.text }}</p>
-      <a href="{% url 'test_comment_update' testplan_id=testplan.id test_id=test.id pk=comment.id %}" class="button small">
-          {% trans "Update" %}</a>
-      <a href="{% url 'test_comment_delete' testplan_id=testplan.id test_id=test.id pk=comment.id %}" class="button small alert">
-          {% trans "Delete" %}</a>
+        <h5>{{ comment.name }}</h5>
+        <p>{{ comment.text }}</p>
+        <a href="{% url 'test_comment_update' testplan_id=testplan.id test_id=test.id pk=comment.id %}" class="button small">
+            {% trans "Update" %}</a>
+        <a href="{% url 'test_comment_delete' testplan_id=testplan.id test_id=test.id pk=comment.id %}"
+           class="button small alert">{% trans "Delete" %}</a>
       {% endfor %}
   </div>
 

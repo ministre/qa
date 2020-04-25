@@ -3,11 +3,10 @@ from django.utils.decorators import method_decorator
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView, UpdateView, DeleteView
-from .models import Testplan, Category, Chapter, Test, TestConfig, TestImage, TestFile, TestChecklist, \
-    TestChecklistItem, TestWorksheet, TestWorksheetItem, TestLink, TestComment, Pattern
-from .forms import TestplanForm, CategoryForm, ChapterForm, TestForm, TestConfigForm, TestImageForm, TestFileForm, \
-    TestChecklistForm, ChecklistItemForm, TestWorksheetForm, WorksheetItemForm, TestLinkForm, TestCommentForm, \
-    PatternForm
+from .models import Testplan, Category, Chapter, Test, TestConfig, TestImage, TestFile, TestWorksheet, \
+    TestWorksheetItem, TestLink, TestComment, Pattern
+from .forms import TestplanForm, CategoryForm, ChapterForm, TestForm, TestConfigForm, TestImageForm, TestFileForm,\
+    TestWorksheetForm, WorksheetItemForm, TestLinkForm, TestCommentForm, PatternForm
 from django.http import HttpResponseRedirect
 import textile
 from datetime import datetime
@@ -66,16 +65,6 @@ def get_testlist(testplan: Testplan):
         tests = Test.objects.filter(category=category).order_by('id')
         testlist.append({'id': category.id, 'name': category.name, 'tests': tests})
     return testlist
-
-
-def get_full_checklists(test_id):
-    test = get_object_or_404(Test, id=test_id)
-    checklists = TestChecklist.objects.filter(test=test).order_by('id')
-    full_checklists = []
-    for checklist in checklists:
-        items = TestChecklistItem.objects.filter(checklist=checklist).order_by('id')
-        full_checklists.append({'id': checklist.id, 'name': checklist.name, 'items': items})
-    return full_checklists
 
 
 def get_full_worksheets(test_id):
@@ -227,7 +216,6 @@ def test_details(request, testplan_id, pk, tab_id):
     configs = TestConfig.objects.filter(test=test).order_by('id')
     images = TestImage.objects.filter(test=test).order_by('id')
     files = TestFile.objects.filter(test=test).order_by('id')
-    checklists = get_full_checklists(pk)
     worksheets = get_full_worksheets(pk)
     links = TestLink.objects.filter(test=test).order_by('id')
     comments = TestComment.objects.filter(test=test).order_by('id')
@@ -235,8 +223,7 @@ def test_details(request, testplan_id, pk, tab_id):
     return render(request, 'test/details.html', {'tab_id': tab_id, 'testplan': testplan, 'test': test,
                                                  'test_procedure': test_procedure, 'test_expected': test_expected,
                                                  'configs': configs, 'images': images, 'files': files,
-                                                 'checklists': checklists, 'worksheets': worksheets,
-                                                 'links': links, 'comments': comments,
+                                                 'worksheets': worksheets, 'links': links, 'comments': comments,
                                                  'redmine_wiki': r.get_wiki_url(test.redmine_wiki)})
 
 
@@ -538,143 +525,6 @@ class TestFileUpdate(UpdateView):
         testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
         testplan.update_timestamp(user=self.request.user)
         return reverse('test_details', kwargs={'testplan_id': testplan.id, 'pk': test.id, 'tab_id': 6})
-
-
-@method_decorator(login_required, name='dispatch')
-class TestChecklistCreate(CreateView):
-    model = TestChecklist
-    form_class = TestChecklistForm
-    template_name = 'test_component/create.html'
-
-    def get_initial(self):
-        return {'test': self.kwargs.get('test_id')}
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan_id')
-        context['test_id'] = self.kwargs.get('test_id')
-        context['tab_id'] = 7
-        return context
-
-    def get_success_url(self):
-        test = get_object_or_404(Test, id=self.kwargs.get('test_id'))
-        test.update_timestamp(user=self.request.user)
-        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
-        testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'testplan_id': testplan.id, 'pk': test.id, 'tab_id': 7})
-
-
-@method_decorator(login_required, name='dispatch')
-class TestChecklistDelete(DeleteView):
-    model = TestChecklist
-    template_name = 'test_component/delete.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan_id')
-        context['test_id'] = self.kwargs.get('test_id')
-        context['tab_id'] = 7
-        return context
-
-    def get_success_url(self):
-        test = get_object_or_404(Test, id=self.kwargs.get('test_id'))
-        test.update_timestamp(user=self.request.user)
-        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
-        testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'testplan_id': testplan.id, 'pk': test.id, 'tab_id': 7})
-
-
-@method_decorator(login_required, name='dispatch')
-class TestChecklistUpdate(UpdateView):
-    model = TestChecklist
-    form_class = TestChecklistForm
-    template_name = 'test_component/update.html'
-
-    def get_initial(self):
-        return {'test': self.kwargs.get('test_id')}
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan_id')
-        context['test_id'] = self.kwargs.get('test_id')
-        context['tab_id'] = 7
-        return context
-
-    def get_success_url(self):
-        test = get_object_or_404(Test, id=self.kwargs.get('test_id'))
-        test.update_timestamp(user=self.request.user)
-        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
-        testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'testplan_id': testplan.id, 'pk': test.id, 'tab_id': 7})
-
-
-@method_decorator(login_required, name='dispatch')
-class ChecklistItemCreate(CreateView):
-    model = TestChecklistItem
-    form_class = ChecklistItemForm
-    template_name = 'test_component/create.html'
-
-    def get_initial(self):
-        return {'checklist': self.kwargs.get('checklist_id')}
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan_id')
-        context['test_id'] = self.kwargs.get('test_id')
-        context['checklist_id'] = self.kwargs.get('checklist_id')
-        context['tab_id'] = 7
-        return context
-
-    def get_success_url(self):
-        test = get_object_or_404(Test, id=self.kwargs.get('test_id'))
-        test.update_timestamp(user=self.request.user)
-        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
-        testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'testplan_id': testplan.id, 'pk': test.id, 'tab_id': 7})
-
-
-@method_decorator(login_required, name='dispatch')
-class ChecklistItemDelete(DeleteView):
-    model = TestChecklistItem
-    template_name = 'test_component/delete.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan_id')
-        context['test_id'] = self.kwargs.get('test_id')
-        context['tab_id'] = 7
-        return context
-
-    def get_success_url(self):
-        test = get_object_or_404(Test, id=self.kwargs.get('test_id'))
-        test.update_timestamp(user=self.request.user)
-        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
-        testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'testplan_id': testplan.id, 'pk': test.id, 'tab_id': 7})
-
-
-@method_decorator(login_required, name='dispatch')
-class ChecklistItemUpdate(UpdateView):
-    model = TestChecklistItem
-    form_class = ChecklistItemForm
-    template_name = 'test_component/update.html'
-
-    def get_initial(self):
-        return {'test': self.kwargs.get('test_id')}
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan_id')
-        context['test_id'] = self.kwargs.get('test_id')
-        context['tab_id'] = 7
-        return context
-
-    def get_success_url(self):
-        test = get_object_or_404(Test, id=self.kwargs.get('test_id'))
-        test.update_timestamp(user=self.request.user)
-        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
-        testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'testplan_id': testplan.id, 'pk': test.id, 'tab_id': 7})
 
 
 @method_decorator(login_required, name='dispatch')
