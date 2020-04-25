@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView, UpdateView, DeleteView
 from .models import Testplan, Category, Chapter, Test, TestConfig, TestImage, TestFile, TestChecklist, \
-    ChecklistItem, TestWorksheet, WorksheetItem, TestLink, TestComment, Pattern
+    TestChecklistItem, TestWorksheet, TestWorksheetItem, TestLink, TestComment, Pattern
 from .forms import TestplanForm, CategoryForm, ChapterForm, TestForm, TestConfigForm, TestImageForm, TestFileForm, \
     TestChecklistForm, ChecklistItemForm, TestWorksheetForm, WorksheetItemForm, TestLinkForm, TestCommentForm, \
     PatternForm
@@ -73,7 +73,7 @@ def get_full_checklists(test_id):
     checklists = TestChecklist.objects.filter(test=test).order_by('id')
     full_checklists = []
     for checklist in checklists:
-        items = ChecklistItem.objects.filter(checklist=checklist).order_by('id')
+        items = TestChecklistItem.objects.filter(checklist=checklist).order_by('id')
         full_checklists.append({'id': checklist.id, 'name': checklist.name, 'items': items})
     return full_checklists
 
@@ -83,7 +83,7 @@ def get_full_worksheets(test_id):
     worksheets = TestWorksheet.objects.filter(test=test).order_by('id')
     full_worksheets = []
     for worksheet in worksheets:
-        items = WorksheetItem.objects.filter(worksheet=worksheet).order_by('id')
+        items = TestWorksheetItem.objects.filter(worksheet=worksheet).order_by('id')
         full_worksheets.append({'id': worksheet.id, 'name': worksheet.name, 'items': items})
     return full_worksheets
 
@@ -610,7 +610,7 @@ class TestChecklistUpdate(UpdateView):
 
 @method_decorator(login_required, name='dispatch')
 class ChecklistItemCreate(CreateView):
-    model = ChecklistItem
+    model = TestChecklistItem
     form_class = ChecklistItemForm
     template_name = 'test_component/create.html'
 
@@ -635,7 +635,7 @@ class ChecklistItemCreate(CreateView):
 
 @method_decorator(login_required, name='dispatch')
 class ChecklistItemDelete(DeleteView):
-    model = ChecklistItem
+    model = TestChecklistItem
     template_name = 'test_component/delete.html'
 
     def get_context_data(self, **kwargs):
@@ -655,7 +655,7 @@ class ChecklistItemDelete(DeleteView):
 
 @method_decorator(login_required, name='dispatch')
 class ChecklistItemUpdate(UpdateView):
-    model = ChecklistItem
+    model = TestChecklistItem
     form_class = ChecklistItemForm
     template_name = 'test_component/update.html'
 
@@ -747,7 +747,7 @@ class TestWorksheetUpdate(UpdateView):
 
 @method_decorator(login_required, name='dispatch')
 class WorksheetItemCreate(CreateView):
-    model = WorksheetItem
+    model = TestWorksheetItem
     form_class = WorksheetItemForm
     template_name = 'test_component/create.html'
 
@@ -772,7 +772,7 @@ class WorksheetItemCreate(CreateView):
 
 @method_decorator(login_required, name='dispatch')
 class WorksheetItemDelete(DeleteView):
-    model = WorksheetItem
+    model = TestWorksheetItem
     template_name = 'test_component/delete.html'
 
     def get_context_data(self, **kwargs):
@@ -792,7 +792,7 @@ class WorksheetItemDelete(DeleteView):
 
 @method_decorator(login_required, name='dispatch')
 class WorksheetItemUpdate(UpdateView):
-    model = WorksheetItem
+    model = TestWorksheetItem
     form_class = WorksheetItemForm
     template_name = 'test_component/update.html'
 

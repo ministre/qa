@@ -3,7 +3,7 @@ from qa import settings
 from redminelib.exceptions import ResourceNotFoundError, ForbiddenError, AuthError
 from requests.exceptions import ConnectionError
 from device.models import DeviceType, Device, Specification, Sample
-from testplan.models import Pattern, Testplan, Category, Test, TestConfig, TestLink
+from testplan.models import Pattern, Testplan, Category, Test, TestConfig, TestLink, TestWorksheet, TestWorksheetItem
 
 
 class RedmineProject(object):
@@ -121,12 +121,32 @@ class RedmineProject(object):
         else:
             wiki_links = ''
 
+        worksheets = TestWorksheet.objects.filter(test=test)
+        wiki_worksheets = ''
+        for worksheet in worksheets:
+            if worksheet.type == 'text':
+                wiki_worksheets += '\nh3. Текстовое значение\n'
+            elif worksheet.type == 'number':
+                wiki_worksheets += '\nh3. Численное значение\n'
+            elif worksheet.type == 'checklist':
+                wiki_worksheets += '\nh3. Чек-лист\n'
+            elif worksheet.type == 'table':
+                wiki_worksheets += '\nh3. Таблица\n'
+            wiki_worksheets += '\n' + worksheet.name + '\n'
+            if worksheet.type == 'checklist' or worksheet.type == 'table':
+                worksheet_items = TestWorksheetItem.objects.filter(worksheet=worksheet)
+                for worksheet_item in worksheet_items:
+                    wiki_worksheets += '\n* ' + worksheet_item.name
+                wiki_worksheets += '\n'
+
         wiki_text = 'h1. ' + test.name + '\n' + \
                     '\nh2. Цель\n\n' + test.purpose + '\n' + \
                     '\nh2. Процедура\n\n' + test.procedure + '\n' + \
                     wiki_configs + \
                     '\nh2. Ожидаемый результат\n\n' + test.expected + '\n' + \
+                    wiki_worksheets + \
                     wiki_links
+
         if self.get_project()[0]:
             if self.get_wiki_url(test.redmine_wiki)[0]:
                 self.redmine.wiki_page.update(test.redmine_wiki, project_id=test.category.testplan.redmine_project,

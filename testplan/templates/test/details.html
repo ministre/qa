@@ -5,9 +5,8 @@
 {% block content %}
 
 <p><a href="{% url 'testplans' tab_id=1 %}">{% trans "Testplan" %}</a> &raquo;
-    <a href="{% url 'testplan_details' pk=testplan.id tab_id=3 %}">{{ testplan.name}}</a> &raquo;
-    <a href="{% url 'category_update' testplan_id=testplan.id pk=test.category.id %}">{{ test.category }}</a> &raquo;
-    {{ test.name }}
+    <a href="{% url 'testplan_details' pk=testplan.id tab_id=3 %}">{{ testplan.name}}</a>
+    &raquo; {{ test.name }}
 </p>
 
 <ul class="tabs" data-tabs id="test-tabs">

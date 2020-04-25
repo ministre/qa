@@ -8,11 +8,9 @@ class Testplan(models.Model):
     name = models.CharField(max_length=1000)
     version = models.CharField(max_length=300)
     device_type = models.ForeignKey(DeviceType, on_delete=models.CASCADE, null=True)
-    created_by = models.ForeignKey(User, related_name='testplan_created_by_user', on_delete=models.CASCADE,
-                                   blank=True, null=True)
+    created_by = models.ForeignKey(User, related_name='testplan_c', on_delete=models.CASCADE, blank=True, null=True)
     created_at = models.DateTimeField(default=datetime.now, blank=True)
-    updated_by = models.ForeignKey(User, related_name='testplan_updated_by_user', on_delete=models.CASCADE,
-                                   blank=True, null=True)
+    updated_by = models.ForeignKey(User, related_name='testplan_u', on_delete=models.CASCADE, blank=True, null=True)
     updated_at = models.DateTimeField(default=datetime.now, blank=True)
     redmine_parent = models.CharField(max_length=1000, blank=True, null=True)
     redmine_project = models.CharField(max_length=1000, blank=True, null=True)
@@ -32,19 +30,14 @@ class Chapter(models.Model):
     testplan = models.ForeignKey(Testplan, on_delete=models.CASCADE)
     name = models.CharField(max_length=1000)
     text = models.TextField(max_length=100000)
-    created_by = models.ForeignKey(User, related_name='chapter_created_by_user', on_delete=models.CASCADE,
-                                   blank=True, null=True)
+    created_by = models.ForeignKey(User, related_name='chapter_c', on_delete=models.CASCADE, blank=True, null=True)
     created_at = models.DateTimeField(default=datetime.now, blank=True)
-    updated_by = models.ForeignKey(User, related_name='chapter_updated_by_user', on_delete=models.CASCADE,
-                                   blank=True, null=True)
+    updated_by = models.ForeignKey(User, related_name='chapter_u', on_delete=models.CASCADE, blank=True, null=True)
     updated_at = models.DateTimeField(default=datetime.now, blank=True)
     redmine_url = models.CharField(max_length=1000, blank=True, null=True)
 
     def __str__(self):
         return self.name
-
-    class Meta:
-        verbose_name_plural = "Chapters"
 
 
 class Category(models.Model):
@@ -64,11 +57,9 @@ class Test(models.Model):
     purpose = models.TextField(max_length=5000, null=True, blank=True)
     procedure = models.TextField(null=True, blank=True)
     expected = models.TextField(null=True, blank=True)
-    created_by = models.ForeignKey(User, related_name='test_c', on_delete=models.CASCADE,
-                                   blank=True, null=True)
+    created_by = models.ForeignKey(User, related_name='test_c', on_delete=models.CASCADE, blank=True, null=True)
     created_at = models.DateTimeField(default=datetime.now, blank=True)
-    updated_by = models.ForeignKey(User, related_name='test_u', on_delete=models.CASCADE,
-                                   blank=True, null=True)
+    updated_by = models.ForeignKey(User, related_name='test_u', on_delete=models.CASCADE, blank=True, null=True)
     updated_at = models.DateTimeField(default=datetime.now, blank=True)
     redmine_wiki = models.CharField(max_length=1000, null=True, blank=True)
 
@@ -105,7 +96,7 @@ class TestChecklist(models.Model):
     test = models.ForeignKey(Test, related_name='test_checklist', on_delete=models.CASCADE)
 
 
-class ChecklistItem(models.Model):
+class TestChecklistItem(models.Model):
     name = models.CharField(max_length=1000)
     checklist = models.ForeignKey(TestChecklist, related_name='checklist_item', on_delete=models.CASCADE)
 
@@ -113,9 +104,10 @@ class ChecklistItem(models.Model):
 class TestWorksheet(models.Model):
     name = models.CharField(max_length=1000)
     test = models.ForeignKey(Test, related_name='test_worksheet', on_delete=models.CASCADE)
+    type = models.CharField(max_length=10, default='Text')
 
 
-class WorksheetItem(models.Model):
+class TestWorksheetItem(models.Model):
     name = models.CharField(max_length=1000)
     worksheet = models.ForeignKey(TestWorksheet, related_name='worksheet_item', on_delete=models.CASCADE)
 
@@ -129,9 +121,6 @@ class TestLink(models.Model):
 class TestComment(models.Model):
     text = models.TextField(max_length=100000)
     test = models.ForeignKey(Test, related_name='test_comment', on_delete=models.CASCADE)
-
-
-# Testplan Patterns
 
 
 class Pattern(models.Model):
