@@ -80,9 +80,7 @@
           {% trans "Add" %}</a>
       {% for config in configs %}
       {% if config.name %}<p>{{ config.name }}</p>{% endif %}
-      <pre><code data-language="{{ config.lang }}">
-          {{ config.config }}
-      </code></pre>
+      <pre><code data-language="{{ config.lang }}">{{ config.config }}</code></pre>
       <a href="{% url 'test_config_update' testplan_id=testplan.id test_id=test.id pk=config.id %}" class="button small">Update</a>
       <a href="{% url 'test_config_delete' testplan_id=testplan.id test_id=test.id pk=config.id %}" class="button small alert">Delete</a>
       {% endfor %}

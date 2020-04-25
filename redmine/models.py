@@ -3,11 +3,10 @@ from qa import settings
 from redminelib.exceptions import ResourceNotFoundError, ForbiddenError, AuthError
 from requests.exceptions import ConnectionError
 from device.models import DeviceType, Device, Specification, Sample
-from testplan.models import Pattern, Testplan, Category, Test
+from testplan.models import Pattern, Testplan, Category, Test, TestConfig
 
 
 class RedmineProject(object):
-
     def __init__(self, project_id: str):
         self.project_id = project_id
         self.redmine = Redmine(settings.REDMINE_URL, key=settings.REDMINE_KEY, version='4.0.4')
@@ -86,7 +85,6 @@ class RedmineProject(object):
             self.redmine.project.update(self.get_project()[1], name=device.vendor.name + ' ' + device.model)
             self.redmine.wiki_page.update('Wiki', project_id=self.project_id, text=wiki_text)
             return [True, 'Project updated successfully']
-
         elif self.get_project()[1] == 'Project not found':
             parent_id = self.redmine.project.get(device.type.redmine_project).id
             self.redmine.project.create(name=device.vendor.name + ' ' + device.model,
@@ -94,13 +92,55 @@ class RedmineProject(object):
                                         parent_id=parent_id,
                                         inherit_members=True)
 
-            self.redmine.wiki_page.update('Wiki', project_id=self.project_id, text=wiki_text)
+            self.redmine.wiki_page.update('wiki', project_id=self.project_id, text=wiki_text)
             return [True, 'Project created']
 
+    def export_test(self, test: Test):
+        configs = TestConfig.objects.filter(test=test)
+        if configs.count():
+            wiki_configs = '\nh3. Конфигурация\n'
+            for config in configs:
+                if config.lang == 'json':
+                    lang = 'javascript'
+                else:
+                    lang = config.lang
+                wiki_configs += '\n{{collapse(' + config.name + ')\n' + \
+                                '\n<pre><code class="' + lang + '">\n' + \
+                                '\n' + config.config + '\n' + \
+                                '</code></pre>\n' + \
+                                '}}\n'
+        else:
+            wiki_configs = ''
+
+        wiki_text = 'h1. ' + test.name + '\n' + \
+                    '\nh2. Цель\n\n' + test.purpose + '\n' + \
+                    '\nh2. Процедура\n\n' + test.procedure + '\n' + \
+                    wiki_configs + \
+                    '\nh2. Ожидаемый результат\n\n' + test.expected + '\n' + \
+                    '\nh2. Ссылки\n'
+        if self.get_project()[0]:
+            if self.get_wiki_url(test.redmine_wiki)[0]:
+                self.redmine.wiki_page.update(test.redmine_wiki, project_id=test.category.testplan.redmine_project,
+                                              text=wiki_text)
+                return [True, 'Wiki updated successfully']
+            else:
+                self.redmine.wiki_page.create(project_id=test.category.testplan.redmine_project,
+                                              title=test.redmine_wiki, text=wiki_text, parent_title='wiki')
+                return [True, 'Wiki created successfully']
+
+        elif self.get_project()[1] == 'Project not found':
+            return [False, 'Project not found']
+
+    def export_all_tests(self, testplan: Testplan):
+        categories = Category.objects.filter(testplan=testplan).order_by('id')
+        for category in categories:
+            tests = Test.objects.filter(category=category).order_by('id')
+            for test in tests:
+                self.export_test(test)
+        return True
+
     def export_pattern(self, pattern: Pattern):
-
         wiki_text = 'h1. ' + pattern.name
-
         if self.get_project()[0]:
             self.redmine.project.update(self.get_project()[1], name=pattern.name)
             self.redmine.wiki_page.update('Wiki', project_id=self.project_id, text=wiki_text)
@@ -141,32 +181,3 @@ class RedmineProject(object):
             self.redmine.wiki_page.update('wiki', project_id=self.project_id, text=wiki_text)
             self.export_all_tests(testplan)
             return [True, 'Project created']
-
-    def export_test(self, test: Test):
-
-        wiki_text = 'h1. ' + test.name + '\n' + \
-                    '\nh2. Цель\n\n' + test.purpose + '\n' + \
-                    '\nh2. Процедура\n\n' + test.procedure + '\n' + \
-                    '\nh2. Ожидаемый результат\n\n' + test.expected + '\n' + \
-                    '\nh2. Ссылки\n'
-
-        if self.get_project()[0]:
-            if self.get_wiki_url(test.redmine_wiki)[0]:
-                self.redmine.wiki_page.update(test.redmine_wiki, project_id=test.category.testplan.redmine_project,
-                                              text=wiki_text)
-                return [True, 'Wiki updated successfully']
-            else:
-                self.redmine.wiki_page.create(project_id=test.category.testplan.redmine_project,
-                                              title=test.redmine_wiki, text=wiki_text, parent_title='wiki')
-                return [True, 'Wiki created successfully']
-
-        elif self.get_project()[1] == 'Project not found':
-            return [False, 'Project not found']
-
-    def export_all_tests(self, testplan: Testplan):
-        categories = Category.objects.filter(testplan=testplan).order_by('id')
-        for category in categories:
-            tests = Test.objects.filter(category=category).order_by('id')
-            for test in tests:
-                self.export_test(test)
-        return True
