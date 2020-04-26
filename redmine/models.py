@@ -4,7 +4,7 @@ from redminelib.exceptions import ResourceNotFoundError, ForbiddenError, AuthErr
 from requests.exceptions import ConnectionError
 from device.models import DeviceType, Device, Specification, Sample
 from testplan.models import Pattern, Testplan, Category, Test, TestConfig, TestLink, TestWorksheet, TestWorksheetItem, \
-    TestComment
+    TestComment, TestImage
 
 
 class RedmineProject(object):
@@ -149,9 +149,19 @@ class RedmineProject(object):
         else:
             wiki_comments = ''
 
+        images = TestImage.objects.filter(test=test)
+        if images.count():
+            wiki_images = '\nh3. Изображения\n'
+            for image in images:
+                wiki_images += '\n> ' + image.name + '\n' + \
+                    '\n' + image.image.url + '\n'
+        else:
+            wiki_images = ''
+
         wiki_text = 'h1. ' + test.name + '\n' + \
                     '\nh2. Цель\n\n' + test.purpose + '\n' + \
                     '\nh2. Процедура\n\n' + test.procedure + '\n' + \
+                    wiki_images + \
                     wiki_configs + \
                     '\nh2. Ожидаемый результат\n\n' + test.expected + '\n' + \
                     wiki_worksheets + \
