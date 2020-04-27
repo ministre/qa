@@ -24,7 +24,7 @@
         <td>{{ device.vendor }}</td>
         <td>{{ device.model }}</td>
         <td>{{ device.hw }}</td>
-        <td>{{ device.type }}</td>
+        <td>{{ device.type }} ({{ device.type.tag }})</td>
         <td>{{ device.updated_at }} ({{ device.updated_by }})</td>
     </tr>
     {% endfor %}
