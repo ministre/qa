@@ -82,10 +82,9 @@ def testplan_details(request, pk, tab_id):
     testplan = get_object_or_404(Testplan, id=pk)
     chapters = Chapter.objects.filter(testplan=testplan).order_by('id')
     categories = get_testlist(testplan)
-    amount_of_tests = tests_count(testplan)
     r = RedmineProject(testplan.redmine_project)
     return render(request, 'testplan/details.html', {'tab_id': tab_id, 'testplan': testplan, 'categories': categories,
-                                                     'chapters': chapters, 'amount_of_tests': amount_of_tests,
+                                                     'chapters': chapters, 'tests_count': testplan.tests_count(),
                                                      'redmine_wiki': r.get_wiki_url('wiki')})
 
 
@@ -227,14 +226,6 @@ def test_details(request, testplan_id, pk, tab_id):
                                                  'configs': configs, 'images': images, 'files': files,
                                                  'worksheets': worksheets, 'links': links, 'comments': comments,
                                                  'redmine_wiki': r.get_wiki_url(test.redmine_wiki)})
-
-
-def tests_count(testplan: Testplan):
-    count = 0
-    for category in Category.objects.filter(testplan=testplan):
-        tests = Test.objects.filter(category=category)
-        count += tests.count()
-    return count
 
 
 @method_decorator(login_required, name='dispatch')

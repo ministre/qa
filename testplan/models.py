@@ -25,6 +25,13 @@ class Testplan(models.Model):
         self.save()
         return True
 
+    def tests_count(self):
+        count = 0
+        for category in Category.objects.filter(testplan=self):
+            tests = Test.objects.filter(category=category)
+            count += tests.count()
+        return count
+
 
 class Chapter(models.Model):
     testplan = models.ForeignKey(Testplan, on_delete=models.CASCADE)
