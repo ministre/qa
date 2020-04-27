@@ -8,6 +8,7 @@ urlpatterns = [
     path('t/delete/<int:pk>/', views.TestplanDelete.as_view(), name='testplan_delete'),
     path('t/update/<int:pk>/', views.TestplanUpdate.as_view(), name='testplan_update'),
     path('t/<int:pk>/<int:tab_id>/', views.testplan_details, name='testplan_details'),
+    path('t/clone/<int:pk>/', views.testplan_clone, name='testplan_clone'),
     # pattern
     path('p/create/', views.PatternCreate.as_view(), name='pattern_create'),
     path('p/delete/<int:pk>/', views.PatternDelete.as_view(), name='pattern_delete'),

@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView, UpdateView, DeleteView
 from .models import Testplan, Category, Chapter, Test, TestConfig, TestImage, TestFile, TestWorksheet, \
-    TestWorksheetItem, TestLink, TestComment, Pattern
+    TestWorksheetItem, TestLink, TestComment, Pattern, DeviceType
 from .forms import TestplanForm, CategoryForm, ChapterForm, TestForm, TestConfigForm, TestImageForm, TestFileForm,\
     TestWorksheetForm, WorksheetItemForm, TestLinkForm, TestCommentForm, PatternForm
 from django.http import HttpResponseRedirect
@@ -86,6 +86,91 @@ def testplan_details(request, pk, tab_id):
     return render(request, 'testplan/details.html', {'tab_id': tab_id, 'testplan': testplan, 'categories': categories,
                                                      'chapters': chapters, 'tests_count': testplan.tests_count(),
                                                      'redmine_wiki': r.get_wiki_url('wiki')})
+
+
+@login_required
+def testplan_clone(request, pk):
+    if request.method == 'POST':
+        form = TestplanForm(request.POST)
+        if form.is_valid():
+            new_testplan = Testplan(name=request.POST['name'],
+                                    version=request.POST['version'],
+                                    device_type=get_object_or_404(DeviceType, id=request.POST['device_type']),
+                                    created_by=request.user,
+                                    created_at=datetime.now(),
+                                    updated_by=request.user,
+                                    updated_at=datetime.now(),
+                                    redmine_parent=request.POST['redmine_parent'],
+                                    redmine_project=request.POST['redmine_project']
+                                    )
+            new_testplan.save()
+
+            src_testplan = get_object_or_404(Testplan, id=request.POST['src_testplan'])
+            src_categories = Category.objects.filter(testplan=src_testplan).order_by('id')
+            for src_category in src_categories:
+                new_category = Category(name=src_category.name, testplan=new_testplan)
+                new_category.save()
+
+                src_tests = Test.objects.filter(category=src_category).order_by('id')
+                for src_test in src_tests:
+                    new_test = Test(category=new_category, name=src_test.name, purpose=src_test.purpose,
+                                    procedure=src_test.procedure, expected=src_test.expected,
+                                    created_by=request.user, created_at=datetime.now(),
+                                    updated_by=request.user, updated_at=datetime.now(),
+                                    redmine_wiki=src_test.redmine_wiki)
+                    new_test.save()
+
+                    src_configs = TestConfig.objects.filter(test=src_test).order_by('id')
+                    for src_config in src_configs:
+                        new_config = TestConfig(name=src_config.name, lang=src_config.lang,
+                                                test=new_test, config=src_config.config)
+                        new_config.save()
+
+                    src_images = TestImage.objects.filter(test=src_test).order_by('id')
+                    for src_image in src_images:
+                        new_image = TestImage(name=src_image.name, image=src_image.image,
+                                              test=new_test, width=src_image.width, height=src_image.height)
+                        new_image.save()
+
+                    src_files = TestFile.objects.filter(test=src_test).order_by('id')
+                    for src_file in src_files:
+                        new_file = TestFile(name=src_file.name, test=new_test, file=src_file.image)
+                        new_file.save()
+
+                    src_worksheets = TestWorksheet.objects.filter(test=src_test).order_by('id')
+                    for src_worksheet in src_worksheets:
+                        new_worksheet = TestWorksheet(name=src_worksheet.name, test=new_test, type=src_worksheet.type)
+                        new_worksheet.save()
+
+                        src_worksheet_items = TestWorksheetItem.objects.filter(worksheet=src_worksheet).order_by('id')
+                        for src_worksheet_item in src_worksheet_items:
+                            new_worksheet_item = TestWorksheetItem(name=src_worksheet_item.name,
+                                                                   worksheet=new_worksheet)
+                            new_worksheet_item.save()
+
+                    src_links = TestLink.objects.filter(test=src_test).order_by('id')
+                    for src_link in src_links:
+                        new_link = TestLink(name=src_link.name, test=new_test, url=src_link.url)
+                        new_link.save()
+
+                    src_comments = TestComment.objects.filter(test=src_test).order_by('id')
+                    for src_comment in src_comments:
+                        new_comment = TestComment(name=src_comment.name, test=new_test, text=src_comment.text)
+                        new_comment.save()
+
+            return HttpResponseRedirect(reverse('testplans', kwargs={'tab_id': 1}))
+    else:
+        testplan = get_object_or_404(Testplan, id=pk)
+        form = TestplanForm(initial={'name': testplan.name,
+                                     'version': testplan.version,
+                                     'device_type': testplan.device_type.id,
+                                     'created_by': request.user,
+                                     'created_at': datetime.now(),
+                                     'updated_by': request.user,
+                                     'updated_at': datetime.now(),
+                                     'redmine_parent': testplan.redmine_parent,
+                                     'redmine_project': testplan.redmine_project})
+        return render(request, 'testplan/clone.html', {'form': form, 'tp_id': testplan.id})
 
 
 @login_required

@@ -22,6 +22,7 @@
 <div class="tabs-content" data-tabs-content="testplan-tabs">
     <div class="tabs-panel {% if tab_id == 1 %}is-active{% endif %}" id="general">
         <a href="{% url 'testplan_update' pk=testplan.id %}" class="button small">{% trans "Update" %}</a>
+        <a href="{% url 'testplan_clone' pk=testplan.id %}" class="button small">{% trans "Clone" %}</a>
         <a href="{% url 'testplan_delete' pk=testplan.id %}" class="button alert small">{% trans "Delete" %}</a>
 
         <table class="hover unstriped">
