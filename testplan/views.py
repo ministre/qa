@@ -229,15 +229,6 @@ def test_details(request, testplan_id, pk, tab_id):
                                                  'redmine_wiki': r.get_wiki_url(test.redmine_wiki)})
 
 
-@login_required
-def chapter_details(request, testplan_id, chapter_id):
-    chapter = get_object_or_404(Chapter, id=chapter_id)
-    testplan = get_object_or_404(Testplan, id=testplan_id)
-    chapter_text = textile.textile(chapter.text)
-    return render(request, 'chapter/details.html', {'chapter': chapter, 'testplan': testplan,
-                                                    'chapter_text': chapter_text})
-
-
 def tests_count(testplan: Testplan):
     count = 0
     for category in Category.objects.filter(testplan=testplan):
@@ -253,18 +244,17 @@ class ChapterCreate(CreateView):
     template_name = 'chapter/create.html'
 
     def get_initial(self):
-        return {'testplan': self.kwargs.get('testplan_id'),
+        return {'testplan': self.kwargs.get('tp_id'),
                 'created_by': self.request.user, 'updated_by': self.request.user}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan_id')
+        context['tp_id'] = self.kwargs.get('tp_id')
         return context
 
     def get_success_url(self):
-        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
-        testplan.update_timestamp(user=self.request.user)
-        return reverse('testplan_details', kwargs={'pk': testplan.id, 'tab_id': 2})
+        self.object.testplan.update_timestamp(user=self.request.user)
+        return reverse('testplan_details', kwargs={'pk': self.object.testplan.id, 'tab_id': 2})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -274,13 +264,12 @@ class ChapterDelete(DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan_id')
+        context['tp_id'] = self.object.testplan.id
         return context
 
     def get_success_url(self):
-        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
-        testplan.update_timestamp(user=self.request.user)
-        return reverse('testplan_details', kwargs={'pk': testplan.id, 'tab_id': 2})
+        self.object.testplan.update_timestamp(user=self.request.user)
+        return reverse('testplan_details', kwargs={'pk': self.object.testplan.id, 'tab_id': 2})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -291,16 +280,34 @@ class ChapterUpdate(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan_id')
+        context['tp_id'] = self.object.testplan.id
         return context
 
     def get_initial(self):
         return {'updated_by': self.request.user, 'updated_at': datetime.now}
 
     def get_success_url(self):
-        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
-        testplan.update_timestamp(user=self.request.user)
-        return reverse('testplan_details', kwargs={'pk': testplan.id, 'tab_id': 2})
+        self.object.testplan.update_timestamp(user=self.request.user)
+        return reverse('testplan_details', kwargs={'pk': self.object.testplan.id, 'tab_id': 2})
+
+
+@login_required
+def chapter_details(request, pk):
+    chapter = get_object_or_404(Chapter, id=pk)
+    chapter_text = textile.textile(chapter.text)
+    return render(request, 'chapter/details.html', {'chapter': chapter, 'testplan': chapter.testplan,
+                                                    'chapter_text': chapter_text})
+
+
+@login_required
+def clear_chapters(request, tp_id):
+    testplan = get_object_or_404(Testplan, id=tp_id)
+    if request.method == 'POST':
+        Chapter.objects.filter(testplan=testplan).delete()
+        testplan.update_timestamp(user=request.user)
+        return HttpResponseRedirect(reverse('testplan_details', kwargs={'pk': tp_id, 'tab_id': 2}))
+    else:
+        return render(request, 'chapter/clear.html', {'testplan': testplan})
 
 
 @login_required
@@ -312,17 +319,6 @@ def clear_tests(request, testplan_id):
         return HttpResponseRedirect(reverse('testplan_details', kwargs={'pk': testplan_id, 'tab_id': 3}))
     else:
         return render(request, 'test/clear.html', {'testplan': testplan})
-
-
-@login_required
-def clear_chapters(request, testplan_id):
-    testplan = get_object_or_404(Testplan, id=testplan_id)
-    if request.method == 'POST':
-        Chapter.objects.filter(testplan=testplan).delete()
-        testplan.update_timestamp(user=request.user)
-        return HttpResponseRedirect(reverse('testplan_details', kwargs={'pk': testplan_id, 'tab_id': 2}))
-    else:
-        return render(request, 'chapter/clear.html', {'testplan': testplan})
 
 
 @method_decorator(login_required, name='dispatch')

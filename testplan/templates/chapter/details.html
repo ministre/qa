@@ -7,13 +7,13 @@
 <p><a href="{% url 'testplans' tab_id=1 %}">{% trans "Testplan" %}</a> &raquo;
     <a href="{% url 'testplan_details' pk=testplan.id tab_id=2 %}">{{ testplan.name }}</a>  &raquo; {{ chapter.name }}</p>
 
-<ul class="tabs" data-tabs id="example-tabs">
+<ul class="tabs" data-tabs id="chapter-tabs">
     <li class="tabs-title"><a href="#panel1" aria-selected="true">{% trans "General" %}</a></li>
     <li class="tabs-title is-active"><a data-tabs-target="panel2" href="#panel2">{% trans "Description" %}</a></li>
     <li class="tabs-title"><a data-tabs-target="panel3" href="#panel3">{% trans "Redmine" %}</a></li>
 </ul>
 
-<div class="tabs-content" data-tabs-content="example-tabs">
+<div class="tabs-content" data-tabs-content="chapter-tabs">
     <div class="tabs-panel" id="panel1">
         <table class="hover unstriped">
             <tbody>
