@@ -21,24 +21,21 @@ class RedmineProject(object):
         except AuthError:
             return [False, 'Authentication error']
         except ResourceNotFoundError:
-            return [False, 'Project not found']
+            return [False, 'Not found']
         except ForbiddenError:
-            return [False, 'Requested project resource is forbidden']
+            return [False, 'Requested resource is forbidden']
 
     def get_wiki_url(self, wiki_title: str):
-        if self.get_project()[0]:
-            try:
-                self.redmine.wiki_page.get(wiki_title, project_id=self.project_id)
-                if wiki_title == 'wiki':
-                    return [True, settings.REDMINE_URL + '/projects/' + self.project_id + '/wiki/']
-                else:
-                    return [True, settings.REDMINE_URL + '/projects/' + self.project_id + '/wiki/' + wiki_title]
-            except ResourceNotFoundError:
-                return [False, 'Wiki not found']
-            except ForbiddenError:
-                return [False, 'Requested wiki resource is forbidden']
-        else:
-            return [False, self.get_project()[1]]
+        try:
+            self.redmine.wiki_page.get(wiki_title, project_id=self.project_id)
+            if wiki_title == 'wiki':
+                return [True, settings.REDMINE_URL + '/projects/' + self.project_id + '/wiki/']
+            else:
+                return [True, settings.REDMINE_URL + '/projects/' + self.project_id + '/wiki/' + wiki_title]
+        except ResourceNotFoundError:
+            return[False, 'Not found']
+        except ForbiddenError:
+            return [False, 'Requested resource is forbidden']
 
     def export_device_type(self, device_type: DeviceType):
         if self.get_project()[0]:

@@ -306,11 +306,13 @@ def test_details(request, testplan_id, pk, tab_id):
     for comment in comments:
         comment.text = textile.textile(comment.text)
     r = RedmineProject(testplan.redmine_project)
+    project = r.get_project()
+    wiki = r.get_wiki_url(test.redmine_wiki)
     return render(request, 'test/details.html', {'tab_id': tab_id, 'testplan': testplan, 'test': test,
                                                  'test_procedure': test_procedure, 'test_expected': test_expected,
                                                  'configs': configs, 'images': images, 'files': files,
                                                  'worksheets': worksheets, 'links': links, 'comments': comments,
-                                                 'redmine_wiki': r.get_wiki_url(test.redmine_wiki)})
+                                                 'project': project, 'wiki': wiki})
 
 
 @method_decorator(login_required, name='dispatch')

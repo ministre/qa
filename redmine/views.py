@@ -117,7 +117,7 @@ def create_testplan(testplan_project, tag, user):
 
 
 @login_required
-def import_test_details(request):
+def import_p_test_details(request):
     if request.method == "POST":
         test_id = request.POST['test_id']
         testplan_id = request.POST['testplan_id']
