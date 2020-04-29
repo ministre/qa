@@ -45,6 +45,10 @@ class DeviceType(models.Model):
     def __str__(self):
         return self.desc
 
+    def devices_count(self):
+        count = Device.objects.filter(type=self).count()
+        return count
+
     class Meta:
         ordering = ('desc',)
 

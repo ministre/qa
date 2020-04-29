@@ -256,9 +256,11 @@ class DeviceDelete(DeleteView):
 @login_required
 def device_type_details(request, pk, tab_id):
     device_type = get_object_or_404(DeviceType, pk=pk)
+    devices_count = device_type.devices_count()
     r = RedmineProject(device_type.redmine_project)
     return render(request, 'type/details.html', {'device_type': device_type,
                                                  'redmine_wiki': r.get_wiki_url('wiki'),
+                                                 'devices_count': devices_count,
                                                  'tab_id': tab_id})
 
 
