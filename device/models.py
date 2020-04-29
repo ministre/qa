@@ -49,6 +49,11 @@ class DeviceType(models.Model):
         count = Device.objects.filter(type=self).count()
         return count
 
+    def testplans_count(self):
+        from testplan.models import Testplan
+        count = Testplan.objects.filter(device_type=self).count()
+        return count
+
     class Meta:
         ordering = ('desc',)
 
