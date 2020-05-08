@@ -32,6 +32,11 @@ class Testplan(models.Model):
             count += tests.count()
         return count
 
+    def protocols_count(self):
+        from protocol.models import Protocol
+        count = Protocol.objects.filter(testplan=self).count()
+        return count
+
 
 class Chapter(models.Model):
     testplan = models.ForeignKey(Testplan, on_delete=models.CASCADE)

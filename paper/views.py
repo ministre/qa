@@ -44,7 +44,7 @@ def make_testplan(request):
         row_cells = table.add_row().cells
         paragraph = row_cells[0].paragraphs[0]
         run = paragraph.add_run()
-        run.add_picture('b2c.png', width=Inches(1.25))
+        # run.add_picture('b2c.png', width=Inches(1.25))
         paragraph = row_cells[1].paragraphs[0]
         run = paragraph.add_run()
         run.add_text(testplan.name)

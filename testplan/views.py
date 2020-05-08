@@ -82,9 +82,11 @@ def testplan_details(request, pk, tab_id):
     testplan = get_object_or_404(Testplan, id=pk)
     chapters = Chapter.objects.filter(testplan=testplan).order_by('id')
     categories = get_testlist(testplan)
+    protocols_count = testplan.protocols_count()
     r = RedmineProject(testplan.redmine_project)
     return render(request, 'testplan/details.html', {'tab_id': tab_id, 'testplan': testplan, 'categories': categories,
                                                      'chapters': chapters, 'tests_count': testplan.tests_count(),
+                                                     'protocols_count': protocols_count,
                                                      'redmine_wiki': r.get_wiki_url('wiki')})
 
 
@@ -134,7 +136,7 @@ def testplan_clone(request, pk):
 
                     src_files = TestFile.objects.filter(test=src_test).order_by('id')
                     for src_file in src_files:
-                        new_file = TestFile(name=src_file.name, test=new_test, file=src_file.image)
+                        new_file = TestFile(name=src_file.name, test=new_test, file=src_file.file)
                         new_file.save()
 
                     src_worksheets = TestWorksheet.objects.filter(test=src_test).order_by('id')
