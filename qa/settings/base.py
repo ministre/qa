@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'protocol',
     'redmine',
     'testplan',
+    'contact',
 ]
 
 MIDDLEWARE = [
