@@ -44,7 +44,17 @@ urlpatterns = [
     path('test_file/update/<int:pk>/', views.TestFileUpdate.as_view(), name='test_file_update'),
 
     # checklists
-    path('checklist/create/<int:test_id>/', views.TestChecklistCreate.as_view(), name='test_checklist_create'),
+    path('test_checklist/create/<int:test_id>/', views.TestChecklistCreate.as_view(), name='test_checklist_create'),
+    path('test_checklist/delete/<int:pk>/', views.TestChecklistDelete.as_view(), name='test_checklist_delete'),
+    path('test_checklist/update/<int:pk>/', views.TestChecklistUpdate.as_view(), name='test_checklist_update'),
+
+    # checklist items
+    path('test_checklist_item/create/<int:checklist_id>/', views.TestChecklistItemCreate.as_view(),
+         name='test_checklist_item_create'),
+    path('test_checklist_item/delete/<int:pk>/', views.TestChecklistItemDelete.as_view(),
+         name='test_checklist_item_delete'),
+    path('test_checklist_item/update/<int:pk>/', views.TestChecklistItemUpdate.as_view(),
+         name='test_checklist_item_update'),
 
     # worksheets
     path('<int:testplan_id>/test/<int:test_id>/worksheet/create/',

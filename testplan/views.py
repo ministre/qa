@@ -6,8 +6,8 @@ from django.views.generic import CreateView, UpdateView, DeleteView
 from .models import Testplan, Category, Chapter, Test, TestConfig, TestImage, TestFile, TestWorksheet, \
     TestWorksheetItem, TestChecklist, TestChecklistItem, TestLink, TestComment, Pattern, DeviceType
 from .forms import TestplanForm, CategoryForm, ChapterForm, TestForm, TestConfigForm, TestImageForm, TestFileForm,\
-    TestWorksheetForm, WorksheetItemForm, TestChecklistForm, TestLinkForm, TestCommentForm, PatternForm, \
-    RedmineForm
+    TestWorksheetForm, WorksheetItemForm, TestChecklistForm, TestChecklistItemForm, TestLinkForm, TestCommentForm, \
+    PatternForm, RedmineForm
 from django.http import HttpResponseRedirect
 import textile
 from datetime import datetime
@@ -294,7 +294,12 @@ def test_details(request, pk, tab_id):
     configs = TestConfig.objects.filter(test=test).order_by('id')
     images = TestImage.objects.filter(test=test).order_by('id')
     files = TestFile.objects.filter(test=test).order_by('id')
+
+    checklists = TestChecklist.objects.filter(test=test).order_by('id')
+    worksheets_count = checklists.count()
+
     worksheets = get_full_worksheets(pk)
+
     links = TestLink.objects.filter(test=test).order_by('id')
     comments = TestComment.objects.filter(test=test).order_by('id')
     for comment in comments:
@@ -316,7 +321,8 @@ def test_details(request, pk, tab_id):
     return render(request, 'test/details.html', {'tab_id': tab_id, 'testplan': testplan, 'test': test,
                                                  'test_procedure': test_procedure, 'test_expected': test_expected,
                                                  'configs': configs, 'images': images, 'files': files,
-                                                 'worksheets': worksheets,
+                                                 'checklists': checklists,
+                                                 'worksheets_count': worksheets_count,
                                                  'links': links, 'comments': comments,
                                                  'redmine_import_form': redmine_import_form,
                                                  'redmine_url': redmine_url})
@@ -903,6 +909,111 @@ class TestChecklistCreate(CreateView):
     def get_success_url(self):
         test = get_object_or_404(Test, id=self.kwargs.get('test_id'))
         test.update_timestamp(user=self.request.user)
+        testplan = test.category.testplan
+        testplan.update_timestamp(user=self.request.user)
+        return reverse('test_details', kwargs={'pk': test.id, 'tab_id': 8})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestChecklistDelete(DeleteView):
+    model = TestChecklist
+    template_name = 'test_component/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['test_id'] = self.object.test.id
+        context['tab_id'] = 8
+        return context
+
+    def get_success_url(self):
+        self.object.test.update_timestamp(user=self.request.user)
+        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 8})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestChecklistUpdate(UpdateView):
+    model = TestChecklist
+    form_class = TestChecklistForm
+    template_name = 'test_component/update.html'
+
+    def get_initial(self):
+        return {'test_id': self.kwargs.get('test_id')}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['test_id'] = self.object.test.id
+        context['tab_id'] = 8
+        return context
+
+    def get_success_url(self):
+        self.object.test.update_timestamp(user=self.request.user)
+        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 8})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestChecklistItemCreate(CreateView):
+    model = TestChecklistItem
+    form_class = TestChecklistItemForm
+    template_name = 'test_component/create.html'
+
+    def get_initial(self):
+        return {'checklist': self.kwargs.get('checklist_id')}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        checklist = get_object_or_404(TestChecklist, id=self.kwargs.get('checklist_id'))
+        context['test_id'] = checklist.test.id
+        context['tab_id'] = 8
+        return context
+
+    def get_success_url(self):
+        checklist = get_object_or_404(TestChecklist, id=self.kwargs.get('checklist_id'))
+        checklist.test.update_timestamp(user=self.request.user)
+        checklist.test.category.testplan.update_timestamp(user=self.request.user)
+        return reverse('test_details', kwargs={'pk': checklist.test.id, 'tab_id': 8})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestChecklistItemDelete(DeleteView):
+    model = TestChecklistItem
+    template_name = 'test_component/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['testplan_id'] = self.kwargs.get('testplan_id')
+        context['test_id'] = self.kwargs.get('test_id')
+        context['tab_id'] = 8
+        return context
+
+    def get_success_url(self):
+        test = get_object_or_404(Test, id=self.kwargs.get('test_id'))
+        test.update_timestamp(user=self.request.user)
         testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
         testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'testplan_id': testplan.id, 'pk': test.id, 'tab_id': 5})
+        return reverse('test_details', kwargs={'testplan_id': testplan.id, 'pk': test.id, 'tab_id': 8})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestChecklistItemUpdate(UpdateView):
+    model = TestChecklistItem
+    form_class = TestChecklistItemForm
+    template_name = 'test_component/update.html'
+
+    def get_initial(self):
+        return {'test': self.kwargs.get('test_id')}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['testplan_id'] = self.kwargs.get('testplan_id')
+        context['test_id'] = self.kwargs.get('test_id')
+        context['tab_id'] = 8
+        return context
+
+    def get_success_url(self):
+        test = get_object_or_404(Test, id=self.kwargs.get('test_id'))
+        test.update_timestamp(user=self.request.user)
+        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
+        testplan.update_timestamp(user=self.request.user)
+        return reverse('test_details', kwargs={'testplan_id': testplan.id, 'pk': test.id, 'tab_id': 8})

@@ -172,6 +172,18 @@ class TestChecklistForm(ModelForm):
         }
 
 
+class TestChecklistItemForm(ModelForm):
+    class Meta:
+        model = TestChecklistItem
+        labels = {
+            'name': _('Name'),
+        }
+        fields = '__all__'
+        widgets = {
+            'checklist': HiddenInput()
+        }
+
+
 class TestLinkForm(ModelForm):
     class Meta:
         model = TestLink
