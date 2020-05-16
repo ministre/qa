@@ -5,6 +5,7 @@ from requests.exceptions import ConnectionError
 from device.models import DeviceType, Device, Specification, Sample
 from testplan.models import Pattern, Testplan, Category, Test, TestConfig, TestLink, TestWorksheet, TestWorksheetItem, \
     TestComment, TestImage
+import re
 
 
 class RedmineProject(object):
@@ -21,9 +22,9 @@ class RedmineProject(object):
         except AuthError:
             return [False, 'Authentication error']
         except ResourceNotFoundError:
-            return [False, 'Not found']
+            return [False, 'Project not found']
         except ForbiddenError:
-            return [False, 'Requested resource is forbidden']
+            return [False, 'Requested project resource is forbidden']
 
     def get_wiki_url(self, wiki_title: str):
         try:
@@ -33,9 +34,18 @@ class RedmineProject(object):
             else:
                 return [True, settings.REDMINE_URL + '/projects/' + self.project_id + '/wiki/' + wiki_title]
         except ResourceNotFoundError:
-            return[False, 'Not found']
+            return[False, 'Wiki not found']
         except ForbiddenError:
-            return [False, 'Requested resource is forbidden']
+            return [False, 'Requested wiki resource is forbidden']
+
+    def get_wiki_text(self, wiki_title: str):
+        try:
+            wiki = self.redmine.wiki_page.get(wiki_title, project_id=self.project_id)
+            return [True, wiki.text]
+        except ResourceNotFoundError:
+            return[False, 'Wiki not found']
+        except ForbiddenError:
+            return [False, 'Requested wiki resource is forbidden']
 
     def export_device_type(self, device_type: DeviceType):
         if self.get_project()[0]:
@@ -114,7 +124,7 @@ class RedmineProject(object):
         if links.count():
             wiki_links = '\nh2. Ссылки\n'
             for link in links:
-                wiki_links += '\n> ' + link.name + '\n' + \
+                wiki_links += '\nh3. ' + link.name + '\n' + \
                               '\n' + link.url + '\n'
         else:
             wiki_links = ''
@@ -141,7 +151,7 @@ class RedmineProject(object):
         if comments.count():
             wiki_comments = '\nh2. Комментарии\n'
             for comment in comments:
-                wiki_comments += '\n> ' + comment.name + '\n' + \
+                wiki_comments += '\nh3. ' + comment.name + '\n' + \
                                  '\n' + comment.text + '\n'
         else:
             wiki_comments = ''
@@ -228,3 +238,116 @@ class RedmineProject(object):
             self.redmine.wiki_page.update('wiki', project_id=self.project_id, text=wiki_text)
             self.export_all_tests(testplan)
             return [True, 'Project created']
+
+
+class RedmineTest(object):
+    def __init__(self, wiki: str):
+        self.wiki = wiki
+        self.h2_blocks = wiki.split('\nh2. ')
+
+    def parse_name(self):
+        for h2_block in self.h2_blocks:
+            detect_head = re.search('h1. ', h2_block)
+            if detect_head:
+                name_blocks = h2_block.split('\r')
+                name = name_blocks[0][4:]
+                return name
+        return False
+
+    def parse_purpose(self):
+        for h2_block in self.h2_blocks:
+            detect_head = re.search('Цель\n', h2_block)
+            if detect_head:
+                purpose_blocks = h2_block.split('\n\n')
+                purpose_blocks.pop(0)
+                purpose = '\n\n'.join(purpose_blocks)[0:-1]
+                return purpose
+        return False
+
+    def parse_procedure(self):
+        for h2_block in self.h2_blocks:
+            detect_head = re.search('Процедура\n', h2_block)
+            if detect_head:
+                h3_blocks = h2_block.split('\nh3. ')
+                procedure_blocks = h3_blocks[0].split('\n\n')
+                procedure_blocks.pop(0)
+                procedure = '\n\n'.join(procedure_blocks)[0:-1]
+                return procedure
+        return False
+
+    def parse_expected(self):
+        for h2_block in self.h2_blocks:
+            detect_head = re.search('Ожидаемый результат\n', h2_block)
+            if detect_head:
+                h3_blocks = h2_block.split('\nh3. ')
+                expected_blocks = h3_blocks[0].split('\n\n')
+                expected_blocks.pop(0)
+                expected = '\n\n'.join(expected_blocks)[0:-1]
+                return expected
+        return False
+
+    def parse_configs(self):
+        configs = []
+        procedure = self.h2_blocks[2].split('\nh3. ')
+        for i, procedure_block in enumerate(procedure):
+            detect_head = re.search('Конфигурация\n', procedure_block)
+            if detect_head:
+                cfg = procedure[i].split('\n{{collapse(')
+                for j, cfg_block in enumerate(cfg):
+                    detect_code = re.search('<pre><code class=', cfg_block)
+                    if detect_code:
+                        config = []  # name, lang, configuration
+                        code_name = cfg[j].split(')\n')[0]
+                        code_lang = cfg[j].split('"')[1]
+                        s_cfg = cfg[j].split('">\n\n')[1]
+                        code_cfg = s_cfg.split('\n</code></pre>\n')[0]
+                        config.append(code_name)
+                        config.append(code_lang)
+                        config.append(code_cfg)
+                        configs.append(config)
+        return configs
+
+    def parse_images(self):
+        return False
+
+    def parse_files(self):
+        return False
+
+    def parse_worksheets(self):
+        return False
+
+    def parse_links(self):
+        links = []
+        for h2_block in self.h2_blocks:
+            detect_head = re.search('Ссылки\n', h2_block)
+            if detect_head:
+                h3_blocks = h2_block.split('\nh3. ')
+                h3_blocks.pop(0)
+                for h3_block in h3_blocks:
+                    link = []
+                    link_blocks = h3_block.split('\n\n')
+                    link_name = link_blocks[0]
+                    link_url = link_blocks[1][0:-1]
+                    link.append(link_name)
+                    link.append(link_url)
+                    links.append(link)
+                return links
+        return False
+
+    def parse_comments(self):
+        comments = []
+        for h2_block in self.h2_blocks:
+            detect_head = re.search('Комментарии\n\n', h2_block)
+            if detect_head:
+                h3_blocks = h2_block.split('h3. ')
+                h3_blocks.remove('Комментарии\n\n')
+                for h3_block in h3_blocks:
+                    comment = []  # name, text
+                    comment_blocks = h3_block.split('\n\n')
+                    comment_name = comment_blocks[0]
+                    comment_blocks.pop(0)
+                    comment_text = '\n\n'.join(comment_blocks)
+                    comment.append(comment_name)
+                    comment.append(comment_text)
+                    comments.append(comment)
+        return comments

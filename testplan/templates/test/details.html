@@ -179,6 +179,25 @@
   </div>
 
   <div class="tabs-panel {% if tab_id == 11 %}is-active{% endif %}" id="redmine">
+      <div class="grid-x grid-margin-x">
+          <div class="cell">
+              <div class="card">
+                  <div class="card-section">
+                      <h4>Project Information</h4>
+                      <table>
+                          <tr>
+                              <td>Wiki URL:</td>
+                              <td>
+                                  <a href="{{ redmine_url }}/projects/{{ test.category.testplan.redmine_project }}/wiki/{{ test.redmine_wiki }}/">
+                                      {{ redmine_url }}/projects/{{ test.category.testplan.redmine_project }}/wiki/{{ test.redmine_wiki }}/
+                                  </a>
+                              </td>
+                          </tr>
+                      </table>
+                  </div>
+              </div>
+          </div>
+      </div>
 
       <div class="grid-x grid-margin-x small-up-2 medium-up-2">
             <div class="cell">
@@ -189,11 +208,7 @@
                       <form method="post" action="{% url 'export_test' %}">
                           {% csrf_token %}
                           <input type="hidden" name="test" value="{{ test.id }}">
-                          {% if test.redmine_wiki and project.0 %}
-                            <input type="submit" value='{% trans "Export" %}' class="button success small" />
-                          {% else %}
-                            <p class="button small disabled">{% trans "Export" %}</p>
-                          {% endif %}
+                          <input type="submit" value='{% trans "Export" %}' class="button success small" />
                       </form>
                   </div>
                 </div>
@@ -203,94 +218,18 @@
                   <div class="card-section">
                     <h4>Import</h4>
                     <p>Click to update test details from Redmine Wiki.</p>
-                      <form method="post" action="/redmine/import_p_test_details/">
+                      <form method="post" action="{% url 'import_test_details' %}">
                           {% csrf_token %}
-                          <input type="hidden" name="test_id" value="{{ test.id }}">
-                          <input type="hidden" name="testplan_id" value="{{ testplan.id }}">
-                          <input type="hidden" name="redmine_url" value="{{ test.redmine_url }}">
-                          <input type="hidden" name="tag" value="{{ testplan.device_type.tag }}">
-                          {% if wiki.0 %}
-                            <input type="submit" value='{% trans "Import" %}' class="button alert small" />
-                          {% else %}
-                            <p class="button small disabled">{% trans "Import" %}</p>
-                          {% endif %}
+                          <input type="hidden" name="test" value="{{ test.id }}">
+                          <input type="submit" value='{% trans "Import" %}' class="button alert small" />
+                          {{ redmine_import_form.as_p }}
                       </form>
                   </div>
                 </div>
             </div>
       </div>
-
-      <div class="grid-x grid-margin-x">
-            <div class="cell">
-                <div class="card">
-                  <div class="card-section">
-                    <h4>Project Information</h4>
-                      <table>
-                          <tr>
-                              <td>ID:</td>
-                              <td>
-                                  {% if testplan.redmine_project %}
-                                    <img src="{% static '/img/ok.png' %}" width="25" height="25" alt="ok">
-                                    {% trans "Adjusted" %} ({{ testplan.redmine_project }})
-                                  {% else %}
-                                    <img src="{% static '/img/nok.png' %}" width="25" height="25" alt="nok">
-                                    <a href="{% url 'testplan_update' pk=testplan.id %}">{% trans "Not specified" %}</a>
-                                  {% endif %}
-                              </td>
-                          </tr>
-                          {% if testplan.redmine_project %}
-                          <tr>
-                              <td>Wiki:</td>
-                              <td>
-                                  {% if test.redmine_wiki %}
-                                    <img src="{% static '/img/ok.png' %}" width="25" height="25" alt="ok">
-                                    {% trans "Adjusted" %} ({{ test.redmine_wiki }})
-                                  {% else %}
-                                    <img src="{% static '/img/nok.png' %}" width="25" height="25" alt="nok">
-                                    <a href="{% url 'test_update' testplan_id=testplan.id pk=test.id %}">
-                                        {% trans "Not specified" %}</a>
-                                  {% endif %}
-                              </td>
-                          </tr>
-                          <tr>
-                              <td>Check Project:</td>
-                              <td>
-                                  {% if project.0 %}
-                                    <img src="{% static '/img/ok.png' %}" width="25" height="25" alt="ok">
-                                  Found
-                                  {% else %}
-                                    <img src="{% static '/img/nok.png' %}" width="25" height="25" alt="nok">
-                                  {{ project.1 }}
-                                  {% endif %}
-                              </td>
-                          </tr>
-                          {% if test.redmine_wiki and project.0 %}
-                          <tr>
-                              <td>Check Wiki page:</td>
-                              <td>
-                                  {% if wiki.0 %}
-                                    <img src="{% static '/img/ok.png' %}" width="25" height="25" alt="ok"> Found
-                                  {% else %}
-                                    <img src="{% static '/img/nok.png' %}" width="25" height="25" alt="nok">
-                                  {{ wiki.1 }}
-                                  {% endif %}
-                              </td>
-                          </tr>
-                          {% endif %}
-                          {% if wiki.0 %}
-                            <tr>
-                                <td>Wiki URL:</td>
-                                <td><a href="{{ wiki.1 }}">{{ wiki.1 }}</a></td>
-                            </tr>
-                          {% endif %}
-                          {% endif %}
-                      </table>
-                  </div>
-                </div>
-            </div>
-      </div>
-
   </div>
+
 </div>
 
 <script src="{% static 'rainbow/rainbow-custom.min.js' %}"></script>

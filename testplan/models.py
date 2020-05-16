@@ -81,6 +81,31 @@ class Test(models.Model):
         self.save()
         return True
 
+    def update_details(self, name, purpose, procedure, expected, configs, images, files, worksheets,
+                       links, comments):
+        if name:
+            self.name = name
+        if purpose:
+            self.purpose = purpose
+        if procedure:
+            self.procedure = procedure
+        if expected:
+            self.expected = expected
+        TestConfig.objects.filter(test=self).delete()
+        if configs:
+            for config in configs:
+                TestConfig.objects.create(test=self, name=config[0], lang=config[1], config=config[2])
+        TestLink.objects.filter(test=self).delete()
+        if links:
+            for link in links:
+                TestLink.objects.create(test=self, name=link[0], url=link[1])
+        TestComment.objects.filter(test=self).delete()
+        if comments:
+            for comment in comments:
+                TestComment.objects.create(test=self, name=comment[0], text=comment[1])
+        self.save()
+        return True
+
 
 class TestConfig(models.Model):
     name = models.CharField(max_length=1000, blank=True, null=True)

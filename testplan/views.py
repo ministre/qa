@@ -6,11 +6,12 @@ from django.views.generic import CreateView, UpdateView, DeleteView
 from .models import Testplan, Category, Chapter, Test, TestConfig, TestImage, TestFile, TestWorksheet, \
     TestWorksheetItem, TestLink, TestComment, Pattern, DeviceType
 from .forms import TestplanForm, CategoryForm, ChapterForm, TestForm, TestConfigForm, TestImageForm, TestFileForm,\
-    TestWorksheetForm, WorksheetItemForm, TestLinkForm, TestCommentForm, PatternForm
+    TestWorksheetForm, WorksheetItemForm, TestLinkForm, TestCommentForm, PatternForm, RedmineForm
 from django.http import HttpResponseRedirect
 import textile
 from datetime import datetime
 from redmine.models import RedmineProject
+from qa import settings
 
 
 @login_required
@@ -307,14 +308,27 @@ def test_details(request, testplan_id, pk, tab_id):
     comments = TestComment.objects.filter(test=test).order_by('id')
     for comment in comments:
         comment.text = textile.textile(comment.text)
-    r = RedmineProject(testplan.redmine_project)
-    project = r.get_project()
-    wiki = r.get_wiki_url(test.redmine_wiki)
+    redmine_url = settings.REDMINE_URL
+
+    redmine_import_form = RedmineForm(initial={'test_id': test.id, 'project': testplan.redmine_project,
+                                               'wiki': test.redmine_wiki,
+                                               'name': True,
+                                               'purpose': True,
+                                               'procedure': True,
+                                               'expected': True,
+                                               'configs': True,
+                                               'images': False,
+                                               'files': False,
+                                               'worksheets': True,
+                                               'links': True,
+                                               'comments': True})
+
     return render(request, 'test/details.html', {'tab_id': tab_id, 'testplan': testplan, 'test': test,
                                                  'test_procedure': test_procedure, 'test_expected': test_expected,
                                                  'configs': configs, 'images': images, 'files': files,
                                                  'worksheets': worksheets, 'links': links, 'comments': comments,
-                                                 'project': project, 'wiki': wiki})
+                                                 'redmine_import_form': redmine_import_form,
+                                                 'redmine_url': redmine_url})
 
 
 @method_decorator(login_required, name='dispatch')
