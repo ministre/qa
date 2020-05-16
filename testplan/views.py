@@ -4,9 +4,10 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView, UpdateView, DeleteView
 from .models import Testplan, Category, Chapter, Test, TestConfig, TestImage, TestFile, TestWorksheet, \
-    TestWorksheetItem, TestLink, TestComment, Pattern, DeviceType
+    TestWorksheetItem, TestChecklist, TestChecklistItem, TestLink, TestComment, Pattern, DeviceType
 from .forms import TestplanForm, CategoryForm, ChapterForm, TestForm, TestConfigForm, TestImageForm, TestFileForm,\
-    TestWorksheetForm, WorksheetItemForm, TestLinkForm, TestCommentForm, PatternForm, RedmineForm
+    TestWorksheetForm, WorksheetItemForm, TestChecklistForm, TestLinkForm, TestCommentForm, PatternForm, \
+    RedmineForm
 from django.http import HttpResponseRedirect
 import textile
 from datetime import datetime
@@ -249,13 +250,14 @@ class TestCreate(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan_id')
+        category = get_object_or_404(Category, id=self.kwargs.get('category_id'))
+        context['tp_id'] = category.testplan.id
         return context
 
     def get_success_url(self):
-        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
-        testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'testplan_id': testplan.id, 'pk': self.object.id, 'tab_id': 1})
+        category = get_object_or_404(Category, id=self.kwargs.get('category_id'))
+        category.testplan.update_timestamp(user=self.request.user)
+        return reverse('test_details', kwargs={'pk': self.object.id, 'tab_id': 1})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -263,13 +265,8 @@ class TestDelete(DeleteView):
     model = Test
     template_name = 'test/delete.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan_id')
-        return context
-
     def get_success_url(self):
-        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
+        testplan = self.object.category.testplan
         testplan.update_timestamp(user=self.request.user)
         return reverse('testplan_details', kwargs={'pk': testplan.id, 'tab_id': 3})
 
@@ -280,24 +277,18 @@ class TestUpdate(UpdateView):
     form_class = TestForm
     template_name = 'test/update.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan_id')
-        return context
-
     def get_initial(self):
         return {'updated_by': self.request.user, 'updated_at': datetime.now}
 
     def get_success_url(self):
-        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
-        testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'testplan_id': testplan.id, 'pk': self.object.id, 'tab_id': 1})
+        self.object.category.testplan.update_timestamp(user=self.request.user)
+        return reverse('test_details', kwargs={'pk': self.object.id, 'tab_id': 1})
 
 
 @login_required
-def test_details(request, testplan_id, pk, tab_id):
+def test_details(request, pk, tab_id):
     test = get_object_or_404(Test, id=pk)
-    testplan = get_object_or_404(Testplan, id=testplan_id)
+    testplan = test.category.testplan
     test_procedure = textile.textile(test.procedure)
     test_expected = textile.textile(test.expected)
     configs = TestConfig.objects.filter(test=test).order_by('id')
@@ -309,7 +300,6 @@ def test_details(request, testplan_id, pk, tab_id):
     for comment in comments:
         comment.text = textile.textile(comment.text)
     redmine_url = settings.REDMINE_URL
-
     redmine_import_form = RedmineForm(initial={'test_id': test.id, 'project': testplan.redmine_project,
                                                'wiki': test.redmine_wiki,
                                                'name': True,
@@ -326,7 +316,8 @@ def test_details(request, testplan_id, pk, tab_id):
     return render(request, 'test/details.html', {'tab_id': tab_id, 'testplan': testplan, 'test': test,
                                                  'test_procedure': test_procedure, 'test_expected': test_expected,
                                                  'configs': configs, 'images': images, 'files': files,
-                                                 'worksheets': worksheets, 'links': links, 'comments': comments,
+                                                 'worksheets': worksheets,
+                                                 'links': links, 'comments': comments,
                                                  'redmine_import_form': redmine_import_form,
                                                  'redmine_url': redmine_url})
 
@@ -405,12 +396,12 @@ def clear_chapters(request, tp_id):
 
 
 @login_required
-def clear_tests(request, testplan_id):
-    testplan = get_object_or_404(Testplan, id=testplan_id)
+def clear_tests(request, tp_id):
+    testplan = get_object_or_404(Testplan, id=tp_id)
     if request.method == 'POST':
         Category.objects.filter(testplan=testplan).delete()
         testplan.update_timestamp(user=request.user)
-        return HttpResponseRedirect(reverse('testplan_details', kwargs={'pk': testplan_id, 'tab_id': 3}))
+        return HttpResponseRedirect(reverse('testplan_details', kwargs={'pk': tp_id, 'tab_id': 3}))
     else:
         return render(request, 'test/clear.html', {'testplan': testplan})
 
@@ -426,7 +417,6 @@ class TestConfigCreate(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan_id')
         context['test_id'] = self.kwargs.get('test_id')
         context['tab_id'] = 5
         return context
@@ -434,9 +424,9 @@ class TestConfigCreate(CreateView):
     def get_success_url(self):
         test = get_object_or_404(Test, id=self.kwargs.get('test_id'))
         test.update_timestamp(user=self.request.user)
-        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
+        testplan = test.category.testplan
         testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'testplan_id': testplan.id, 'pk': test.id, 'tab_id': 5})
+        return reverse('test_details', kwargs={'pk': test.id, 'tab_id': 5})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -446,17 +436,14 @@ class TestConfigDelete(DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan_id')
-        context['test_id'] = self.kwargs.get('test_id')
+        context['test_id'] = self.object.test.id
         context['tab_id'] = 5
         return context
 
     def get_success_url(self):
-        test = get_object_or_404(Test, id=self.kwargs.get('test_id'))
-        test.update_timestamp(user=self.request.user)
-        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
-        testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'testplan_id': testplan.id, 'pk': test.id, 'tab_id': 5})
+        self.object.test.update_timestamp(user=self.request.user)
+        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 5})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -470,17 +457,14 @@ class TestConfigUpdate(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan_id')
-        context['test_id'] = self.kwargs.get('test_id')
+        context['test_id'] = self.object.test.id
         context['tab_id'] = 5
         return context
 
     def get_success_url(self):
-        test = get_object_or_404(Test, id=self.kwargs.get('test_id'))
-        test.update_timestamp(user=self.request.user)
-        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
-        testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'testplan_id': testplan.id, 'pk': test.id, 'tab_id': 5})
+        self.object.test.update_timestamp(user=self.request.user)
+        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 5})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -494,7 +478,6 @@ class TestImageCreate(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan_id')
         context['test_id'] = self.kwargs.get('test_id')
         context['tab_id'] = 6
         return context
@@ -502,9 +485,9 @@ class TestImageCreate(CreateView):
     def get_success_url(self):
         test = get_object_or_404(Test, id=self.kwargs.get('test_id'))
         test.update_timestamp(user=self.request.user)
-        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
+        testplan = test.category.testplan
         testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'testplan_id': testplan.id, 'pk': test.id, 'tab_id': 6})
+        return reverse('test_details', kwargs={'pk': test.id, 'tab_id': 6})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -514,17 +497,14 @@ class TestImageDelete(DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan_id')
-        context['test_id'] = self.kwargs.get('test_id')
+        context['test_id'] = self.object.test.id
         context['tab_id'] = 6
         return context
 
     def get_success_url(self):
-        test = get_object_or_404(Test, id=self.kwargs.get('test_id'))
-        test.update_timestamp(user=self.request.user)
-        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
-        testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'testplan_id': testplan.id, 'pk': test.id, 'tab_id': 6})
+        self.object.test.update_timestamp(user=self.request.user)
+        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 6})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -538,17 +518,14 @@ class TestImageUpdate(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan_id')
-        context['test_id'] = self.kwargs.get('test_id')
+        context['test_id'] = self.object.test.id
         context['tab_id'] = 6
         return context
 
     def get_success_url(self):
-        test = get_object_or_404(Test, id=self.kwargs.get('test_id'))
-        test.update_timestamp(user=self.request.user)
-        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
-        testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'testplan_id': testplan.id, 'pk': test.id, 'tab_id': 6})
+        self.object.test.update_timestamp(user=self.request.user)
+        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 6})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -562,7 +539,6 @@ class TestFileCreate(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan_id')
         context['test_id'] = self.kwargs.get('test_id')
         context['tab_id'] = 7
         return context
@@ -570,9 +546,9 @@ class TestFileCreate(CreateView):
     def get_success_url(self):
         test = get_object_or_404(Test, id=self.kwargs.get('test_id'))
         test.update_timestamp(user=self.request.user)
-        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
+        testplan = test.category.testplan
         testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'testplan_id': testplan.id, 'pk': test.id, 'tab_id': 7})
+        return reverse('test_details', kwargs={'pk': test.id, 'tab_id': 7})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -582,17 +558,14 @@ class TestFileDelete(DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan_id')
-        context['test_id'] = self.kwargs.get('test_id')
+        context['test_id'] = self.object.test.id
         context['tab_id'] = 7
         return context
 
     def get_success_url(self):
-        test = get_object_or_404(Test, id=self.kwargs.get('test_id'))
-        test.update_timestamp(user=self.request.user)
-        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
-        testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'testplan_id': testplan.id, 'pk': test.id, 'tab_id': 7})
+        self.object.test.update_timestamp(user=self.request.user)
+        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 7})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -606,17 +579,14 @@ class TestFileUpdate(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan_id')
-        context['test_id'] = self.kwargs.get('test_id')
+        context['test_id'] = self.object.test.id
         context['tab_id'] = 7
         return context
 
     def get_success_url(self):
-        test = get_object_or_404(Test, id=self.kwargs.get('test_id'))
-        test.update_timestamp(user=self.request.user)
-        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
-        testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'testplan_id': testplan.id, 'pk': test.id, 'tab_id': 7})
+        self.object.test.update_timestamp(user=self.request.user)
+        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 7})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -767,7 +737,6 @@ class TestLinkCreate(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan_id')
         context['test_id'] = self.kwargs.get('test_id')
         context['tab_id'] = 9
         return context
@@ -775,9 +744,9 @@ class TestLinkCreate(CreateView):
     def get_success_url(self):
         test = get_object_or_404(Test, id=self.kwargs.get('test_id'))
         test.update_timestamp(user=self.request.user)
-        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
+        testplan = test.category.testplan
         testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'testplan_id': testplan.id, 'pk': test.id, 'tab_id': 9})
+        return reverse('test_details', kwargs={'pk': test.id, 'tab_id': 9})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -787,17 +756,14 @@ class TestLinkDelete(DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan_id')
-        context['test_id'] = self.kwargs.get('test_id')
+        context['test_id'] = self.object.test.id
         context['tab_id'] = 9
         return context
 
     def get_success_url(self):
-        test = get_object_or_404(Test, id=self.kwargs.get('test_id'))
-        test.update_timestamp(user=self.request.user)
-        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
-        testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'testplan_id': testplan.id, 'pk': test.id, 'tab_id': 9})
+        self.object.test.update_timestamp(user=self.request.user)
+        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 9})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -807,21 +773,18 @@ class TestLinkUpdate(UpdateView):
     template_name = 'test_component/update.html'
 
     def get_initial(self):
-        return {'test': self.kwargs.get('test_id')}
+        return {'test_id': self.kwargs.get('test_id')}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan_id')
-        context['test_id'] = self.kwargs.get('test_id')
+        context['test_id'] = self.object.test.id
         context['tab_id'] = 9
         return context
 
     def get_success_url(self):
-        test = get_object_or_404(Test, id=self.kwargs.get('test_id'))
-        test.update_timestamp(user=self.request.user)
-        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
-        testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'testplan_id': testplan.id, 'pk': test.id, 'tab_id': 9})
+        self.object.test.update_timestamp(user=self.request.user)
+        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 9})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -835,7 +798,6 @@ class TestCommentCreate(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan_id')
         context['test_id'] = self.kwargs.get('test_id')
         context['tab_id'] = 10
         return context
@@ -843,9 +805,9 @@ class TestCommentCreate(CreateView):
     def get_success_url(self):
         test = get_object_or_404(Test, id=self.kwargs.get('test_id'))
         test.update_timestamp(user=self.request.user)
-        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
+        testplan = test.category.testplan
         testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'testplan_id': testplan.id, 'pk': test.id, 'tab_id': 10})
+        return reverse('test_details', kwargs={'pk': test.id, 'tab_id': 10})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -855,17 +817,14 @@ class TestCommentDelete(DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan_id')
-        context['test_id'] = self.kwargs.get('test_id')
+        context['test_id'] = self.object.test.id
         context['tab_id'] = 10
         return context
 
     def get_success_url(self):
-        test = get_object_or_404(Test, id=self.kwargs.get('test_id'))
-        test.update_timestamp(user=self.request.user)
-        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
-        testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'testplan_id': testplan.id, 'pk': test.id, 'tab_id': 10})
+        self.object.test.update_timestamp(user=self.request.user)
+        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 10})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -875,21 +834,18 @@ class TestCommentUpdate(UpdateView):
     template_name = 'test_component/update.html'
 
     def get_initial(self):
-        return {'test': self.kwargs.get('test_id')}
+        return {'test_id': self.kwargs.get('test_id')}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan_id')
-        context['test_id'] = self.kwargs.get('test_id')
+        context['test_id'] = self.object.test.id
         context['tab_id'] = 10
         return context
 
     def get_success_url(self):
-        test = get_object_or_404(Test, id=self.kwargs.get('test_id'))
-        test.update_timestamp(user=self.request.user)
-        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
-        testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'testplan_id': testplan.id, 'pk': test.id, 'tab_id': 10})
+        self.object.test.update_timestamp(user=self.request.user)
+        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 10})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -927,3 +883,26 @@ class PatternUpdate(UpdateView):
         pattern = get_object_or_404(Pattern, id=self.object.id)
         pattern.update_timestamp(user=self.request.user)
         return reverse('pattern_details', kwargs={'pk': pattern.id, 'tab_id': 1})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestChecklistCreate(CreateView):
+    model = TestChecklist
+    form_class = TestChecklistForm
+    template_name = 'test_component/create.html'
+
+    def get_initial(self):
+        return {'test': self.kwargs.get('test_id')}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['test_id'] = self.kwargs.get('test_id')
+        context['tab_id'] = 8
+        return context
+
+    def get_success_url(self):
+        test = get_object_or_404(Test, id=self.kwargs.get('test_id'))
+        test.update_timestamp(user=self.request.user)
+        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
+        testplan.update_timestamp(user=self.request.user)
+        return reverse('test_details', kwargs={'testplan_id': testplan.id, 'pk': test.id, 'tab_id': 5})

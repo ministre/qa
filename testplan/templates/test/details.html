@@ -41,9 +41,9 @@
 
 <div class="tabs-content" data-tabs-content="test-tabs">
     <div class="tabs-panel {% if tab_id == 1 %}is-active{% endif %}" id="general">
-        <a href="{% url 'test_update' testplan_id=testplan.id pk=test.id %}" class="button small">
+        <a href="{% url 'test_update' pk=test.id %}" class="button small">
             {% trans "Update" %}</a>
-        <a href="{% url 'test_delete' testplan_id=testplan.id pk=test.id %}" class="button alert small">
+        <a href="{% url 'test_delete' pk=test.id %}" class="button alert small">
             {% trans "Delete" %}</a>
         <table class="hover unstriped">
             <tbody>
@@ -80,41 +80,47 @@
   </div>
 
   <div class="tabs-panel {% if tab_id == 5 %}is-active{% endif %}" id="configs">
-      <a href="{% url 'test_config_create' testplan_id=testplan.id test_id=test.id %}" class="button small">
+      <a href="{% url 'test_config_create' test_id=test.id %}" class="button small">
           {% trans "Add" %}</a>
       {% for config in configs %}
       {% if config.name %}<p>{{ config.name }}</p>{% endif %}
       <pre><code data-language="{{ config.lang }}">{{ config.config }}</code></pre>
-      <a href="{% url 'test_config_update' testplan_id=testplan.id test_id=test.id pk=config.id %}" class="button small">Update</a>
-      <a href="{% url 'test_config_delete' testplan_id=testplan.id test_id=test.id pk=config.id %}" class="button small alert">Delete</a>
+      <a href="{% url 'test_config_update' pk=config.id %}" class="button small">Update</a>
+      <a href="{% url 'test_config_delete' pk=config.id %}" class="button small alert">Delete</a>
       {% endfor %}
   </div>
 
   <div class="tabs-panel {% if tab_id == 6 %}is-active{% endif %}" id="images">
-      <a href="{% url 'test_image_create' testplan_id=testplan.id test_id=test.id %}" class="button small">
-          {% trans "Add" %}</a>
+      <a href="{% url 'test_image_create' test_id=test.id %}" class="button small">{% trans "Add" %}</a>
       {% for image in images %}
       <p>{{ image.name }}</p>
       <p><img src="{{ image.image.url }}"
               {% if image.width != None %} width="{{ image.width }}" {% endif %}
               {% if image.height != None %} height="{{ image.height }}" {% endif %}
       ></p>
-      <a href="{% url 'test_image_update' testplan_id=testplan.id test_id=test.id pk=image.id %}" class="button small">Update</a>
-      <a href="{% url 'test_image_delete' testplan_id=testplan.id test_id=test.id pk=image.id %}" class="button small alert">Delete</a>
+      <a href="{% url 'test_image_update' pk=image.id %}" class="button small">{% trans "Update" %}</a>
+      <a href="{% url 'test_image_delete' pk=image.id %}" class="button small alert">{% trans "Delete" %}</a>
       {% endfor %}
   </div>
 
   <div class="tabs-panel {% if tab_id == 7 %}is-active{% endif %}" id="files">
-      <a href="{% url 'test_file_create' testplan_id=testplan.id test_id=test.id %}" class="button small">
-          {% trans "Add" %}</a>
+      <a href="{% url 'test_file_create' test_id=test.id %}" class="button small">{% trans "Add" %}</a>
       {% for file in files %}
       <p><a href="{{ file.file.url }}">{{ file.name }}</a></p>
-      <a href="{% url 'test_file_update' testplan_id=testplan.id test_id=test.id pk=file.id %}" class="button small">Update</a>
-      <a href="{% url 'test_file_delete' testplan_id=testplan.id test_id=test.id pk=file.id %}" class="button small alert">Delete</a>
+      <a href="{% url 'test_file_update' pk=file.id %}" class="button small">{% trans "Update" %}</a>
+      <a href="{% url 'test_file_delete' pk=file.id %}" class="button small alert">{% trans "Delete" %}</a>
       {% endfor %}
   </div>
 
   <div class="tabs-panel {% if tab_id == 8 %}is-active{% endif %}" id="worksheets">
+      <button class="button small" type="button" data-toggle="example-dropdown">{% trans "Add" %}</button>
+      <div class="dropdown-pane" id="example-dropdown" data-dropdown data-auto-focus="true">
+          <h4>{% trans "Add" %}</h4>
+          <a href="{% url 'test_checklist_create' test_id=test.id %}" class="button small">{% trans "Checklist" %}</a>
+          <a href="#" class="button small">{% trans "Table" %}</a>
+          <a href="#" class="button small">{% trans "Value" %}</a>
+      </div>
+
       <a href="{% url 'test_worksheet_create' testplan_id=testplan.id test_id=test.id %}" class="button small">
           {% trans "Add" %}</a>
       {% for worksheet in worksheets %}
@@ -147,10 +153,8 @@
   </div>
 
   <div class="tabs-panel {% if tab_id == 9 %}is-active{% endif %}" id="links">
-      <a href="{% url 'test_link_create' testplan_id=testplan.id test_id=test.id %}" class="button small">
-          {% trans "Add" %}</a>
+      <a href="{% url 'test_link_create' test_id=test.id %}" class="button small">{% trans "Add" %}</a>
       {% for link in links %}
-
       <table>
           <tr>
               <td>{{ link.name }}</td>
@@ -159,22 +163,19 @@
               <td><a href="{{ link.url }}">{{ link.url }}</a></td>
           </tr>
       </table>
-
-      <a href="{% url 'test_link_update' testplan_id=testplan.id test_id=test.id pk=link.id %}" class="button small">Update</a>
-      <a href="{% url 'test_link_delete' testplan_id=testplan.id test_id=test.id pk=link.id %}" class="button small alert">Delete</a>
+      <a href="{% url 'test_link_update' pk=link.id %}" class="button small">{% trans "Update" %}</a>
+      <a href="{% url 'test_link_delete' pk=link.id %}" class="button small alert">{% trans "Delete" %}</a>
       {% endfor %}
   </div>
 
   <div class="tabs-panel {% if tab_id == 10 %}is-active{% endif %}" id="comments">
-      <a href="{% url 'test_comment_create' testplan_id=testplan.id test_id=test.id %}" class="button small">
-          {% trans "Add" %}</a>
+      <a href="{% url 'test_comment_create' test_id=test.id %}" class="button small">{% trans "Add" %}</a>
       {% for comment in comments %}
         <h5>{{ comment.name }}</h5>
         <p>{{ comment.text|safe }}</p>
-        <a href="{% url 'test_comment_update' testplan_id=testplan.id test_id=test.id pk=comment.id %}" class="button small">
-            {% trans "Update" %}</a>
-        <a href="{% url 'test_comment_delete' testplan_id=testplan.id test_id=test.id pk=comment.id %}"
-           class="button small alert">{% trans "Delete" %}</a>
+        <a href="{% url 'test_comment_update' pk=comment.id %}" class="button small">{% trans "Update" %}</a>
+        <a href="{% url 'test_comment_delete' pk=comment.id %}" class="button small alert">
+            {% trans "Delete" %}</a>
       {% endfor %}
   </div>
 

@@ -5,7 +5,7 @@
 {% block content %}
 
 <form method="post" action="" enctype="multipart/form-data">
-    <a href="{% url 'test_details' testplan_id=testplan_id pk=test_id tab_id=tab_id%}" class="button small">
+    <a href="{% url 'test_details' pk=test_id tab_id=tab_id%}" class="button small">
         &laquo; {% trans "Back" %}</a>
     <input type="submit" value='{% trans "Create" %}' class="button success small" />
     {% csrf_token %}

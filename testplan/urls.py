@@ -25,32 +25,27 @@ urlpatterns = [
     path('<int:testplan_id>/category/<int:pk>/delete/', views.CategoryDelete.as_view(), name='category_delete'),
     path('<int:testplan_id>/category/<int:pk>/update/', views.CategoryUpdate.as_view(), name='category_update'),
     # tests
-    path('<int:testplan_id>/category/<int:category_id>/test/create/', views.TestCreate.as_view(), name='test_create'),
-    path('<int:testplan_id>/test/<int:pk>/delete/', views.TestDelete.as_view(), name='test_delete'),
-    path('<int:testplan_id>/test/<int:pk>/update/', views.TestUpdate.as_view(), name='test_update'),
-    path('<int:testplan_id>/test/<int:pk>/<int:tab_id>/', views.test_details, name='test_details'),
-    path('<int:testplan_id>/clear_tests/', views.clear_tests, name='clear_tests'),
+    path('test/create/<int:category_id>/', views.TestCreate.as_view(), name='test_create'),
+    path('test/delete/<int:pk>/', views.TestDelete.as_view(), name='test_delete'),
+    path('test/update/<int:pk>/', views.TestUpdate.as_view(), name='test_update'),
+    path('test/<int:pk>/<int:tab_id>/', views.test_details, name='test_details'),
+    path('clear_tests/<int:tp_id>/', views.clear_tests, name='clear_tests'),
     # configs
-    path('<int:testplan_id>/test/<int:test_id>/config/create/',
-         views.TestConfigCreate.as_view(), name='test_config_create'),
-    path('<int:testplan_id>/test/<int:test_id>/config/<int:pk>/delete/',
-         views.TestConfigDelete.as_view(), name='test_config_delete'),
-    path('<int:testplan_id>/test/<int:test_id>/config/<int:pk>/update/',
-         views.TestConfigUpdate.as_view(), name='test_config_update'),
+    path('test_config/create/<int:test_id>/', views.TestConfigCreate.as_view(), name='test_config_create'),
+    path('test_config/delete/<int:pk>/', views.TestConfigDelete.as_view(), name='test_config_delete'),
+    path('test_config/update/<int:pk>/', views.TestConfigUpdate.as_view(), name='test_config_update'),
     # images
-    path('<int:testplan_id>/test/<int:test_id>/image/create/',
-         views.TestImageCreate.as_view(), name='test_image_create'),
-    path('<int:testplan_id>/test/<int:test_id>/image/<int:pk>/delete/',
-         views.TestImageDelete.as_view(), name='test_image_delete'),
-    path('<int:testplan_id>/test/<int:test_id>/image/<int:pk>/update/',
-         views.TestImageUpdate.as_view(), name='test_image_update'),
+    path('test_image/create/<int:test_id>/', views.TestImageCreate.as_view(), name='test_image_create'),
+    path('test_image/delete/<int:pk>/', views.TestImageDelete.as_view(), name='test_image_delete'),
+    path('test_image/update/<int:pk>/', views.TestImageUpdate.as_view(), name='test_image_update'),
     # files
-    path('<int:testplan_id>/test/<int:test_id>/file/create/',
-         views.TestFileCreate.as_view(), name='test_file_create'),
-    path('<int:testplan_id>/test/<int:test_id>/file/<int:pk>/delete/',
-         views.TestFileDelete.as_view(), name='test_file_delete'),
-    path('<int:testplan_id>/test/<int:test_id>/file/<int:pk>/update/',
-         views.TestFileUpdate.as_view(), name='test_file_update'),
+    path('test_file/create/<int:test_id>/', views.TestFileCreate.as_view(), name='test_file_create'),
+    path('test_file/delete/<int:pk>/', views.TestFileDelete.as_view(), name='test_file_delete'),
+    path('test_file/update/<int:pk>/', views.TestFileUpdate.as_view(), name='test_file_update'),
+
+    # checklists
+    path('checklist/create/<int:test_id>/', views.TestChecklistCreate.as_view(), name='test_checklist_create'),
+
     # worksheets
     path('<int:testplan_id>/test/<int:test_id>/worksheet/create/',
          views.TestWorksheetCreate.as_view(), name='test_worksheet_create'),
@@ -58,6 +53,7 @@ urlpatterns = [
          views.TestWorksheetDelete.as_view(), name='test_worksheet_delete'),
     path('<int:testplan_id>/test/<int:test_id>/worksheet/<int:pk>/update/',
          views.TestWorksheetUpdate.as_view(), name='test_worksheet_update'),
+
     # worksheet items
     path('<int:testplan_id>/test/<int:test_id>/worksheet/<int:worksheet_id>/item/create/',
          views.WorksheetItemCreate.as_view(), name='worksheet_item_create'),
@@ -65,18 +61,13 @@ urlpatterns = [
          views.WorksheetItemDelete.as_view(), name='worksheet_item_delete'),
     path('<int:testplan_id>/test/<int:test_id>/w_item/<int:pk>/update/',
          views.WorksheetItemUpdate.as_view(), name='worksheet_item_update'),
+
     # links
-    path('<int:testplan_id>/test/<int:test_id>/link/create/',
-         views.TestLinkCreate.as_view(), name='test_link_create'),
-    path('<int:testplan_id>/test/<int:test_id>/link/<int:pk>/delete/',
-         views.TestLinkDelete.as_view(), name='test_link_delete'),
-    path('<int:testplan_id>/test/<int:test_id>/link/<int:pk>/update/',
-         views.TestLinkUpdate.as_view(), name='test_link_update'),
+    path('test_link/create/<int:test_id>/', views.TestLinkCreate.as_view(), name='test_link_create'),
+    path('test_link/delete/<int:pk>/', views.TestLinkDelete.as_view(), name='test_link_delete'),
+    path('test_link/update/<int:pk>/', views.TestLinkUpdate.as_view(), name='test_link_update'),
     # comments
-    path('<int:testplan_id>/test/<int:test_id>/comment/create/',
-         views.TestCommentCreate.as_view(), name='test_comment_create'),
-    path('<int:testplan_id>/test/<int:test_id>/comment/<int:pk>/delete/',
-         views.TestCommentDelete.as_view(), name='test_comment_delete'),
-    path('<int:testplan_id>/test/<int:test_id>/comment/<int:pk>/update/',
-         views.TestCommentUpdate.as_view(), name='test_comment_update'),
+    path('test_comment/create/<int:test_id>/', views.TestCommentCreate.as_view(), name='test_comment_create'),
+    path('test_comment/delete/<int:pk>/', views.TestCommentDelete.as_view(), name='test_comment_delete'),
+    path('test_comment/update/<int:pk>/', views.TestCommentUpdate.as_view(), name='test_comment_update'),
 ]

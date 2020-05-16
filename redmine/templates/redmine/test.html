@@ -6,6 +6,6 @@
 
 <p>{{ message.1 }}</p>
 
-<a href="{% url 'test_details' testplan_id=testplan_id pk=test_id tab_id=11 %}" class="button small">&laquo; {% trans "Back" %}</a>
+<a href="{% url 'test_details' pk=test_id tab_id=11 %}" class="button small">&laquo; {% trans "Back" %}</a>
 
 {% endblock %}

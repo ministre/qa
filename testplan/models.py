@@ -139,6 +139,16 @@ class TestWorksheetItem(models.Model):
     worksheet = models.ForeignKey(TestWorksheet, related_name='worksheet_item', on_delete=models.CASCADE)
 
 
+class TestChecklist(models.Model):
+    test = models.ForeignKey(Test, related_name='test_checklist', on_delete=models.CASCADE)
+    name = models.CharField(max_length=1000)
+
+
+class TestChecklistItem(models.Model):
+    checklist = models.ForeignKey(TestChecklist, related_name='test_checklist_item', on_delete=models.CASCADE)
+    name = models.CharField(max_length=1000)
+
+
 class TestLink(models.Model):
     name = models.CharField(max_length=1000)
     url = models.CharField(max_length=1000)

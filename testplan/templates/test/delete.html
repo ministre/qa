@@ -7,7 +7,7 @@
 <form method="post">
     {% csrf_token %}
     <p>{% trans "Are you sure you want to delete" %} "<b>{{ object }}</b>"?</p>
-    <a href="{% url 'test_details' testplan_id=testplan_id pk=object.id tab_id=1 %}" class="button small">
+    <a href="{% url 'test_details' pk=object.id tab_id=1 %}" class="button small">
         &laquo; {% trans "Back" %}</a>
     <input type="submit" value='{% trans "Confirm" %}' class="button alert small" />
 </form>
