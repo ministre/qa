@@ -19,8 +19,7 @@ from qa import settings
 def testplan_list(request, tab_id):
     testplans = Testplan.objects.all().order_by('id')
     patterns = Pattern.objects.all().order_by('id')
-    return render(request, 'testplan/list.html', {'testplans': testplans, 'patterns': patterns,
-                                                  'tab_id': tab_id})
+    return render(request, 'testplan/list.html', {'testplans': testplans, 'patterns': patterns, 'tab_id': tab_id})
 
 
 @method_decorator(login_required, name='dispatch')

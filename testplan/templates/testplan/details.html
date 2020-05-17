@@ -10,9 +10,10 @@
     <li class="tabs-title {% if tab_id == 1 %} is-active{% endif %}">
         <a data-tabs-target="general" href="#general">{% trans "General" %}</a></li>
     <li class="tabs-title {% if tab_id == 2 %} is-active{% endif %}">
-        <a data-tabs-target="terms" href="#terms">{% trans "Terms and Conditions" %}</a></li>
+        <a data-tabs-target="chapters" href="#chapters">{% trans "Chapters" %}</a></li>
     <li class="tabs-title {% if tab_id == 3 %} is-active{% endif %}">
-        <a data-tabs-target="tests" href="#tests">{% trans "Tests" %}</a></li>
+        <a data-tabs-target="tests" href="#tests">{% trans "Tests" %}
+        {% if tests_count > 0 %}({{ tests_count }}){% endif %}</a></li>
     <li class="tabs-title {% if tab_id == 4 %} is-active{% endif %}">
         <a data-tabs-target="docx" href="#docx">{% trans "Docx" %}</a></li>
     <li class="tabs-title {% if tab_id == 5 %} is-active{% endif %}">
@@ -48,10 +49,6 @@
                 <td>{{ testplan.updated_at }} ({{ testplan.updated_by }})</td>
             </tr>
             <tr>
-                <td>{% trans "Tests amount" %}:</td>
-                <td>{{ tests_count }}</td>
-            </tr>
-            <tr>
                 <td>{% trans "Protocols amount" %}:</td>
                 <td>{{ protocols_count }}</td>
             </tr>
@@ -60,7 +57,7 @@
     </div>
 
 
-  <div class="tabs-panel {% if tab_id == 2 %}is-active{% endif %}" id="terms">
+  <div class="tabs-panel {% if tab_id == 2 %}is-active{% endif %}" id="chapters">
       <form method="post" action="/redmine/import_all_chapters/">
           <a href="{% url 'chapter_create' tp_id=testplan.id %}" class="button small">{% trans "Add" %}</a>
           {% csrf_token %}
