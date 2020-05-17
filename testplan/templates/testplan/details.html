@@ -10,7 +10,8 @@
     <li class="tabs-title {% if tab_id == 1 %} is-active{% endif %}">
         <a data-tabs-target="general" href="#general">{% trans "General" %}</a></li>
     <li class="tabs-title {% if tab_id == 2 %} is-active{% endif %}">
-        <a data-tabs-target="chapters" href="#chapters">{% trans "Chapters" %}</a></li>
+        <a data-tabs-target="chapters" href="#chapters">{% trans "Chapters" %}
+        {% if chapters.count > 0 %}({{ chapters.count }}){% endif %}</a></li>
     <li class="tabs-title {% if tab_id == 3 %} is-active{% endif %}">
         <a data-tabs-target="tests" href="#tests">{% trans "Tests" %}
         {% if tests_count > 0 %}({{ tests_count }}){% endif %}</a></li>
@@ -64,9 +65,7 @@
           <input type="hidden" name="testplan_id" value="{{ testplan.id }}">
           <input type="hidden" name="redmine_url" value="{{ testplan.redmine_url }}">
           <input type="hidden" name="tag" value="{{ testplan.device_type.tag }}">
-          <input type="submit" value='{% trans "Add chapters from Redmine" %}' class="button success small" />
-          <a href="{% url 'clear_chapters' tp_id=testplan.id %}" class="button small alert">
-              {% trans "Clear" %}</a>
+          <a href="{% url 'clear_chapters' tp_id=testplan.id %}" class="button small alert">{% trans "Clear" %}</a>
       </form>
 
       <ul style="list-style: none">
@@ -89,7 +88,6 @@
           <input type="hidden" name="testplan_id" value="{{ testplan.id }}">
           <input type="hidden" name="redmine_url" value="{{ testplan.redmine_url }}">
           <input type="hidden" name="tag" value="{{ testplan.device_type.tag }}">
-          <input type="submit" value='{% trans "Add tests from Redmine" %}' class="button success small" />
           <a href="{% url 'clear_tests' tp_id=testplan.id %}" class="button small alert">{% trans "Clear" %}</a>
         </form>
       <br>
@@ -100,7 +98,7 @@
               <a href="{% url 'category_update' pk=category.id %}"><i class="step fi-pencil"></i></a>
               <a href="{% url 'category_delete' pk=category.id %}">
                   <i class="step fi-minus" style="color: #bc104b"></i></a>
-              {% for test in category.tests %}
+              {% for test in category.category_test.all|dictsort:"id" %}
               <ul style="list-style: none">
                   <li>
                       <a href="{% url 'test_details' pk=test.id tab_id=1 %}">

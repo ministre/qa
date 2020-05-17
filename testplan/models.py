@@ -64,7 +64,7 @@ class Category(models.Model):
 
 
 class Test(models.Model):
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, related_name='category_test', on_delete=models.CASCADE)
     name = models.CharField(max_length=1000)
     purpose = models.TextField(max_length=5000, null=True, blank=True)
     procedure = models.TextField(null=True, blank=True)

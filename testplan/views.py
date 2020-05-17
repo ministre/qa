@@ -73,20 +73,11 @@ class TestplanUpdate(UpdateView):
         return reverse('testplan_details', kwargs={'pk': self.object.id, 'tab_id': 1})
 
 
-def get_testlist(testplan: Testplan):
-    categories = Category.objects.filter(testplan=testplan).order_by('id')
-    testlist = []
-    for category in categories:
-        tests = Test.objects.filter(category=category).order_by('id')
-        testlist.append({'id': category.id, 'name': category.name, 'tests': tests})
-    return testlist
-
-
 @login_required
 def testplan_details(request, pk, tab_id):
     testplan = get_object_or_404(Testplan, id=pk)
     chapters = Chapter.objects.filter(testplan=testplan).order_by('id')
-    categories = get_testlist(testplan)
+    categories = Category.objects.filter(testplan=testplan).order_by('id')
     protocols_count = testplan.protocols_count()
     r = RedmineProject(testplan.redmine_project)
     return render(request, 'testplan/details.html', {'tab_id': tab_id, 'testplan': testplan, 'categories': categories,
@@ -256,7 +247,7 @@ class TestCreate(CreateView):
 
     def get_success_url(self):
         self.object.category.testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'pk': self.object.id, 'tab_id': 1})
+        return reverse('testplan_details', kwargs={'pk': self.object.category.testplan.id, 'tab_id': 3})
 
 
 @method_decorator(login_required, name='dispatch')

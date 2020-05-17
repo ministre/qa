@@ -139,8 +139,7 @@
                                   <a href="{% url 'test_checklist_update' pk=checklist.id %}"><i class="step fi-pencil"></i></a>
                                   <a href="{% url 'test_checklist_delete' pk=checklist.id %}">
                                       <i class="step fi-minus" style="color: #bc104b"></i></a>
-
-                                  {% for item in checklist.test_checklist_item.all %}
+                                  {% for item in checklist.test_checklist_item.all|dictsort:"id" %}
                                   <ul style="list-style: none">
                                       <li>
                                           <i class="fi-checkbox"></i> {{ item.name }}
