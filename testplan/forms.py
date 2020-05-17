@@ -239,6 +239,6 @@ class RedmineForm(forms.Form):
     configs = forms.BooleanField(label=_('Configurations'), required=False)
     images = forms.BooleanField(label=_('Images'), required=False)
     files = forms.BooleanField(label=_('Files'), required=False)
-    worksheets = forms.BooleanField(label=_('Worksheets'), required=False)
+    checklists = forms.BooleanField(label=_('Checklists'), required=False)
     links = forms.BooleanField(label=_('Links'), required=False)
     comments = forms.BooleanField(label=_('Comments'), required=False)

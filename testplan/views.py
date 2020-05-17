@@ -311,7 +311,7 @@ def test_details(request, pk, tab_id):
                                                'configs': True,
                                                'images': False,
                                                'files': False,
-                                               'worksheets': True,
+                                               'checklists': True,
                                                'links': True,
                                                'comments': True})
 

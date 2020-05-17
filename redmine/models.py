@@ -3,7 +3,7 @@ from qa import settings
 from redminelib.exceptions import ResourceNotFoundError, ForbiddenError, AuthError
 from requests.exceptions import ConnectionError
 from device.models import DeviceType, Device, Specification, Sample
-from testplan.models import Pattern, Testplan, Category, Test, TestConfig, TestLink, TestWorksheet, TestWorksheetItem, \
+from testplan.models import Pattern, Testplan, Category, Test, TestConfig, TestLink, TestChecklist, TestChecklistItem, \
     TestComment, TestImage
 import re
 
@@ -106,7 +106,7 @@ class RedmineProject(object):
     def export_test(self, test: Test):
         configs = TestConfig.objects.filter(test=test).order_by('id')
         if configs.count():
-            wiki_configs = '\nh3. Конфигурация\n'
+            wiki_configs = '\nh3. Конфигурация\r'
             for config in configs:
                 if config.lang == 'json':
                     lang = 'javascript'
@@ -122,37 +122,29 @@ class RedmineProject(object):
 
         links = TestLink.objects.filter(test=test).order_by('id')
         if links.count():
-            wiki_links = '\nh2. Ссылки\n'
+            wiki_links = '\nh2. Ссылки\r'
             for link in links:
-                wiki_links += '\nh3. ' + link.name + '\n' + \
-                              '\n' + link.url + '\n'
+                wiki_links += '\nh3. ' + link.name + '\r' + \
+                              '\n' + link.url + '\r'
         else:
             wiki_links = ''
 
-        worksheets = TestWorksheet.objects.filter(test=test).order_by('id')
-        wiki_worksheets = ''
-        for worksheet in worksheets:
-            if worksheet.type == 'text':
-                wiki_worksheets += '\nh3. Текстовое значение\n'
-            elif worksheet.type == 'number':
-                wiki_worksheets += '\nh3. Численное значение\n'
-            elif worksheet.type == 'checklist':
-                wiki_worksheets += '\nh3. Чек-лист\n'
-            elif worksheet.type == 'table':
-                wiki_worksheets += '\nh3. Таблица\n'
-            wiki_worksheets += '\n' + worksheet.name + '\n'
-            if worksheet.type == 'checklist' or worksheet.type == 'table':
-                worksheet_items = TestWorksheetItem.objects.filter(worksheet=worksheet)
-                for worksheet_item in worksheet_items:
-                    wiki_worksheets += '\n* ' + worksheet_item.name
-                wiki_worksheets += '\n'
+        checklists = TestChecklist.objects.filter(test=test).order_by('id')
+        wiki_checklists = ''
+        for checklist in checklists:
+            wiki_checklists += '\nh3. Чек-лист\r\n\r'
+            wiki_checklists += '\n' + checklist.name + '\r\n\r'
+            checklist_items = TestChecklistItem.objects.filter(checklist=checklist)
+            for checklist_item in checklist_items:
+                wiki_checklists += '\n* ' + checklist_item.name + '\r'
+            wiki_checklists += '\n\r'
 
         comments = TestComment.objects.filter(test=test).order_by('id')
         if comments.count():
-            wiki_comments = '\nh2. Комментарии\n'
+            wiki_comments = '\nh2. Комментарии\r' + '\n\r'
             for comment in comments:
-                wiki_comments += '\nh3. ' + comment.name + '\n' + \
-                                 '\n' + comment.text + '\n'
+                wiki_comments += '\nh3. ' + comment.name + '\r\n\r' + \
+                                 '\n' + comment.text + '\r\n\r'
         else:
             wiki_comments = ''
 
@@ -171,7 +163,7 @@ class RedmineProject(object):
                     wiki_images + \
                     wiki_configs + \
                     '\nh2. Ожидаемый результат\n\n' + test.expected + '\n' + \
-                    wiki_worksheets + \
+                    wiki_checklists + \
                     wiki_links +\
                     wiki_comments
 
@@ -313,8 +305,23 @@ class RedmineTest(object):
     def parse_files(self):
         return False
 
-    def parse_worksheets(self):
-        return False
+    def parse_checklists(self):
+        checklists = []
+        for h2_block in self.h2_blocks:
+            detect_head = re.search('Ожидаемый результат', h2_block)
+            if detect_head:
+                h3_blocks = h2_block.split('\nh3. ')
+                for h3_block in h3_blocks:
+                    detect_checklist_head = re.search('Чек-лист\r\n', h3_block)
+                    if detect_checklist_head:
+                        checklist_blocks = h3_block.split('\r\n')
+                        checklist_name = checklist_blocks[2]
+                        items = []
+                        for checklist_item in checklist_blocks[4:-1]:
+                            items.append(checklist_item[2:])
+                        checklist = {'name': checklist_name, 'items': items}
+                        checklists.append(checklist)
+        return checklists
 
     def parse_links(self):
         links = []

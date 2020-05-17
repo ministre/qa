@@ -81,7 +81,7 @@ class Test(models.Model):
         self.save()
         return True
 
-    def update_details(self, name, purpose, procedure, expected, configs, images, files, worksheets,
+    def update_details(self, name, purpose, procedure, expected, configs, images, files, checklists,
                        links, comments):
         if name:
             self.name = name
@@ -91,14 +91,24 @@ class Test(models.Model):
             self.procedure = procedure
         if expected:
             self.expected = expected
+
         TestConfig.objects.filter(test=self).delete()
         if configs:
             for config in configs:
                 TestConfig.objects.create(test=self, name=config[0], lang=config[1], config=config[2])
+
+        TestChecklist.objects.filter(test=self).delete()
+        if checklists:
+            for checklist in checklists:
+                new_checklist = TestChecklist.objects.create(test=self, name=checklist['name'])
+                for item in checklist['items']:
+                    TestChecklistItem.objects.create(checklist=new_checklist, name=item)
+
         TestLink.objects.filter(test=self).delete()
         if links:
             for link in links:
                 TestLink.objects.create(test=self, name=link[0], url=link[1])
+
         TestComment.objects.filter(test=self).delete()
         if comments:
             for comment in comments:

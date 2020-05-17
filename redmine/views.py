@@ -166,9 +166,9 @@ def import_test_details(request):
         except MultiValueDictKeyError:
             is_files = False
         try:
-            is_worksheets = request.POST['worksheets']
+            is_checklists = request.POST['checklists']
         except MultiValueDictKeyError:
-            is_worksheets = False
+            is_checklists = False
         try:
             is_links = request.POST['links']
         except MultiValueDictKeyError:
@@ -216,19 +216,19 @@ def import_test_details(request):
             is_images = test_details.parse_images()
         if is_files:
             is_files = test_details.parse_files()
-        if is_worksheets:
-            is_worksheets = test_details.parse_worksheets()
+        if is_checklists:
+            is_checklists = test_details.parse_checklists()
         if is_links:
             is_links = test_details.parse_links()
         if is_comments:
             is_comments = test_details.parse_comments()
 
         test.update_details(name=is_name, purpose=is_purpose, procedure=is_procedure, expected=is_expected,
-                            configs=is_configs, images=is_images, files=is_files, worksheets=is_worksheets,
+                            configs=is_configs, images=is_images, files=is_files, checklists=is_checklists,
                             links=is_links, comments=is_comments)
         test.update_timestamp(request.user)
 
-        message = is_links
+        message = is_checklists
 
         return render(request, 'redmine/debug.html', {'message': message})
 
