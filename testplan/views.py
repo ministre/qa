@@ -59,9 +59,13 @@ class TestplanUpdate(UpdateView):
     def get_initial(self):
         return {'updated_by': self.request.user, 'updated_at': datetime.now}
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('testplan_details', kwargs={'pk': self.object.id, 'tab_id': 1})
+        return context
+
     def get_success_url(self):
-        testplan = get_object_or_404(Testplan, id=self.object.id)
-        testplan.update_timestamp(user=self.request.user)
+        self.object.update_timestamp(user=self.request.user)
         return reverse('testplan_details', kwargs={'pk': self.object.id, 'tab_id': 1})
 
 
@@ -229,17 +233,16 @@ class CategoryDelete(DeleteView):
 class CategoryUpdate(UpdateView):
     model = Category
     form_class = CategoryForm
-    template_name = 'category/update.html'
+    template_name = 'testplan/update.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan_id')
+        context['back_url'] = reverse('testplan_details', kwargs={'pk': self.object.testplan.id, 'tab_id': 3})
         return context
 
     def get_success_url(self):
-        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
-        testplan.update_timestamp(user=self.request.user)
-        return reverse('testplan_details', kwargs={'pk': testplan.id, 'tab_id': 3})
+        self.object.testplan.update_timestamp(user=self.request.user)
+        return reverse('testplan_details', kwargs={'pk': self.object.testplan.id, 'tab_id': 3})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -269,6 +272,11 @@ class TestDelete(DeleteView):
     model = Test
     template_name = 'testplan/delete.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('test_details', kwargs={'pk': self.object.id, 'tab_id': 1})
+        return context
+
     def get_success_url(self):
         testplan = self.object.category.testplan
         testplan.update_timestamp(user=self.request.user)
@@ -279,10 +287,15 @@ class TestDelete(DeleteView):
 class TestUpdate(UpdateView):
     model = Test
     form_class = TestForm
-    template_name = 'test/update.html'
+    template_name = 'testplan/update.html'
 
     def get_initial(self):
         return {'updated_by': self.request.user, 'updated_at': datetime.now}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('test_details', kwargs={'pk': self.object.id, 'tab_id': 1})
+        return context
 
     def get_success_url(self):
         self.object.category.testplan.update_timestamp(user=self.request.user)
@@ -371,11 +384,11 @@ class ChapterDelete(DeleteView):
 class ChapterUpdate(UpdateView):
     model = Chapter
     form_class = ChapterForm
-    template_name = 'chapter/update.html'
+    template_name = 'testplan/update.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['tp_id'] = self.object.testplan.id
+        context['back_url'] = reverse('testplan_details', kwargs={'pk': self.object.testplan.id, 'tab_id': 2})
         return context
 
     def get_initial(self):
@@ -459,15 +472,14 @@ class TestConfigDelete(DeleteView):
 class TestConfigUpdate(UpdateView):
     model = TestConfig
     form_class = TestConfigForm
-    template_name = 'test_component/update.html'
+    template_name = 'testplan/update.html'
 
     def get_initial(self):
         return {'test_id': self.kwargs.get('test_id')}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['test_id'] = self.object.test.id
-        context['tab_id'] = 5
+        context['back_url'] = reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 5})
         return context
 
     def get_success_url(self):
@@ -519,15 +531,14 @@ class TestImageDelete(DeleteView):
 class TestImageUpdate(UpdateView):
     model = TestImage
     form_class = TestImageForm
-    template_name = 'test_component/update.html'
+    template_name = 'testplan/update.html'
 
     def get_initial(self):
         return {'test_id': self.kwargs.get('test_id')}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['test_id'] = self.object.test.id
-        context['tab_id'] = 6
+        context['back_url'] = reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 6})
         return context
 
     def get_success_url(self):
@@ -579,15 +590,14 @@ class TestFileDelete(DeleteView):
 class TestFileUpdate(UpdateView):
     model = TestFile
     form_class = TestFileForm
-    template_name = 'test_component/update.html'
+    template_name = 'testplan/update.html'
 
     def get_initial(self):
         return {'test_id': self.kwargs.get('test_id')}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['test_id'] = self.object.test.id
-        context['tab_id'] = 7
+        context['back_url'] = reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 7})
         return context
 
     def get_success_url(self):
@@ -642,7 +652,7 @@ class TestWorksheetDelete(DeleteView):
 class TestWorksheetUpdate(UpdateView):
     model = TestWorksheet
     form_class = TestWorksheetForm
-    template_name = 'test_component/update.html'
+    template_name = 'testplan/update.html'
 
     def get_initial(self):
         return {'test': self.kwargs.get('test_id')}
@@ -709,16 +719,14 @@ class WorksheetItemDelete(DeleteView):
 class WorksheetItemUpdate(UpdateView):
     model = TestWorksheetItem
     form_class = WorksheetItemForm
-    template_name = 'test_component/update.html'
+    template_name = 'testplan/update.html'
 
     def get_initial(self):
         return {'test': self.kwargs.get('test_id')}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan_id')
-        context['test_id'] = self.kwargs.get('test_id')
-        context['tab_id'] = 8
+        context['back_url'] = reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 8})
         return context
 
     def get_success_url(self):
@@ -772,15 +780,14 @@ class TestLinkDelete(DeleteView):
 class TestLinkUpdate(UpdateView):
     model = TestLink
     form_class = TestLinkForm
-    template_name = 'test_component/update.html'
+    template_name = 'testplan/update.html'
 
     def get_initial(self):
         return {'test_id': self.kwargs.get('test_id')}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['test_id'] = self.object.test.id
-        context['tab_id'] = 9
+        context['back_url'] = reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 9})
         return context
 
     def get_success_url(self):
@@ -832,15 +839,14 @@ class TestCommentDelete(DeleteView):
 class TestCommentUpdate(UpdateView):
     model = TestComment
     form_class = TestCommentForm
-    template_name = 'test_component/update.html'
+    template_name = 'testplan/update.html'
 
     def get_initial(self):
         return {'test_id': self.kwargs.get('test_id')}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['test_id'] = self.object.test.id
-        context['tab_id'] = 10
+        context['back_url'] = reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 10})
         return context
 
     def get_success_url(self):
@@ -875,7 +881,7 @@ class PatternDelete(DeleteView):
 class PatternUpdate(UpdateView):
     model = Pattern
     form_class = PatternForm
-    template_name = 'pattern/update.html'
+    template_name = 'testplan/update.html'
 
     def get_initial(self):
         return {'updated_by': self.request.user, 'updated_at': datetime.now}
@@ -929,15 +935,14 @@ class TestChecklistDelete(DeleteView):
 class TestChecklistUpdate(UpdateView):
     model = TestChecklist
     form_class = TestChecklistForm
-    template_name = 'test_component/update.html'
+    template_name = 'testplan/update.html'
 
     def get_initial(self):
         return {'test_id': self.kwargs.get('test_id')}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['test_id'] = self.object.test.id
-        context['tab_id'] = 8
+        context['back_url'] = reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 8})
         return context
 
     def get_success_url(self):
@@ -989,15 +994,14 @@ class TestChecklistItemDelete(DeleteView):
 class TestChecklistItemUpdate(UpdateView):
     model = TestChecklistItem
     form_class = TestChecklistItemForm
-    template_name = 'test_component/update.html'
+    template_name = 'testplan/update.html'
 
     def get_initial(self):
         return {'checklist_id': self.kwargs.get('checklist_id')}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['test_id'] = self.object.checklist.test.id
-        context['tab_id'] = 8
+        context['back_url'] = reverse('test_details', kwargs={'pk': self.object.checklist.test.id, 'tab_id': 8})
         return context
 
     def get_success_url(self):
