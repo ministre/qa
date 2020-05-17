@@ -4,11 +4,8 @@
 
 {% block content %}
 
-<a href="{% url 'import_testplan' %}" class="button small">{% trans "Create from Redmine" %}</a>
-<a href="/p_create/" class="button small warning">{% trans "Create from Pattern" %}</a>
-
-<form method="post" action="">
-    <a href="{% url 'testplans' tab_id=1 %}" class="button small">&laquo; {% trans "Back" %}</a>
+<form method="post" action="" enctype="multipart/form-data">
+    <a href="{{ back_url }}" class="button small">&laquo; {% trans "Back" %}</a>
     <input type="submit" value='{% trans "Create" %}' class="button success small" />
     {% csrf_token %}
     {{ form }}
