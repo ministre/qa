@@ -79,11 +79,10 @@ def testplan_details(request, pk, tab_id):
     chapters = Chapter.objects.filter(testplan=testplan).order_by('id')
     categories = Category.objects.filter(testplan=testplan).order_by('id')
     protocols_count = testplan.protocols_count()
-    r = RedmineProject(testplan.redmine_project)
+    redmine_url = settings.REDMINE_URL
     return render(request, 'testplan/details.html', {'tab_id': tab_id, 'testplan': testplan, 'categories': categories,
                                                      'chapters': chapters, 'tests_count': testplan.tests_count(),
-                                                     'protocols_count': protocols_count,
-                                                     'redmine_wiki': r.get_wiki_url('wiki')})
+                                                     'protocols_count': protocols_count, 'redmine_url': redmine_url})
 
 
 @login_required

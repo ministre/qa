@@ -122,7 +122,33 @@
   </div>
 
   <div class="tabs-panel {% if tab_id == 5 %}is-active{% endif %}" id="redmine">
-      {% if testplan.redmine_project %}
+      <div class="grid-x grid-margin-x">
+          <div class="cell">
+              <div class="card">
+                  <div class="card-section">
+                      <h4>Project Information</h4>
+                      <table>
+                          {% if testplan.redmine_project %}
+                          <tr>
+                              <td>Wiki URL:</td>
+                              <td>
+                                  <a href="{{ redmine_url }}/projects/{{ testplan.redmine_project }}/wiki/">
+                                      {{ redmine_url }}/projects/{{ testplan.redmine_project }}/wiki/
+                                  </a>
+                              </td>
+                          </tr>
+                          {% else %}
+                          <tr>
+                              <td>
+                                  <a href="{% url 'testplan_update' pk=testplan.id %}">{% trans "Project ID is not set" %}</a>
+                              </td>
+                          </tr>
+                          {% endif %}
+                      </table>
+                  </div>
+              </div>
+          </div>
+      </div>
 
       <form method="post" action="{% url 'export_testplan' %}">
           {% csrf_token %}
@@ -130,28 +156,6 @@
           <input type="submit" value='{% trans "Export" %}' class="button success small" />
       </form>
 
-      <table>
-          <tr>
-              <td>{% trans "Parent Project ID" %}:</td>
-              <td>{{ testplan.redmine_parent }}</td>
-          </tr>
-          <tr>
-              <td>{% trans "Project ID" %}:</td>
-              <td>{{ testplan.redmine_project }}</td>
-          </tr>
-          <tr>
-              <td>{% trans "Wiki" %}:</td>
-              {% if redmine_wiki.0 %}
-              <td><a href="{{ redmine_wiki.1 }}">{{ redmine_wiki.1 }}</a></td>
-              {% else %}
-              <td>{{ redmine_wiki.1 }}</td>
-              {% endif %}
-          </tr>
-      </table>
-
-      {% else %}
-      <a href="{% url 'testplan_update' pk=testplan.id %}">{% trans "Project ID is not set" %}</a>
-      {% endif %}
   </div>
 
 </div>
