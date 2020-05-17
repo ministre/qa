@@ -31,29 +31,29 @@ urlpatterns = [
     path('test/<int:pk>/<int:tab_id>/', views.test_details, name='test_details'),
     path('clear_tests/<int:tp_id>/', views.clear_tests, name='clear_tests'),
     # configs
-    path('test_config/create/<int:test_id>/', views.TestConfigCreate.as_view(), name='test_config_create'),
-    path('test_config/delete/<int:pk>/', views.TestConfigDelete.as_view(), name='test_config_delete'),
-    path('test_config/update/<int:pk>/', views.TestConfigUpdate.as_view(), name='test_config_update'),
+    path('config/create/<int:test_id>/', views.TestConfigCreate.as_view(), name='test_config_create'),
+    path('config/delete/<int:pk>/', views.TestConfigDelete.as_view(), name='test_config_delete'),
+    path('config/update/<int:pk>/', views.TestConfigUpdate.as_view(), name='test_config_update'),
     # images
-    path('test_image/create/<int:test_id>/', views.TestImageCreate.as_view(), name='test_image_create'),
-    path('test_image/delete/<int:pk>/', views.TestImageDelete.as_view(), name='test_image_delete'),
-    path('test_image/update/<int:pk>/', views.TestImageUpdate.as_view(), name='test_image_update'),
+    path('image/create/<int:test_id>/', views.TestImageCreate.as_view(), name='test_image_create'),
+    path('image/delete/<int:pk>/', views.TestImageDelete.as_view(), name='test_image_delete'),
+    path('image/update/<int:pk>/', views.TestImageUpdate.as_view(), name='test_image_update'),
     # files
-    path('test_file/create/<int:test_id>/', views.TestFileCreate.as_view(), name='test_file_create'),
-    path('test_file/delete/<int:pk>/', views.TestFileDelete.as_view(), name='test_file_delete'),
-    path('test_file/update/<int:pk>/', views.TestFileUpdate.as_view(), name='test_file_update'),
+    path('file/create/<int:test_id>/', views.TestFileCreate.as_view(), name='test_file_create'),
+    path('file/delete/<int:pk>/', views.TestFileDelete.as_view(), name='test_file_delete'),
+    path('file/update/<int:pk>/', views.TestFileUpdate.as_view(), name='test_file_update'),
 
     # checklists
-    path('test_checklist/create/<int:test_id>/', views.TestChecklistCreate.as_view(), name='test_checklist_create'),
-    path('test_checklist/delete/<int:pk>/', views.TestChecklistDelete.as_view(), name='test_checklist_delete'),
-    path('test_checklist/update/<int:pk>/', views.TestChecklistUpdate.as_view(), name='test_checklist_update'),
+    path('checklist/create/<int:test_id>/', views.TestChecklistCreate.as_view(), name='test_checklist_create'),
+    path('checklist/delete/<int:pk>/', views.TestChecklistDelete.as_view(), name='test_checklist_delete'),
+    path('checklist/update/<int:pk>/', views.TestChecklistUpdate.as_view(), name='test_checklist_update'),
 
     # checklist items
-    path('test_checklist_item/create/<int:checklist_id>/', views.TestChecklistItemCreate.as_view(),
+    path('checklist_item/create/<int:checklist_id>/', views.TestChecklistItemCreate.as_view(),
          name='test_checklist_item_create'),
-    path('test_checklist_item/delete/<int:pk>/', views.TestChecklistItemDelete.as_view(),
+    path('checklist_item/delete/<int:pk>/', views.TestChecklistItemDelete.as_view(),
          name='test_checklist_item_delete'),
-    path('test_checklist_item/update/<int:pk>/', views.TestChecklistItemUpdate.as_view(),
+    path('checklist_item/update/<int:pk>/', views.TestChecklistItemUpdate.as_view(),
          name='test_checklist_item_update'),
 
     # worksheets
