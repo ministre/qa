@@ -73,11 +73,11 @@
   </div>
 
   <div class="tabs-panel {% if tab_id == 3 %}is-active{% endif %}" id="procedure">
-    <p>{{ test_procedure|safe }}</p>
+    <p>{{ procedure|safe }}</p>
   </div>
 
   <div class="tabs-panel {% if tab_id == 4 %}is-active{% endif %}" id="expected">
-    <p>{{ test_expected|safe }}</p>
+    <p>{{ expected|safe }}</p>
   </div>
 
   <div class="tabs-panel {% if tab_id == 5 %}is-active{% endif %}" id="configs">
@@ -244,6 +244,7 @@
       </div>
 
       <div class="grid-x grid-margin-x small-up-2 medium-up-2">
+
             <div class="cell">
                 <div class="card">
                   <div class="card-section">
@@ -253,25 +254,29 @@
                           {% csrf_token %}
                           <input type="hidden" name="test" value="{{ test.id }}">
                           <input type="submit" value='{% trans "Export" %}' class="button success small" />
+                          {{ redmine_form.as_p }}
                       </form>
                   </div>
                 </div>
             </div>
+
             <div class="cell">
                 <div class="card">
                   <div class="card-section">
                     <h4>Import</h4>
                     <p>Click to update test details from Redmine Wiki.</p>
-                      <form method="post" action="{% url 'import_test_details' %}">
+                      <form method="post" action="{% url 'import_test' %}">
                           {% csrf_token %}
                           <input type="hidden" name="test" value="{{ test.id }}">
                           <input type="submit" value='{% trans "Import" %}' class="button alert small" />
-                          {{ redmine_import_form.as_p }}
+                          {{ redmine_form.as_p }}
                       </form>
                   </div>
                 </div>
             </div>
+
       </div>
+
   </div>
 
 </div>

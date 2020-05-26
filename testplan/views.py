@@ -7,7 +7,8 @@ from .models import Testplan, Category, Chapter, Test, TestConfig, TestImage, Te
     TestWorksheetItem, TestChecklist, TestChecklistItem, TestLink, TestComment, Pattern, DeviceType
 from .forms import TestplanForm, CategoryForm, ChapterForm, TestForm, TestConfigForm, TestImageForm, TestFileForm,\
     TestWorksheetForm, WorksheetItemForm, TestChecklistForm, TestChecklistItemForm, TestLinkForm, TestCommentForm, \
-    PatternForm, RedmineForm
+    PatternForm
+from redmine.forms import RedmineTestForm
 from django.http import HttpResponseRedirect
 import textile
 from datetime import datetime
@@ -288,12 +289,11 @@ class TestUpdate(UpdateView):
 def test_details(request, pk, tab_id):
     test = get_object_or_404(Test, id=pk)
     testplan = test.category.testplan
-    test_procedure = textile.textile(test.procedure)
-    test_expected = textile.textile(test.expected)
+    procedure = textile.textile(test.procedure)
+    expected = textile.textile(test.expected)
     configs = TestConfig.objects.filter(test=test).order_by('id')
     images = TestImage.objects.filter(test=test).order_by('id')
     files = TestFile.objects.filter(test=test).order_by('id')
-
     checklists = TestChecklist.objects.filter(test=test).order_by('id')
     worksheets_count = checklists.count()
 
@@ -301,28 +301,19 @@ def test_details(request, pk, tab_id):
     comments = TestComment.objects.filter(test=test).order_by('id')
     for comment in comments:
         comment.text = textile.textile(comment.text)
-    redmine_url = settings.REDMINE_URL
-    redmine_import_form = RedmineForm(initial={'test_id': test.id, 'project': testplan.redmine_project,
-                                               'wiki': test.redmine_wiki,
-                                               'name': True,
-                                               'purpose': True,
-                                               'procedure': True,
-                                               'expected': True,
-                                               'configs': True,
-                                               'images': False,
-                                               'files': False,
-                                               'checklists': True,
-                                               'links': True,
-                                               'comments': True})
+    redmine_form = RedmineTestForm(initial={'test_id': test.id, 'project': testplan.redmine_project,
+                                            'wiki': test.redmine_wiki, 'name': True, 'purpose': True,
+                                            'procedure': True, 'expected': True, 'configs': True,
+                                            'images': False, 'files': False, 'checklists': True,
+                                            'links': True, 'comments': True})
 
-    return render(request, 'test/details.html', {'tab_id': tab_id, 'testplan': testplan, 'test': test,
-                                                 'test_procedure': test_procedure, 'test_expected': test_expected,
-                                                 'configs': configs, 'images': images, 'files': files,
-                                                 'checklists': checklists,
-                                                 'worksheets_count': worksheets_count,
-                                                 'links': links, 'comments': comments,
-                                                 'redmine_import_form': redmine_import_form,
-                                                 'redmine_url': redmine_url})
+    return render(request, 'testplan/test_details.html', {'tab_id': tab_id, 'testplan': testplan, 'test': test,
+                                                          'procedure': procedure, 'expected': expected,
+                                                          'configs': configs, 'images': images, 'files': files,
+                                                          'checklists': checklists,
+                                                          'worksheets_count': worksheets_count, 'links': links,
+                                                          'comments': comments, 'redmine_form': redmine_form,
+                                                          'redmine_url': settings.REDMINE_URL})
 
 
 @method_decorator(login_required, name='dispatch')

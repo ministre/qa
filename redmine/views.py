@@ -16,6 +16,197 @@ from .models import RedmineProject, RedmineTest
 from django.urls import reverse
 
 
+@login_required
+def import_test(request):
+    message = None
+    if request.method == "POST":
+        test = get_object_or_404(Test, id=request.POST['test'])
+        try:
+            is_name = request.POST['name']
+        except MultiValueDictKeyError:
+            is_name = False
+        try:
+            is_purpose = request.POST['purpose']
+        except MultiValueDictKeyError:
+            is_purpose = False
+        try:
+            is_procedure = request.POST['procedure']
+        except MultiValueDictKeyError:
+            is_procedure = False
+        try:
+            is_expected = request.POST['expected']
+        except MultiValueDictKeyError:
+            is_expected = False
+        try:
+            is_configs = request.POST['configs']
+        except MultiValueDictKeyError:
+            is_configs = False
+        try:
+            is_images = request.POST['images']
+        except MultiValueDictKeyError:
+            is_images = False
+        try:
+            is_files = request.POST['files']
+        except MultiValueDictKeyError:
+            is_files = False
+        try:
+            is_checklists = request.POST['checklists']
+        except MultiValueDictKeyError:
+            is_checklists = False
+        try:
+            is_links = request.POST['links']
+        except MultiValueDictKeyError:
+            is_links = False
+        try:
+            is_comments = request.POST['comments']
+        except MultiValueDictKeyError:
+            is_comments = False
+
+        r = RedmineProject(request.POST['project'])
+
+        # check project
+        project = r.check_project()
+        if not project[0]:
+            message = project[1]
+            return render(request, 'redmine/result.html', {'message': message,
+                                                           'back_url': reverse('test_details', kwargs={'pk': test.id,
+                                                                                                       'tab_id': 11})})
+
+        # check wiki
+        wiki = r.check_wiki(request.POST['wiki'])
+        if not wiki[0]:
+            message = wiki[1]
+            return render(request, 'redmine/result.html', {'message': message,
+                                                           'back_url': reverse('test_details', kwargs={'pk': test.id,
+                                                                                                       'tab_id': 11})})
+
+        r_test = RedmineTest(wiki_title=request.POST['wiki'])
+        r_test.set_wiki(wiki_text=wiki[1])
+
+        if is_name:
+            is_name = r_test.parse_name()
+        if is_purpose:
+            is_purpose = r_test.parse_purpose()
+        if is_procedure:
+            is_procedure = r_test.parse_procedure()
+        if is_expected:
+            is_expected = r_test.parse_expected()
+        if is_configs:
+            is_configs = r_test.parse_configs()
+        if is_images:
+            is_images = r_test.parse_images()
+        if is_files:
+            is_files = r_test.parse_files()
+        if is_checklists:
+            is_checklists = r_test.parse_checklists()
+        if is_links:
+            is_links = r_test.parse_links()
+        if is_comments:
+            is_comments = r_test.parse_comments()
+
+        test.update_details(name=is_name, purpose=is_purpose, procedure=is_procedure, expected=is_expected,
+                            configs=is_configs, images=is_images, files=is_files, checklists=is_checklists,
+                            links=is_links, comments=is_comments)
+        test.update_timestamp(request.user)
+
+        message = r_test.parse_procedure()
+        return render(request, 'redmine/debug.html', {'message': message})
+
+    else:
+        message = 'Page not found'
+        return render(request, 'redmine/result.html', {'message': message,
+                                                       'back_url': reverse('testplans', kwargs={'tab_id': 1})})
+
+
+@login_required
+def export_test(request):
+    message = None
+    if request.method == "POST":
+        test = get_object_or_404(Test, id=request.POST['test'])
+        r = RedmineProject(request.POST['project'])
+
+        # check project
+        project = r.check_project()
+        if not project[0]:
+            message = project[1]
+            return render(request, 'redmine/result.html', {'message': message,
+                                                           'back_url': reverse('test_details', kwargs={'pk': test.id,
+                                                                                                       'tab_id': 11})})
+
+        # collect data
+        try:
+            is_name = request.POST['name']
+        except MultiValueDictKeyError:
+            is_name = False
+        try:
+            is_purpose = request.POST['purpose']
+        except MultiValueDictKeyError:
+            is_purpose = False
+        try:
+            is_procedure = request.POST['procedure']
+        except MultiValueDictKeyError:
+            is_procedure = False
+        try:
+            is_expected = request.POST['expected']
+        except MultiValueDictKeyError:
+            is_expected = False
+        try:
+            is_configs = request.POST['configs']
+        except MultiValueDictKeyError:
+            is_configs = False
+        try:
+            is_images = request.POST['images']
+        except MultiValueDictKeyError:
+            is_images = False
+        try:
+            is_files = request.POST['files']
+        except MultiValueDictKeyError:
+            is_files = False
+        try:
+            is_checklists = request.POST['checklists']
+        except MultiValueDictKeyError:
+            is_checklists = False
+        try:
+            is_links = request.POST['links']
+        except MultiValueDictKeyError:
+            is_links = False
+        try:
+            is_comments = request.POST['comments']
+        except MultiValueDictKeyError:
+            is_comments = False
+
+        # prepare test details
+        r_test = RedmineTest(request.POST['wiki'])
+        if is_name:
+            r_test.set_name(text=test.name)
+        if is_purpose:
+            r_test.set_purpose(text=test.purpose)
+        if is_procedure:
+            r_test.set_procedure(text=test.procedure)
+
+        # check wiki
+        wiki = r.check_wiki(title=request.POST['wiki'])
+        if wiki[0]:
+            r.update_test(r_test=r_test)
+            message = 'Wiki updated successfully'
+        else:
+            if wiki[1] == 'Wiki not found':
+                r.create_test(r_test=r_test)
+                message = 'Wiki created successfully'
+            else:
+                message = wiki[1]
+        return render(request, 'redmine/result.html', {'message': message,
+                                                       'back_url': reverse('test_details', kwargs={'pk': test.id,
+                                                                                                   'tab_id': 11})})
+
+    else:
+        message = 'Page not found'
+        return render(request, 'redmine/result.html', {'message': message,
+                                                       'back_url': reverse('testplans', kwargs={'tab_id': 1})})
+
+
+
+
 def redmine_connect():
     redmine = Redmine(settings.REDMINE_URL, key=settings.REDMINE_KEY, version='4.0.4')
     return redmine
@@ -131,107 +322,6 @@ def import_p_test_details(request):
             return HttpResponseRedirect('/testplan/' + testplan_id + '/test/' + test_id + '/')
         except ValueError as e:
             return render(request, 'redmine/error.html', {'message': e})
-
-
-@login_required
-def import_test_details(request):
-    if request.method == "POST":
-        test = get_object_or_404(Test, id=request.POST['test'])
-        try:
-            is_name = request.POST['name']
-        except MultiValueDictKeyError:
-            is_name = False
-        try:
-            is_purpose = request.POST['purpose']
-        except MultiValueDictKeyError:
-            is_purpose = False
-        try:
-            is_procedure = request.POST['procedure']
-        except MultiValueDictKeyError:
-            is_procedure = False
-        try:
-            is_expected = request.POST['expected']
-        except MultiValueDictKeyError:
-            is_expected = False
-        try:
-            is_configs = request.POST['configs']
-        except MultiValueDictKeyError:
-            is_configs = False
-        try:
-            is_images = request.POST['images']
-        except MultiValueDictKeyError:
-            is_images = False
-        try:
-            is_files = request.POST['files']
-        except MultiValueDictKeyError:
-            is_files = False
-        try:
-            is_checklists = request.POST['checklists']
-        except MultiValueDictKeyError:
-            is_checklists = False
-        try:
-            is_links = request.POST['links']
-        except MultiValueDictKeyError:
-            is_links = False
-        try:
-            is_comments = request.POST['comments']
-        except MultiValueDictKeyError:
-            is_comments = False
-
-        r = RedmineProject(request.POST['project'])
-
-        # check project
-        project = r.get_project()
-        if not project[0]:
-            message = project[1]
-            return render(request, 'redmine/error.html',
-                          {'message': message,
-                           'back_url': reverse('test_details',
-                                               kwargs={'pk': test.id,
-                                                       'testplan_id': test.category.testplan.id,
-                                                       'tab_id': 11})})
-        # check wiki
-        wiki = r.get_wiki_text(request.POST['wiki'])
-        if not wiki[0]:
-            message = wiki[1]
-            return render(request, 'redmine/error.html',
-                          {'message': message,
-                           'back_url': reverse('test_details',
-                                               kwargs={'pk': test.id,
-                                                       'testplan_id': test.category.testplan.id,
-                                                       'tab_id': 11})})
-
-        test_details = RedmineTest(wiki=wiki[1])
-        if is_name:
-            is_name = test_details.parse_name()
-        if is_purpose:
-            is_purpose = test_details.parse_purpose()
-        if is_procedure:
-            is_procedure = test_details.parse_procedure()
-        if is_expected:
-            is_expected = test_details.parse_expected()
-        if is_configs:
-            is_configs = test_details.parse_configs()
-        if is_images:
-            is_images = test_details.parse_images()
-        if is_files:
-            is_files = test_details.parse_files()
-        if is_checklists:
-            is_checklists = test_details.parse_checklists()
-        if is_links:
-            is_links = test_details.parse_links()
-        if is_comments:
-            is_comments = test_details.parse_comments()
-
-        test.update_details(name=is_name, purpose=is_purpose, procedure=is_procedure, expected=is_expected,
-                            configs=is_configs, images=is_images, files=is_files, checklists=is_checklists,
-                            links=is_links, comments=is_comments)
-        test.update_timestamp(request.user)
-
-        message = is_checklists
-
-        return render(request, 'redmine/debug.html', {'message': message})
-
 
 
 # Update test details from Redmine wiki page
@@ -493,13 +583,3 @@ def export_testplan(request):
     else:
         return HttpResponseRedirect(reverse('testplans', kwargs={'tab_id': 1}))
 
-
-@login_required
-def export_test(request):
-    if request.method == "POST":
-        test = get_object_or_404(Test, id=request.POST['test'])
-        r = RedmineProject(test.category.testplan.redmine_project).export_test(test)
-        return render(request, 'redmine/test.html', {'message': r, 'testplan_id': test.category.testplan.id,
-                                                     'test_id': test.id})
-    else:
-        return HttpResponseRedirect(reverse('testplans', kwargs={'tab_id': 1}))

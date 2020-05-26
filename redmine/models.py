@@ -8,12 +8,157 @@ from testplan.models import Pattern, Testplan, Category, Test, TestConfig, TestL
 import re
 
 
+class RedmineTest(object):
+    def __init__(self, wiki_title: str):
+        self.wiki_title = wiki_title
+        self.wiki = ''
+        self.wiki_name = ''
+        self.wiki_purpose = ''
+        self.wiki_procedure = ''
+
+    def set_wiki(self, wiki_text: str):
+        self.wiki = wiki_text
+        return self.wiki
+
+    def collect_wiki(self):
+        self.wiki = self.wiki_name + self.wiki_purpose + self.wiki_procedure
+        return self.wiki
+
+    def parse_name(self):
+        blocks = self.wiki.split('\r')
+        name = blocks[0][4:]
+        return name
+
+    def set_name(self, text: str):
+        self.wiki_name = 'h1. ' + text + '\r\n\r'
+        return self.collect_wiki()
+
+    def parse_purpose(self):
+        for h2_block in self.wiki.split('\nh2. '):
+            detect_head = re.search('Цель\r', h2_block)
+            if detect_head:
+                purpose = h2_block.split('\r\n')[2]
+                return purpose
+        return False
+
+    def set_purpose(self, text: str):
+        self.wiki_purpose = '\nh2. Цель\r\n\r\n' + text + '\r\n\r'
+        return self.collect_wiki()
+
+    def parse_procedure(self):
+        for h2_block in self.wiki.split('\nh2. '):
+            detect_head = re.search('Процедура\r', h2_block)
+            if detect_head:
+                h3_blocks = h2_block.split('\nh3. ')
+                procedure_blocks = h3_blocks[0].split('\n')
+                procedure = procedure_blocks[2][:-1]
+                return procedure
+        return False
+
+    def set_procedure(self, text: str):
+        self.wiki_procedure = '\nh2. Процедура\r\n\r\n' + text + '\r'
+        return self.collect_wiki()
+
+    def parse_expected(self):
+        for h2_block in self.wiki.split('\nh2. '):
+            detect_head = re.search('Ожидаемый результат\n', h2_block)
+            if detect_head:
+                h3_blocks = h2_block.split('\nh3. ')
+                expected_blocks = h3_blocks[0].split('\n\n')
+                expected_blocks.pop(0)
+                expected = '\n\n'.join(expected_blocks)[0:-1]
+                return expected
+        return False
+
+    def parse_configs(self):
+        configs = []
+        procedure_block = self.wiki.split('\nh2. ')[2]
+        procedure = procedure_block.split('\nh3. ')
+        for i, procedure_block in enumerate(procedure):
+            detect_head = re.search('Конфигурация\n', procedure_block)
+            if detect_head:
+                cfg = procedure[i].split('\n{{collapse(')
+                for j, cfg_block in enumerate(cfg):
+                    detect_code = re.search('<pre><code class=', cfg_block)
+                    if detect_code:
+                        config = []  # name, lang, configuration
+                        code_name = cfg[j].split(')\n')[0]
+                        code_lang = cfg[j].split('"')[1]
+                        s_cfg = cfg[j].split('">\n\n')[1]
+                        code_cfg = s_cfg.split('\n</code></pre>\n')[0]
+                        config.append(code_name)
+                        config.append(code_lang)
+                        config.append(code_cfg)
+                        configs.append(config)
+        return configs
+
+    def parse_images(self):
+        return False
+
+    def parse_files(self):
+        return False
+
+    def parse_checklists(self):
+        checklists = []
+        for h2_block in self.wiki.split('\nh2. '):
+            detect_head = re.search('Ожидаемый результат', h2_block)
+            if detect_head:
+                h3_blocks = h2_block.split('\nh3. ')
+                for h3_block in h3_blocks:
+                    detect_checklist_head = re.search('Чек-лист\r\n', h3_block)
+                    if detect_checklist_head:
+                        checklist_blocks = h3_block.split('\r\n')
+                        checklist_name = checklist_blocks[2]
+                        items = []
+                        for checklist_item in checklist_blocks[4:-1]:
+                            items.append(checklist_item[2:])
+                        checklist = {'name': checklist_name, 'items': items}
+                        checklists.append(checklist)
+        return checklists
+
+    def parse_links(self):
+        links = []
+        for h2_block in self.wiki.split('\nh2. '):
+            detect_head = re.search('Ссылки\n', h2_block)
+            if detect_head:
+                h3_blocks = h2_block.split('\nh3. ')
+                h3_blocks.pop(0)
+                for h3_block in h3_blocks:
+                    link = []
+                    link_blocks = h3_block.split('\n\n')
+                    link_name = link_blocks[0]
+                    link_url = link_blocks[1][0:-1]
+                    link.append(link_name)
+                    link.append(link_url)
+                    links.append(link)
+                return links
+        return False
+
+    def parse_comments(self):
+        comments = []
+        for h2_block in self.wiki.split('\nh2. '):
+            detect_head = re.search('Комментарии\n\n', h2_block)
+            if detect_head:
+                h3_blocks = h2_block.split('h3. ')
+                h3_blocks.remove('Комментарии\n\n')
+                for h3_block in h3_blocks:
+                    comment = []  # name, text
+                    comment_blocks = h3_block.split('\n\n')
+                    comment_name = comment_blocks[0]
+                    comment_blocks.pop(0)
+                    comment_text = '\n\n'.join(comment_blocks)
+                    comment.append(comment_name)
+                    comment.append(comment_text)
+                    comments.append(comment)
+        return comments
+
+
 class RedmineProject(object):
     def __init__(self, project_id: str):
         self.project_id = project_id
         self.redmine = Redmine(settings.REDMINE_URL, key=settings.REDMINE_KEY, version='4.0.4')
 
-    def get_project(self):
+    def check_project(self):
         try:
             project = self.redmine.project.get(self.project_id)
             return [True, project.id]
@@ -26,39 +171,37 @@ class RedmineProject(object):
         except ForbiddenError:
             return [False, 'Requested project resource is forbidden']
 
-    def get_wiki_url(self, wiki_title: str):
+    def check_wiki(self, title: str):
         try:
-            self.redmine.wiki_page.get(wiki_title, project_id=self.project_id)
-            if wiki_title == 'wiki':
-                return [True, settings.REDMINE_URL + '/projects/' + self.project_id + '/wiki/']
-            else:
-                return [True, settings.REDMINE_URL + '/projects/' + self.project_id + '/wiki/' + wiki_title]
+            wiki_text = self.redmine.wiki_page.get(title, project_id=self.project_id)
+            return [True, wiki_text.text]
         except ResourceNotFoundError:
             return[False, 'Wiki not found']
         except ForbiddenError:
             return [False, 'Requested wiki resource is forbidden']
 
-    def get_wiki_text(self, wiki_title: str):
-        try:
-            wiki = self.redmine.wiki_page.get(wiki_title, project_id=self.project_id)
-            return [True, wiki.text]
-        except ResourceNotFoundError:
-            return[False, 'Wiki not found']
-        except ForbiddenError:
-            return [False, 'Requested wiki resource is forbidden']
+    def create_test(self, r_test: RedmineTest):
+        self.redmine.wiki_page.create(project_id=self.project_id, title=r_test.wiki_title, text=r_test.wiki,
+                                      parent_title='wiki')
+        return True
+
+    def update_test(self, r_test: RedmineTest):
+        self.redmine.wiki_page.update(r_test.wiki_title, project_id=self.project_id, text=r_test.wiki)
+        return True
+
 
     def export_device_type(self, device_type: DeviceType):
-        if self.get_project()[0]:
-            self.redmine.project.update(self.get_project()[1], name=device_type.redmine_project_name)
+        if self.check_project()[0]:
+            self.redmine.project.update(self.check_project()[1], name=device_type.redmine_project_name)
             self.redmine.wiki_page.update('Wiki', project_id=self.project_id, text='h1. ' + device_type.desc)
             return [True, 'Project updated successfully']
-        elif self.get_project()[1] == 'Project not found':
+        elif self.check_project()[1] == 'Project not found':
             self.redmine.project.create(name=device_type.redmine_project_name, identifier=self.project_id,
                                         inherit_members=True)
             self.redmine.wiki_page.update('Wiki', project_id=self.project_id, text='h1. ' + device_type.desc)
             return [True, 'Project created']
         else:
-            return [False, self.get_project()[1]]
+            return [False, self.check_project()[1]]
 
     def export_device(self, device: Device):
         specs = Specification().get_values(device).order_by('id')
@@ -89,11 +232,11 @@ class RedmineProject(object):
                     '\n' + sm + '\n' + \
                     '\nh2. Результаты испытаний\n'
 
-        if self.get_project()[0]:
-            self.redmine.project.update(self.get_project()[1], name=device.vendor.name + ' ' + device.model)
+        if self.check_project()[0]:
+            self.redmine.project.update(self.check_project()[1], name=device.vendor.name + ' ' + device.model)
             self.redmine.wiki_page.update('Wiki', project_id=self.project_id, text=wiki_text)
             return [True, 'Project updated successfully']
-        elif self.get_project()[1] == 'Project not found':
+        elif self.check_project()[1] == 'Project not found':
             parent_id = self.redmine.project.get(device.type.redmine_project).id
             self.redmine.project.create(name=device.vendor.name + ' ' + device.model,
                                         identifier=self.project_id,
@@ -167,8 +310,8 @@ class RedmineProject(object):
                     wiki_links +\
                     wiki_comments
 
-        if self.get_project()[0]:
-            if self.get_wiki_url(test.redmine_wiki)[0]:
+        if self.check_project()[0]:
+            if self.check_wiki(test.redmine_wiki)[0]:
                 self.redmine.wiki_page.update(test.redmine_wiki, project_id=test.category.testplan.redmine_project,
                                               text=wiki_text)
                 return [True, 'Wiki updated successfully']
@@ -177,7 +320,7 @@ class RedmineProject(object):
                                               title=test.redmine_wiki, text=wiki_text, parent_title='wiki')
                 return [True, 'Wiki created successfully']
 
-        elif self.get_project()[1] == 'Project not found':
+        elif self.check_project()[1] == 'Project not found':
             return [False, 'Project not found']
 
     def export_all_tests(self, testplan: Testplan):
@@ -190,12 +333,12 @@ class RedmineProject(object):
 
     def export_pattern(self, pattern: Pattern):
         wiki_text = 'h1. ' + pattern.name
-        if self.get_project()[0]:
-            self.redmine.project.update(self.get_project()[1], name=pattern.name)
+        if self.check_project()[0]:
+            self.redmine.project.update(self.check_project()[1], name=pattern.name)
             self.redmine.wiki_page.update('Wiki', project_id=self.project_id, text=wiki_text)
             return [True, 'Project updated successfully']
 
-        elif self.get_project()[1] == 'Project not found':
+        elif self.check_project()[1] == 'Project not found':
             parent_id = self.redmine.project.get(pattern.redmine_parent).id
             self.redmine.project.create(name=pattern.name,
                                         identifier=self.project_id,
@@ -215,13 +358,13 @@ class RedmineProject(object):
             wiki_testlist += '\n'
         wiki_text = 'h1. ' + testplan.name + '\n' + wiki_testlist
 
-        if self.get_project()[0]:
-            self.redmine.project.update(self.get_project()[1], name=testplan.name)
+        if self.check_project()[0]:
+            self.redmine.project.update(self.check_project()[1], name=testplan.name)
             self.redmine.wiki_page.update('wiki', project_id=self.project_id, text=wiki_text)
             self.export_all_tests(testplan)
             return [True, 'Project updated successfully']
 
-        elif self.get_project()[1] == 'Project not found':
+        elif self.check_project()[1] == 'Project not found':
             parent_id = self.redmine.project.get(testplan.redmine_parent).id
             self.redmine.project.create(name=testplan.name,
                                         identifier=self.project_id,
@@ -231,130 +374,3 @@ class RedmineProject(object):
             self.export_all_tests(testplan)
             return [True, 'Project created']
 
-
-class RedmineTest(object):
-    def __init__(self, wiki: str):
-        self.wiki = wiki
-        self.h2_blocks = wiki.split('\nh2. ')
-
-    def parse_name(self):
-        for h2_block in self.h2_blocks:
-            detect_head = re.search('h1. ', h2_block)
-            if detect_head:
-                name_blocks = h2_block.split('\r')
-                name = name_blocks[0][4:]
-                return name
-        return False
-
-    def parse_purpose(self):
-        for h2_block in self.h2_blocks:
-            detect_head = re.search('Цель\n', h2_block)
-            if detect_head:
-                purpose_blocks = h2_block.split('\n\n')
-                purpose_blocks.pop(0)
-                purpose = '\n\n'.join(purpose_blocks)[0:-1]
-                return purpose
-        return False
-
-    def parse_procedure(self):
-        for h2_block in self.h2_blocks:
-            detect_head = re.search('Процедура\n', h2_block)
-            if detect_head:
-                h3_blocks = h2_block.split('\nh3. ')
-                procedure_blocks = h3_blocks[0].split('\n\n')
-                procedure_blocks.pop(0)
-                procedure = '\n\n'.join(procedure_blocks)[0:-1]
-                return procedure
-        return False
-
-    def parse_expected(self):
-        for h2_block in self.h2_blocks:
-            detect_head = re.search('Ожидаемый результат\n', h2_block)
-            if detect_head:
-                h3_blocks = h2_block.split('\nh3. ')
-                expected_blocks = h3_blocks[0].split('\n\n')
-                expected_blocks.pop(0)
-                expected = '\n\n'.join(expected_blocks)[0:-1]
-                return expected
-        return False
-
-    def parse_configs(self):
-        configs = []
-        procedure = self.h2_blocks[2].split('\nh3. ')
-        for i, procedure_block in enumerate(procedure):
-            detect_head = re.search('Конфигурация\n', procedure_block)
-            if detect_head:
-                cfg = procedure[i].split('\n{{collapse(')
-                for j, cfg_block in enumerate(cfg):
-                    detect_code = re.search('<pre><code class=', cfg_block)
-                    if detect_code:
-                        config = []  # name, lang, configuration
-                        code_name = cfg[j].split(')\n')[0]
-                        code_lang = cfg[j].split('"')[1]
-                        s_cfg = cfg[j].split('">\n\n')[1]
-                        code_cfg = s_cfg.split('\n</code></pre>\n')[0]
-                        config.append(code_name)
-                        config.append(code_lang)
-                        config.append(code_cfg)
-                        configs.append(config)
-        return configs
-
-    def parse_images(self):
-        return False
-
-    def parse_files(self):
-        return False
-
-    def parse_checklists(self):
-        checklists = []
-        for h2_block in self.h2_blocks:
-            detect_head = re.search('Ожидаемый результат', h2_block)
-            if detect_head:
-                h3_blocks = h2_block.split('\nh3. ')
-                for h3_block in h3_blocks:
-                    detect_checklist_head = re.search('Чек-лист\r\n', h3_block)
-                    if detect_checklist_head:
-                        checklist_blocks = h3_block.split('\r\n')
-                        checklist_name = checklist_blocks[2]
-                        items = []
-                        for checklist_item in checklist_blocks[4:-1]:
-                            items.append(checklist_item[2:])
-                        checklist = {'name': checklist_name, 'items': items}
-                        checklists.append(checklist)
-        return checklists
-
-    def parse_links(self):
-        links = []
-        for h2_block in self.h2_blocks:
-            detect_head = re.search('Ссылки\n', h2_block)
-            if detect_head:
-                h3_blocks = h2_block.split('\nh3. ')
-                h3_blocks.pop(0)
-                for h3_block in h3_blocks:
-                    link = []
-                    link_blocks = h3_block.split('\n\n')
-                    link_name = link_blocks[0]
-                    link_url = link_blocks[1][0:-1]
-                    link.append(link_name)
-                    link.append(link_url)
-                    links.append(link)
-                return links
-        return False
-
-    def parse_comments(self):
-        comments = []
-        for h2_block in self.h2_blocks:
-            detect_head = re.search('Комментарии\n\n', h2_block)
-            if detect_head:
-                h3_blocks = h2_block.split('h3. ')
-                h3_blocks.remove('Комментарии\n\n')
-                for h3_block in h3_blocks:
-                    comment = []  # name, text
-                    comment_blocks = h3_block.split('\n\n')
-                    comment_name = comment_blocks[0]
-                    comment_blocks.pop(0)
-                    comment_text = '\n\n'.join(comment_blocks)
-                    comment.append(comment_name)
-                    comment.append(comment_text)
-                    comments.append(comment)
-        return comments

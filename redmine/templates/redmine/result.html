@@ -1,0 +1,11 @@
+{% extends "device/wrapper.html" %}
+
+{% load i18n %}
+
+{% block content %}
+
+<p>{{ message }}</p>
+
+<a href="{{ back_url }}" class="button small">&laquo; {% trans "Back" %}</a>
+
+{% endblock %}
