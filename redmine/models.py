@@ -15,13 +15,14 @@ class RedmineTest(object):
         self.wiki_name = ''
         self.wiki_purpose = ''
         self.wiki_procedure = ''
+        self.wiki_configs = ''
 
     def set_wiki(self, wiki_text: str):
         self.wiki = wiki_text
         return self.wiki
 
     def collect_wiki(self):
-        self.wiki = self.wiki_name + self.wiki_purpose + self.wiki_procedure
+        self.wiki = self.wiki_name + self.wiki_purpose + self.wiki_procedure + self.wiki_configs
         return self.wiki
 
     def parse_name(self):
@@ -56,7 +57,7 @@ class RedmineTest(object):
         return False
 
     def set_procedure(self, text: str):
-        self.wiki_procedure = '\nh2. Процедура\r\n\r\n' + text + '\r'
+        self.wiki_procedure = '\nh2. Процедура\r\n\r\n' + text + '\r\n\r'
         return self.collect_wiki()
 
     def parse_expected(self):
@@ -91,6 +92,17 @@ class RedmineTest(object):
                         config.append(code_cfg)
                         configs.append(config)
         return configs
+
+    def set_configs(self, configs):
+        self.wiki_configs = '\nh2. Конфигурация\r\n'
+        for config in configs:
+            # self.wiki_configs += '\nh3. ' + config.name + '\r'
+            self.wiki_configs += '\n{{collapse(' + config.name + ')\r' + \
+                                 '\n<pre><code class="' + config.lang + '">\r' + \
+                                 '\n' + config.config + '\r' + \
+                                 '\n</code></pre>\r' + \
+                                 '\n}}\r'
+        return self.collect_wiki()
 
     def parse_images(self):
         return False

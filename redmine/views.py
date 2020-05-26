@@ -183,6 +183,8 @@ def export_test(request):
             r_test.set_purpose(text=test.purpose)
         if is_procedure:
             r_test.set_procedure(text=test.procedure)
+        if is_configs:
+            r_test.set_configs(configs=TestConfig.objects.filter(test=test).order_by('id'))
 
         # check wiki
         wiki = r.check_wiki(title=request.POST['wiki'])
