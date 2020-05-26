@@ -18,7 +18,6 @@ from django.urls import reverse
 
 @login_required
 def import_test(request):
-    message = None
     if request.method == "POST":
         test = get_object_or_404(Test, id=request.POST['test'])
         try:
@@ -69,16 +68,16 @@ def import_test(request):
         if not project[0]:
             message = project[1]
             return render(request, 'redmine/result.html', {'message': message,
-                                                           'back_url': reverse('test_details', kwargs={'pk': test.id,
-                                                                                                       'tab_id': 11})})
+                                                           'back_url': reverse('test_details',
+                                                                               kwargs={'pk': test.id, 'tab_id': 11})})
 
         # check wiki
         wiki = r.check_wiki(request.POST['wiki'])
         if not wiki[0]:
             message = wiki[1]
             return render(request, 'redmine/result.html', {'message': message,
-                                                           'back_url': reverse('test_details', kwargs={'pk': test.id,
-                                                                                                       'tab_id': 11})})
+                                                           'back_url': reverse('test_details',
+                                                                               kwargs={'pk': test.id, 'tab_id': 11})})
 
         r_test = RedmineTest(wiki_title=request.POST['wiki'])
         r_test.set_wiki(wiki_text=wiki[1])
@@ -92,7 +91,10 @@ def import_test(request):
         if is_expected:
             is_expected = r_test.parse_expected()
         if is_configs:
+            clear_configs = True
             is_configs = r_test.parse_configs()
+        else:
+            clear_configs = False
         if is_images:
             is_images = r_test.parse_images()
         if is_files:
@@ -105,22 +107,21 @@ def import_test(request):
             is_comments = r_test.parse_comments()
 
         test.update_details(name=is_name, purpose=is_purpose, procedure=is_procedure, expected=is_expected,
-                            configs=is_configs, images=is_images, files=is_files, checklists=is_checklists,
-                            links=is_links, comments=is_comments)
+                            clear_configs=clear_configs, configs=is_configs, images=is_images, files=is_files,
+                            checklists=is_checklists, links=is_links, comments=is_comments)
         test.update_timestamp(request.user)
 
-        message = r_test.parse_procedure()
-        return render(request, 'redmine/debug.html', {'message': message})
+        message = r_test.parse_configs()
+        return render(request, 'redmine/result.html', {'message': message})
 
     else:
         message = 'Page not found'
-        return render(request, 'redmine/result.html', {'message': message,
-                                                       'back_url': reverse('testplans', kwargs={'tab_id': 1})})
+        return render(request, 'redmine/result.html', {'message': message, 'back_url': reverse('testplans',
+                                                                                               kwargs={'tab_id': 1})})
 
 
 @login_required
 def export_test(request):
-    message = None
     if request.method == "POST":
         test = get_object_or_404(Test, id=request.POST['test'])
         r = RedmineProject(request.POST['project'])
@@ -130,8 +131,8 @@ def export_test(request):
         if not project[0]:
             message = project[1]
             return render(request, 'redmine/result.html', {'message': message,
-                                                           'back_url': reverse('test_details', kwargs={'pk': test.id,
-                                                                                                       'tab_id': 11})})
+                                                           'back_url': reverse('test_details',
+                                                                               kwargs={'pk': test.id, 'tab_id': 11})})
 
         # collect data
         try:
@@ -205,7 +206,6 @@ def export_test(request):
         message = 'Page not found'
         return render(request, 'redmine/result.html', {'message': message,
                                                        'back_url': reverse('testplans', kwargs={'tab_id': 1})})
-
 
 
 

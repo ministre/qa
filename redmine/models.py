@@ -73,35 +73,33 @@ class RedmineTest(object):
 
     def parse_configs(self):
         configs = []
-        procedure_block = self.wiki.split('\nh2. ')[2]
-        procedure = procedure_block.split('\nh3. ')
-        for i, procedure_block in enumerate(procedure):
-            detect_head = re.search('Конфигурация\n', procedure_block)
+        for h2_block in self.wiki.split('\nh2. '):
+            detect_head = re.search('Конфигурация\r', h2_block)
             if detect_head:
-                cfg = procedure[i].split('\n{{collapse(')
-                for j, cfg_block in enumerate(cfg):
-                    detect_code = re.search('<pre><code class=', cfg_block)
-                    if detect_code:
-                        config = []  # name, lang, configuration
-                        code_name = cfg[j].split(')\n')[0]
-                        code_lang = cfg[j].split('"')[1]
-                        s_cfg = cfg[j].split('">\n\n')[1]
-                        code_cfg = s_cfg.split('\n</code></pre>\n')[0]
-                        config.append(code_name)
-                        config.append(code_lang)
-                        config.append(code_cfg)
-                        configs.append(config)
+                configs_blocks = h2_block.split('\n{{collapse(')
+                configs_blocks.pop(0)
+                for configs_block in configs_blocks:
+                    config_blocks = configs_block.split(')\r\n<pre><code class="')
+                    config = []
+                    name = config_blocks[0]
+                    lang = config_blocks[1].split('"')[0]
+                    code = config_blocks[1].split('\r\n</code></pre>\r\n}}')[0][config_blocks[1].find('">\r\n')+4:]
+                    config.append(name)
+                    config.append(lang)
+                    config.append(code)
+                    configs.append(config)
         return configs
 
     def set_configs(self, configs):
         self.wiki_configs = '\nh2. Конфигурация\r\n'
         for config in configs:
-            # self.wiki_configs += '\nh3. ' + config.name + '\r'
+            if config.lang == 'json':
+                config.lang = 'javascript'
             self.wiki_configs += '\n{{collapse(' + config.name + ')\r' + \
                                  '\n<pre><code class="' + config.lang + '">\r' + \
                                  '\n' + config.config + '\r' + \
                                  '\n</code></pre>\r' + \
-                                 '\n}}\r'
+                                 '\n}}\r\n\r'
         return self.collect_wiki()
 
     def parse_images(self):

@@ -81,8 +81,8 @@ class Test(models.Model):
         self.save()
         return True
 
-    def update_details(self, name, purpose, procedure, expected, configs, images, files, checklists,
-                       links, comments):
+    def update_details(self, name, purpose, procedure, expected, clear_configs: bool, configs: list, images, files,
+                       checklists, links, comments):
         if name:
             self.name = name
         if purpose:
@@ -92,7 +92,9 @@ class Test(models.Model):
         if expected:
             self.expected = expected
 
-        TestConfig.objects.filter(test=self).delete()
+        if clear_configs:
+            TestConfig.objects.filter(test=self).delete()
+
         if configs:
             for config in configs:
                 TestConfig.objects.create(test=self, name=config[0], lang=config[1], config=config[2])
