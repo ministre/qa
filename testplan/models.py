@@ -82,7 +82,7 @@ class Test(models.Model):
         return True
 
     def update_details(self, name, purpose, procedure, expected, clear_configs: bool, configs: list, images, files,
-                       clear_checklists: bool, checklists: list, links, comments):
+                       clear_checklists: bool, checklists: list, clear_links: bool, links: list, comments):
         if name:
             self.name = name
         if purpose:
@@ -108,7 +108,9 @@ class Test(models.Model):
                 for item in checklist['items']:
                     TestChecklistItem.objects.create(checklist=new_checklist, name=item)
 
-        TestLink.objects.filter(test=self).delete()
+        if clear_links:
+            TestLink.objects.filter(test=self).delete()
+
         if links:
             for link in links:
                 TestLink.objects.create(test=self, name=link[0], url=link[1])

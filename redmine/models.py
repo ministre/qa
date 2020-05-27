@@ -18,6 +18,7 @@ class RedmineTest(object):
         self.wiki_configs = ''
         self.wiki_expected = ''
         self.wiki_checklists = ''
+        self.wiki_links = ''
 
     def set_wiki(self, wiki_text: str):
         self.wiki = wiki_text
@@ -25,7 +26,7 @@ class RedmineTest(object):
 
     def collect_wiki(self):
         self.wiki = self.wiki_name + self.wiki_purpose + self.wiki_procedure + self.wiki_configs + \
-                    self.wiki_expected + self.wiki_checklists
+                    self.wiki_expected + self.wiki_checklists + self.wiki_links
         return self.wiki
 
     def parse_name(self):
@@ -151,20 +152,29 @@ class RedmineTest(object):
     def parse_links(self):
         links = []
         for h2_block in self.wiki.split('\nh2. '):
-            detect_head = re.search('Ссылки\n', h2_block)
+            detect_head = re.search('Ссылки\r', h2_block)
             if detect_head:
                 h3_blocks = h2_block.split('\nh3. ')
                 h3_blocks.pop(0)
                 for h3_block in h3_blocks:
                     link = []
-                    link_blocks = h3_block.split('\n\n')
-                    link_name = link_blocks[0]
-                    link_url = link_blocks[1][0:-1]
-                    link.append(link_name)
-                    link.append(link_url)
+                    link_blocks = h3_block.split('\r\n\r\n')
+                    name = link_blocks[0]
+                    url = link_blocks[1]
+                    url = url.replace('\n', '')
+                    url = url.replace('\r', '')
+                    link.append(name)
+                    link.append(url)
                     links.append(link)
-                return links
-        return False
+        return links
+
+    def set_links(self, links):
+        if links:
+            self.wiki_checklists += '\nh2. Ссылки' + '\r\n\r'
+            for link in links:
+                self.wiki_checklists += '\nh3. ' + link.name + '\r\n\r'
+                self.wiki_checklists += '\n' + link.url + '\r\n\r'
+        return self.collect_wiki()
 
     def parse_comments(self):
         comments = []
