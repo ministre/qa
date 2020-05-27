@@ -19,6 +19,7 @@ class RedmineTest(object):
         self.wiki_expected = ''
         self.wiki_checklists = ''
         self.wiki_links = ''
+        self.wiki_comments = ''
 
     def set_wiki(self, wiki_text: str):
         self.wiki = wiki_text
@@ -26,7 +27,7 @@ class RedmineTest(object):
 
     def collect_wiki(self):
         self.wiki = self.wiki_name + self.wiki_purpose + self.wiki_procedure + self.wiki_configs + \
-                    self.wiki_expected + self.wiki_checklists + self.wiki_links
+                    self.wiki_expected + self.wiki_checklists + self.wiki_links + self.wiki_comments
         return self.wiki
 
     def parse_name(self):
@@ -179,20 +180,28 @@ class RedmineTest(object):
     def parse_comments(self):
         comments = []
         for h2_block in self.wiki.split('\nh2. '):
-            detect_head = re.search('Комментарии\n\n', h2_block)
+            detect_head = re.search('Комментарии\r', h2_block)
             if detect_head:
-                h3_blocks = h2_block.split('h3. ')
-                h3_blocks.remove('Комментарии\n\n')
+                h3_blocks = h2_block.split('\nh3. ')
+                h3_blocks.pop(0)
                 for h3_block in h3_blocks:
-                    comment = []  # name, text
-                    comment_blocks = h3_block.split('\n\n')
-                    comment_name = comment_blocks[0]
-                    comment_blocks.pop(0)
-                    comment_text = '\n\n'.join(comment_blocks)
-                    comment.append(comment_name)
-                    comment.append(comment_text)
+                    comment = []
+                    comment_blocks = h3_block.split('\r\n\r\n')
+                    name = comment_blocks[0]
+                    text = comment_blocks[1]
+                    text = text.replace('\r\n\r', '')
+                    comment.append(name)
+                    comment.append(text)
                     comments.append(comment)
         return comments
+
+    def set_comments(self, comments):
+        if comments:
+            self.wiki_comments += '\nh2. Комментарии' + '\r\n\r'
+            for comment in comments:
+                self.wiki_comments += '\nh3. ' + comment.name + '\r\n\r'
+                self.wiki_comments += '\n' + comment.text + '\r\n\r'
+        return self.collect_wiki()
 
 
 class RedmineProject(object):

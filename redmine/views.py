@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from device.models import DeviceType, Device
-from testplan.models import Testplan, Category, Test, Chapter, TestConfig, TestChecklist, TestLink, Pattern
+from testplan.models import Testplan, Category, Test, Chapter, TestConfig, TestChecklist, TestLink, TestComment, Pattern
 from redminelib import Redmine
 from qa import settings
 from redminelib.exceptions import ResourceAttrError, ResourceNotFoundError
@@ -110,15 +110,19 @@ def import_test(request):
         else:
             clear_links = False
         if is_comments:
+            clear_comments = True
             is_comments = r_test.parse_comments()
+        else:
+            clear_comments = False
 
         test.update_details(name=is_name, purpose=is_purpose, procedure=is_procedure, expected=is_expected,
                             clear_configs=clear_configs, configs=is_configs, images=is_images, files=is_files,
                             clear_checklists=clear_checklists, checklists=is_checklists,
-                            clear_links=clear_links, links=is_links, comments=is_comments)
+                            clear_links=clear_links, links=is_links, clear_comments=clear_comments,
+                            comments=is_comments)
         test.update_timestamp(request.user)
 
-        message = r_test.parse_links()
+        message = r_test.parse_comments()
         return render(request, 'redmine/result.html', {'message': message,
                                                        'back_url': reverse('test_details',
                                                                            kwargs={'pk': test.id, 'tab_id': 11})})
@@ -200,6 +204,8 @@ def export_test(request):
             r_test.set_checklists(checklists=TestChecklist.objects.filter(test=test).order_by('id'))
         if is_links:
             r_test.set_links(links=TestLink.objects.filter(test=test).order_by('id'))
+        if is_comments:
+            r_test.set_comments(comments=TestComment.objects.filter(test=test).order_by('id'))
 
         # check wiki
         wiki = r.check_wiki(title=request.POST['wiki'])
