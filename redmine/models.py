@@ -17,13 +17,15 @@ class RedmineTest(object):
         self.wiki_procedure = ''
         self.wiki_configs = ''
         self.wiki_expected = ''
+        self.wiki_checklists = ''
 
     def set_wiki(self, wiki_text: str):
         self.wiki = wiki_text
         return self.wiki
 
     def collect_wiki(self):
-        self.wiki = self.wiki_name + self.wiki_purpose + self.wiki_procedure + self.wiki_configs + self.wiki_expected
+        self.wiki = self.wiki_name + self.wiki_purpose + self.wiki_procedure + self.wiki_configs + \
+                    self.wiki_expected + self.wiki_checklists
         return self.wiki
 
     def parse_name(self):
@@ -59,19 +61,6 @@ class RedmineTest(object):
 
     def set_procedure(self, text: str):
         self.wiki_procedure = '\nh2. Процедура\r\n\r\n' + text + '\r\n\r'
-        return self.collect_wiki()
-
-    def parse_expected(self):
-        for h2_block in self.wiki.split('\nh2. '):
-            detect_head = re.search('Ожидаемый результат\r', h2_block)
-            if detect_head:
-                h3_blocks = h2_block.split('\nh3. ')
-                expected = h3_blocks[0][h3_blocks[0].find('\r\n\r\n')+4:-3]
-                return expected
-        return False
-
-    def set_expected(self, text: str):
-        self.wiki_expected = '\nh2. Ожидаемый результат\r\n\r\n' + text + '\r\n\r'
         return self.collect_wiki()
 
     def parse_configs(self):
@@ -111,23 +100,53 @@ class RedmineTest(object):
     def parse_files(self):
         return False
 
+    def parse_expected(self):
+        for h2_block in self.wiki.split('\nh2. '):
+            detect_head = re.search('Ожидаемый результат\r', h2_block)
+            if detect_head:
+                h3_blocks = h2_block.split('\nh3. ')
+                expected = h3_blocks[0][h3_blocks[0].find('\r\n\r\n')+4:-3]
+                return expected
+        return False
+
+    def set_expected(self, text: str):
+        self.wiki_expected = '\nh2. Ожидаемый результат\r\n\r\n' + text + '\r\n\r'
+        return self.collect_wiki()
+
     def parse_checklists(self):
         checklists = []
         for h2_block in self.wiki.split('\nh2. '):
-            detect_head = re.search('Ожидаемый результат', h2_block)
+            detect_head = re.search('Ожидаемый результат\r', h2_block)
             if detect_head:
-                h3_blocks = h2_block.split('\nh3. ')
-                for h3_block in h3_blocks:
-                    detect_checklist_head = re.search('Чек-лист\r\n', h3_block)
+                for h3_block in h2_block.split('\nh3. '):
+                    detect_checklist_head = re.search('Чек-листы\r', h3_block)
                     if detect_checklist_head:
-                        checklist_blocks = h3_block.split('\r\n')
-                        checklist_name = checklist_blocks[2]
-                        items = []
-                        for checklist_item in checklist_blocks[4:-1]:
-                            items.append(checklist_item[2:])
-                        checklist = {'name': checklist_name, 'items': items}
-                        checklists.append(checklist)
+                        h4_blocks = h3_block.split('\nh4. ')
+                        h4_blocks.pop(0)
+                        for h4_block in h4_blocks:
+                            checklist_blocks = h4_block.split('\r\n* ')
+                            name = checklist_blocks[0][:-2]
+                            checklist_blocks.pop(0)
+                            items = []
+                            for item in checklist_blocks:
+                                item = item.replace("\n", "")
+                                item = item.replace("\r", "")
+                                items.append(item)
+                            checklist = {'name': name, 'items': items}
+                            checklists.append(checklist)
         return checklists
+
+    def set_checklists(self, checklists):
+        if checklists:
+            self.wiki_checklists += '\nh3. Чек-листы' + '\r\n\r'
+        for checklist in checklists:
+            self.wiki_checklists += '\nh4. ' + checklist.name + '\r'
+            checklist_items = TestChecklistItem.objects.filter(checklist=checklist)
+            self.wiki_checklists += '\n\r'
+            for checklist_item in checklist_items:
+                self.wiki_checklists += '\n* ' + checklist_item.name + '\r'
+            self.wiki_checklists += '\n\r'
+        return self.collect_wiki()
 
     def parse_links(self):
         links = []
