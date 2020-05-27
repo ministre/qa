@@ -111,8 +111,10 @@ def import_test(request):
                             checklists=is_checklists, links=is_links, comments=is_comments)
         test.update_timestamp(request.user)
 
-        message = r_test.parse_configs()
-        return render(request, 'redmine/result.html', {'message': message})
+        message = r_test.parse_expected()
+        return render(request, 'redmine/result.html', {'message': message,
+                                                       'back_url': reverse('test_details',
+                                                                           kwargs={'pk': test.id, 'tab_id': 11})})
 
     else:
         message = 'Page not found'
@@ -133,7 +135,6 @@ def export_test(request):
             return render(request, 'redmine/result.html', {'message': message,
                                                            'back_url': reverse('test_details',
                                                                                kwargs={'pk': test.id, 'tab_id': 11})})
-
         # collect data
         try:
             is_name = request.POST['name']
@@ -186,6 +187,8 @@ def export_test(request):
             r_test.set_procedure(text=test.procedure)
         if is_configs:
             r_test.set_configs(configs=TestConfig.objects.filter(test=test).order_by('id'))
+        if is_expected:
+            r_test.set_expected(text=test.expected)
 
         # check wiki
         wiki = r.check_wiki(title=request.POST['wiki'])
@@ -201,7 +204,6 @@ def export_test(request):
         return render(request, 'redmine/result.html', {'message': message,
                                                        'back_url': reverse('test_details', kwargs={'pk': test.id,
                                                                                                    'tab_id': 11})})
-
     else:
         message = 'Page not found'
         return render(request, 'redmine/result.html', {'message': message,

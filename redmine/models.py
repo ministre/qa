@@ -16,13 +16,14 @@ class RedmineTest(object):
         self.wiki_purpose = ''
         self.wiki_procedure = ''
         self.wiki_configs = ''
+        self.wiki_expected = ''
 
     def set_wiki(self, wiki_text: str):
         self.wiki = wiki_text
         return self.wiki
 
     def collect_wiki(self):
-        self.wiki = self.wiki_name + self.wiki_purpose + self.wiki_procedure + self.wiki_configs
+        self.wiki = self.wiki_name + self.wiki_purpose + self.wiki_procedure + self.wiki_configs + self.wiki_expected
         return self.wiki
 
     def parse_name(self):
@@ -62,14 +63,16 @@ class RedmineTest(object):
 
     def parse_expected(self):
         for h2_block in self.wiki.split('\nh2. '):
-            detect_head = re.search('Ожидаемый результат\n', h2_block)
+            detect_head = re.search('Ожидаемый результат\r', h2_block)
             if detect_head:
                 h3_blocks = h2_block.split('\nh3. ')
-                expected_blocks = h3_blocks[0].split('\n\n')
-                expected_blocks.pop(0)
-                expected = '\n\n'.join(expected_blocks)[0:-1]
+                expected = h3_blocks[0][h3_blocks[0].find('\r\n\r\n')+4:-3]
                 return expected
         return False
+
+    def set_expected(self, text: str):
+        self.wiki_expected = '\nh2. Ожидаемый результат\r\n\r\n' + text + '\r\n\r'
+        return self.collect_wiki()
 
     def parse_configs(self):
         configs = []
