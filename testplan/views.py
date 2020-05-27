@@ -8,7 +8,7 @@ from .models import Testplan, Category, Chapter, Test, TestConfig, TestImage, Te
 from .forms import TestplanForm, CategoryForm, ChapterForm, TestForm, TestConfigForm, TestImageForm, TestFileForm,\
     TestWorksheetForm, WorksheetItemForm, TestChecklistForm, TestChecklistItemForm, TestLinkForm, TestCommentForm, \
     PatternForm
-from redmine.forms import RedmineTestForm
+from redmine.forms import RedmineTestForm, RedmineTestplanForm
 from django.http import HttpResponseRedirect
 import textile
 from datetime import datetime
@@ -80,10 +80,16 @@ def testplan_details(request, pk, tab_id):
     chapters = Chapter.objects.filter(testplan=testplan).order_by('id')
     categories = Category.objects.filter(testplan=testplan).order_by('id')
     protocols_count = testplan.protocols_count()
+    redmine_form = RedmineTestplanForm(initial={'parent_project': testplan.redmine_parent,
+                                                'project': testplan.redmine_project})
     redmine_url = settings.REDMINE_URL
-    return render(request, 'testplan/details.html', {'tab_id': tab_id, 'testplan': testplan, 'categories': categories,
-                                                     'chapters': chapters, 'tests_count': testplan.tests_count(),
-                                                     'protocols_count': protocols_count, 'redmine_url': redmine_url})
+    return render(request, 'testplan/testplan_details.html', {'tab_id': tab_id, 'testplan': testplan,
+                                                              'categories': categories,
+                                                              'chapters': chapters,
+                                                              'tests_count': testplan.tests_count(),
+                                                              'protocols_count': protocols_count,
+                                                              'redmine_form': redmine_form,
+                                                              'redmine_url': redmine_url})
 
 
 @login_required
@@ -301,7 +307,7 @@ def test_details(request, pk, tab_id):
     comments = TestComment.objects.filter(test=test).order_by('id')
     for comment in comments:
         comment.text = textile.textile(comment.text)
-    redmine_form = RedmineTestForm(initial={'test_id': test.id, 'project': testplan.redmine_project,
+    redmine_form = RedmineTestForm(initial={'project': testplan.redmine_project,
                                             'wiki': test.redmine_wiki, 'name': True, 'purpose': True,
                                             'procedure': True, 'expected': True, 'configs': True,
                                             'images': False, 'files': False, 'checklists': True,

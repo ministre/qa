@@ -15,3 +15,8 @@ class RedmineTestForm(forms.Form):
     checklists = forms.BooleanField(label=_('Checklists'), required=False)
     links = forms.BooleanField(label=_('Links'), required=False)
     comments = forms.BooleanField(label=_('Comments'), required=False)
+
+
+class RedmineTestplanForm(forms.Form):
+    parent_project = forms.CharField(label=_('Parent Project'), max_length=100)
+    project = forms.CharField(label=_('Project'), max_length=100)

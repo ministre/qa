@@ -600,7 +600,5 @@ def export_testplan(request):
     if request.method == "POST":
         testplan = get_object_or_404(Testplan, id=request.POST['testplan'])
         r = RedmineProject(testplan.redmine_project).export_testplan(testplan)
-        return render(request, 'redmine/testplan.html', {'message': r, 'testplan_id': testplan.id})
     else:
         return HttpResponseRedirect(reverse('testplans', kwargs={'tab_id': 1}))
-

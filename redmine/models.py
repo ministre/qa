@@ -424,4 +424,3 @@ class RedmineProject(object):
             self.redmine.wiki_page.update('wiki', project_id=self.project_id, text=wiki_text)
             self.export_all_tests(testplan)
             return [True, 'Project created']
-

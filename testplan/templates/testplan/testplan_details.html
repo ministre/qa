@@ -150,11 +150,36 @@
           </div>
       </div>
 
-      <form method="post" action="{% url 'export_testplan' %}">
-          {% csrf_token %}
-          <input type="hidden" name="testplan" value="{{ testplan.id }}">
-          <input type="submit" value='{% trans "Export" %}' class="button success small" />
-      </form>
+      <div class="grid-x grid-margin-x small-up-2 medium-up-2">
+            <div class="cell">
+                <div class="card">
+                  <div class="card-section">
+                    <h4>Export</h4>
+                    <p>Click to send testplan details to Redmine Wiki.</p>
+                      <form method="post" action="{% url 'export_testplan' %}">
+                          {% csrf_token %}
+                          <input type="hidden" name="testplan" value="{{ testplan.id }}">
+                          <input type="submit" value='{% trans "Export" %}' class="button success small" />
+                          {{ redmine_form.as_p }}
+                      </form>
+                  </div>
+                </div>
+            </div>
+            <div class="cell">
+                <div class="card">
+                  <div class="card-section">
+                    <h4>Import</h4>
+                    <p>Click to update testplan details from Redmine Wiki.</p>
+                      <form method="post" action="{% url 'import_testplan' %}">
+                          {% csrf_token %}
+                          <input type="hidden" name="test" value="{{ testplan.id }}">
+                          <input type="submit" value='{% trans "Import" %}' class="button alert small" />
+                          {{ redmine_form.as_p }}
+                      </form>
+                  </div>
+                </div>
+            </div>
+      </div>
 
   </div>
 
