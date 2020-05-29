@@ -5,7 +5,6 @@ from django import forms
 class RedmineTestForm(forms.Form):
     project = forms.CharField(label='Project', max_length=100)
     wiki = forms.CharField(label='Wiki', max_length=100)
-    name = forms.BooleanField(label=_('Name'), required=False)
     purpose = forms.BooleanField(label=_('Purpose'), required=False)
     procedure = forms.BooleanField(label=_('Procedure'), required=False)
     configs = forms.BooleanField(label=_('Configurations'), required=False)
@@ -17,6 +16,14 @@ class RedmineTestForm(forms.Form):
     comments = forms.BooleanField(label=_('Comments'), required=False)
 
 
-class RedmineTestplanForm(forms.Form):
-    parent_project = forms.CharField(label=_('Parent Project'), max_length=100)
+class RedmineExportTestplanForm(forms.Form):
+    parent = forms.CharField(label=_('Parent Project'), max_length=100)
     project = forms.CharField(label=_('Project'), max_length=100)
+    chapters = forms.BooleanField(label=_('Chapters'), required=False)
+    tests = forms.BooleanField(label=_('Tests'), required=False)
+
+
+class RedmineImportTestplanForm(forms.Form):
+    project = forms.CharField(label=_('Project'), max_length=100)
+    chapters = forms.BooleanField(label=_('Chapters'), required=False)
+    tests = forms.BooleanField(label=_('Tests'), required=False)

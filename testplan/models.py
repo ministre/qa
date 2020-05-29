@@ -81,9 +81,9 @@ class Test(models.Model):
         self.save()
         return True
 
-    def update_details(self, name, purpose, procedure, expected, clear_configs: bool, configs: list, images, files,
-                       clear_checklists: bool, checklists: list, clear_links: bool, links: list, clear_comments: bool,
-                       comments: list):
+    def update_details(self, name: str, purpose: str, procedure: str, expected: str, clear_configs: bool, configs: list,
+                       images: list, files: list, clear_checklists: bool, checklists: list, clear_links: bool,
+                       links: list, clear_comments: bool, comments: list):
         if name:
             self.name = name
         if purpose:

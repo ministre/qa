@@ -160,7 +160,7 @@
                           {% csrf_token %}
                           <input type="hidden" name="testplan" value="{{ testplan.id }}">
                           <input type="submit" value='{% trans "Export" %}' class="button success small" />
-                          {{ redmine_form.as_p }}
+                          {{ redmine_export_form.as_p }}
                       </form>
                   </div>
                 </div>
@@ -172,9 +172,9 @@
                     <p>Click to update testplan details from Redmine Wiki.</p>
                       <form method="post" action="{% url 'import_testplan' %}">
                           {% csrf_token %}
-                          <input type="hidden" name="test" value="{{ testplan.id }}">
+                          <input type="hidden" name="testplan" value="{{ testplan.id }}">
                           <input type="submit" value='{% trans "Import" %}' class="button alert small" />
-                          {{ redmine_form.as_p }}
+                          {{ redmine_import_form.as_p }}
                       </form>
                   </div>
                 </div>

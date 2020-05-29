@@ -8,7 +8,7 @@ from .models import Testplan, Category, Chapter, Test, TestConfig, TestImage, Te
 from .forms import TestplanForm, CategoryForm, ChapterForm, TestForm, TestConfigForm, TestImageForm, TestFileForm,\
     TestWorksheetForm, WorksheetItemForm, TestChecklistForm, TestChecklistItemForm, TestLinkForm, TestCommentForm, \
     PatternForm
-from redmine.forms import RedmineTestForm, RedmineTestplanForm
+from redmine.forms import RedmineTestForm, RedmineExportTestplanForm, RedmineImportTestplanForm
 from django.http import HttpResponseRedirect
 import textile
 from datetime import datetime
@@ -80,15 +80,18 @@ def testplan_details(request, pk, tab_id):
     chapters = Chapter.objects.filter(testplan=testplan).order_by('id')
     categories = Category.objects.filter(testplan=testplan).order_by('id')
     protocols_count = testplan.protocols_count()
-    redmine_form = RedmineTestplanForm(initial={'parent_project': testplan.redmine_parent,
-                                                'project': testplan.redmine_project})
+    redmine_export_form = RedmineExportTestplanForm(initial={'parent': testplan.redmine_parent,
+                                                             'project': testplan.redmine_project})
+    redmine_import_form = RedmineImportTestplanForm(initial={'parent': testplan.redmine_parent,
+                                                             'project': testplan.redmine_project})
     redmine_url = settings.REDMINE_URL
     return render(request, 'testplan/testplan_details.html', {'tab_id': tab_id, 'testplan': testplan,
                                                               'categories': categories,
                                                               'chapters': chapters,
                                                               'tests_count': testplan.tests_count(),
                                                               'protocols_count': protocols_count,
-                                                              'redmine_form': redmine_form,
+                                                              'redmine_export_form': redmine_export_form,
+                                                              'redmine_import_form': redmine_import_form,
                                                               'redmine_url': redmine_url})
 
 

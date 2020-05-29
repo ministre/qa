@@ -1,16 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from device.models import DeviceType, Device
-from testplan.models import Testplan, Category, Test, Chapter, TestConfig, TestChecklist, TestLink, TestComment, Pattern
-from redminelib import Redmine
-from qa import settings
-from redminelib.exceptions import ResourceAttrError, ResourceNotFoundError
-from django.http import HttpResponseRedirect
-from django.core.exceptions import ObjectDoesNotExist
+from testplan.models import Testplan, Test, TestConfig, TestImage, TestFile, TestChecklist, TestLink, TestComment
 from django.utils.datastructures import MultiValueDictKeyError
-from django.db.models import Q
-import re
-from datetime import datetime
 from django.shortcuts import get_object_or_404
 from .models import RedmineProject, RedmineTest
 from django.urls import reverse
@@ -20,585 +11,229 @@ from django.urls import reverse
 def import_test(request):
     if request.method == "POST":
         test = get_object_or_404(Test, id=request.POST['test'])
+        back_url = reverse('test_details', kwargs={'pk': test.id, 'tab_id': 11})
+        # collect data
         try:
-            is_name = request.POST['name']
+            if request.POST['purpose']:
+                purpose = True
+            else:
+                purpose = False
         except MultiValueDictKeyError:
-            is_name = False
+            purpose = False
         try:
-            is_purpose = request.POST['purpose']
+            if request.POST['procedure']:
+                procedure = True
+            else:
+                procedure = False
         except MultiValueDictKeyError:
-            is_purpose = False
+            procedure = False
         try:
-            is_procedure = request.POST['procedure']
+            if request.POST['configs']:
+                configs = True
+            else:
+                configs = False
         except MultiValueDictKeyError:
-            is_procedure = False
+            configs = False
         try:
-            is_expected = request.POST['expected']
+            if request.POST['images']:
+                images = True
+            else:
+                images = False
         except MultiValueDictKeyError:
-            is_expected = False
+            images = False
         try:
-            is_configs = request.POST['configs']
+            if request.POST['files']:
+                files = True
+            else:
+                files = False
         except MultiValueDictKeyError:
-            is_configs = False
+            files = False
         try:
-            is_images = request.POST['images']
+            if request.POST['expected']:
+                expected = True
+            else:
+                expected = False
         except MultiValueDictKeyError:
-            is_images = False
+            expected = False
         try:
-            is_files = request.POST['files']
+            if request.POST['checklists']:
+                checklists = True
+            else:
+                checklists = False
         except MultiValueDictKeyError:
-            is_files = False
+            checklists = False
         try:
-            is_checklists = request.POST['checklists']
+            if request.POST['links']:
+                links = True
+            else:
+                links = False
         except MultiValueDictKeyError:
-            is_checklists = False
+            links = False
         try:
-            is_links = request.POST['links']
+            if request.POST['comments']:
+                comments = True
+            else:
+                comments = False
         except MultiValueDictKeyError:
-            is_links = False
-        try:
-            is_comments = request.POST['comments']
-        except MultiValueDictKeyError:
-            is_comments = False
-
-        r = RedmineProject(request.POST['project'])
+            comments = False
 
         # check project
-        project = r.check_project()
-        if not project[0]:
-            message = project[1]
-            return render(request, 'redmine/result.html', {'message': message,
-                                                           'back_url': reverse('test_details',
-                                                                               kwargs={'pk': test.id, 'tab_id': 11})})
+        project = request.POST['project']
+        is_project = RedmineProject().check_project(project=project)
+        if not is_project[0]:
+            return render(request, 'redmine/result.html', {'message': is_project[1], 'back_url': back_url})
 
-        # check wiki
-        wiki = r.check_wiki(request.POST['wiki'])
-        if not wiki[0]:
-            message = wiki[1]
-            return render(request, 'redmine/result.html', {'message': message,
-                                                           'back_url': reverse('test_details',
-                                                                               kwargs={'pk': test.id, 'tab_id': 11})})
-
-        r_test = RedmineTest(wiki_title=request.POST['wiki'])
-        r_test.set_wiki(wiki_text=wiki[1])
-
-        if is_name:
-            is_name = r_test.parse_name()
-        if is_purpose:
-            is_purpose = r_test.parse_purpose()
-        if is_procedure:
-            is_procedure = r_test.parse_procedure()
-        if is_expected:
-            is_expected = r_test.parse_expected()
-        if is_configs:
-            clear_configs = True
-            is_configs = r_test.parse_configs()
+        test_details = RedmineTest().parse_details(project=project, wiki_title=request.POST['wiki'],
+                                                   is_purpose=purpose, is_procedure=procedure, is_configs=configs,
+                                                   is_images=images, is_files=files, is_expected=expected,
+                                                   is_checklists=checklists, is_links=links, is_comments=comments)
+        if test_details[0]:
+            test.update_details(name=test_details[1]['name'],
+                                purpose=test_details[1]['purpose'],
+                                procedure=test_details[1]['procedure'],
+                                expected=test_details[1]['expected'],
+                                clear_configs=configs,
+                                configs=test_details[1]['configs'],
+                                images=test_details[1]['images'],
+                                files=test_details[1]['files'],
+                                clear_checklists=checklists,
+                                checklists=test_details[1]['checklists'],
+                                clear_links=links,
+                                links=test_details[1]['links'],
+                                clear_comments=comments,
+                                comments=test_details[1]['comments'])
+            test.update_timestamp(request.user)
+            message = 'Data imported successfully'
         else:
-            clear_configs = False
-        if is_images:
-            is_images = r_test.parse_images()
-        if is_files:
-            is_files = r_test.parse_files()
-        if is_checklists:
-            clear_checklists = True
-            is_checklists = r_test.parse_checklists()
-        else:
-            clear_checklists = False
-        if is_links:
-            clear_links = True
-            is_links = r_test.parse_links()
-        else:
-            clear_links = False
-        if is_comments:
-            clear_comments = True
-            is_comments = r_test.parse_comments()
-        else:
-            clear_comments = False
-
-        test.update_details(name=is_name, purpose=is_purpose, procedure=is_procedure, expected=is_expected,
-                            clear_configs=clear_configs, configs=is_configs, images=is_images, files=is_files,
-                            clear_checklists=clear_checklists, checklists=is_checklists,
-                            clear_links=clear_links, links=is_links, clear_comments=clear_comments,
-                            comments=is_comments)
-        test.update_timestamp(request.user)
-
-        message = r_test.parse_comments()
-        return render(request, 'redmine/result.html', {'message': message,
-                                                       'back_url': reverse('test_details',
-                                                                           kwargs={'pk': test.id, 'tab_id': 11})})
+            message = test_details[1]
+        return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})
 
     else:
         message = 'Page not found'
-        return render(request, 'redmine/result.html', {'message': message, 'back_url': reverse('testplans',
-                                                                                               kwargs={'tab_id': 1})})
+        back_url = reverse('testplans', kwargs={'tab_id': 1})
+        return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})
 
 
 @login_required
 def export_test(request):
     if request.method == "POST":
         test = get_object_or_404(Test, id=request.POST['test'])
-        r = RedmineProject(request.POST['project'])
+        back_url = reverse('test_details', kwargs={'pk': test.id, 'tab_id': 11})
+        # collect data
+        name = test.name
+        try:
+            if request.POST['purpose']:
+                purpose = test.purpose
+            else:
+                purpose = None
+        except MultiValueDictKeyError:
+            purpose = None
+        try:
+            if request.POST['procedure']:
+                procedure = test.procedure
+            else:
+                procedure = None
+        except MultiValueDictKeyError:
+            procedure = None
+        try:
+            if request.POST['configs']:
+                configs = TestConfig.objects.filter(test=test).order_by('id')
+            else:
+                configs = None
+        except MultiValueDictKeyError:
+            configs = None
+        try:
+            if request.POST['images']:
+                images = TestImage.objects.filter(test=test).order_by('id')
+            else:
+                images = None
+        except MultiValueDictKeyError:
+            images = None
+        try:
+            if request.POST['files']:
+                files = TestFile.objects.filter(test=test).order_by('id')
+            else:
+                files = None
+        except MultiValueDictKeyError:
+            files = None
+        try:
+            if request.POST['expected']:
+                expected = test.expected
+            else:
+                expected = None
+        except MultiValueDictKeyError:
+            expected = None
+        try:
+            if request.POST['checklists']:
+                checklists = TestChecklist.objects.filter(test=test).order_by('id')
+            else:
+                checklists = None
+        except MultiValueDictKeyError:
+            checklists = None
+        try:
+            if request.POST['links']:
+                links = TestLink.objects.filter(test=test).order_by('id')
+            else:
+                links = None
+        except MultiValueDictKeyError:
+            links = None
+        try:
+            if request.POST['comments']:
+                comments = TestComment.objects.filter(test=test).order_by('id')
+            else:
+                comments = None
+        except MultiValueDictKeyError:
+            comments = None
 
         # check project
-        project = r.check_project()
-        if not project[0]:
-            message = project[1]
-            return render(request, 'redmine/result.html', {'message': message,
-                                                           'back_url': reverse('test_details',
-                                                                               kwargs={'pk': test.id, 'tab_id': 11})})
-        # collect data
-        try:
-            is_name = request.POST['name']
-        except MultiValueDictKeyError:
-            is_name = False
-        try:
-            is_purpose = request.POST['purpose']
-        except MultiValueDictKeyError:
-            is_purpose = False
-        try:
-            is_procedure = request.POST['procedure']
-        except MultiValueDictKeyError:
-            is_procedure = False
-        try:
-            is_configs = request.POST['configs']
-        except MultiValueDictKeyError:
-            is_configs = False
-        try:
-            is_images = request.POST['images']
-        except MultiValueDictKeyError:
-            is_images = False
-        try:
-            is_files = request.POST['files']
-        except MultiValueDictKeyError:
-            is_files = False
-        try:
-            is_expected = request.POST['expected']
-        except MultiValueDictKeyError:
-            is_expected = False
-        try:
-            is_checklists = request.POST['checklists']
-        except MultiValueDictKeyError:
-            is_checklists = False
-        try:
-            is_links = request.POST['links']
-        except MultiValueDictKeyError:
-            is_links = False
-        try:
-            is_comments = request.POST['comments']
-        except MultiValueDictKeyError:
-            is_comments = False
+        project = request.POST['project']
+        is_project = RedmineProject().check_project(project=project)
+        if not is_project[0]:
+            return render(request, 'redmine/result.html', {'message': is_project[1], 'back_url': back_url})
 
-        # prepare test details
-        r_test = RedmineTest(request.POST['wiki'])
-        if is_name:
-            r_test.set_name(text=test.name)
-        if is_purpose:
-            r_test.set_purpose(text=test.purpose)
-        if is_procedure:
-            r_test.set_procedure(text=test.procedure)
-        if is_configs:
-            r_test.set_configs(configs=TestConfig.objects.filter(test=test).order_by('id'))
-        if is_expected:
-            r_test.set_expected(text=test.expected)
-        if is_checklists:
-            r_test.set_checklists(checklists=TestChecklist.objects.filter(test=test).order_by('id'))
-        if is_links:
-            r_test.set_links(links=TestLink.objects.filter(test=test).order_by('id'))
-        if is_comments:
-            r_test.set_comments(comments=TestComment.objects.filter(test=test).order_by('id'))
-
-        # check wiki
-        wiki = r.check_wiki(title=request.POST['wiki'])
-        if wiki[0]:
-            r.update_test(r_test=r_test)
-            message = 'Wiki updated successfully'
-        else:
-            if wiki[1] == 'Wiki not found':
-                r.create_test(r_test=r_test)
-                message = 'Wiki created successfully'
-            else:
-                message = wiki[1]
-        return render(request, 'redmine/result.html', {'message': message,
-                                                       'back_url': reverse('test_details', kwargs={'pk': test.id,
-                                                                                                   'tab_id': 11})})
+        wiki_page = RedmineTest().export(project=request.POST['project'], wiki_title=request.POST['wiki'], name=name,
+                                         purpose=purpose, procedure=procedure, configs=configs, images=images,
+                                         files=files, expected=expected, checklists=checklists, links=links,
+                                         comments=comments)[1]
+        return render(request, 'redmine/result.html', {'message': wiki_page, 'back_url': back_url})
     else:
         message = 'Page not found'
-        return render(request, 'redmine/result.html', {'message': message,
-                                                       'back_url': reverse('testplans', kwargs={'tab_id': 1})})
-
-
-
-def redmine_connect():
-    redmine = Redmine(settings.REDMINE_URL, key=settings.REDMINE_KEY, version='4.0.4')
-    return redmine
+        back_url = reverse('testplans', kwargs={'tab_id': 1})
+    return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})
 
 
 @login_required
 def import_testplan(request):
-    if request.method == 'POST':
-        project = request.POST['project']
-        tag = request.POST['tag']
-        # create testplan
-        try:
-            testplan_id = create_testplan(project, tag, request.user)
-        except ValueError as e:
-            return render(request, 'redmine/error.html', {'message': e})
-        # create tests
-        redmine_url = '/projects/' + project + '/wiki'
-        tests_create_from_wiki(testplan_id, redmine_url, tag, request.user)
-        # create chapters
-        chapters_create_from_wiki(testplan_id, redmine_url, tag, request.user)
-        return HttpResponseRedirect('/testplan/')
-    else:
-        redmine = redmine_connect()
-        projects = []
-        for project in redmine.project.all():
-            try:
-                if project.parent.name == settings.REDMINE_TESTPLAN_PROJECTNAME:
-                    projects.append(project)
-            except ResourceAttrError:
-                pass
-        tags = DeviceType.objects.all().order_by("tag")
-        return render(request, 'redmine/import_testplan.html', {'tags': tags, 'projects': projects})
-
-
-# Extract spoilers of device-type from wiki page
-def collapse_filter(ctx, tag):
-    blocks = ctx.split('}}')
-    for i, block in enumerate(blocks):
-        if re.search('{{collapse\(#', block):
-            if re.search(tag + '\)', block):
-                blocks[i] = blocks[i].replace('\n{{collapse(#' + tag + ')', '')
-            else:
-                blocks[i] = ''
-    ctx = ''.join(blocks)
-    return ctx
-
-
-def parse_testplan_head(ctx):
-    head = dict()
-    blocks = ctx.split('|')
-    head['title'] = blocks[2].strip()
-    head['version'] = blocks[5].strip()
-    return head
-
-
-class Item:
-    def __init__(self, category, keyword, name):
-        self.category = category
-        self.keyword = keyword
-        self.name = name
-
-
-# Parse tests from Redmine wiki page
-def item_filter(ctx, tag):
-    items = []
-    blocks = ctx.split('h2')
-    for i, block in enumerate(blocks):
-        # peek categories
-        if block.startswith('. '):
-            s = blocks[i].index('\n')
-            category = blocks[i][2:s-1]
-            # peek items
-            sblocks = blocks[i].split('*')
-            for j, sblock in enumerate(sblocks):
-                # check tags
-                if (('\nall' in sblocks[j]) and ('\n!'+tag not in sblocks[j])) or ('\n'+tag in sblocks[j]):
-                    p = sblocks[j].index('|')
-                    r = sblocks[j].index(']')
-                    keyword = sblocks[j][3:p]
-                    name = sblocks[j][p+1:r]
-                    items.append(Item(category, keyword, name))
-    return items
-
-
-# Create new testplan from Redmine wiki page
-def create_testplan(testplan_project, tag, user):
-    redmine = redmine_connect()
-    try:
-        wiki_page = redmine.wiki_page.get('Headers', project_id=testplan_project)
-    except ResourceNotFoundError:
-        raise ValueError('[create_testplan]: Headers wiki page not found')
-
-    ctx = collapse_filter(wiki_page.text, tag)
-    head = parse_testplan_head(ctx)
-    new_testplan = Testplan(name=head['title'], version=head['version'], device_type=DeviceType.objects.get(tag=tag),
-                            redmine_url='/projects/' + testplan_project + '/wiki', created_by=user,
-                            created_at=datetime.now(), updated_by=user, updated_at=datetime.now())
-    new_testplan.save()
-    return new_testplan.id
-
-
-@login_required
-def import_p_test_details(request):
-    if request.method == "POST":
-        test_id = request.POST['test_id']
-        testplan_id = request.POST['testplan_id']
-        redmine_url = request.POST['redmine_url']
-        tag = request.POST['tag']
-        try:
-            test_details_update_from_wiki(test_id, redmine_url, tag, request.user)
-            testplan = get_object_or_404(Testplan, id=testplan_id)
-            testplan.update_timestamp(user=request.user)
-            return HttpResponseRedirect('/testplan/' + testplan_id + '/test/' + test_id + '/')
-        except ValueError as e:
-            return render(request, 'redmine/error.html', {'message': e})
-
-
-# Update test details from Redmine wiki page
-def test_details_update_from_wiki(test_id, redmine_url, tag, user):
-    if not redmine_url:
-        raise ValueError('Test #'+str(test_id)+': Import error - REDMINE_URL not found')
-    try:
-        test = Test.objects.get(id=test_id)
-    except ObjectDoesNotExist:
-        raise ValueError('Test #'+str(test_id)+': Import error - Test object not found')
-
-    redmine = redmine_connect()
-
-    try:
-        project_id = redmine_url.split('/')[2]
-        wiki_id = redmine_url.split('/')[4]
-    except IndexError:
-        raise ValueError('Test #'+str(test_id)+': Import error - Can not parse project_id or wiki_id from REDMINE_URL')
-
-    try:
-        wiki_page = redmine.wiki_page.get(wiki_id, project_id=project_id)
-    except ResourceNotFoundError:
-        raise ValueError('Test #'+str(test_id)+': Import error - Wiki page ' +
-                         settings.REDMINE_URL + redmine_url + ' not found')
-    wiki_blocks = wiki_page.text.split('\nh2. ')
-    test.name = wiki_blocks[0].split('h1. ')[1][0:-3]
-    test.purpose = wiki_blocks[1].split('\r\n')[2]
-
-    procedure = collapse_filter(wiki_blocks[2], tag).replace("Процедура\r\n\r\n", "")
-    # parse test configs
-    configs = pick_up_test_config(procedure)
-    for config in configs:
-        new_test_config = TestConfig(test=test, name=config['name'], lang=config['style'], config=config['config'])
-        new_test_config.save()
-    # cut test configs
-    test.procedure = cut_test_config(procedure)
-
-    test.expected = collapse_filter(wiki_blocks[3], tag).replace("Ожидаемый результат\r\n\r\n", "")
-    test.redmine_url = redmine_url
-    test.updated_by = user
-    test.updated_at = datetime.now()
-    test.save()
-
-    return test.id
-
-
-def pick_up_test_config(ctx):
-    configs = []
-    blocks = ctx.split('\n</code></pre>\r')
-    for block in blocks:
-        if re.search('\n<pre><code class="', block):
-            # config style
-            s_block = block.split('\n<pre><code class="')[1]
-            style = s_block.split('">\r')[0]
-            # config
-            s_block = block.split('">\r\n')[1]
-            config = s_block.split('\n</code></pre>')[0]
-            # config description
-            name = None
-            if re.search('\n> ', block):
-                s_block = block.split('\n> ')[1]
-                name = s_block.split('\r\n\r')[0]
-            config = {'name': name, 'style': style, 'config': config}
-            configs.append(config)
-    return configs
-
-
-def cut_test_config(ctx):
-    blocks = ctx.split('\n</code></pre>\r')
-    for i, block in enumerate(blocks):
-        if re.search('\n<pre><code class="', block):
-            if re.search('\n> ', block):
-                cut_text = block.split('\n> ')
-                blocks[i] = block.replace('\n> ' + cut_text[1], '')
-            else:
-                cut_text = block.split('\n<pre>')
-                blocks[i] = block.replace('\n<pre>' + cut_text[1], '')
-    ctx = ''.join(blocks)
-    return ctx
-
-
-@login_required
-def import_all_tests(request):
-    if request.method == "POST":
-        testplan_id = request.POST['testplan_id']
-        redmine_url = request.POST['redmine_url']
-        tag = request.POST['tag']
-        try:
-            tests_create_from_wiki(testplan_id, redmine_url, tag, request.user)
-            testplan = get_object_or_404(Testplan, id=testplan_id)
-            testplan.update_timestamp(user=request.user)
-            return HttpResponseRedirect('/testplan/' + str(testplan_id) + '/')
-        except ValueError as e:
-            return render(request, 'redmine/error.html', {'message': e})
-    else:
-        return HttpResponseRedirect('/testplan/')
-
-
-# Import all tests from Redmine wiki page
-def tests_create_from_wiki(testplan_id, redmine_url, tag, user):
-    redmine = redmine_connect()
-    if not redmine_url:
-        raise ValueError("[tests_create_from_wiki]: value <redmine_url> not set in testplan #"
-                         + str(testplan_id))
-    try:
-        project_id = redmine_url.split('/')[2]
-    except IndexError:
-        raise ValueError("[tests_create_from_wiki]: Can't parse <project_id> from <redmine_url> in testplan #"
-                         + str(testplan_id))
-    try:
-        wiki_page = redmine.wiki_page.get('wiki', project_id=project_id)
-    except ResourceNotFoundError:
-        raise ValueError("[tests_create_from_wiki]: Wiki page " + settings.REDMINE_URL + redmine_url + " not found")
-
-    items = item_filter(wiki_page.text, tag)
-    for item in items:
-        try:
-            category = Category.objects.get(Q(testplan=Testplan.objects.get(id=testplan_id)) &
-                                            Q(name=item.category)).id
-            test_redmine_url = redmine_url + '/' + item.keyword
-            new_test = Test.objects.create(category=Category.objects.get(id=category), name=item.name,
-                                           redmine_url=test_redmine_url, created_by=user, updated_by=user)
-            test_details_update_from_wiki(new_test.id, test_redmine_url, tag, user)
-
-        except ObjectDoesNotExist:
-            # create category if not found
-            new_category = Category.objects.create(name=item.category, testplan=Testplan.objects.get(id=testplan_id))
-            test_redmine_url = redmine_url + '/' + item.keyword
-            new_test = Test.objects.create(category=Category.objects.get(id=new_category.id), name=item.name,
-                                           redmine_url=test_redmine_url, created_by=user, updated_by=user)
-            test_details_update_from_wiki(new_test.id, test_redmine_url, tag, user)
-    return len(items)
-
-
-@login_required
-def import_all_chapters(request):
-    if request.method == "POST":
-        testplan_id = request.POST['testplan_id']
-        redmine_url = request.POST['redmine_url']
-        tag = request.POST['tag']
-        try:
-            chapters_create_from_wiki(testplan_id, redmine_url, tag, request.user)
-            testplan = get_object_or_404(Testplan, id=testplan_id)
-            testplan.update_timestamp(user=request.user)
-            return HttpResponseRedirect('/testplan/' + str(testplan_id) + '/')
-        except ValueError as e:
-            return render(request, 'redmine/error.html', {'message': e})
-    else:
-        return HttpResponseRedirect('/testplan/')
-
-
-# Import all chapters from Redmine wiki page
-def chapters_create_from_wiki(testplan_id, redmine_url, tag, user):
-    redmine = redmine_connect()
-    if not redmine_url:
-        raise ValueError("[chapters_create_from_wiki]: value <redmine_url> not set in testplan #"
-                         + str(testplan_id))
-    try:
-        project_id = redmine_url.split('/')[2]
-    except IndexError:
-        raise ValueError("[chapters_create_from_wiki]: Can't parse <project_id> from <redmine_url> in testplan #"
-                         + str(testplan_id))
-    try:
-        wiki_page = redmine.wiki_page.get('Sections', project_id=project_id)
-    except ResourceNotFoundError:
-        raise ValueError("[chapters_create_from_wiki]: Wiki page " + settings.REDMINE_URL + redmine_url + " not found")
-
-    items = item_filter(wiki_page.text, tag)
-    for item in items:
-        chapter_redmine_url = redmine_url + '/' + item.keyword
-        new_chapter = Chapter.objects.create(testplan=Testplan.objects.get(id=testplan_id), name=item.name,
-                                             redmine_url=chapter_redmine_url, created_by=user, updated_by=user)
-        chapter_details_update_from_wiki(new_chapter.id, chapter_redmine_url, tag, user)
-    return len(items)
-
-
-@login_required
-def import_chapter_details(request):
-    if request.method == "POST":
-        chapter_id = request.POST['chapter_id']
-        testplan_id = request.POST['testplan_id']
-        redmine_url = request.POST['redmine_url']
-        tag = request.POST['tag']
-        try:
-            chapter_details_update_from_wiki(chapter_id, redmine_url, tag, request.user)
-            testplan = get_object_or_404(Testplan, id=testplan_id)
-            testplan.update_timestamp(user=request.user)
-            return HttpResponseRedirect('/testplan/' + testplan_id + '/chapter/' + chapter_id + '/')
-        except ValueError as e:
-            return render(request, 'redmine/error.html', {'message': e})
-
-
-# Update chapter details from Redmine wiki page
-def chapter_details_update_from_wiki(chapter_id, redmine_url, tag, user):
-    if not redmine_url:
-        raise ValueError('Chapter #'+str(chapter_id)+': Import error - REDMINE_URL not found')
-    try:
-        chapter = Chapter.objects.get(id=chapter_id)
-    except ObjectDoesNotExist:
-        raise ValueError('Chapter #'+str(chapter_id)+': Import error - Chapter object not found')
-    redmine = redmine_connect()
-    try:
-        project_id = redmine_url.split('/')[2]
-        wiki_id = redmine_url.split('/')[4]
-    except IndexError:
-        raise ValueError('Chapter #' + str(chapter_id) +
-                         ': Import error - Can not parse project_id or wiki_id from REDMINE_URL')
-    try:
-        wiki_page = redmine.wiki_page.get(wiki_id, project_id=project_id)
-    except ResourceNotFoundError:
-        raise ValueError('Chapter #'+str(chapter_id)+': Import error - Wiki page ' +
-                         settings.REDMINE_URL + redmine_url + ' not found')
-    wiki_blocks = wiki_page.text.split('\r\n')
-    chapter.name = wiki_blocks[0][4:]
-    desc = '\r\n'.join(wiki_blocks[1:])
-    chapter.text = collapse_filter(desc, tag)
-    chapter.updated_by = user
-    chapter.updated_at = datetime.now()
-    chapter.save()
-    return chapter.id
-
-
-@login_required
-def export_device_type(request):
-    if request.method == "POST":
-        device_type = get_object_or_404(DeviceType, id=request.POST['device_type'])
-        r = RedmineProject(device_type.redmine_project).export_device_type(device_type)
-        return render(request, 'redmine/device_type.html', {'message': r, 'device_type_id': device_type.id})
-    else:
-        return HttpResponseRedirect(reverse('device_types'))
-
-
-@login_required
-def export_device(request):
-    if request.method == "POST":
-        device = get_object_or_404(Device, id=request.POST['device'])
-        r = RedmineProject(device.redmine_project).export_device(device)
-        return render(request, 'redmine/device.html', {'message': r, 'device_id': device.id})
-    else:
-        return HttpResponseRedirect(reverse('devices'))
-
-
-@login_required
-def export_pattern(request):
-    if request.method == "POST":
-        pattern = get_object_or_404(Pattern, id=request.POST['pattern'])
-        r = RedmineProject(pattern.redmine_project).export_pattern(pattern)
-        return render(request, 'redmine/pattern.html', {'message': r, 'pattern_id': pattern.id})
-    else:
-        return HttpResponseRedirect(reverse('testplans', kwargs={'tab_id': 2}))
+    pass
 
 
 @login_required
 def export_testplan(request):
     if request.method == "POST":
         testplan = get_object_or_404(Testplan, id=request.POST['testplan'])
-        r = RedmineProject(testplan.redmine_project).export_testplan(testplan)
+
+        r = RedmineProject(project_id=request.POST['project'])
+
+        # collect data
+        parent = request.POST['parent']
+
+        testplan_project = r.create_or_update(name=request.POST['project'], parent=request.POST['parent'])
+        if testplan_project[0]:
+            # success
+            message = testplan_project[1]
+        else:
+            message = testplan_project[1]
+
+
+
+        return render(request, 'redmine/result.html', {'message': message,
+                                                       'back_url': reverse('testplan_details',
+                                                                           kwargs={'pk': testplan.id, 'tab_id': 5})})
+
+
+        # r = RedmineProject(project_id=testplan.redmine_project).export_testplan(testplan)
+
     else:
-        return HttpResponseRedirect(reverse('testplans', kwargs={'tab_id': 1}))
+        message = 'Page not found'
+        return render(request, 'redmine/result.html', {'message': message,
+                                                       'back_url': reverse('testplans', kwargs={'tab_id': 1})})
