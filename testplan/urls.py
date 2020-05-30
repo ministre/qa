@@ -18,7 +18,7 @@ urlpatterns = [
     path('chapter/create/<int:tp_id>/', views.ChapterCreate.as_view(), name='chapter_create'),
     path('chapter/delete/<int:pk>/', views.ChapterDelete.as_view(), name='chapter_delete'),
     path('chapter/update/<int:pk>/', views.ChapterUpdate.as_view(), name='chapter_update'),
-    path('chapter/<int:pk>/', views.chapter_details, name='chapter_details'),
+    path('chapter/<int:pk>/<int:tab_id>/', views.chapter_details, name='chapter_details'),
     path('clear_chapters/<int:tp_id>/', views.clear_chapters, name='clear_chapters'),
     # categories
     path('category/create/<int:tp_id>/', views.CategoryCreate.as_view(), name='category_create'),

@@ -204,11 +204,6 @@ def export_test(request):
 
 
 @login_required
-def import_testplan(request):
-    pass
-
-
-@login_required
 def export_testplan(request):
     if request.method == "POST":
         testplan = get_object_or_404(Testplan, id=request.POST['testplan'])
@@ -240,3 +235,18 @@ def export_testplan(request):
         message = 'Page not found'
         return render(request, 'redmine/result.html', {'message': message,
                                                        'back_url': reverse('testplans', kwargs={'tab_id': 1})})
+
+
+@login_required
+def import_testplan(request):
+    pass
+
+
+@login_required
+def export_chapter(request):
+    pass
+
+
+@login_required
+def import_chapter(request):
+    pass

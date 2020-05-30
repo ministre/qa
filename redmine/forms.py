@@ -2,6 +2,11 @@ from django.utils.translation import gettext_lazy as _
 from django import forms
 
 
+class RedmineChapterForm(forms.Form):
+    project = forms.CharField(label='Project', max_length=100)
+    wiki = forms.CharField(label='Wiki', max_length=100)
+
+
 class RedmineTestForm(forms.Form):
     project = forms.CharField(label='Project', max_length=100)
     wiki = forms.CharField(label='Wiki', max_length=100)

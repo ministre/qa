@@ -2,7 +2,8 @@ from redminelib import Redmine
 from qa import settings
 from redminelib.exceptions import ResourceNotFoundError, ForbiddenError, AuthError, ValidationError
 from requests.exceptions import ConnectionError
-from testplan.models import TestChecklistItem, Test
+from testplan.models import TestChecklistItem, Test, TestConfig, TestImage, TestFile, TestChecklist, TestLink, \
+    TestComment
 import re
 
 
@@ -369,4 +370,22 @@ class RedmineTestPlan(object):
             self.wiki += self.get_wiki_chapters(chapters)
         if categories:
             self.wiki += self.get_wiki_categories(categories)
+            # create or update wiki for each test
+            for category in categories:
+                tests = Test.objects.filter(category=category).order_by('id')
+                for test in tests:
+                    if test.redmine_wiki:
+                        redmine_test = RedmineTest()
+                        configs = TestConfig.objects.filter(test=test).order_by('id')
+                        images = TestImage.objects.filter(test=test).order_by('id')
+                        files = TestFile.objects.filter(test=test).order_by('id')
+                        checklists = TestChecklist.objects.filter(test=test).order_by('id')
+                        links = TestLink.objects.filter(test=test).order_by('id')
+                        comments = TestComment.objects.filter(test=test).order_by('id')
+                        redmine_test.export(project=test.category.testplan.redmine_project,
+                                            wiki_title=test.redmine_wiki, name=test.name, purpose=test.purpose,
+                                            procedure=test.procedure, configs=configs, images=images, files=files,
+                                            expected=test.expected, checklists=checklists, links=links,
+                                            comments=comments)
         r.create_or_update_wiki(project=project, wiki_title='Wiki', wiki_text=self.wiki)
+        return True

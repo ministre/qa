@@ -1,0 +1,108 @@
+{% extends "device/wrapper.html" %}
+
+{% load i18n static %}
+
+{% block content %}
+
+<p><a href="{% url 'testplans' tab_id=1 %}">{% trans "Testplan" %}</a> &raquo;
+    <a href="{% url 'testplan_details' pk=testplan.id tab_id=2 %}">{{ testplan.name }}</a>  &raquo; {{ chapter.name }}</p>
+
+<ul class="tabs" data-tabs id="chapter-tabs">
+    <li class="tabs-title {% if tab_id == 1 %} is-active{% endif %}">
+        <a data-tabs-target="general" href="#general">{% trans "General" %}</a></li>
+    <li class="tabs-title {% if tab_id == 2 %} is-active{% endif %}">
+        <a data-tabs-target="description" href="#description">{% trans "Description" %}</a></li>
+    <li class="tabs-title {% if tab_id == 3 %} is-active{% endif %}">
+        <a data-tabs-target="redmine" href="#redmine">{% trans "Redmine" %}</a></li>
+</ul>
+
+<div class="tabs-content" data-tabs-content="chapter-tabs">
+    <div class="tabs-panel {% if tab_id == 1 %}is-active{% endif %}" id="general">
+        <a href="{% url 'chapter_update' pk=chapter.id %}" class="button small">
+            {% trans "Update" %}</a>
+        <a href="{% url 'chapter_delete' pk=chapter.id %}" class="button alert small">
+            {% trans "Delete" %}</a>
+        <table class="hover unstriped">
+            <tbody>
+            <tr>
+                <td>{% trans "Chapter name" %}:</td>
+                <td>{{ chapter.name }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Created" %}:</td>
+                <td>{{ chapter.created_at }} ({{ chapter.created_by }})</td>
+            </tr>
+            <tr>
+                <td>{% trans "Last Update" %}:</td>
+                <td>{{ chapter.updated_at }} ({{ chapter.updated_by }})</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+  <div class="tabs-panel {% if tab_id == 2 %}is-active{% endif %}" id="description">
+      {{ chapter_text|safe }}
+  </div>
+
+
+  <div class="tabs-panel {% if tab_id == 3 %}is-active{% endif %}" id="redmine">
+      <div class="grid-x grid-margin-x">
+          <div class="cell">
+              <div class="card">
+                  <div class="card-section">
+                      <h4>Project Information</h4>
+                      <table>
+                          <tr>
+                              <td>Wiki URL:</td>
+                              <td>
+                                  {% if chapter.redmine_wiki %}
+                                  <a href="{{ redmine_url }}/projects/{{ chapter.testplan.redmine_project }}/wiki/{{ chapter.redmine_wiki }}/">
+                                      {{ redmine_url }}/projects/{{ chapter.testplan.redmine_project }}/wiki/{{ chapter.redmine_wiki }}/
+                                  </a>
+                                  {% else %}
+                                  <a href="{% url 'chapter_update' pk=chapter.id %}">Not specified</a>
+                                  {% endif %}
+                              </td>
+                          </tr>
+                      </table>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      <div class="grid-x grid-margin-x small-up-2 medium-up-2">
+            <div class="cell">
+                <div class="card">
+                  <div class="card-section">
+                    <h4>Export</h4>
+                    <p>Click to send test details to Redmine Wiki.</p>
+                      <form method="post" action="{% url 'export_chapter' %}">
+                          {% csrf_token %}
+                          <input type="hidden" name="test" value="{{ test.id }}">
+                          <input type="submit" value='{% trans "Export" %}' class="button success small" />
+                          {{ redmine_form.as_p }}
+                      </form>
+                  </div>
+                </div>
+            </div>
+            <div class="cell">
+                <div class="card">
+                  <div class="card-section">
+                    <h4>Import</h4>
+                    <p>Click to update test details from Redmine Wiki.</p>
+                      <form method="post" action="{% url 'import_chapter' %}">
+                          {% csrf_token %}
+                          <input type="hidden" name="test" value="{{ test.id }}">
+                          <input type="submit" value='{% trans "Import" %}' class="button alert small" />
+                          {{ redmine_form.as_p }}
+                      </form>
+                  </div>
+                </div>
+            </div>
+      </div>
+
+  </div>
+</div>
+
+{% endblock %}

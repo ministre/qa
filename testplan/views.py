@@ -8,7 +8,7 @@ from .models import Testplan, Category, Chapter, Test, TestConfig, TestImage, Te
 from .forms import TestplanForm, CategoryForm, ChapterForm, TestForm, TestConfigForm, TestImageForm, TestFileForm,\
     TestWorksheetForm, WorksheetItemForm, TestChecklistForm, TestChecklistItemForm, TestLinkForm, TestCommentForm, \
     PatternForm
-from redmine.forms import RedmineTestForm, RedmineExportTestplanForm, RedmineImportTestplanForm
+from redmine.forms import RedmineChapterForm, RedmineTestForm, RedmineExportTestplanForm, RedmineImportTestplanForm
 from django.http import HttpResponseRedirect
 import textile
 from datetime import datetime
@@ -356,7 +356,7 @@ class ChapterDelete(DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('testplan_details', kwargs={'pk': self.object.testplan.id, 'tab_id': 2})
+        context['back_url'] = reverse('chapter_details', kwargs={'pk': self.object.id, 'tab_id': 1})
         return context
 
     def get_success_url(self):
@@ -372,7 +372,7 @@ class ChapterUpdate(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('testplan_details', kwargs={'pk': self.object.testplan.id, 'tab_id': 2})
+        context['back_url'] = reverse('chapter_details', kwargs={'pk': self.object.id, 'tab_id': 1})
         return context
 
     def get_initial(self):
@@ -380,15 +380,20 @@ class ChapterUpdate(UpdateView):
 
     def get_success_url(self):
         self.object.testplan.update_timestamp(user=self.request.user)
-        return reverse('testplan_details', kwargs={'pk': self.object.testplan.id, 'tab_id': 2})
+        return reverse('chapter_details', kwargs={'pk': self.object.id, 'tab_id': 1})
 
 
 @login_required
-def chapter_details(request, pk):
+def chapter_details(request, pk, tab_id):
     chapter = get_object_or_404(Chapter, id=pk)
     chapter_text = textile.textile(chapter.text)
-    return render(request, 'chapter/details.html', {'chapter': chapter, 'testplan': chapter.testplan,
-                                                    'chapter_text': chapter_text})
+    redmine_chapter_form = RedmineChapterForm(initial={'project': chapter.testplan.redmine_project,
+                                                       'wiki': chapter.redmine_wiki})
+    redmine_url = settings.REDMINE_URL
+    return render(request, 'testplan/chapter_details.html', {'chapter': chapter, 'testplan': chapter.testplan,
+                                                             'chapter_text': chapter_text,
+                                                             'redmine_form': redmine_chapter_form,
+                                                             'redmine_url': redmine_url, 'tab_id': tab_id})
 
 
 @login_required

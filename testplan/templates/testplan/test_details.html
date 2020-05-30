@@ -232,9 +232,13 @@
                           <tr>
                               <td>Wiki URL:</td>
                               <td>
+                                  {% if test.redmine_wiki %}
                                   <a href="{{ redmine_url }}/projects/{{ test.category.testplan.redmine_project }}/wiki/{{ test.redmine_wiki }}/">
                                       {{ redmine_url }}/projects/{{ test.category.testplan.redmine_project }}/wiki/{{ test.redmine_wiki }}/
                                   </a>
+                                  {% else %}
+                                  <a href="{% url 'test_update' pk=test.id %}">Not specified</a>
+                                  {% endif %}
                               </td>
                           </tr>
                       </table>
