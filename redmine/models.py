@@ -2,7 +2,7 @@ from redminelib import Redmine
 from qa import settings
 from redminelib.exceptions import ResourceNotFoundError, ForbiddenError, AuthError, ValidationError
 from requests.exceptions import ConnectionError
-from testplan.models import TestChecklistItem
+from testplan.models import TestChecklistItem, Test
 import re
 
 
@@ -32,11 +32,12 @@ class RedmineProject(object):
         except ForbiddenError:
             return [False, 'Requested wiki resource is forbidden']
 
-    def create_or_update_project(self, project: str, project_name: str, parent=''):
+    def create_or_update_project(self, project: str, project_name: str, parent='', description=''):
         is_project = self.check_project(project=project)
         if is_project[0]:
             # update project
-            self.redmine.project.update(resource_id=is_project[1], name=project_name)
+            self.redmine.project.update(resource_id=is_project[1], name=project_name,
+                                        description='__%{color:gray}' + description + '%__')
             return [True, 'Project updated']
         else:
             if is_project[1] == 'Project not found':
@@ -46,7 +47,8 @@ class RedmineProject(object):
                         # create sub-project
                         try:
                             p = self.redmine.project.create(identifier=project, name=project_name,
-                                                            parent_id=is_parent_project[1], inherit_members=True)
+                                                            parent_id=is_parent_project[1], inherit_members=True,
+                                                            description='__%{color:gray}' + description + '%__')
                             return [True, p.id]
                         except ValidationError:
                             return [False, 'Sub-project name validation error']
@@ -58,7 +60,8 @@ class RedmineProject(object):
                 else:
                     # create root project
                     try:
-                        p = self.redmine.project.create(identifier=project, name=project_name, inherit_members=True)
+                        p = self.redmine.project.create(identifier=project, name=project_name, inherit_members=True,
+                                                        description='__%{color:gray}' + description + '%__')
                         return [True, p.id]
                     except ValidationError:
                         return [False, 'Root project name validation error']
@@ -333,4 +336,37 @@ class RedmineTest(object):
 
 class RedmineTestPlan(object):
     def __init__(self):
-        pass
+        self.wiki = ''
+
+    def get_wiki_chapters(self, chapters):
+        ctx = '\nh2. Общие положения\r\n\r'
+        for chapter in chapters:
+            if chapter.redmine_wiki:
+                ctx += '\n* [[' + chapter.redmine_wiki + '|' + chapter.name + ']]\r'
+            else:
+                ctx += '\n* ' + chapter.name + '\r'
+        ctx += '\n\r'
+        return ctx
+
+    def get_wiki_categories(self, categories):
+        ctx = '\nh2. Список тестов\r\n\r'
+        for category in categories:
+            ctx += '\nh3. ' + category.name + '\r\n\r'
+            tests = Test.objects.filter(category=category).order_by('id')
+            for test in tests:
+                if test.redmine_wiki:
+                    ctx += '\n* [[' + test.redmine_wiki + '|' + test.name + ']]\r'
+                else:
+                    ctx += '\n* ' + test.name + '\r'
+            ctx += '\n\r'
+        return ctx
+
+    def export(self, project: str, project_name: str, parent: str, version: str, chapters, categories):
+        r = RedmineProject()
+        r.create_or_update_project(project=project, project_name=project_name, parent=parent, description=version)
+        self.wiki = 'h1. ' + project_name + '\r\n\r'
+        if chapters:
+            self.wiki += self.get_wiki_chapters(chapters)
+        if categories:
+            self.wiki += self.get_wiki_categories(categories)
+        r.create_or_update_wiki(project=project, wiki_title='Wiki', wiki_text=self.wiki)

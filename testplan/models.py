@@ -46,7 +46,7 @@ class Chapter(models.Model):
     created_at = models.DateTimeField(default=datetime.now, blank=True)
     updated_by = models.ForeignKey(User, related_name='chapter_u', on_delete=models.CASCADE, blank=True, null=True)
     updated_at = models.DateTimeField(default=datetime.now, blank=True)
-    redmine_url = models.CharField(max_length=1000, blank=True, null=True)
+    redmine_wiki = models.CharField(max_length=1000, blank=True, null=True)
 
     def __str__(self):
         return self.name

@@ -81,9 +81,13 @@ def testplan_details(request, pk, tab_id):
     categories = Category.objects.filter(testplan=testplan).order_by('id')
     protocols_count = testplan.protocols_count()
     redmine_export_form = RedmineExportTestplanForm(initial={'parent': testplan.redmine_parent,
-                                                             'project': testplan.redmine_project})
+                                                             'project': testplan.redmine_project,
+                                                             'chapters': True,
+                                                             'tests': True})
     redmine_import_form = RedmineImportTestplanForm(initial={'parent': testplan.redmine_parent,
-                                                             'project': testplan.redmine_project})
+                                                             'project': testplan.redmine_project,
+                                                             'chapters': True,
+                                                             'tests': True})
     redmine_url = settings.REDMINE_URL
     return render(request, 'testplan/testplan_details.html', {'tab_id': tab_id, 'testplan': testplan,
                                                               'categories': categories,

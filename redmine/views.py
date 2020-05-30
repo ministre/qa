@@ -1,9 +1,10 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from testplan.models import Testplan, Test, TestConfig, TestImage, TestFile, TestChecklist, TestLink, TestComment
+from .models import RedmineProject, RedmineTest, RedmineTestPlan
+from testplan.models import Test, TestConfig, TestImage, TestFile, TestChecklist, TestLink, TestComment, Testplan, \
+    Chapter, Category
 from django.utils.datastructures import MultiValueDictKeyError
 from django.shortcuts import get_object_or_404
-from .models import RedmineProject, RedmineTest
 from django.urls import reverse
 
 
@@ -211,27 +212,29 @@ def import_testplan(request):
 def export_testplan(request):
     if request.method == "POST":
         testplan = get_object_or_404(Testplan, id=request.POST['testplan'])
-
-        r = RedmineProject(project_id=request.POST['project'])
-
+        back_url = reverse('testplan_details', kwargs={'pk': testplan.id, 'tab_id': 5})
         # collect data
-        parent = request.POST['parent']
+        try:
+            if request.POST['chapters']:
+                chapters = Chapter.objects.filter(testplan=testplan).order_by('id')
+            else:
+                chapters = None
+        except MultiValueDictKeyError:
+            chapters = None
+        try:
+            if request.POST['tests']:
+                categories = Category.objects.filter(testplan=testplan).order_by('id')
+            else:
+                categories = None
+        except MultiValueDictKeyError:
+            categories = None
 
-        testplan_project = r.create_or_update(name=request.POST['project'], parent=request.POST['parent'])
-        if testplan_project[0]:
-            # success
-            message = testplan_project[1]
-        else:
-            message = testplan_project[1]
+        r = RedmineTestPlan().export(project=request.POST['project'], project_name=testplan.name,
+                                     parent=request.POST['parent'], version=testplan.version,
+                                     chapters=chapters, categories=categories)
 
-
-
-        return render(request, 'redmine/result.html', {'message': message,
-                                                       'back_url': reverse('testplan_details',
-                                                                           kwargs={'pk': testplan.id, 'tab_id': 5})})
-
-
-        # r = RedmineProject(project_id=testplan.redmine_project).export_testplan(testplan)
+        message = 'Success'
+        return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})
 
     else:
         message = 'Page not found'

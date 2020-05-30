@@ -38,7 +38,7 @@ class ChapterForm(ModelForm):
     class Meta:
         model = Chapter
         labels = {
-            'redmine_url': _('Redmine URL'),
+            'redmine_wiki': _('Redmine wiki'),
             'name': _('Name'),
             'text': _('Text'),
         }
@@ -55,7 +55,7 @@ class TestForm(ModelForm):
             'purpose': _('Purpose'),
             'procedure': _('Procedure'),
             'expected': _('Expected result'),
-            'redmine_url': _('Redmine URL'),
+            'redmine_wiki': _('Redmine wiki'),
         }
         fields = '__all__'
         widgets = {'category': HiddenInput(), 'created_by': HiddenInput(), 'created_at': HiddenInput(),
