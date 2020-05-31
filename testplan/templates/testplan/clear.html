@@ -6,8 +6,8 @@
 
 <form method="post" action="">
     {% csrf_token %}
-    <p>{% trans "Are you sure you want to clear Chapters for " %} "<b>{{ testplan }}</b>"?</p>
-    <a href="{% url 'testplan_details' pk=testplan.id tab_id=2%}" class="button small">&laquo; {% trans "Back" %}</a>
+    <p>{{ message }}</p>
+    <a href="{{ back_url }}" class="button small">&laquo; {% trans "Back" %}</a>
     <input type="submit" value='{% trans "Confirm" %}' class="button alert small" />
 </form>
 

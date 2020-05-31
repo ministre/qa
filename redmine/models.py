@@ -52,12 +52,12 @@ class RedmineProject(object):
                                                             description='__%{color:gray}' + description + '%__')
                             return [True, p.id]
                         except ValidationError:
-                            return [False, 'Sub-project name validation error']
+                            return [False, 'Sub-project name validation fail']
                     else:
                         if is_parent_project[1] == 'Project not found':
                             return [False, 'Parent project not found']
                         else:
-                            return [False, 'Parent project error - ' + is_parent_project[1]]
+                            return [False, 'Parent project - ' + is_parent_project[1]]
                 else:
                     # create root project
                     try:
@@ -73,11 +73,11 @@ class RedmineProject(object):
         is_wiki = self.check_wiki(project=project, wiki_title=wiki_title)
         if is_wiki[0]:
             self.redmine.wiki_page.update(wiki_title, project_id=project, text=wiki_text)
-            return [True, 'Wiki updated']
+            return [True, 'Wiki has been updated']
         else:
             if is_wiki[1] == 'Wiki not found':
                 self.redmine.wiki_page.create(project_id=project, title=wiki_title, text=wiki_text, parent_title='wiki')
-                return [True, 'Wiki created']
+                return [True, 'Wiki has been created']
             else:
                 return [False, is_wiki[1]]
 
@@ -390,34 +390,36 @@ class RedmineTestPlan(object):
 
     def export(self, project: str, project_name: str, parent: str, version: str, chapters, categories):
         r = RedmineProject()
-        r.create_or_update_project(project=project, project_name=project_name, parent=parent, description=version)
-        self.wiki = 'h1. ' + project_name + '\r\n\r'
+        redmine_project = r.create_or_update_project(project=project, project_name=project_name, parent=parent,
+                                                     description=version)
+        if redmine_project[0]:
+            self.wiki = 'h1. ' + project_name + '\r\n\r'
+            if chapters:
+                self.wiki += self.get_wiki_chapters(chapters)
+                for chapter in chapters:
+                    if chapter.redmine_wiki:
+                        redmine_chapter = RedmineChapter()
+                        redmine_chapter.export(project=project, wiki_title=chapter.redmine_wiki, chapter=chapter)
+            if categories:
+                self.wiki += self.get_wiki_categories(categories)
+                for category in categories:
+                    tests = Test.objects.filter(category=category).order_by('id')
+                    for test in tests:
+                        if test.redmine_wiki:
+                            redmine_test = RedmineTest()
+                            configs = TestConfig.objects.filter(test=test).order_by('id')
+                            images = TestImage.objects.filter(test=test).order_by('id')
+                            files = TestFile.objects.filter(test=test).order_by('id')
+                            checklists = TestChecklist.objects.filter(test=test).order_by('id')
+                            links = TestLink.objects.filter(test=test).order_by('id')
+                            comments = TestComment.objects.filter(test=test).order_by('id')
+                            redmine_test.export(project=test.category.testplan.redmine_project,
+                                                wiki_title=test.redmine_wiki, name=test.name, purpose=test.purpose,
+                                                procedure=test.procedure, configs=configs, images=images, files=files,
+                                                expected=test.expected, checklists=checklists, links=links,
+                                                comments=comments)
 
-        if chapters:
-            self.wiki += self.get_wiki_chapters(chapters)
-            for chapter in chapters:
-                if chapter.redmine_wiki:
-                    redmine_chapter = RedmineChapter()
-                    redmine_chapter.export(project=project, wiki_title=chapter.redmine_wiki, chapter=chapter)
-
-        if categories:
-            self.wiki += self.get_wiki_categories(categories)
-            for category in categories:
-                tests = Test.objects.filter(category=category).order_by('id')
-                for test in tests:
-                    if test.redmine_wiki:
-                        redmine_test = RedmineTest()
-                        configs = TestConfig.objects.filter(test=test).order_by('id')
-                        images = TestImage.objects.filter(test=test).order_by('id')
-                        files = TestFile.objects.filter(test=test).order_by('id')
-                        checklists = TestChecklist.objects.filter(test=test).order_by('id')
-                        links = TestLink.objects.filter(test=test).order_by('id')
-                        comments = TestComment.objects.filter(test=test).order_by('id')
-                        redmine_test.export(project=test.category.testplan.redmine_project,
-                                            wiki_title=test.redmine_wiki, name=test.name, purpose=test.purpose,
-                                            procedure=test.procedure, configs=configs, images=images, files=files,
-                                            expected=test.expected, checklists=checklists, links=links,
-                                            comments=comments)
-
-        is_wiki = r.create_or_update_wiki(project=project, wiki_title='Wiki', wiki_text=self.wiki)
+            is_wiki = r.create_or_update_wiki(project=project, wiki_title='Wiki', wiki_text=self.wiki)
+        else:
+            return redmine_project
         return is_wiki

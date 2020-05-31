@@ -17,13 +17,12 @@ def export_chapter(request):
         project = request.POST['project']
         is_project = RedmineProject().check_project(project=project)
         if not is_project[0]:
-            return render(request, 'redmine/result.html', {'message': is_project[1], 'back_url': back_url})
-        is_wiki = RedmineChapter().export(project=project, wiki_title=request.POST['wiki'], chapter=chapter)
-        return render(request, 'redmine/result.html', {'message': is_wiki[1], 'back_url': back_url})
+            return render(request, 'redmine/result.html', {'message': is_project, 'back_url': back_url})
+        message = RedmineChapter().export(project=project, wiki_title=request.POST['wiki'], chapter=chapter)
     else:
-        message = 'Page not found'
+        message = [False, 'Page not found']
         back_url = reverse('testplans', kwargs={'tab_id': 1})
-        return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})
+    return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})
 
 
 @login_required
@@ -31,25 +30,22 @@ def import_chapter(request):
     if request.method == "POST":
         chapter = get_object_or_404(Chapter, id=request.POST['chapter'])
         back_url = reverse('chapter_details', kwargs={'pk': chapter.id, 'tab_id': 3})
-
         # check project
         project = request.POST['project']
         is_project = RedmineProject().check_project(project=project)
         if not is_project[0]:
-            return render(request, 'redmine/result.html', {'message': is_project[1], 'back_url': back_url})
-
+            return render(request, 'redmine/result.html', {'message': is_project, 'back_url': back_url})
         # parse chapter
         parse_details = RedmineChapter().parse_details(project=project, wiki_title=request.POST['wiki'])
         if parse_details[0]:
             message = chapter.update_details(name=parse_details[1]['name'], text=parse_details[1]['text'],
-                                             user=request.user)[1]
+                                             user=request.user)
         else:
-            message = parse_details[1]
-        return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})
+            message = parse_details
     else:
-        message = 'Page not found'
+        message = [False, 'Page not found']
         back_url = reverse('testplans', kwargs={'tab_id': 1})
-        return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})
+    return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})
 
 
 @login_required
@@ -129,15 +125,14 @@ def export_test(request):
         if not is_project[0]:
             return render(request, 'redmine/result.html', {'message': is_project[1], 'back_url': back_url})
 
-        wiki_page = RedmineTest().export(project=request.POST['project'], wiki_title=request.POST['wiki'], name=name,
-                                         purpose=purpose, procedure=procedure, configs=configs, images=images,
-                                         files=files, expected=expected, checklists=checklists, links=links,
-                                         comments=comments)[1]
-        return render(request, 'redmine/result.html', {'message': wiki_page, 'back_url': back_url})
+        message = RedmineTest().export(project=request.POST['project'], wiki_title=request.POST['wiki'], name=name,
+                                       purpose=purpose, procedure=procedure, configs=configs, images=images,
+                                       files=files, expected=expected, checklists=checklists, links=links,
+                                       comments=comments)
     else:
-        message = 'Page not found'
+        message = [False, 'Page not found']
         back_url = reverse('testplans', kwargs={'tab_id': 1})
-        return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})
+    return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})
 
 
 @login_required
@@ -214,7 +209,7 @@ def import_test(request):
         project = request.POST['project']
         is_project = RedmineProject().check_project(project=project)
         if not is_project[0]:
-            return render(request, 'redmine/result.html', {'message': is_project[1], 'back_url': back_url})
+            return render(request, 'redmine/result.html', {'message': is_project, 'back_url': back_url})
 
         test_details = RedmineTest().parse_details(project=project, wiki_title=request.POST['wiki'],
                                                    is_purpose=purpose, is_procedure=procedure, is_configs=configs,
@@ -236,15 +231,13 @@ def import_test(request):
                                 clear_comments=comments,
                                 comments=test_details[1]['comments'])
             test.update_timestamp(request.user)
-            message = 'Data imported successfully'
+            message = [True, 'Data has been updated']
         else:
-            message = test_details[1]
-        return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})
-
+            message = test_details
     else:
-        message = 'Page not found'
+        message = [False, 'Page not found']
         back_url = reverse('testplans', kwargs={'tab_id': 1})
-        return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})
+    return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})
 
 
 @login_required
@@ -268,15 +261,13 @@ def export_testplan(request):
         except MultiValueDictKeyError:
             categories = None
 
-        is_wiki = RedmineTestPlan().export(project=request.POST['project'], project_name=testplan.name,
+        message = RedmineTestPlan().export(project=request.POST['project'], project_name=testplan.name,
                                            parent=request.POST['parent'], version=testplan.version,
                                            chapters=chapters, categories=categories)
-        return render(request, 'redmine/result.html', {'message': is_wiki[1], 'back_url': back_url})
-
     else:
-        message = 'Page not found'
+        message = [False, 'Page not found']
         back_url = reverse('testplans', kwargs={'tab_id': 1})
-        return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})
+    return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})
 
 
 @login_required

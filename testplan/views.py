@@ -14,6 +14,7 @@ import textile
 from datetime import datetime
 from redmine.models import RedmineProject
 from qa import settings
+from django.utils.translation import gettext_lazy as _
 
 
 @login_required
@@ -404,7 +405,9 @@ def clear_chapters(request, tp_id):
         testplan.update_timestamp(user=request.user)
         return HttpResponseRedirect(reverse('testplan_details', kwargs={'pk': tp_id, 'tab_id': 2}))
     else:
-        return render(request, 'chapter/clear.html', {'testplan': testplan})
+        back_url = reverse('testplan_details', kwargs={'pk': tp_id, 'tab_id': 2})
+        message = _('Are you sure you want to clear chapters for "') + testplan.name + '"?'
+        return render(request, 'testplan/clear.html', {'testplan': testplan, 'back_url': back_url, 'message': message})
 
 
 @login_required
@@ -415,7 +418,9 @@ def clear_tests(request, tp_id):
         testplan.update_timestamp(user=request.user)
         return HttpResponseRedirect(reverse('testplan_details', kwargs={'pk': tp_id, 'tab_id': 3}))
     else:
-        return render(request, 'test/clear.html', {'testplan': testplan})
+        back_url = reverse('testplan_details', kwargs={'pk': tp_id, 'tab_id': 3})
+        message = _('Are you sure you want to clear tests for "') + testplan.name + '"?'
+        return render(request, 'testplan/clear.html', {'testplan': testplan, 'back_url': back_url, 'message': message})
 
 
 @method_decorator(login_required, name='dispatch')
