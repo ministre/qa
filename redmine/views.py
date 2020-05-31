@@ -1,11 +1,117 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from .models import RedmineProject, RedmineTest, RedmineTestPlan
+from .models import RedmineProject, RedmineChapter, RedmineTest, RedmineTestPlan
 from testplan.models import Test, TestConfig, TestImage, TestFile, TestChecklist, TestLink, TestComment, Testplan, \
     Chapter, Category
 from django.utils.datastructures import MultiValueDictKeyError
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
+
+
+@login_required
+def export_chapter(request):
+    if request.method == "POST":
+        chapter = get_object_or_404(Chapter, id=request.POST['chapter'])
+        back_url = reverse('chapter_details', kwargs={'pk': chapter.id, 'tab_id': 3})
+        # check project
+        project = request.POST['project']
+        is_project = RedmineProject().check_project(project=project)
+        if not is_project[0]:
+            return render(request, 'redmine/result.html', {'message': is_project[1], 'back_url': back_url})
+        is_wiki = RedmineChapter().export(project=project, wiki_title=request.POST['wiki'], chapter=chapter)
+        return render(request, 'redmine/result.html', {'message': is_wiki[1], 'back_url': back_url})
+    else:
+        message = 'Page not found'
+        back_url = reverse('testplans', kwargs={'tab_id': 1})
+        return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})
+
+
+@login_required
+def export_test(request):
+    if request.method == "POST":
+        test = get_object_or_404(Test, id=request.POST['test'])
+        back_url = reverse('test_details', kwargs={'pk': test.id, 'tab_id': 11})
+        # collect data
+        name = test.name
+        try:
+            if request.POST['purpose']:
+                purpose = test.purpose
+            else:
+                purpose = None
+        except MultiValueDictKeyError:
+            purpose = None
+        try:
+            if request.POST['procedure']:
+                procedure = test.procedure
+            else:
+                procedure = None
+        except MultiValueDictKeyError:
+            procedure = None
+        try:
+            if request.POST['configs']:
+                configs = TestConfig.objects.filter(test=test).order_by('id')
+            else:
+                configs = None
+        except MultiValueDictKeyError:
+            configs = None
+        try:
+            if request.POST['images']:
+                images = TestImage.objects.filter(test=test).order_by('id')
+            else:
+                images = None
+        except MultiValueDictKeyError:
+            images = None
+        try:
+            if request.POST['files']:
+                files = TestFile.objects.filter(test=test).order_by('id')
+            else:
+                files = None
+        except MultiValueDictKeyError:
+            files = None
+        try:
+            if request.POST['expected']:
+                expected = test.expected
+            else:
+                expected = None
+        except MultiValueDictKeyError:
+            expected = None
+        try:
+            if request.POST['checklists']:
+                checklists = TestChecklist.objects.filter(test=test).order_by('id')
+            else:
+                checklists = None
+        except MultiValueDictKeyError:
+            checklists = None
+        try:
+            if request.POST['links']:
+                links = TestLink.objects.filter(test=test).order_by('id')
+            else:
+                links = None
+        except MultiValueDictKeyError:
+            links = None
+        try:
+            if request.POST['comments']:
+                comments = TestComment.objects.filter(test=test).order_by('id')
+            else:
+                comments = None
+        except MultiValueDictKeyError:
+            comments = None
+
+        # check project
+        project = request.POST['project']
+        is_project = RedmineProject().check_project(project=project)
+        if not is_project[0]:
+            return render(request, 'redmine/result.html', {'message': is_project[1], 'back_url': back_url})
+
+        wiki_page = RedmineTest().export(project=request.POST['project'], wiki_title=request.POST['wiki'], name=name,
+                                         purpose=purpose, procedure=procedure, configs=configs, images=images,
+                                         files=files, expected=expected, checklists=checklists, links=links,
+                                         comments=comments)[1]
+        return render(request, 'redmine/result.html', {'message': wiki_page, 'back_url': back_url})
+    else:
+        message = 'Page not found'
+        back_url = reverse('testplans', kwargs={'tab_id': 1})
+        return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})
 
 
 @login_required
@@ -116,94 +222,6 @@ def import_test(request):
 
 
 @login_required
-def export_test(request):
-    if request.method == "POST":
-        test = get_object_or_404(Test, id=request.POST['test'])
-        back_url = reverse('test_details', kwargs={'pk': test.id, 'tab_id': 11})
-        # collect data
-        name = test.name
-        try:
-            if request.POST['purpose']:
-                purpose = test.purpose
-            else:
-                purpose = None
-        except MultiValueDictKeyError:
-            purpose = None
-        try:
-            if request.POST['procedure']:
-                procedure = test.procedure
-            else:
-                procedure = None
-        except MultiValueDictKeyError:
-            procedure = None
-        try:
-            if request.POST['configs']:
-                configs = TestConfig.objects.filter(test=test).order_by('id')
-            else:
-                configs = None
-        except MultiValueDictKeyError:
-            configs = None
-        try:
-            if request.POST['images']:
-                images = TestImage.objects.filter(test=test).order_by('id')
-            else:
-                images = None
-        except MultiValueDictKeyError:
-            images = None
-        try:
-            if request.POST['files']:
-                files = TestFile.objects.filter(test=test).order_by('id')
-            else:
-                files = None
-        except MultiValueDictKeyError:
-            files = None
-        try:
-            if request.POST['expected']:
-                expected = test.expected
-            else:
-                expected = None
-        except MultiValueDictKeyError:
-            expected = None
-        try:
-            if request.POST['checklists']:
-                checklists = TestChecklist.objects.filter(test=test).order_by('id')
-            else:
-                checklists = None
-        except MultiValueDictKeyError:
-            checklists = None
-        try:
-            if request.POST['links']:
-                links = TestLink.objects.filter(test=test).order_by('id')
-            else:
-                links = None
-        except MultiValueDictKeyError:
-            links = None
-        try:
-            if request.POST['comments']:
-                comments = TestComment.objects.filter(test=test).order_by('id')
-            else:
-                comments = None
-        except MultiValueDictKeyError:
-            comments = None
-
-        # check project
-        project = request.POST['project']
-        is_project = RedmineProject().check_project(project=project)
-        if not is_project[0]:
-            return render(request, 'redmine/result.html', {'message': is_project[1], 'back_url': back_url})
-
-        wiki_page = RedmineTest().export(project=request.POST['project'], wiki_title=request.POST['wiki'], name=name,
-                                         purpose=purpose, procedure=procedure, configs=configs, images=images,
-                                         files=files, expected=expected, checklists=checklists, links=links,
-                                         comments=comments)[1]
-        return render(request, 'redmine/result.html', {'message': wiki_page, 'back_url': back_url})
-    else:
-        message = 'Page not found'
-        back_url = reverse('testplans', kwargs={'tab_id': 1})
-    return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})
-
-
-@login_required
 def export_testplan(request):
     if request.method == "POST":
         testplan = get_object_or_404(Testplan, id=request.POST['testplan'])
@@ -224,26 +242,19 @@ def export_testplan(request):
         except MultiValueDictKeyError:
             categories = None
 
-        r = RedmineTestPlan().export(project=request.POST['project'], project_name=testplan.name,
-                                     parent=request.POST['parent'], version=testplan.version,
-                                     chapters=chapters, categories=categories)
-
-        message = 'Success'
-        return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})
+        is_wiki = RedmineTestPlan().export(project=request.POST['project'], project_name=testplan.name,
+                                           parent=request.POST['parent'], version=testplan.version,
+                                           chapters=chapters, categories=categories)
+        return render(request, 'redmine/result.html', {'message': is_wiki[1], 'back_url': back_url})
 
     else:
         message = 'Page not found'
-        return render(request, 'redmine/result.html', {'message': message,
-                                                       'back_url': reverse('testplans', kwargs={'tab_id': 1})})
+        back_url = reverse('testplans', kwargs={'tab_id': 1})
+        return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})
 
 
 @login_required
 def import_testplan(request):
-    pass
-
-
-@login_required
-def export_chapter(request):
     pass
 
 

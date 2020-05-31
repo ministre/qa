@@ -2,7 +2,7 @@ from redminelib import Redmine
 from qa import settings
 from redminelib.exceptions import ResourceNotFoundError, ForbiddenError, AuthError, ValidationError
 from requests.exceptions import ConnectionError
-from testplan.models import TestChecklistItem, Test, TestConfig, TestImage, TestFile, TestChecklist, TestLink, \
+from testplan.models import TestChecklistItem, Chapter, Test, TestConfig, TestImage, TestFile, TestChecklist, TestLink,\
     TestComment
 import re
 
@@ -80,6 +80,21 @@ class RedmineProject(object):
                 return [True, 'Wiki created']
             else:
                 return [False, is_wiki[1]]
+
+
+class RedmineChapter(object):
+    def __init__(self):
+        self.wiki = ''
+        self.ctx = ''
+
+    def get_wiki_chapter(self, chapter: Chapter):
+        self.ctx = 'h1. ' + chapter.name + '\r\n\r\n' + chapter.text + '\r'
+        return self.ctx
+
+    def export(self, project: str, wiki_title: str, chapter: Chapter):
+        self.wiki += self.get_wiki_chapter(chapter)
+        is_wiki = RedmineProject().create_or_update_wiki(project=project, wiki_title=wiki_title, wiki_text=self.wiki)
+        return is_wiki
 
 
 class RedmineTest(object):
@@ -366,11 +381,16 @@ class RedmineTestPlan(object):
         r = RedmineProject()
         r.create_or_update_project(project=project, project_name=project_name, parent=parent, description=version)
         self.wiki = 'h1. ' + project_name + '\r\n\r'
+
         if chapters:
             self.wiki += self.get_wiki_chapters(chapters)
+            for chapter in chapters:
+                if chapter.redmine_wiki:
+                    redmine_chapter = RedmineChapter()
+                    redmine_chapter.export(project=project, wiki_title=chapter.redmine_wiki, chapter=chapter)
+
         if categories:
             self.wiki += self.get_wiki_categories(categories)
-            # create or update wiki for each test
             for category in categories:
                 tests = Test.objects.filter(category=category).order_by('id')
                 for test in tests:
@@ -387,5 +407,6 @@ class RedmineTestPlan(object):
                                             procedure=test.procedure, configs=configs, images=images, files=files,
                                             expected=test.expected, checklists=checklists, links=links,
                                             comments=comments)
-        r.create_or_update_wiki(project=project, wiki_title='Wiki', wiki_text=self.wiki)
-        return True
+
+        is_wiki = r.create_or_update_wiki(project=project, wiki_title='Wiki', wiki_text=self.wiki)
+        return is_wiki

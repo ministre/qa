@@ -79,7 +79,7 @@
                     <p>Click to send test details to Redmine Wiki.</p>
                       <form method="post" action="{% url 'export_chapter' %}">
                           {% csrf_token %}
-                          <input type="hidden" name="test" value="{{ test.id }}">
+                          <input type="hidden" name="chapter" value="{{ chapter.id }}">
                           <input type="submit" value='{% trans "Export" %}' class="button success small" />
                           {{ redmine_form.as_p }}
                       </form>
@@ -93,7 +93,7 @@
                     <p>Click to update test details from Redmine Wiki.</p>
                       <form method="post" action="{% url 'import_chapter' %}">
                           {% csrf_token %}
-                          <input type="hidden" name="test" value="{{ test.id }}">
+                          <input type="hidden" name="chapter" value="{{ chapter.id }}">
                           <input type="submit" value='{% trans "Import" %}' class="button alert small" />
                           {{ redmine_form.as_p }}
                       </form>
