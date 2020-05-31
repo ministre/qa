@@ -27,6 +27,27 @@ def export_chapter(request):
 
 
 @login_required
+def import_chapter(request):
+    if request.method == "POST":
+        chapter = get_object_or_404(Chapter, id=request.POST['chapter'])
+        back_url = reverse('chapter_details', kwargs={'pk': chapter.id, 'tab_id': 3})
+
+        # check project
+        project = request.POST['project']
+        is_project = RedmineProject().check_project(project=project)
+        if not is_project[0]:
+            return render(request, 'redmine/result.html', {'message': is_project[1], 'back_url': back_url})
+
+        details = RedmineChapter().parse_details(project=project, wiki_title=request.POST['wiki'])
+        if details[0]:
+            result = chapter.update_details(name=details[1]['name'], text=details[1]['text'], user=request.user)
+            message = result[1]
+        else:
+            message = details[1]
+        return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})
+
+
+@login_required
 def export_test(request):
     if request.method == "POST":
         test = get_object_or_404(Test, id=request.POST['test'])
@@ -257,7 +278,3 @@ def export_testplan(request):
 def import_testplan(request):
     pass
 
-
-@login_required
-def import_chapter(request):
-    pass

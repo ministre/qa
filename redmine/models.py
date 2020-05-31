@@ -96,6 +96,17 @@ class RedmineChapter(object):
         is_wiki = RedmineProject().create_or_update_wiki(project=project, wiki_title=wiki_title, wiki_text=self.wiki)
         return is_wiki
 
+    def parse_details(self, project: str, wiki_title: str):
+        is_wiki = RedmineProject().check_wiki(project=project, wiki_title=wiki_title)
+        if is_wiki[0]:
+            self.wiki = is_wiki[1]
+            chapter_blocks = self.wiki.split('\r\n')
+            name = chapter_blocks.pop(0)[4:]
+            text = '\r\n'.join(chapter_blocks)[2:-1]
+            return [True, {'name': name, 'text': text}]
+        else:
+            return [False, is_wiki[1]]
+
 
 class RedmineTest(object):
     def __init__(self):

@@ -51,6 +51,19 @@ class Chapter(models.Model):
     def __str__(self):
         return self.name
 
+    def update_timestamp(self, user):
+        self.updated_by = user
+        self.updated_at = datetime.now()
+        self.save()
+        return True
+
+    def update_details(self, name: str, text: str, user):
+        self.name = name
+        self.text = text
+        self.save()
+        self.update_timestamp(user=user)
+        return [True, 'Data has been updated successfully']
+
 
 class Category(models.Model):
     name = models.CharField(max_length=1000)
