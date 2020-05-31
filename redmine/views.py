@@ -38,12 +38,17 @@ def import_chapter(request):
         if not is_project[0]:
             return render(request, 'redmine/result.html', {'message': is_project[1], 'back_url': back_url})
 
-        details = RedmineChapter().parse_details(project=project, wiki_title=request.POST['wiki'])
-        if details[0]:
-            result = chapter.update_details(name=details[1]['name'], text=details[1]['text'], user=request.user)
-            message = result[1]
+        # parse chapter
+        parse_details = RedmineChapter().parse_details(project=project, wiki_title=request.POST['wiki'])
+        if parse_details[0]:
+            message = chapter.update_details(name=parse_details[1]['name'], text=parse_details[1]['text'],
+                                             user=request.user)[1]
         else:
-            message = details[1]
+            message = parse_details[1]
+        return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})
+    else:
+        message = 'Page not found'
+        back_url = reverse('testplans', kwargs={'tab_id': 1})
         return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})
 
 
