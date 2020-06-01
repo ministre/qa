@@ -69,14 +69,21 @@ class RedmineProject(object):
             else:
                 return [False, is_project[1]]
 
-    def create_or_update_wiki(self, project: str, wiki_title: str, wiki_text: str):
+    def create_or_update_wiki(self, project: str, wiki_title: str, wiki_text: str, parent_title=None):
         is_wiki = self.check_wiki(project=project, wiki_title=wiki_title)
         if is_wiki[0]:
-            self.redmine.wiki_page.update(wiki_title, project_id=project, text=wiki_text)
+            if parent_title:
+                self.redmine.wiki_page.update(wiki_title, project_id=project, text=wiki_text, parent_title='wiki')
+            else:
+                self.redmine.wiki_page.update(wiki_title, project_id=project, text=wiki_text)
             return [True, 'Wiki has been updated']
         else:
             if is_wiki[1] == 'Wiki not found':
-                self.redmine.wiki_page.create(project_id=project, title=wiki_title, text=wiki_text, parent_title='wiki')
+                if parent_title:
+                    self.redmine.wiki_page.create(project_id=project, title=wiki_title, text=wiki_text,
+                                                  parent_title='wiki')
+                else:
+                    self.redmine.wiki_page.create(project_id=project, title=wiki_title, text=wiki_text)
                 return [True, 'Wiki has been created']
             else:
                 return [False, is_wiki[1]]
@@ -93,7 +100,8 @@ class RedmineChapter(object):
 
     def export(self, project: str, wiki_title: str, chapter: Chapter):
         self.wiki += self.get_wiki_chapter(chapter)
-        is_wiki = RedmineProject().create_or_update_wiki(project=project, wiki_title=wiki_title, wiki_text=self.wiki)
+        is_wiki = RedmineProject().create_or_update_wiki(project=project, wiki_title=wiki_title, wiki_text=self.wiki,
+                                                         parent_title='wiki')
         return is_wiki
 
     def parse_details(self, project: str, wiki_title: str):
@@ -357,7 +365,8 @@ class RedmineTest(object):
         if comments:
             self.wiki += self.get_wiki_comments(comments=comments)
 
-        wiki_page = RedmineProject().create_or_update_wiki(project=project, wiki_title=wiki_title, wiki_text=self.wiki)
+        wiki_page = RedmineProject().create_or_update_wiki(project=project, wiki_title=wiki_title, wiki_text=self.wiki,
+                                                           parent_title='wiki')
         return wiki_page
 
 
@@ -393,15 +402,21 @@ class RedmineTestplan(object):
         redmine_project = r.create_or_update_project(project=project, project_name=project_name, parent=parent,
                                                      description=version)
         if redmine_project[0]:
+            # build testplan wiki
             self.wiki = 'h1. ' + project_name + '\r\n\r'
             if chapters:
                 self.wiki += self.get_wiki_chapters(chapters)
+            if categories:
+                self.wiki += self.get_wiki_categories(categories)
+            is_wiki = r.create_or_update_wiki(project=project, wiki_title='Wiki', wiki_text=self.wiki)
+
+            # build items wiki
+            if chapters:
                 for chapter in chapters:
                     if chapter.redmine_wiki:
                         redmine_chapter = RedmineChapter()
                         redmine_chapter.export(project=project, wiki_title=chapter.redmine_wiki, chapter=chapter)
             if categories:
-                self.wiki += self.get_wiki_categories(categories)
                 for category in categories:
                     tests = Test.objects.filter(category=category).order_by('id')
                     for test in tests:
@@ -418,13 +433,11 @@ class RedmineTestplan(object):
                                                 procedure=test.procedure, configs=configs, images=images, files=files,
                                                 expected=test.expected, checklists=checklists, links=links,
                                                 comments=comments)
-
-            is_wiki = r.create_or_update_wiki(project=project, wiki_title='Wiki', wiki_text=self.wiki)
         else:
             return redmine_project
         return is_wiki
 
-    def parse_chapter_items(self):
+    def parse_chapters_items(self):
         chapters = []
         for h2_block in self.wiki.split('\nh2. '):
             detect_head = re.search('Общие положения\r', h2_block)
@@ -435,7 +448,7 @@ class RedmineTestplan(object):
                     detect_wiki = re.search(']]', chapter_block)
                     if detect_wiki:
                         wiki_title = chapter_block.split('|')[0][2:]
-                        chapter_name = chapter_block.split('|')[1][:-2]
+                        chapter_name = chapter_block.split('|')[1][:-2].replace(']', '')
                     else:
                         wiki_title = None
                         chapter_name = chapter_block.replace('\r', '').replace('\n', '')
@@ -443,8 +456,33 @@ class RedmineTestplan(object):
                     chapters.append(chapter)
         return chapters
 
-    def parse_categories(self):
-        return 'bla2'
+    def parse_tests_items(self):
+        categories = []
+        for h2_block in self.wiki.split('\nh2. '):
+            detect_head = re.search('Список тестов\r', h2_block)
+            if detect_head:
+                h3_blocks = h2_block.split('\nh3. ')
+                del h3_blocks[0]
+                for h3_block in h3_blocks:
+                    category_name = h3_block.split('\r\n\r\n')[0]
+                    test_blocks = h3_block.split('* ')
+                    del test_blocks[0]
+                    tests = []
+                    for test_block in test_blocks:
+                        detect_wiki = re.search(']]', test_block)
+                        if detect_wiki:
+                            redmine_wiki = test_block.split('|')[0][2:]
+                            test_name = test_block.split('|')[1].replace(']', '').replace('\r', '').replace('\n', '')
+                        else:
+                            redmine_wiki = None
+                            test_name = test_block.replace('\r', '').replace('\n', '')
+                        test = {'redmine_wiki': redmine_wiki, 'name': test_name, 'purpose': None, 'procedure': None,
+                                'configs': None, 'images': None, 'files': None, 'expected': None,
+                                'checklists': None, 'links': None, 'comments': None}
+                        tests.append(test)
+                    category = {'name': category_name, 'tests': tests}
+                    categories.append(category)
+        return categories
 
     def parse_details(self, project: str, is_chapters, is_tests):
         is_wiki = RedmineProject().check_wiki(project=project, wiki_title='Wiki')
@@ -453,7 +491,7 @@ class RedmineTestplan(object):
         else:
             return is_wiki
         if is_chapters:
-            chapters = self.parse_chapter_items()
+            chapters = self.parse_chapters_items()
             for chapter in chapters:
                 if chapter['redmine_wiki']:
                     is_wiki = RedmineChapter().parse_details(project=project, wiki_title=chapter['redmine_wiki'])
@@ -462,7 +500,25 @@ class RedmineTestplan(object):
         else:
             chapters = None
         if is_tests:
-            categories = self.parse_categories()
+            categories = self.parse_tests_items()
+            for category in categories:
+                tests = category['tests']
+                for test in tests:
+                    if test['redmine_wiki']:
+                        is_wiki = RedmineTest().parse_details(project=project, wiki_title=test['redmine_wiki'],
+                                                              is_purpose=True, is_procedure=True, is_configs=True,
+                                                              is_images=True, is_files=True, is_expected=True,
+                                                              is_checklists=True, is_links=True, is_comments=True)
+                        if is_wiki[0]:
+                            test['purpose'] = is_wiki[1]['purpose']
+                            test['procedure'] = is_wiki[1]['procedure']
+                            test['configs'] = is_wiki[1]['configs']
+                            test['images'] = is_wiki[1]['images']
+                            test['files'] = is_wiki[1]['files']
+                            test['expected'] = is_wiki[1]['expected']
+                            test['checklists'] = is_wiki[1]['checklists']
+                            test['links'] = is_wiki[1]['links']
+                            test['comments'] = is_wiki[1]['comments']
         else:
             categories = None
         return [True, {'chapters': chapters, 'categories': categories}]

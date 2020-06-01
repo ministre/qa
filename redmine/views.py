@@ -1,8 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from .models import RedmineProject, RedmineChapter, RedmineTest, RedmineTestplan
-from testplan.models import Test, TestConfig, TestImage, TestFile, TestChecklist, TestLink, TestComment, Testplan, \
-    Chapter, Category
+from testplan.models import Test, TestConfig, TestImage, TestFile, TestChecklist, TestChecklistItem, TestLink, \
+    TestComment, Testplan, Chapter, Category
 from django.utils.datastructures import MultiValueDictKeyError
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -294,17 +294,75 @@ def import_testplan(request):
         testplan_details = RedmineTestplan().parse_details(project=project, is_chapters=is_chapters, is_tests=is_tests)
         # update data
         if testplan_details[0]:
-            chapters = testplan_details[1]['chapters']
-            for chapter in chapters:
-                Chapter.objects.update_or_create(testplan=testplan, name=chapter['name'],
-                                                 defaults={'testplan': testplan,
-                                                           'name': chapter['name'],
-                                                           'text': chapter['text'],
-                                                           'redmine_wiki': chapter['redmine_wiki'],
-                                                           'created_by': request.user,
-                                                           'updated_by': request.user,
-                                                           'updated_at': datetime.now})
-        message = testplan_details
+            if is_chapters:
+                chapters = testplan_details[1]['chapters']
+                for chapter in chapters:
+                    Chapter.objects.update_or_create(testplan=testplan, name=chapter['name'],
+                                                     defaults={'testplan': testplan,
+                                                               'name': chapter['name'],
+                                                               'text': chapter['text'],
+                                                               'redmine_wiki': chapter['redmine_wiki'],
+                                                               'created_by': request.user,
+                                                               'updated_by': request.user,
+                                                               'updated_at': datetime.now})
+            if is_tests:
+                categories = testplan_details[1]['categories']
+                for category in categories:
+                    cat, created = Category.objects.update_or_create(testplan=testplan, name=category['name'],
+                                                                     defaults={'testplan': testplan,
+                                                                               'name': category['name']})
+                    tests = category['tests']
+                    for test in tests:
+                        t, created = Test.objects.update_or_create(category=cat, name=test['name'],
+                                                                   defaults={'category': cat,
+                                                                             'name': test['name'],
+                                                                             'purpose': test['purpose'],
+                                                                             'procedure': test['procedure'],
+                                                                             'expected': test['expected'],
+                                                                             'created_by': request.user,
+                                                                             'updated_by': request.user,
+                                                                             'updated_at': datetime.now,
+                                                                             'redmine_wiki': test['redmine_wiki']})
+                        configs = test['configs']
+                        if configs:
+                            for config in configs:
+                                TestConfig.objects.update_or_create(test=t, name=config[0],
+                                                                    defaults={'test': t,
+                                                                              'name': config[0],
+                                                                              'lang': config[1],
+                                                                              'config': config[2]})
+                        images = test['images']
+                        if images:
+                            pass
+                        files = test['files']
+                        if files:
+                            pass
+                        checklists = test['checklists']
+                        if checklists:
+                            for checklist in checklists:
+                                ch, cr = TestChecklist.objects.update_or_create(test=t, name=checklist['name'],
+                                                                                defaults={'test': t,
+                                                                                          'name': checklist['name']})
+                                items = checklist['items']
+                                if items:
+                                    for item in items:
+                                        TestChecklistItem.objects.update_or_create(checklist=ch, name=item,
+                                                                                   defaults={'checklist': ch,
+                                                                                             'name': item})
+                        links = test['links']
+                        if links:
+                            for link in links:
+                                TestLink.objects.update_or_create(test=t, name=link[0],
+                                                                  defaults={'test': t, 'name': link[0], 'url': link[1]})
+                        comments = test['comments']
+                        if comments:
+                            for comment in comments:
+                                TestComment.objects.update_or_create(test=t, name=comment[0],
+                                                                     defaults={'test': t, 'name': comment[0],
+                                                                               'text': comment[1]})
+            message = testplan_details
+        else:
+            return testplan_details
     else:
         message = [False, 'Page not found']
         back_url = reverse('testplans', kwargs={'tab_id': 1})
