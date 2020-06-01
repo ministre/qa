@@ -387,7 +387,11 @@ class ChapterUpdate(UpdateView):
 @login_required
 def chapter_details(request, pk, tab_id):
     chapter = get_object_or_404(Chapter, id=pk)
-    chapter_text = textile.textile(chapter.text)
+    if chapter.text:
+        chapter_text = textile.textile(chapter.text)
+    else:
+        chapter_text = chapter.text
+
     redmine_chapter_form = RedmineChapterForm(initial={'project': chapter.testplan.redmine_project,
                                                        'wiki': chapter.redmine_wiki})
     redmine_url = settings.REDMINE_URL

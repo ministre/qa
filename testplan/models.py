@@ -41,7 +41,7 @@ class Testplan(models.Model):
 class Chapter(models.Model):
     testplan = models.ForeignKey(Testplan, on_delete=models.CASCADE)
     name = models.CharField(max_length=1000)
-    text = models.TextField(max_length=100000)
+    text = models.TextField(max_length=100000, blank=True, null=True)
     created_by = models.ForeignKey(User, related_name='chapter_c', on_delete=models.CASCADE, blank=True, null=True)
     created_at = models.DateTimeField(default=datetime.now, blank=True)
     updated_by = models.ForeignKey(User, related_name='chapter_u', on_delete=models.CASCADE, blank=True, null=True)

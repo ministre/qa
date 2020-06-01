@@ -1,11 +1,12 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from .models import RedmineProject, RedmineChapter, RedmineTest, RedmineTestPlan
+from .models import RedmineProject, RedmineChapter, RedmineTest, RedmineTestplan
 from testplan.models import Test, TestConfig, TestImage, TestFile, TestChecklist, TestLink, TestComment, Testplan, \
     Chapter, Category
 from django.utils.datastructures import MultiValueDictKeyError
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
+from datetime import datetime
 
 
 @login_required
@@ -261,7 +262,7 @@ def export_testplan(request):
         except MultiValueDictKeyError:
             categories = None
 
-        message = RedmineTestPlan().export(project=request.POST['project'], project_name=testplan.name,
+        message = RedmineTestplan().export(project=request.POST['project'], project_name=testplan.name,
                                            parent=request.POST['parent'], version=testplan.version,
                                            chapters=chapters, categories=categories)
     else:
@@ -272,5 +273,39 @@ def export_testplan(request):
 
 @login_required
 def import_testplan(request):
-    pass
-
+    if request.method == "POST":
+        testplan = get_object_or_404(Testplan, id=request.POST['testplan'])
+        back_url = reverse('testplan_details', kwargs={'pk': testplan.id, 'tab_id': 5})
+        # check project
+        project = request.POST['project']
+        is_project = RedmineProject().check_project(project=project)
+        if not is_project[0]:
+            return render(request, 'redmine/result.html', {'message': is_project, 'back_url': back_url})
+        # collect attributes
+        try:
+            is_chapters = request.POST['chapters']
+        except MultiValueDictKeyError:
+            is_chapters = None
+        try:
+            is_tests = request.POST['tests']
+        except MultiValueDictKeyError:
+            is_tests = None
+        # parse data
+        testplan_details = RedmineTestplan().parse_details(project=project, is_chapters=is_chapters, is_tests=is_tests)
+        # update data
+        if testplan_details[0]:
+            chapters = testplan_details[1]['chapters']
+            for chapter in chapters:
+                Chapter.objects.update_or_create(testplan=testplan, name=chapter['name'],
+                                                 defaults={'testplan': testplan,
+                                                           'name': chapter['name'],
+                                                           'text': chapter['text'],
+                                                           'redmine_wiki': chapter['redmine_wiki'],
+                                                           'created_by': request.user,
+                                                           'updated_by': request.user,
+                                                           'updated_at': datetime.now})
+        message = testplan_details
+    else:
+        message = [False, 'Page not found']
+        back_url = reverse('testplans', kwargs={'tab_id': 1})
+    return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})

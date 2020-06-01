@@ -361,7 +361,7 @@ class RedmineTest(object):
         return wiki_page
 
 
-class RedmineTestPlan(object):
+class RedmineTestplan(object):
     def __init__(self):
         self.wiki = ''
 
@@ -423,3 +423,46 @@ class RedmineTestPlan(object):
         else:
             return redmine_project
         return is_wiki
+
+    def parse_chapter_items(self):
+        chapters = []
+        for h2_block in self.wiki.split('\nh2. '):
+            detect_head = re.search('Общие положения\r', h2_block)
+            if detect_head:
+                chapter_blocks = h2_block.split('\r\n* ')
+                chapter_blocks.pop(0)
+                for chapter_block in chapter_blocks:
+                    detect_wiki = re.search(']]', chapter_block)
+                    if detect_wiki:
+                        wiki_title = chapter_block.split('|')[0][2:]
+                        chapter_name = chapter_block.split('|')[1][:-2]
+                    else:
+                        wiki_title = None
+                        chapter_name = chapter_block.replace('\r', '').replace('\n', '')
+                    chapter = {'redmine_wiki': wiki_title, 'name': chapter_name, 'text': None}
+                    chapters.append(chapter)
+        return chapters
+
+    def parse_categories(self):
+        return 'bla2'
+
+    def parse_details(self, project: str, is_chapters, is_tests):
+        is_wiki = RedmineProject().check_wiki(project=project, wiki_title='Wiki')
+        if is_wiki[0]:
+            self.wiki = is_wiki[1]
+        else:
+            return is_wiki
+        if is_chapters:
+            chapters = self.parse_chapter_items()
+            for chapter in chapters:
+                if chapter['redmine_wiki']:
+                    is_wiki = RedmineChapter().parse_details(project=project, wiki_title=chapter['redmine_wiki'])
+                    if is_wiki[0]:
+                        chapter['text'] = is_wiki[1]['text']
+        else:
+            chapters = None
+        if is_tests:
+            categories = self.parse_categories()
+        else:
+            categories = None
+        return [True, {'chapters': chapters, 'categories': categories}]
