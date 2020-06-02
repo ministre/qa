@@ -236,7 +236,7 @@ class RedmineTest(object):
             ctx += '\nh3. Чек-листы' + '\r\n\r'
             for checklist in checklists:
                 ctx += '\nh4. ' + checklist.name + '\r'
-                checklist_items = TestChecklistItem.objects.filter(checklist=checklist)
+                checklist_items = TestChecklistItem.objects.filter(checklist=checklist).order_by('id')
                 ctx += '\n\r'
                 for checklist_item in checklist_items:
                     ctx += '\n* ' + checklist_item.name + '\r'
