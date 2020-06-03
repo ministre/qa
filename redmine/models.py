@@ -146,8 +146,8 @@ class RedmineTest(object):
             detect_head = re.search('Процедура\r', h2_block)
             if detect_head:
                 h3_blocks = h2_block.split('\nh3. ')
-                procedure_blocks = h3_blocks[0].split('\n')
-                procedure = procedure_blocks[2][:-1]
+                # procedure_blocks = h3_blocks[0].split('\n')
+                procedure = h3_blocks[0][13:]
                 return procedure
         return False
 
