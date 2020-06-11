@@ -145,9 +145,7 @@ class RedmineTest(object):
         for h2_block in self.wiki.split('\nh2. '):
             detect_head = re.search('Процедура\r', h2_block)
             if detect_head:
-                h3_blocks = h2_block.split('\nh3. ')
-                # procedure_blocks = h3_blocks[0].split('\n')
-                procedure = h3_blocks[0][13:]
+                procedure = h2_block.split('\nh3. ')[0][13:]
                 return procedure
         return False
 

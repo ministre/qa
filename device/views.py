@@ -273,10 +273,9 @@ def device_details(request, pk, tab_id):
     docums = Docum.objects.filter(device=device)
     samples = Sample.objects.filter(device=device)
     protocols = Protocol.objects.filter(device=device)
-    r = RedmineProject(device.redmine_project)
     return render(request, 'device/details.html', {'device': device, 'specs': specs, 'fws': fws,
                                                    'photos': photos, 'docums': docums, 'samples': samples,
-                                                   'protocols': protocols, 'redmine_wiki': r.get_wiki_url('wiki'),
+                                                   'protocols': protocols,
                                                    'tab_id': tab_id})
 
 
