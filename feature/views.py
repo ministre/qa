@@ -69,7 +69,7 @@ class FeatureListDelete(DeleteView):
 @login_required
 def fl_details(request, pk, tab_id: int):
     feature_list = get_object_or_404(FeatureList, id=pk)
-    categories = get_feature_list_items(pk)
+    categories = FeatureListCategory.objects.filter(feature_list=feature_list).order_by('id')
     return render(request, 'feature/details.html', {'fl': feature_list, 'categories': categories, 'tab_id': tab_id})
 
 
@@ -80,31 +80,16 @@ class FeatureListCategoryCreate(CreateView):
     template_name = 'feature/create.html'
 
     def get_initial(self):
-        return {'feature_list': self.kwargs.get('feature_list_id')}
+        return {'feature_list': self.kwargs.get('fl_id')}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['feature_list_id'] = self.kwargs.get('feature_list_id')
+        context['back_url'] = reverse('fl_details', kwargs={'pk': self.kwargs.get('fl_id'), 'tab_id': 2})
         return context
 
     def get_success_url(self):
-        feature_list_update_timestamp(self.kwargs.get('feature_list_id'), self.request.user)
-        return reverse('feature_list_details', kwargs={'pk': self.kwargs.get('feature_list_id')})
-
-
-@method_decorator(login_required, name='dispatch')
-class FeatureListCategoryDelete(DeleteView):
-    model = FeatureListCategory
-    template_name = 'feature/delete.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['feature_list_id'] = self.kwargs.get('feature_list_id')
-        return context
-
-    def get_success_url(self):
-        feature_list_update_timestamp(self.kwargs.get('feature_list_id'), self.request.user)
-        return reverse('feature_list_details', kwargs={'pk': self.kwargs.get('feature_list_id')})
+        self.object.feature_list.update_timestamp(user=self.request.user)
+        return reverse('fl_details', kwargs={'pk': self.object.feature_list.id, 'tab_id': 2})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -115,27 +100,24 @@ class FeatureListCategoryUpdate(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['feature_list_id'] = self.kwargs.get('feature_list_id')
+        context['back_url'] = reverse('fl_details', kwargs={'pk': self.object.feature_list.id, 'tab_id': 2})
         return context
 
     def get_success_url(self):
-        feature_list_update_timestamp(self.kwargs.get('feature_list_id'), self.request.user)
-        return reverse('feature_list_details', kwargs={'pk': self.kwargs.get('feature_list_id')})
+        self.object.feature_list.update_timestamp(user=self.request.user)
+        return reverse('fl_details', kwargs={'pk': self.object.feature_list.id, 'tab_id': 2})
 
 
-def feature_list_update_timestamp(feature_list_id, user):
-    feature_list = FeatureList.objects.get(id=feature_list_id)
-    feature_list.updated_by = user
-    feature_list.updated_at = datetime.now()
-    feature_list.save()
-    return True
+@method_decorator(login_required, name='dispatch')
+class FeatureListCategoryDelete(DeleteView):
+    model = FeatureListCategory
+    template_name = 'feature/delete.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('fl_details', kwargs={'pk': self.object.feature_list.id, 'tab_id': 2})
+        return context
 
-def get_feature_list_items(feature_list_id):
-    feature_list = get_object_or_404(FeatureList, id=feature_list_id)
-    feature_list_categories = FeatureListCategory.objects.filter(feature_list=feature_list).order_by('id')
-    feature_list_items = []
-    for feature_list_category in feature_list_categories:
-        items = FeatureListItem.objects.filter(feature_list_category=feature_list_category).order_by('id')
-        feature_list_items.append({'id': feature_list_category.id, 'name': feature_list_category.name, 'items': items})
-    return feature_list_items
+    def get_success_url(self):
+        self.object.feature_list.update_timestamp(user=self.request.user)
+        return reverse('fl_details', kwargs={'pk': self.object.feature_list.id, 'tab_id': 2})

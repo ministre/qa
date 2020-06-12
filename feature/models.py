@@ -36,5 +36,6 @@ class FeatureListCategory(models.Model):
 
 
 class FeatureListItem(models.Model):
-    feature_list_category = models.ForeignKey(FeatureListCategory, on_delete=models.CASCADE)
+    category = models.ForeignKey(FeatureListCategory, on_delete=models.CASCADE)
     name = models.CharField(max_length=1000)
+    optional = models.BooleanField(blank=True, null=True)

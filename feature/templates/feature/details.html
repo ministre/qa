@@ -53,8 +53,8 @@
         <ul style="list-style: none">
             <li>
                 <b>{{ forloop.counter }}. {{ category.name }}</b>
-                <a href="{% url 'fl_category_update' fl_id=fl.id pk=category.id %}"><i class="step fi-pencil"></i></a>
-                <a href="{% url 'fl_category_delete' fl_id=fl.id pk=category.id %}">
+                <a href="{% url 'fl_category_update' pk=category.id %}"><i class="step fi-pencil"></i></a>
+                <a href="{% url 'fl_category_delete' pk=category.id %}">
                     <i class="step fi-minus" style="color: #bc104b"></i></a>
                 {% for item in category.items %}
                 <ul style="list-style: none">
