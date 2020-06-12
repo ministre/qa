@@ -84,11 +84,61 @@
     </div>
 
     <div class="tabs-panel {% if tab_id == 4 %}is-active{% endif %}" id="redmine">
-        {% if fl.redmine_url == None %}
-        <p>{% trans "Redmine project path not set" %}</p>
-        {% endif %}
-        <a href="#" class="button small {% if fl.redmine_url == None %}disabled{% endif %}">{% trans "Import" %}</a>
-        <a href="#" class="button small {% if fl.redmine_url == None %}disabled{% endif %}">{% trans "Export" %}</a>
+        <div class="grid-x grid-margin-x">
+            <div class="cell">
+                <div class="card">
+                    <div class="card-section">
+                        <h4>Project Information</h4>
+                        <table>
+                            <tr>
+                                <td>Wiki URL:</td>
+                                <td>
+                                    {% if fl.redmine_wiki %}
+                                    <a href="{{ redmine_url }}/projects/{{ fl.device_type.redmine_project }}/wiki/{{ fl.redmine_wiki }}/">
+                                        {{ redmine_url }}/projects/{{ fl.device_type.redmine_project }}/wiki/{{ fl.redmine_wiki }}/
+                                    </a>
+                                    {% else %}
+                                    <a href="{% url 'fl_update' pk=fl.id %}">Not specified</a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-x grid-margin-x small-up-2 medium-up-2">
+            <div class="cell">
+                <div class="card">
+                  <div class="card-section">
+                    <h4>{% trans "Export" %}</h4>
+                    <p>{% trans "Send details to Redmine Wiki page" %}.</p>
+                      <form method="post" action="{% url 'export_fl' %}">
+                          {% csrf_token %}
+                          <input type="hidden" name="feature_list" value="{{ fl.id }}">
+                          <input type="submit" value='{% trans "Export" %}' class="button success small" />
+                          {{ redmine_form.as_p }}
+                      </form>
+                  </div>
+                </div>
+            </div>
+            <div class="cell">
+                <div class="card">
+                  <div class="card-section">
+                    <h4>{% trans "Import" %}</h4>
+                    <p>{% trans "Update details from Redmine Wiki page" %}.</p>
+                      <form method="post" action="{% url 'import_fl' %}">
+                          {% csrf_token %}
+                          <input type="hidden" name="feature_list" value="{{ fl.id }}">
+                          <input type="submit" value='{% trans "Import" %}' class="button alert small" />
+                          {{ redmine_form.as_p }}
+                      </form>
+                  </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 

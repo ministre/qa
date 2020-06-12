@@ -153,7 +153,7 @@
             <div class="cell">
                 <div class="card">
                   <div class="card-section">
-                    <h4>Export</h4>
+                    <h4>{% trans "Export" %}</h4>
                     <p>Click to send testplan details to Redmine Wiki.</p>
                       <form method="post" action="{% url 'export_testplan' %}">
                           {% csrf_token %}
@@ -167,7 +167,7 @@
             <div class="cell">
                 <div class="card">
                   <div class="card-section">
-                    <h4>Import</h4>
+                    <h4>{% trans "Import" %}</h4>
                     <p>Click to update testplan details from Redmine Wiki.</p>
                       <form method="post" action="{% url 'import_testplan' %}">
                           {% csrf_token %}

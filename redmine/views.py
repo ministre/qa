@@ -1,8 +1,9 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from .models import RedmineProject, RedmineChapter, RedmineTest, RedmineTestplan
+from .models import RedmineProject, RedmineChapter, RedmineTest, RedmineTestplan, RedmineFeatureList
 from testplan.models import Test, TestConfig, TestImage, TestFile, TestChecklist, TestChecklistItem, TestLink, \
     TestComment, Testplan, Chapter, Category
+from feature.models import FeatureList
 from django.utils.datastructures import MultiValueDictKeyError
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -367,3 +368,25 @@ def import_testplan(request):
         message = [False, 'Page not found']
         back_url = reverse('testplans', kwargs={'tab_id': 1})
     return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})
+
+
+@login_required
+def export_fl(request):
+    if request.method == "POST":
+        feature_list = get_object_or_404(FeatureList, id=request.POST['feature_list'])
+        back_url = reverse('fl_details', kwargs={'pk': feature_list.id, 'tab_id': 4})
+        # check project
+        project = request.POST['project']
+        is_project = RedmineProject().check_project(project=project)
+        if not is_project[0]:
+            return render(request, 'redmine/result.html', {'message': is_project, 'back_url': back_url})
+        message = RedmineFeatureList().export(project=project, wiki_title=request.POST['wiki'], fl=feature_list)
+    else:
+        message = [False, 'Page not found']
+        back_url = reverse('fls')
+    return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})
+
+
+@login_required
+def import_fl(request):
+    pass

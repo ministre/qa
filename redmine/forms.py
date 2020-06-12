@@ -32,3 +32,8 @@ class RedmineImportTestplanForm(forms.Form):
     project = forms.CharField(label=_('Project'), max_length=100)
     chapters = forms.BooleanField(label=_('Chapters'), required=False)
     tests = forms.BooleanField(label=_('Tests'), required=False)
+
+
+class RedmineFeatureListForm(forms.Form):
+    project = forms.CharField(label='Project', max_length=100)
+    wiki = forms.CharField(label='Wiki', max_length=100)

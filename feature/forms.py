@@ -18,7 +18,7 @@ class FeatureListForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(FeatureListForm, self).__init__(*args, **kwargs)
-        self.fields['redmine_wiki'].initial = 'features'
+        self.fields['redmine_wiki'].initial = 'technical_requirements'
 
 
 class FeatureListCategoryForm(ModelForm):

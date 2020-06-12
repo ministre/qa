@@ -4,6 +4,7 @@ from redminelib.exceptions import ResourceNotFoundError, ForbiddenError, AuthErr
 from requests.exceptions import ConnectionError
 from testplan.models import TestChecklistItem, Chapter, Test, TestConfig, TestImage, TestFile, TestChecklist, TestLink,\
     TestComment
+from feature.models import FeatureList, FeatureListCategory, FeatureListItem
 import re
 
 
@@ -520,3 +521,26 @@ class RedmineTestplan(object):
         else:
             categories = None
         return [True, {'chapters': chapters, 'categories': categories}]
+
+
+class RedmineFeatureList(object):
+    def __init__(self):
+        self.wiki = ''
+        self.ctx = ''
+
+    def get_wiki_feature_list(self, fl: FeatureList):
+        self.ctx = 'h1. ' + fl.name + '\r\n\r'
+        categories = FeatureListCategory.objects.filter(feature_list=fl)
+        for category in categories:
+            self.ctx += '\nh2. ' + category.name + '\r\n\r'
+            items = FeatureListItem.objects.filter(category=category)
+            for item in items:
+                self.ctx += '\n** ' + item.name + '\r'
+            self.ctx += '\n\r'
+        return self.ctx
+
+    def export(self, project: str, wiki_title: str, fl: FeatureList):
+        self.wiki += self.get_wiki_feature_list(fl)
+        is_wiki = RedmineProject().create_or_update_wiki(project=project, wiki_title=wiki_title, wiki_text=self.wiki,
+                                                         parent_title='wiki')
+        return is_wiki

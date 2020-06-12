@@ -8,11 +8,6 @@ urlpatterns = [
     path('import_testplan/', views.import_testplan, name='import_testplan'),
     path('export_chapter/', views.export_chapter, name='export_chapter'),
     path('import_chapter/', views.import_chapter, name='import_chapter'),
-
-#    path('import_p_test_details/', views.import_p_test_details, name='import_p_test_details'),
-#    path('import_all_tests/', views.import_all_tests, name='import_all_tests'),
-#    path('import_all_chapters/', views.import_all_chapters, name='import_all_chapters'),
-#    path('export_device_type/', views.export_device_type, name='export_device_type'),
-#    path('export_device/', views.export_device, name='export_device'),
-#    path('export_pattern/', views.export_pattern, name='export_pattern'),
+    path('export_fl/', views.export_fl, name='export_fl'),
+    path('import_fl/', views.import_fl, name='import_fl'),
 ]
