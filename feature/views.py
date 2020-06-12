@@ -9,60 +9,75 @@ from datetime import datetime
 
 
 @method_decorator(login_required, name='dispatch')
+class FeatureListListView(ListView):
+    context_object_name = 'fls'
+    queryset = FeatureList.objects.all().order_by('id')
+    template_name = 'feature/list.html'
+
+
+@method_decorator(login_required, name='dispatch')
 class FeatureListCreate(CreateView):
     model = FeatureList
     form_class = FeatureListForm
-    template_name = 'feature_list/create.html'
+    template_name = 'feature/create.html'
 
     def get_initial(self):
         return {'created_by': self.request.user, 'updated_by': self.request.user}
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('fls')
+        return context
+
     def get_success_url(self):
-        return reverse('feature_lists')
-
-
-@method_decorator(login_required, name='dispatch')
-class FeatureListListView(ListView):
-    context_object_name = 'feature_lists'
-    queryset = FeatureList.objects.all().order_by('id')
-    template_name = 'feature_list/list.html'
+        return reverse('fls')
 
 
 @method_decorator(login_required, name='dispatch')
 class FeatureListUpdate(UpdateView):
     model = FeatureList
     form_class = FeatureListForm
-    template_name = 'feature_list/update.html'
+    template_name = 'feature/update.html'
 
     def get_initial(self):
         return {'updated_by': self.request.user, 'updated_at': datetime.now}
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('fl_details', kwargs={'pk': self.object.id, 'tab_id': 1})
+        return context
+
     def get_success_url(self):
-        return reverse('feature_lists')
+        self.object.update_timestamp(user=self.request.user)
+        return reverse('fl_details', kwargs={'pk': self.object.id, 'tab_id': 1})
 
 
 @method_decorator(login_required, name='dispatch')
 class FeatureListDelete(DeleteView):
     model = FeatureList
-    template_name = 'feature_list/delete.html'
+    template_name = 'feature/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('fl_details', kwargs={'pk': self.object.id, 'tab_id': 1})
+        return context
 
     def get_success_url(self):
-        return reverse('feature_lists')
+        return reverse('fls')
 
 
 @login_required
-def feature_list_details(request, pk):
+def fl_details(request, pk, tab_id: int):
     feature_list = get_object_or_404(FeatureList, id=pk)
     categories = get_feature_list_items(pk)
-    return render(request, 'feature_list/details.html', {'feature_list': feature_list,
-                                                         'categories': categories})
+    return render(request, 'feature/details.html', {'fl': feature_list, 'categories': categories, 'tab_id': tab_id})
 
 
 @method_decorator(login_required, name='dispatch')
 class FeatureListCategoryCreate(CreateView):
     model = FeatureListCategory
     form_class = FeatureListCategoryForm
-    template_name = 'feature_list_category/create.html'
+    template_name = 'feature/create.html'
 
     def get_initial(self):
         return {'feature_list': self.kwargs.get('feature_list_id')}
@@ -80,7 +95,7 @@ class FeatureListCategoryCreate(CreateView):
 @method_decorator(login_required, name='dispatch')
 class FeatureListCategoryDelete(DeleteView):
     model = FeatureListCategory
-    template_name = 'feature_list_category/delete.html'
+    template_name = 'feature/delete.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -96,7 +111,7 @@ class FeatureListCategoryDelete(DeleteView):
 class FeatureListCategoryUpdate(UpdateView):
     model = FeatureListCategory
     form_class = FeatureListCategoryForm
-    template_name = 'feature_list_category/update.html'
+    template_name = 'feature/update.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

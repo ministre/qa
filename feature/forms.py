@@ -10,11 +10,15 @@ class FeatureListForm(ModelForm):
             'device_type': _('Device Type'),
             'name': _('Name'),
             'version': _('Version'),
-            'redmine_url': _('Redmine URL'),
+            'redmine_wiki': _('Redmine Wiki'),
         }
         fields = '__all__'
         widgets = {'created_by': HiddenInput(), 'created_at': HiddenInput(),
                    'updated_by': HiddenInput(), 'updated_at': HiddenInput()}
+
+    def __init__(self, *args, **kwargs):
+        super(FeatureListForm, self).__init__(*args, **kwargs)
+        self.fields['redmine_wiki'].initial = 'features'
 
 
 class FeatureListCategoryForm(ModelForm):

@@ -1,0 +1,90 @@
+{% extends "device/wrapper.html" %}
+
+{% load i18n static %}
+
+{% block content %}
+
+<p>
+    <a href="{% url 'fls' %}">{% trans "Technical requirements" %}</a> &raquo; {{ fl.name }}
+</p>
+
+<ul class="tabs" data-tabs id="fl-tabs">
+    <li class="tabs-title {% if tab_id == 1 %} is-active{% endif %}">
+        <a data-tabs-target="general" href="#general">{% trans "General" %}</a></li>
+    <li class="tabs-title {% if tab_id == 2 %} is-active{% endif %}">
+        <a data-tabs-target="items" href="#items">{% trans "Items" %}</a></li>
+    <li class="tabs-title {% if tab_id == 3 %} is-active{% endif %}">
+        <a data-tabs-target="docx" href="#docx">{% trans "Docx" %}</a></li>
+    <li class="tabs-title {% if tab_id == 4 %} is-active{% endif %}">
+        <a data-tabs-target="redmine" href="#redmine">{% trans "Redmine" %}</a></li>
+</ul>
+
+<div class="tabs-content" data-tabs-content="fl-tabs">
+    <div class="tabs-panel {% if tab_id == 1 %}is-active{% endif %}" id="general">
+        <a href="{% url 'fl_update' pk=fl.id %}" class="button small">{% trans "Update" %}</a>
+        <a href="{% url 'fl_delete' pk=fl.id %}" class="button alert small">{% trans "Delete" %}</a>
+
+        <table class="hover unstriped">
+            <tbody>
+            <tr>
+                <td>{% trans "Document name" %}:</td>
+                <td>{{ fl.name }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Document version" %}:</td>
+                <td>{{ fl.version }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Device type" %}:</td>
+                <td>{{ fl.device_type.tag }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Last Update" %}:</td>
+                <td>{{ fl.updated_at }} ({{ fl.updated_by }})</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="tabs-panel {% if tab_id == 2 %}is-active{% endif %}" id="items">
+        <a href="{% url 'fl_category_create' fl_id=fl.id %}" class="button small">{% trans "Add" %}</a>
+        <br>
+        {% for category in categories %}
+        <ul style="list-style: none">
+            <li>
+                <b>{{ forloop.counter }}. {{ category.name }}</b>
+                <a href="{% url 'fl_category_update' fl_id=fl.id pk=category.id %}"><i class="step fi-pencil"></i></a>
+                <a href="{% url 'fl_category_delete' fl_id=fl.id pk=category.id %}">
+                    <i class="step fi-minus" style="color: #bc104b"></i></a>
+                {% for item in category.items %}
+                <ul style="list-style: none">
+                    <li>
+                        <a href="#">
+                            {{forloop.parentloop.counter}}.{{ forloop.counter }}. {{ item.name }}</a>
+                        <a href="#"><i class="step fi-pencil"></i></a>
+                        <a href="#"><i class="step fi-minus" style="color: #bc104b"></i></a>
+                    </li>
+                </ul>
+                {% endfor %}
+                <blockquote>
+                    <a href="#"><i class="step fi-plus"></i></a>
+                </blockquote>
+            </li>
+        </ul>
+        {% endfor %}
+    </div>
+
+    <div class="tabs-panel {% if tab_id == 3 %}is-active{% endif %}" id="docx">
+        <a href="#" class="button small">{% trans "Build" %}</a>
+    </div>
+
+    <div class="tabs-panel {% if tab_id == 4 %}is-active{% endif %}" id="redmine">
+        {% if fl.redmine_url == None %}
+        <p>{% trans "Redmine project path not set" %}</p>
+        {% endif %}
+        <a href="#" class="button small {% if fl.redmine_url == None %}disabled{% endif %}">{% trans "Import" %}</a>
+        <a href="#" class="button small {% if fl.redmine_url == None %}disabled{% endif %}">{% trans "Export" %}</a>
+    </div>
+</div>
+
+{% endblock %}
