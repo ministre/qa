@@ -36,6 +36,10 @@ class FeatureListCategory(models.Model):
 
 
 class FeatureListItem(models.Model):
-    category = models.ForeignKey(FeatureListCategory, on_delete=models.CASCADE)
+    category = models.ForeignKey(FeatureListCategory, related_name='category_item', on_delete=models.CASCADE)
     name = models.CharField(max_length=1000)
-    optional = models.BooleanField(blank=True, null=True)
+    optional = models.BooleanField(blank=True, null=True, default=False)
+    created_by = models.ForeignKey(User, related_name='fli_c', on_delete=models.CASCADE, blank=True, null=True)
+    created_at = models.DateTimeField(default=datetime.now, blank=True)
+    updated_by = models.ForeignKey(User, related_name='fli_u', on_delete=models.CASCADE, blank=True, null=True)
+    updated_at = models.DateTimeField(default=datetime.now, blank=True)

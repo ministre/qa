@@ -103,8 +103,10 @@
                   </li>
               </ul>
               {% endfor %}
-              <blockquote><a href="{% url 'test_create' category_id=category.id %}">
-                  <i class="step fi-plus"></i></a></blockquote>
+              <blockquote>
+                  <a href="{% url 'test_create' category_id=category.id %}">
+                  <i class="step fi-plus"></i></a>
+              </blockquote>
           </li>
       </ul>
       {% endfor %}

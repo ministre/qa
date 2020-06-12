@@ -56,18 +56,18 @@
                 <a href="{% url 'fl_category_update' pk=category.id %}"><i class="step fi-pencil"></i></a>
                 <a href="{% url 'fl_category_delete' pk=category.id %}">
                     <i class="step fi-minus" style="color: #bc104b"></i></a>
-                {% for item in category.items %}
+                {% for item in category.category_item.all|dictsort:"id" %}
                 <ul style="list-style: none">
                     <li>
-                        <a href="#">
-                            {{forloop.parentloop.counter}}.{{ forloop.counter }}. {{ item.name }}</a>
-                        <a href="#"><i class="step fi-pencil"></i></a>
-                        <a href="#"><i class="step fi-minus" style="color: #bc104b"></i></a>
+                        {{forloop.parentloop.counter}}.{{ forloop.counter }}. {{ item.name }}
+                        <a href="{% url 'fli_update' pk=item.id %}"><i class="step fi-pencil"></i></a>
+                        <a href="{% url 'fli_delete' pk=item.id %}">
+                            <i class="step fi-minus" style="color: #bc104b"></i></a>
                     </li>
                 </ul>
                 {% endfor %}
                 <blockquote>
-                    <a href="#"><i class="step fi-plus"></i></a>
+                    <a href="{% url 'fli_create' category_id=category.id %}"><i class="step fi-plus"></i></a>
                 </blockquote>
             </li>
         </ul>

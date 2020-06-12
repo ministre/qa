@@ -10,4 +10,7 @@ urlpatterns = [
     path('category/create/<int:fl_id>/', views.FeatureListCategoryCreate.as_view(), name='fl_category_create'),
     path('category/update/<int:pk>/', views.FeatureListCategoryUpdate.as_view(), name='fl_category_update'),
     path('category/delete/<int:pk>/', views.FeatureListCategoryDelete.as_view(), name='fl_category_delete'),
+    path('item/create/<int:category_id>/', views.FeatureListItemCreate.as_view(), name='fli_create'),
+    path('item/update/<int:pk>/', views.FeatureListItemUpdate.as_view(), name='fli_update'),
+    path('item/delete/<int:pk>/', views.FeatureListItemDelete.as_view(), name='fli_delete'),
 ]
