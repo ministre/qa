@@ -59,7 +59,11 @@
                 {% for item in category.category_item.all|dictsort:"id" %}
                 <ul style="list-style: none">
                     <li>
-                        {{forloop.parentloop.counter}}.{{ forloop.counter }}. {{ item.name }}
+                        <font color="#bc104b"><b>{{forloop.parentloop.counter}}.{{ forloop.counter }}</b></font>
+                        &nbsp;&nbsp;{{ item.name }}
+                        {% if item.optional %}
+                        <font color="#bc104b"><b>({% trans "optional" %})</b></font>
+                        {% endif %}
                         <a href="{% url 'fli_update' pk=item.id %}"><i class="step fi-pencil"></i></a>
                         <a href="{% url 'fli_delete' pk=item.id %}">
                             <i class="step fi-minus" style="color: #bc104b"></i></a>
