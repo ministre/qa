@@ -2,10 +2,11 @@ from django.shortcuts import render, get_object_or_404
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
-from .models import FeatureList, FeatureListCategory, FeatureListItem
+from .models import FeatureList, FeatureListCategory, FeatureListItem, DeviceType
 from .forms import FeatureListForm, FeatureListCategoryForm, FeatureListItemForm
 from django.urls import reverse
 from datetime import datetime
+from django.http import HttpResponseRedirect
 
 
 @method_decorator(login_required, name='dispatch')
@@ -71,6 +72,39 @@ def fl_details(request, pk, tab_id: int):
     feature_list = get_object_or_404(FeatureList, id=pk)
     categories = FeatureListCategory.objects.filter(feature_list=feature_list).order_by('id')
     return render(request, 'feature/details.html', {'fl': feature_list, 'categories': categories, 'tab_id': tab_id})
+
+
+@login_required
+def fl_clone(request, pk):
+    if request.method == 'POST':
+        form = FeatureListForm(request.POST)
+        if form.is_valid():
+            new_fl = FeatureList(name=request.POST['name'],
+                                 version=request.POST['version'],
+                                 device_type=get_object_or_404(DeviceType, id=request.POST['device_type']),
+                                 created_by=request.user,
+                                 created_at=datetime.now(),
+                                 updated_by=request.user,
+                                 updated_at=datetime.now(),
+                                 redmine_wiki=request.POST['redmine_wiki'])
+            new_fl.save()
+            src_fl = get_object_or_404(FeatureList, id=request.POST['src_fl'])
+            src_categories = FeatureListCategory.objects.filter(feature_list=src_fl).order_by('id')
+            for src_category in src_categories:
+                new_category = FeatureListCategory(name=src_category.name, feature_list=new_fl)
+                new_category.save()
+                src_items = FeatureListItem.objects.filter(category=src_category).order_by('id')
+                for src_item in src_items:
+                    new_item = FeatureListItem(category=new_category, name=src_item.name, optional=src_item.optional)
+                    new_item.save()
+            return HttpResponseRedirect(reverse('fls'))
+    else:
+        feature_list = get_object_or_404(FeatureList, id=pk)
+        form = FeatureListForm(initial={'name': feature_list.name, 'version': feature_list.version,
+                                        'device_type': feature_list.device_type.id, 'created_by': request.user,
+                                        'created_at': datetime.now(), 'updated_by': request.user,
+                                        'updated_at': datetime.now(), 'redmine_wiki': feature_list.redmine_wiki})
+        return render(request, 'feature/clone.html', {'form': form, 'fl_id': feature_list.id})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -148,7 +182,7 @@ class FeatureListItemCreate(CreateView):
 class FeatureListItemUpdate(UpdateView):
     model = FeatureListItem
     form_class = FeatureListItemForm
-    template_name = 'testplan/update.html'
+    template_name = 'feature/update.html'
 
     def get_initial(self):
         return {'updated_by': self.request.user, 'updated_at': datetime.now}
