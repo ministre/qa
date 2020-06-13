@@ -8,6 +8,7 @@ urlpatterns = [
     path('delete/<int:pk>/', views.FeatureListDelete.as_view(), name='fl_delete'),
     path('<int:pk>/<int:tab_id>/', views.fl_details, name='fl_details'),
     path('clone/<int:pk>/', views.fl_clone, name='fl_clone'),
+    path('clear_fli/<int:fl_id>/', views.clear_fli, name='clear_fli'),
     path('category/create/<int:fl_id>/', views.FeatureListCategoryCreate.as_view(), name='fl_category_create'),
     path('category/update/<int:pk>/', views.FeatureListCategoryUpdate.as_view(), name='fl_category_update'),
     path('category/delete/<int:pk>/', views.FeatureListCategoryDelete.as_view(), name='fl_category_delete'),

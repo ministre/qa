@@ -9,6 +9,7 @@ from django.urls import reverse
 from datetime import datetime
 from django.http import HttpResponseRedirect
 from qa import settings
+from django.utils.translation import gettext_lazy as _
 
 
 @method_decorator(login_required, name='dispatch')
@@ -111,6 +112,20 @@ def fl_clone(request, pk):
                                         'created_at': datetime.now(), 'updated_by': request.user,
                                         'updated_at': datetime.now(), 'redmine_wiki': feature_list.redmine_wiki})
         return render(request, 'feature/clone.html', {'form': form, 'fl_id': feature_list.id})
+
+
+@login_required
+def clear_fli(request, fl_id):
+    feature_list = get_object_or_404(FeatureList, id=fl_id)
+    if request.method == 'POST':
+        FeatureListCategory.objects.filter(feature_list=feature_list).delete()
+        feature_list.update_timestamp(user=request.user)
+        return HttpResponseRedirect(reverse('fl_details', kwargs={'pk': fl_id, 'tab_id': 2}))
+    else:
+        back_url = reverse('fl_details', kwargs={'pk': fl_id, 'tab_id': 2})
+        message = _('Are you sure?')
+        return render(request, 'feature/clear.html', {'feature_list': feature_list, 'back_url': back_url,
+                                                      'message': message})
 
 
 @method_decorator(login_required, name='dispatch')
