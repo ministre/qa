@@ -118,8 +118,7 @@ def fl_clone(request, pk):
 def clear_fli(request, fl_id):
     feature_list = get_object_or_404(FeatureList, id=fl_id)
     if request.method == 'POST':
-        FeatureListCategory.objects.filter(feature_list=feature_list).delete()
-        feature_list.update_timestamp(user=request.user)
+        feature_list.clear(user=request.user)
         return HttpResponseRedirect(reverse('fl_details', kwargs={'pk': fl_id, 'tab_id': 2}))
     else:
         back_url = reverse('fl_details', kwargs={'pk': fl_id, 'tab_id': 2})

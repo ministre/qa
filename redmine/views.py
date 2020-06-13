@@ -401,6 +401,7 @@ def import_fl(request):
         # parse feature list
         parse_details = RedmineFeatureList().parse_details(project=project, wiki_title=request.POST['wiki'])
         if parse_details[0]:
+            feature_list.clear(user=request.user)
             message = feature_list.update_data(name=parse_details[1]['name'], categories=parse_details[1]['categories'],
                                                user=request.user)
         else:

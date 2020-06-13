@@ -28,7 +28,9 @@ class FeatureListCategoryForm(ModelForm):
             'name': _('Name'),
         }
         fields = '__all__'
-        widgets = {'feature_list': HiddenInput()}
+        widgets = {'feature_list': HiddenInput(),
+                   'created_by': HiddenInput(), 'created_at': HiddenInput(),
+                   'updated_by': HiddenInput(), 'updated_at': HiddenInput()}
 
 
 class FeatureListItemForm(ModelForm):
@@ -39,5 +41,6 @@ class FeatureListItemForm(ModelForm):
             'optional': _('Optional'),
         }
         fields = '__all__'
-        widgets = {'category': HiddenInput(), 'created_by': HiddenInput(), 'created_at': HiddenInput(),
+        widgets = {'category': HiddenInput(),
+                   'created_by': HiddenInput(), 'created_at': HiddenInput(),
                    'updated_by': HiddenInput(), 'updated_at': HiddenInput()}

@@ -23,6 +23,11 @@ class FeatureList(models.Model):
         self.save()
         return True
 
+    def clear(self, user):
+        FeatureListCategory.objects.filter(feature_list=self).delete()
+        self.update_timestamp(user=user)
+        return [True, 'Data cleared']
+
     def update_data(self, name: str, user, categories=None):
         if categories is None:
             categories = []

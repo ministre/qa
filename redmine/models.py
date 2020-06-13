@@ -530,10 +530,10 @@ class RedmineFeatureList(object):
 
     def get_wiki_feature_list(self, fl: FeatureList):
         self.ctx = 'h1. ' + fl.name + '\r\n\r'
-        categories = FeatureListCategory.objects.filter(feature_list=fl)
+        categories = FeatureListCategory.objects.filter(feature_list=fl).order_by('id')
         for category in categories:
             self.ctx += '\nh2. ' + category.name + '\r\n\r'
-            items = FeatureListItem.objects.filter(category=category)
+            items = FeatureListItem.objects.filter(category=category).order_by('id')
             for item in items:
                 self.ctx += '\n** ' + item.name
                 if item.optional:
