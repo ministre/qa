@@ -535,7 +535,10 @@ class RedmineFeatureList(object):
             self.ctx += '\nh2. ' + category.name + '\r\n\r'
             items = FeatureListItem.objects.filter(category=category)
             for item in items:
-                self.ctx += '\n** ' + item.name + '\r'
+                self.ctx += '\n** ' + item.name
+                if item.optional:
+                    self.ctx += ' %{color:red}(опционально)%'
+                self.ctx += '\r'
             self.ctx += '\n\r'
         return self.ctx
 
@@ -544,3 +547,29 @@ class RedmineFeatureList(object):
         is_wiki = RedmineProject().create_or_update_wiki(project=project, wiki_title=wiki_title, wiki_text=self.wiki,
                                                          parent_title='wiki')
         return is_wiki
+
+    def parse_details(self, project: str, wiki_title: str):
+        is_wiki = RedmineProject().check_wiki(project=project, wiki_title=wiki_title)
+        if is_wiki[0]:
+            self.wiki = is_wiki[1]
+            h2_blocks = self.wiki.split('\nh2. ')
+            feature_list = {'name': h2_blocks[0][4:-3], 'categories': []}
+            del h2_blocks[0]
+            for h2_block in h2_blocks:
+                h2_items = h2_block.split('\r\n')
+                category_name = h2_items[0]
+                category = {'name': category_name, 'items': []}
+                for h2_item in h2_items[2:-1]:
+                    item_name = h2_item[3:]
+                    detect_optional = re.search('(опционально)', item_name)
+                    if detect_optional:
+                        optional = True
+                        item_name = item_name.replace(' %{color:red}(опционально)%', '')
+                    else:
+                        optional = False
+                    item = {'name': item_name, 'optional': optional}
+                    category['items'].append(item)
+                feature_list['categories'].append(category)
+            return [True, feature_list]
+        else:
+            return [False, is_wiki[1]]

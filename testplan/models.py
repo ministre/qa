@@ -62,7 +62,7 @@ class Chapter(models.Model):
         self.text = text
         self.save()
         self.update_timestamp(user=user)
-        return [True, 'Data has been updated successfully']
+        return [True, 'Data updated']
 
 
 class Category(models.Model):

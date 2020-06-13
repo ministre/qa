@@ -389,4 +389,23 @@ def export_fl(request):
 
 @login_required
 def import_fl(request):
-    pass
+    if request.method == "POST":
+        feature_list = get_object_or_404(FeatureList, id=request.POST['feature_list'])
+        back_url = reverse('fl_details', kwargs={'pk': feature_list.id, 'tab_id': 4})
+        # check project
+        project = request.POST['project']
+        is_project = RedmineProject().check_project(project=project)
+        if not is_project[0]:
+            return render(request, 'redmine/result.html', {'message': is_project, 'back_url': back_url})
+
+        # parse feature list
+        parse_details = RedmineFeatureList().parse_details(project=project, wiki_title=request.POST['wiki'])
+        if parse_details[0]:
+            message = feature_list.update_data(name=parse_details[1]['name'], categories=parse_details[1]['categories'],
+                                               user=request.user)
+        else:
+            message = parse_details
+    else:
+        message = [False, 'Page not found']
+        back_url = reverse('fls')
+    return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})

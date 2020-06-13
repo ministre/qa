@@ -23,10 +23,37 @@ class FeatureList(models.Model):
         self.save()
         return True
 
+    def update_data(self, name: str, user, categories=None):
+        if categories is None:
+            categories = []
+        self.name = name
+        for category in categories:
+            cat, created = FeatureListCategory.objects.update_or_create(feature_list=self, name=category['name'],
+                                                                        defaults={'feature_list': self,
+                                                                                  'name': category['name'],
+                                                                                  'created_by': user,
+                                                                                  'updated_by': user,
+                                                                                  'updated_at': datetime.now})
+            for item in category['items']:
+                FeatureListItem.objects.update_or_create(category=cat, name=item['name'],
+                                                         defaults={'category': cat,
+                                                                   'name': item['name'],
+                                                                   'optional': item['optional'],
+                                                                   'created_by': user,
+                                                                   'updated_by': user,
+                                                                   'updated_at': datetime.now})
+        self.save()
+        self.update_timestamp(user=user)
+        return [True, 'Data updated']
+
 
 class FeatureListCategory(models.Model):
     feature_list = models.ForeignKey(FeatureList, on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=1000)
+    created_by = models.ForeignKey(User, related_name='flc_c', on_delete=models.CASCADE, blank=True, null=True)
+    created_at = models.DateTimeField(default=datetime.now, blank=True)
+    updated_by = models.ForeignKey(User, related_name='flc_u', on_delete=models.CASCADE, blank=True, null=True)
+    updated_at = models.DateTimeField(default=datetime.now, blank=True)
 
     def __str__(self):
         return self.name
