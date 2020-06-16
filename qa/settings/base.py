@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'docum',
     'firmware',
     'feature',
-    'paper',
+    'docx_builder',
     'protocol',
     'redmine',
     'testplan',

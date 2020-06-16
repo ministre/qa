@@ -28,7 +28,7 @@ urlpatterns = [
     path('docum/', include('docum.urls')),
     path('testplan/', include('testplan.urls')),
     path('redmine/', include('redmine.urls')),
-    path('paper/', include('paper.urls')),
+    path('docx/', include('docx_builder.urls')),
     path('feature/', include('feature.urls')),
     path('protocol/', include('protocol.urls')),
     path('contact/', include('contact.urls')),
