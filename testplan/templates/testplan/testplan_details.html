@@ -107,9 +107,9 @@
   </div>
 
   <div class="tabs-panel {% if tab_id == 4 %}is-active{% endif %}" id="docx">
-      <form method="post" action="/paper/testplan/">
+      <form method="post" action="{% url 'build_testplan' %}">
           {% csrf_token %}
-          <input type="hidden" name="testplan_id" value="{{ testplan.id }}">
+          <input type="hidden" name="testplan" value="{{ testplan.id }}">
           <input type="submit" value='{% trans "Build" %}' class="button success small" />
       </form>
   </div>
