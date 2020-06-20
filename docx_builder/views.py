@@ -1,8 +1,10 @@
 from django.shortcuts import render
+from django.urls import reverse
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from .models import DocxProfile
+from .forms import DocxProfileForm
 from django.shortcuts import get_object_or_404
 from testplan.models import Testplan, Category, Test
 from docx import Document
@@ -10,6 +12,24 @@ from docx.shared import Pt, RGBColor
 import os
 from django.conf import settings
 from django.http import HttpResponse, Http404
+
+
+@method_decorator(login_required, name='dispatch')
+class DocxProfileCreate(CreateView):
+    model = DocxProfile
+    form_class = DocxProfileForm
+    template_name = 'docx_builder/create.html'
+
+    def get_initial(self):
+        return {'created_by': self.request.user, 'updated_by': self.request.user}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('docx_profiles')
+        return context
+
+    def get_success_url(self):
+        return reverse('docx_profiles')
 
 
 @method_decorator(login_required, name='dispatch')
