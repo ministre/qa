@@ -1,13 +1,14 @@
-from testplan.models import Testplan
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404
-from docx import Document
+from django.db import models
+from django.contrib.auth.models import User
+from datetime import datetime
 
 
-@login_required
-def build_testplan(request):
-    if request.method == 'POST':
-        testplan = get_object_or_404(Testplan, id=request.POST['testplan_id'])
-        document = Document()
-        document.add_paragraph('test')
-        document.save('demo.docx')
+class DocxProfile(models.Model):
+    name = models.CharField(max_length=1000)
+    created_by = models.ForeignKey(User, related_name='docx_profile_c', on_delete=models.CASCADE, blank=True, null=True)
+    created_at = models.DateTimeField(default=datetime.now, blank=True)
+    updated_by = models.ForeignKey(User, related_name='docx_profile_u', on_delete=models.CASCADE, blank=True, null=True)
+    updated_at = models.DateTimeField(default=datetime.now, blank=True)
+
+    def __str__(self):
+        return self.name

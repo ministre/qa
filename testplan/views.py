@@ -8,6 +8,7 @@ from .models import Testplan, Category, Chapter, Test, TestConfig, TestImage, Te
 from .forms import TestplanForm, CategoryForm, ChapterForm, TestForm, TestConfigForm, TestImageForm, TestFileForm,\
     TestWorksheetForm, WorksheetItemForm, TestChecklistForm, TestChecklistItemForm, TestLinkForm, TestCommentForm, \
     PatternForm
+from docx_builder.forms import DocxTestplanForm
 from redmine.forms import RedmineChapterForm, RedmineTestForm, RedmineExportTestplanForm, RedmineImportTestplanForm
 from django.http import HttpResponseRedirect
 import textile
@@ -90,11 +91,13 @@ def testplan_details(request, pk, tab_id):
                                                              'chapters': True,
                                                              'tests': True})
     redmine_url = settings.REDMINE_URL
+    docx_form = DocxTestplanForm(initial={'purpose': True})
     return render(request, 'testplan/testplan_details.html', {'tab_id': tab_id, 'testplan': testplan,
                                                               'categories': categories,
                                                               'chapters': chapters,
                                                               'tests_count': testplan.tests_count(),
                                                               'protocols_count': protocols_count,
+                                                              'docx_form': docx_form,
                                                               'redmine_export_form': redmine_export_form,
                                                               'redmine_import_form': redmine_import_form,
                                                               'redmine_url': redmine_url})

@@ -111,6 +111,7 @@
           {% csrf_token %}
           <input type="hidden" name="testplan" value="{{ testplan.id }}">
           <input type="submit" value='{% trans "Build" %}' class="button success small" />
+          {{ docx_form.as_p }}
       </form>
   </div>
 
