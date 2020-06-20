@@ -16,7 +16,7 @@
     </thead>
     <tbody>
     {% for docx_profile in docx_profiles %}
-    <tr data-href="{% url 'docx_profile_details' pk=docx_profile.id %}">
+    <tr data-href="{% url 'docx_profile_update' pk=docx_profile.id %}">
         <td>{{ docx_profile.id }}</td>
         <td>{{ docx_profile.name }}</td>
         <td>{{ docx_profile.updated_at }} ({{ docx_profile.updated_by }})</td>

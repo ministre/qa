@@ -12,6 +12,7 @@ from docx.shared import Pt, RGBColor
 import os
 from django.conf import settings
 from django.http import HttpResponse, Http404
+from datetime import datetime
 
 
 @method_decorator(login_required, name='dispatch')
@@ -33,14 +34,43 @@ class DocxProfileCreate(CreateView):
 
 
 @method_decorator(login_required, name='dispatch')
+class DocxProfileUpdate(UpdateView):
+    model = DocxProfile
+    form_class = DocxProfileForm
+    template_name = 'docx_builder/update.html'
+
+    def get_initial(self):
+        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('docx_profiles')
+        return context
+
+    def get_success_url(self):
+        self.object.update_timestamp(user=self.request.user)
+        return reverse('docx_profiles')
+
+
+@method_decorator(login_required, name='dispatch')
+class DocxProfileDelete(DeleteView):
+    model = DocxProfile
+    template_name = 'docx_builder/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('docx_profiles')
+        return context
+
+    def get_success_url(self):
+        return reverse('docx_profiles')
+
+
+@method_decorator(login_required, name='dispatch')
 class DocxProfileListView(ListView):
     context_object_name = 'docx_profiles'
     queryset = DocxProfile.objects.all()
     template_name = 'docx_builder/list.html'
-
-
-def docx_profile_details(request, pk):
-    pass
 
 
 def build_testplan(request):
