@@ -1,4 +1,8 @@
 from django.shortcuts import render
+from django.views.generic import CreateView, ListView, UpdateView, DeleteView
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
+from .models import DocxProfile
 from django.shortcuts import get_object_or_404
 from testplan.models import Testplan, Category, Test
 from docx import Document
@@ -8,7 +12,17 @@ from django.conf import settings
 from django.http import HttpResponse, Http404
 
 
-# Create your views here.
+@method_decorator(login_required, name='dispatch')
+class DocxProfileListView(ListView):
+    context_object_name = 'docx_profiles'
+    queryset = DocxProfile.objects.all()
+    template_name = 'docx_builder/list.html'
+
+
+def docx_profile_details(request, pk):
+    pass
+
+
 def build_testplan(request):
     if request.method == 'POST':
         testplan = get_object_or_404(Testplan, id=request.POST['testplan'])
