@@ -21,3 +21,4 @@ myvenv/*
 
 # C extensions
 *.so
+/venv/

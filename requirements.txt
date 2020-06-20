@@ -4,4 +4,4 @@ Pillow==7.1.2
 python-redmine==2.3.0
 python-docx==0.8.10
 textile==4.0.1
-requests==2.23.0
+requests==2.24.0
