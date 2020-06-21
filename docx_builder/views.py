@@ -83,7 +83,7 @@ def build_testplan(request):
         style.font.size = Pt(16)
         style.font.color.rgb = RGBColor(0x77, 0x00, 0xff)
 
-        document.add_paragraph('Test', style='TOCHeading')
+        document.add_paragraph(testplan.name, style='Title')
 
         categories = Category.objects.filter(testplan=testplan).order_by('id')
         for i, category in enumerate(categories):
@@ -94,8 +94,17 @@ def build_testplan(request):
                 document.add_heading(str(i+1) + '.' + str(j+1) + '. ' + test.name, level=2)
 
                 # purpose
-                document.add_paragraph('Цель', style='Body Text')
+                document.add_paragraph('Цель', style='Subtitle')
                 document.add_paragraph(test.purpose, style='Body Text')
+                # procedure
+                document.add_paragraph('Процедура', style='Subtitle')
+                document.add_paragraph(test.procedure, style='Body Text')
+                # expected
+                document.add_paragraph('Ожидаемый результат', style='Subtitle')
+                document.add_paragraph(test.expected, style='Body Text')
+                # links
+                document.add_paragraph('Ссылки', style='Subtitle')
+                document.add_paragraph(test.expected, style='Body Text')
 
         testplan_filename = settings.MEDIA_ROOT + '/testplan_' + str(testplan.id) + '.docx'
         document.save(testplan_filename)
