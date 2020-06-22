@@ -16,4 +16,10 @@ class DocxProfileForm(ModelForm):
 
 
 class DocxTestplanForm(forms.Form):
+    chapters = forms.BooleanField(label=_('Chapters'), required=False)
     purpose = forms.BooleanField(label=_('Purpose'), required=False)
+    procedure = forms.BooleanField(label=_('Procedure'), required=False)
+    expected = forms.BooleanField(label=_('Expected'), required=False)
+    links = forms.BooleanField(label=_('Links'), required=False)
+    checklists = forms.BooleanField(label=_('Checklists'), required=False)
+    configs = forms.BooleanField(label=_('Configs'), required=False)
