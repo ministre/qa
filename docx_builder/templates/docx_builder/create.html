@@ -8,7 +8,7 @@
     <a href="{{ back_url }}" class="button small">&laquo; {% trans "Back" %}</a>
     <input type="submit" value='{% trans "Create" %}' class="button success small" />
     {% csrf_token %}
-    {{ form }}
+    {{ form.as_p }}
 </form>
 
 {% endblock %}

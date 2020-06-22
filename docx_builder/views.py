@@ -12,8 +12,11 @@ from django.conf import settings
 from django.http import HttpResponse, Http404
 from datetime import datetime
 from docx import Document
-from docx.shared import Pt, RGBColor
+from docx.shared import Cm, Pt, Inches, RGBColor
+from docx.enum.table import WD_TABLE_ALIGNMENT
+from docx.enum.style import WD_STYLE_TYPE
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
+from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT
 from docx.oxml.shared import OxmlElement, qn
 from django.utils.datastructures import MultiValueDictKeyError
 
@@ -88,37 +91,114 @@ def build_testplan(request):
     if request.method == 'POST':
         testplan = get_object_or_404(Testplan, id=request.POST['testplan'])
         document = Document()
+
+        # template
+        docx_profile = DocxProfile.objects.get(id=request.POST['profile'])
+
         # styles
         style = document.styles['Title']
-        style.paragraph_format.space_before = Pt(5)
-        style.font.size = Pt(20)
-        style.font.color.rgb = RGBColor(0x00, 0x00, 0x00)
+        style.font.name = docx_profile.title_font_name
+        style.font.color.rgb = RGBColor(docx_profile.title_font_color_red, docx_profile.title_font_color_green,
+                                        docx_profile.title_font_color_blue)
+        style.font.size = Pt(docx_profile.title_font_size)
+        style.font.bold = docx_profile.title_font_bold
+        style.font.underline = docx_profile.title_font_underline
+        style.paragraph_format.space_before = Pt(docx_profile.title_space_before)
+        style.paragraph_format.space_after = Pt(docx_profile.title_space_after)
 
         style = document.styles['Heading 1']
-        style.paragraph_format.space_before = Pt(5)
-        style.font.size = Pt(16)
+        style.font.name = 'Cambria'
         style.font.color.rgb = RGBColor(0x00, 0x00, 0x00)
+        style.font.size = Pt(16)
+        style.paragraph_format.space_before = Pt(5)
+        style.paragraph_format.space_after = Pt(5)
+        style.font.bold = True
+        style.font.underline = False
 
         style = document.styles['Heading 2']
-        style.paragraph_format.space_before = Pt(5)
-        style.font.size = Pt(14)
+        style.font.name = 'Cambria'
         style.font.color.rgb = RGBColor(0x00, 0x00, 0x00)
+        style.font.size = Pt(14)
+        style.paragraph_format.space_before = Pt(5)
+        style.paragraph_format.space_after = Pt(5)
+        style.font.bold = True
+        style.font.underline = False
 
         style = document.styles['Subtitle']
-        style.paragraph_format.space_before = Pt(5)
-        style.font.size = Pt(13)
-        style.font.bold = True
+        style.font.name = 'Cambria'
         style.font.color.rgb = RGBColor(0x00, 0x00, 0x00)
+        style.font.size = Pt(13)
+        style.paragraph_format.space_before = Pt(5)
+        style.paragraph_format.space_after = Pt(5)
+        style.font.bold = True
+        style.font.underline = False
 
         style = document.styles['Caption']
-        style.paragraph_format.space_before = Pt(5)
+        style.font.name = 'Cambria'
+        style.font.color.rgb = RGBColor(0x00, 0x00, 0x00)
         style.font.size = Pt(11)
+        style.paragraph_format.space_before = Pt(5)
+        style.paragraph_format.space_after = Pt(5)
         style.font.bold = True
         style.font.underline = True
+
+        style = document.styles['Normal']
+        style.font.name = 'Cambria'
         style.font.color.rgb = RGBColor(0x00, 0x00, 0x00)
+        style.font.size = Pt(12)
+        style.paragraph_format.space_before = Pt(5)
+        style.paragraph_format.space_after = Pt(5)
+        style.font.bold = False
+        style.font.underline = False
 
         # title
         document.add_paragraph(testplan.name, style='Title')
+
+        # page header
+        try:
+            if request.POST['page_header']:
+                style = document.styles.add_style('Header Table', WD_STYLE_TYPE.TABLE)
+                style.base_style = document.styles['Table Grid']
+                style.font.name = 'Cambria'
+                style.font.size = Pt(11)
+                style.paragraph_format.space_before = Pt(2)
+                style.paragraph_format.space_after = Pt(2)
+                style.paragraph_format.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+                section = document.sections
+                section[0].left_margin = Cm(2.5)
+                section[0].right_margin = Cm(1)
+                section[0].top_margin = Cm(4.5)
+                section[0].bottom_margin = Cm(1)
+                header = document.sections[0].header
+                table = header.add_table(rows=0, cols=3, width=Cm(19.5))
+                table.style = 'Header Table'
+                table.alignment = WD_TABLE_ALIGNMENT.CENTER
+                row_cells = table.add_row().cells
+                paragraph = row_cells[0].paragraphs[0]
+                run = paragraph.add_run()
+                run.add_picture(docx_profile.logo, width=Inches(1.25))
+                paragraph = row_cells[1].paragraphs[0]
+                run = paragraph.add_run()
+                run.add_text(testplan.name)
+                row_cells = table.add_row().cells
+                paragraph = row_cells[0].paragraphs[0]
+                run = paragraph.add_run()
+                run.add_text('Редакция: ' + testplan.version)
+                paragraph = row_cells[1].paragraphs[0]
+                run = paragraph.add_run()
+                run.add_text(docx_profile.branch)
+                a = table.cell(0, 1)
+                b = table.cell(0, 2)
+                a.merge(b)
+                table.cell(0, 0).width = Cm(5)
+                table.cell(1, 0).width = Cm(5)
+                table.cell(0, 1).width = Cm(10.5)
+                table.cell(1, 1).width = Cm(10.5)
+                table.cell(0, 2).width = Cm(4)
+                table.cell(1, 2).width = Cm(4)
+                table.cell(0, 1).vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
+        except MultiValueDictKeyError:
+            pass
 
         # chapters
         try:
