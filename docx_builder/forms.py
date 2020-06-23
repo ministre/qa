@@ -31,5 +31,6 @@ class DocxTestplanForm(forms.Form):
     expected = forms.BooleanField(label=_('Expected'), required=False)
     configs = forms.BooleanField(label=_('Configs'), required=False)
     images = forms.BooleanField(label=_('Images'), required=False)
-    links = forms.BooleanField(label=_('Links'), required=False)
     checklists = forms.BooleanField(label=_('Checklists'), required=False)
+    links = forms.BooleanField(label=_('Links'), required=False)
+    comments = forms.BooleanField(label=_('Comments'), required=False)

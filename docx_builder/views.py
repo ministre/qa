@@ -7,7 +7,7 @@ from .models import DocxProfile
 from .forms import DocxProfileForm
 from django.shortcuts import get_object_or_404
 from testplan.models import Testplan, Chapter, Category, Test, TestLink, TestChecklist, TestChecklistItem, TestConfig, \
-    TestImage
+    TestImage, TestComment
 import os
 from django.conf import settings
 from django.http import HttpResponse, Http404
@@ -300,6 +300,18 @@ def build_testplan(request):
                                 table.style = 'Table Grid'
                                 shade_cells([table.cell(0, 0)], "#e3e8ec")
                                 table.cell(0, 0).text = config.config
+                except MultiValueDictKeyError:
+                    pass
+
+                # comments
+                try:
+                    if request.POST['comments']:
+                        comments = TestComment.objects.filter(test=test).order_by('id')
+                        if comments:
+                            document.add_paragraph('Комментарии', style='Subtitle')
+                            for comment in comments:
+                                document.add_paragraph(comment.name, style='Caption')
+                                document.add_paragraph(comment.text, style='List Bullet')
                 except MultiValueDictKeyError:
                     pass
 

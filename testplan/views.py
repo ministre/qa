@@ -91,7 +91,9 @@ def testplan_details(request, pk, tab_id):
                                                              'chapters': True,
                                                              'tests': True})
     redmine_url = settings.REDMINE_URL
-    docx_form = DocxTestplanForm(initial={'purpose': True})
+    docx_form = DocxTestplanForm(initial={'page_header': True, 'chapters': True, 'purpose': True, 'procedure': True,
+                                          'expected': True, 'configs': True, 'images': True, 'checklists': True,
+                                          'links': True, 'comments': False})
     return render(request, 'testplan/testplan_details.html', {'tab_id': tab_id, 'testplan': testplan,
                                                               'categories': categories,
                                                               'chapters': chapters,
