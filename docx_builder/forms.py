@@ -25,6 +25,7 @@ class DocxProfileForm(ModelForm):
 class DocxTestplanForm(forms.Form):
     profile = forms.ModelChoiceField(queryset=DocxProfile.objects.all())
     page_header = forms.BooleanField(label=_('Page Header'), required=False)
+    convert_textile = forms.BooleanField(label=_('Convert Textile'), required=False)
     chapters = forms.BooleanField(label=_('Chapters'), required=False)
     purpose = forms.BooleanField(label=_('Purpose'), required=False)
     procedure = forms.BooleanField(label=_('Procedure'), required=False)

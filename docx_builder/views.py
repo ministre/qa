@@ -201,6 +201,14 @@ def build_testplan(request):
         except MultiValueDictKeyError:
             pass
 
+        try:
+            if request.POST['convert_textile']:
+                convert_textile = True
+            else:
+                convert_textile = False
+        except MultiValueDictKeyError:
+            convert_textile = False
+
         # chapters
         try:
             if request.POST['chapters']:
@@ -208,8 +216,18 @@ def build_testplan(request):
                 if chapters:
                     for chapter in chapters:
                         document.add_heading(chapter.name, level=1)
-                        paragraph = document.add_paragraph(chapter.text, style='Normal')
-                        paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.JUSTIFY
+
+                        if convert_textile:
+                            paragraphs = chapter.text.split('\r\n')
+                            for paragraph in paragraphs:
+                                if paragraph.startswith('*'):
+                                    p = document.add_paragraph(paragraph[2:], style='List Bullet')
+                                else:
+                                    p = document.add_paragraph(paragraph, style='Normal')
+                                p.alignment = WD_PARAGRAPH_ALIGNMENT.JUSTIFY
+                        else:
+                            p = document.add_paragraph(chapter.text, style='Normal')
+                            p.alignment = WD_PARAGRAPH_ALIGNMENT.JUSTIFY
         except MultiValueDictKeyError:
             pass
 
