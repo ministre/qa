@@ -6,7 +6,8 @@ from django.contrib.auth.decorators import login_required
 from .models import DocxProfile
 from .forms import DocxProfileForm
 from django.shortcuts import get_object_or_404
-from testplan.models import Testplan, Chapter, Category, Test, TestLink, TestChecklist, TestChecklistItem, TestConfig
+from testplan.models import Testplan, Chapter, Category, Test, TestLink, TestChecklist, TestChecklistItem, TestConfig, \
+    TestImage
 import os
 from django.conf import settings
 from django.http import HttpResponse, Http404
@@ -245,6 +246,18 @@ def build_testplan(request):
                         document.add_paragraph('Ожидаемый результат', style='Subtitle')
                         paragraph = document.add_paragraph(test.expected, style='Normal')
                         paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.JUSTIFY
+                except MultiValueDictKeyError:
+                    pass
+
+                # images
+                try:
+                    if request.POST['images']:
+                        images = TestImage.objects.filter(test=test).order_by('id')
+                        if images:
+                            document.add_paragraph('Изображения', style='Subtitle')
+                            for image in images:
+                                document.add_paragraph(image.name, style='Subtitle')
+                                document.add_picture(image.image, width=Inches(5))
                 except MultiValueDictKeyError:
                     pass
 

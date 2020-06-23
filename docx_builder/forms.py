@@ -29,6 +29,7 @@ class DocxTestplanForm(forms.Form):
     purpose = forms.BooleanField(label=_('Purpose'), required=False)
     procedure = forms.BooleanField(label=_('Procedure'), required=False)
     expected = forms.BooleanField(label=_('Expected'), required=False)
+    configs = forms.BooleanField(label=_('Configs'), required=False)
+    images = forms.BooleanField(label=_('Images'), required=False)
     links = forms.BooleanField(label=_('Links'), required=False)
     checklists = forms.BooleanField(label=_('Checklists'), required=False)
-    configs = forms.BooleanField(label=_('Configs'), required=False)
