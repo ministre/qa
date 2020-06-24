@@ -144,6 +144,12 @@ def build_testplan(request):
         style.font.bold = True
         style.font.underline = True
 
+        style = document.styles['Quote']
+        style.font.color.rgb = RGBColor(0xFF, 0x00, 0x00)
+        style.font.bold = True
+        style.font.italic = False
+        style.font.underline = False
+
         style = document.styles['Normal']
         style.font.name = 'Cambria'
         style.font.color.rgb = RGBColor(0x00, 0x00, 0x00)
@@ -221,8 +227,22 @@ def build_testplan(request):
                         if convert_textile:
                             paragraphs = chapter.text.split('\r\n')
                             for paragraph in paragraphs:
-                                if paragraph.startswith('*'):
-                                    p = document.add_paragraph(paragraph[2:], style='List Bullet')
+                                if paragraph.startswith('#'):
+                                    if paragraph.startswith('###'):
+                                        p = document.add_paragraph(paragraph[4:], style='List Number 3')
+                                    elif paragraph.startswith('##'):
+                                        p = document.add_paragraph(paragraph[3:], style='List Number 2')
+                                    else:
+                                        p = document.add_paragraph(paragraph[2:], style='List Number')
+                                elif paragraph.startswith('*'):
+                                    if paragraph.startswith('***'):
+                                        p = document.add_paragraph(paragraph[4:], style='List Bullet 3')
+                                    elif paragraph.startswith('**'):
+                                        p = document.add_paragraph(paragraph[3:], style='List Bullet 2')
+                                    else:
+                                        p = document.add_paragraph(paragraph[2:], style='List Bullet')
+                                elif paragraph.startswith('> *%{color:'):
+                                    p = document.add_paragraph(paragraph[paragraph.find('}')+1:-2], style='Quote')
                                 else:
                                     p = document.add_paragraph(paragraph, style='Normal')
                                 p.alignment = WD_PARAGRAPH_ALIGNMENT.JUSTIFY
@@ -254,8 +274,33 @@ def build_testplan(request):
                 try:
                     if request.POST['procedure']:
                         document.add_paragraph('Процедура', style='Subtitle')
-                        paragraph = document.add_paragraph(test.procedure, style='Normal')
-                        paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.JUSTIFY
+
+                        if convert_textile:
+                            paragraphs = test.procedure.split('\r\n')
+                            for paragraph in paragraphs:
+                                if paragraph.startswith('#'):
+                                    if paragraph.startswith('###'):
+                                        p = document.add_paragraph(paragraph[4:], style='List Number 3')
+                                    elif paragraph.startswith('##'):
+                                        p = document.add_paragraph(paragraph[3:], style='List Number 2')
+                                    else:
+                                        p = document.add_paragraph(paragraph[2:], style='List Number')
+                                elif paragraph.startswith('*'):
+                                    if paragraph.startswith('***'):
+                                        p = document.add_paragraph(paragraph[4:], style='List Bullet 3')
+                                    elif paragraph.startswith('**'):
+                                        p = document.add_paragraph(paragraph[3:], style='List Bullet 2')
+                                    else:
+                                        p = document.add_paragraph(paragraph[2:], style='List Bullet')
+                                elif paragraph.startswith('> *%{color:'):
+                                    p = document.add_paragraph(paragraph[paragraph.find('}')+1:-2], style='Quote')
+                                else:
+                                    p = document.add_paragraph(paragraph, style='Normal')
+                                p.alignment = WD_PARAGRAPH_ALIGNMENT.JUSTIFY
+                        else:
+                            p = document.add_paragraph(test.procedure, style='Normal')
+                            p.alignment = WD_PARAGRAPH_ALIGNMENT.JUSTIFY
+
                 except MultiValueDictKeyError:
                     pass
 
@@ -263,8 +308,33 @@ def build_testplan(request):
                 try:
                     if request.POST['expected']:
                         document.add_paragraph('Ожидаемый результат', style='Subtitle')
-                        paragraph = document.add_paragraph(test.expected, style='Normal')
-                        paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.JUSTIFY
+
+                        if convert_textile:
+                            paragraphs = test.expected.split('\r\n')
+                            for paragraph in paragraphs:
+                                if paragraph.startswith('#'):
+                                    if paragraph.startswith('###'):
+                                        p = document.add_paragraph(paragraph[4:], style='List Number 3')
+                                    elif paragraph.startswith('##'):
+                                        p = document.add_paragraph(paragraph[3:], style='List Number 2')
+                                    else:
+                                        p = document.add_paragraph(paragraph[2:], style='List Number')
+                                elif paragraph.startswith('*'):
+                                    if paragraph.startswith('***'):
+                                        p = document.add_paragraph(paragraph[4:], style='List Bullet 3')
+                                    elif paragraph.startswith('**'):
+                                        p = document.add_paragraph(paragraph[3:], style='List Bullet 2')
+                                    else:
+                                        p = document.add_paragraph(paragraph[2:], style='List Bullet')
+                                elif paragraph.startswith('> *%{color:'):
+                                    p = document.add_paragraph(paragraph[paragraph.find('}')+1:-2], style='Quote')
+                                else:
+                                    p = document.add_paragraph(paragraph, style='Normal')
+                                p.alignment = WD_PARAGRAPH_ALIGNMENT.JUSTIFY
+                        else:
+                            p = document.add_paragraph(test.expected, style='Normal')
+                            p.alignment = WD_PARAGRAPH_ALIGNMENT.JUSTIFY
+
                 except MultiValueDictKeyError:
                     pass
 
