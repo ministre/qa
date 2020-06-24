@@ -9,17 +9,42 @@ class DocxProfileForm(ModelForm):
         model = DocxProfile
         labels = {
             'name': _('Name'),
+            'logo': _('Logo'),
+            'branch': _('Branch'),
+            'title_font_name': _('Title Font Name'),
+            'title_font_size': _('Title Font Size') + ', [10-40]',
+            'title_font_bold': _('Title Font Bold'),
+            'title_font_underline': _('Title Font Underline'),
+            'title_font_color_red': _('Title Font Color Red') + ', [0-255]',
+            'title_font_color_green': _('Title Font Color Green') + ', [0-255]',
+            'title_font_color_blue': _('Title Font Color Blue') + ', [0-255]',
+            'title_space_before': _('Title Font Space Before') + ', [0-40]',
+            'title_space_after': _('Title Font Space After') + ', [0-40]',
+            'heading1_font_name': _('Heading 1 Font Name'),
+            'heading1_font_size': _('Heading 1 Font Size') + ', [10-40]',
+            'heading1_font_bold': _('Heading 1 Font Bold'),
+            'heading1_font_underline': _('Heading 1 Font Underline'),
+            'heading1_font_color_red': _('Heading 1 Font Color Red') + ', [0-255]',
+            'heading1_font_color_green': _('Heading 1 Font Color Green') + ', [0-255]',
+            'heading1_font_color_blue': _('Heading 1 Font Color Blue') + ', [0-255]',
+            'heading1_space_before': _('Heading 1 Font Space Before') + ', [0-40]',
+            'heading1_space_after': _('Heading 1 Font Space After') + ', [0-40]',
         }
         fields = '__all__'
         FONTNAME = (
             ('Calibri', 'Calibri'),
             ('Cambria', 'Cambria'),
         )
-        widgets = {'title_font_name': forms.Select(choices=FONTNAME, attrs={'class': 'form-control'}),
-                   'created_by': HiddenInput(), 'created_at': HiddenInput(),
-                   'updated_by': HiddenInput(), 'updated_at': HiddenInput(),
-                   'title_font_bold': forms.CheckboxInput,
-                   'title_font_underline': forms.CheckboxInput}
+        widgets = {
+            'title_font_name': forms.Select(choices=FONTNAME, attrs={'class': 'form-control'}),
+            'heading1_font_name': forms.Select(choices=FONTNAME, attrs={'class': 'form-control'}),
+            'title_font_bold': forms.CheckboxInput,
+            'heading1_font_bold': forms.CheckboxInput,
+            'title_font_underline': forms.CheckboxInput,
+            'heading1_font_underline': forms.CheckboxInput,
+            'created_by': HiddenInput(), 'created_at': HiddenInput(),
+            'updated_by': HiddenInput(), 'updated_at': HiddenInput(),
+        }
 
 
 class DocxTestplanForm(forms.Form):
