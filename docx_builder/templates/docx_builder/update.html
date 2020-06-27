@@ -482,11 +482,179 @@
         </div>
 
         <div class="tabs-panel" id="caption">
+            <div class="grid-x grid-margin-x small-up-2 medium-up-2">
+                <div class="cell">
+                    <div class="card">
+                        <div class="card-section">
+                            <h4>{% trans "Font" %}</h4>
+                            <table>
+                                <tr>
+                                    <td width="65%">
+                                        {{ form.caption_font_name.label_tag }}
+                                        {{ form.caption_font_name }}
+                                    </td>
+                                    <td width="35%">
+                                        {{ form.caption_font_size.label_tag }}
+                                        {{ form.caption_font_size }}
+                                    </td>
+                                </tr>
+                            </table>
 
+                            <div class="card">
+                                <div class="card-section">
+                                    <h5>{% trans "Color" %}</h5>
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                {{ form.caption_font_color_red.label_tag }}
+                                                {{ form.caption_font_color_red }}
+                                            </td>
+                                            <td>
+                                                {{ form.caption_font_color_green.label_tag }}
+                                                {{ form.caption_font_color_green }}
+                                            </td>
+                                            <td>
+                                                {{ form.caption_font_color_blue.label_tag }}
+                                                {{ form.caption_font_color_blue }}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-section">
+                                    <h5>{% trans "Style" %}</h5>
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                {{ form.caption_font_bold.label_tag }}
+                                                {{ form.caption_font_bold }}
+                                            </td>
+                                            <td>
+                                                {{ form.caption_font_italic.label_tag }}
+                                                {{ form.caption_font_italic }}
+                                            </td>
+                                            <td>
+                                                {{ form.caption_font_underline.label_tag }}
+                                                {{ form.caption_font_underline }}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cell">
+                    <div class="card">
+                        <div class="card-section">
+                            <h4>{% trans "Paragraph" %}</h4>
+                            <p>
+                                {{ form.caption_space_before.label_tag }}
+                                {{ form.caption_space_before }}
+                            </p>
+                            <p>
+                                {{ form.caption_space_after.label_tag }}
+                                {{ form.caption_space_after }}
+                            </p>
+                            <p>
+                                {{ form.caption_alignment.label_tag }}
+                                {{ form.caption_alignment }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="tabs-panel" id="quote">
+            <div class="grid-x grid-margin-x small-up-2 medium-up-2">
+                <div class="cell">
+                    <div class="card">
+                        <div class="card-section">
+                            <h4>{% trans "Font" %}</h4>
+                            <table>
+                                <tr>
+                                    <td width="65%">
+                                        {{ form.quote_font_name.label_tag }}
+                                        {{ form.quote_font_name }}
+                                    </td>
+                                    <td width="35%">
+                                        {{ form.quote_font_size.label_tag }}
+                                        {{ form.quote_font_size }}
+                                    </td>
+                                </tr>
+                            </table>
 
+                            <div class="card">
+                                <div class="card-section">
+                                    <h5>{% trans "Color" %}</h5>
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                {{ form.quote_font_color_red.label_tag }}
+                                                {{ form.quote_font_color_red }}
+                                            </td>
+                                            <td>
+                                                {{ form.quote_font_color_green.label_tag }}
+                                                {{ form.quote_font_color_green }}
+                                            </td>
+                                            <td>
+                                                {{ form.quote_font_color_blue.label_tag }}
+                                                {{ form.quote_font_color_blue }}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-section">
+                                    <h5>{% trans "Style" %}</h5>
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                {{ form.quote_font_bold.label_tag }}
+                                                {{ form.quote_font_bold }}
+                                            </td>
+                                            <td>
+                                                {{ form.quote_font_italic.label_tag }}
+                                                {{ form.quote_font_italic }}
+                                            </td>
+                                            <td>
+                                                {{ form.quote_font_underline.label_tag }}
+                                                {{ form.quote_font_underline }}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cell">
+                    <div class="card">
+                        <div class="card-section">
+                            <h4>{% trans "Paragraph" %}</h4>
+                            <p>
+                                {{ form.quote_space_before.label_tag }}
+                                {{ form.quote_space_before }}
+                            </p>
+                            <p>
+                                {{ form.quote_space_after.label_tag }}
+                                {{ form.quote_space_after }}
+                            </p>
+                            <p>
+                                {{ form.quote_alignment.label_tag }}
+                                {{ form.quote_alignment }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
