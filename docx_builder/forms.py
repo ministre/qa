@@ -10,7 +10,7 @@ class DocxProfileForm(ModelForm):
         labels = {
             'name': _('Name'),
             'logo': _('Logo'),
-            'branch': _('Branch'),
+            'header_subtitle': _('Header Subtitle'),
 
             'title_font_name': _('Title Font Name'),
             'title_font_size': _('Title Font Size') + ', [10-40]',
@@ -48,17 +48,27 @@ class DocxProfileForm(ModelForm):
             'h2_space_after': _('Heading 2 Font Space After') + ', [0-40]',
             'h2_alignment': _('Heading 1 Alignment') + ', [0-40]',
         }
+
         fields = '__all__'
+
+        TYPE = (
+            (0, 'Feature List'),
+            (1, 'Testplan'),
+            (2, 'Protocol'),
+        )
+
         FONTNAME = (
             ('Calibri', 'Calibri'),
             ('Cambria', 'Cambria'),
         )
+
         ALIGNMENT = (
             (0, 'Left'),
             (1, 'Center'),
             (2, 'Right'),
             (3, 'Justify'),
         )
+
         widgets = {
             'title_font_name': forms.Select(choices=FONTNAME, attrs={'class': 'form-control'}),
             'title_font_bold': forms.CheckboxInput,

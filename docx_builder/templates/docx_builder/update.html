@@ -5,11 +5,64 @@
 {% block content %}
 
 <form method="post" action="" enctype="multipart/form-data">
-    <a href="{{ back_url }}" class="button small">&laquo; {% trans "Back" %}</a>
-    <input type="submit" value='{% trans "Update" %}' class="button small success" />
-    <a href="{% url 'docx_profile_delete' pk=object.id %}" class="button small alert">{% trans "Delete" %}</a>
+
+    <ul class="tabs" data-tabs id="docx_profile-tabs">
+        <li class="tabs-title is-active"><a data-tabs-target="general" href="#general">{% trans "General" %}</a></li>
+        <li class="tabs-title"><a data-tabs-target="title" href="#title">{% trans "Title" %}</a></li>
+        <li class="tabs-title"><a data-tabs-target="h1" href="#h1">{% trans "Heading 1" %}</a></li>
+        <li class="tabs-title"><a data-tabs-target="h2" href="#h2">{% trans "Heading 2" %}</a></li>
+        <li class="tabs-title"><a data-tabs-target="h3" href="#h3">{% trans "Heading 3" %}</a></li>
+        <li class="tabs-title"><a data-tabs-target="normal" href="#normal">{% trans "Normal" %}</a></li>
+        <li class="tabs-title"><a data-tabs-target="caption" href="#caption">{% trans "Caption" %}</a></li>
+        <li class="tabs-title"><a data-tabs-target="quote" href="#quote">{% trans "Quote" %}</a></li>
+    </ul>
+
     {% csrf_token %}
+    <div class="tabs-content" data-tabs-content="docx_profile-tabs">
+        <div class="tabs-panel is-active" id="general">
+            <a href="{{ back_url }}" class="button small">&laquo; {% trans "Back" %}</a>
+            <input type="submit" value='{% trans "Update" %}' class="button small success" />
+            <a href="{% url 'docx_profile_delete' pk=object.id %}" class="button small alert">{% trans "Delete" %}</a>
+
+            {{ form.name.label_tag }}
+            {{ form.name }}
+
+            {{ form.logo.label_tag }}
+            {{ form.logo }}
+
+        </div>
+
+        <div class="tabs-panel" id="title">
+
+        </div>
+
+        <div class="tabs-panel" id="h1">
+
+        </div>
+
+        <div class="tabs-panel" id="h2">
+
+        </div>
+
+        <div class="tabs-panel" id="h3">
+
+        </div>
+
+        <div class="tabs-panel" id="normal">
+
+        </div>
+
+        <div class="tabs-panel" id="caption">
+
+        </div>
+
+        <div class="tabs-panel" id="quote">
+
+        </div>
+    </div>
+
     {{ form.as_p }}
+
 </form>
 
 {% endblock %}
