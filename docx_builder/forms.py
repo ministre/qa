@@ -14,6 +14,7 @@ class DocxProfileForm(ModelForm):
             'title_font_name': _('Title Font Name'),
             'title_font_size': _('Title Font Size') + ', [10-40]',
             'title_font_bold': _('Title Font Bold'),
+            'title_font_italic': _('Title Font Italic'),
             'title_font_underline': _('Title Font Underline'),
             'title_font_color_red': _('Title Font Color Red') + ', [0-255]',
             'title_font_color_green': _('Title Font Color Green') + ', [0-255]',
@@ -23,12 +24,23 @@ class DocxProfileForm(ModelForm):
             'heading1_font_name': _('Heading 1 Font Name'),
             'heading1_font_size': _('Heading 1 Font Size') + ', [10-40]',
             'heading1_font_bold': _('Heading 1 Font Bold'),
+            'heading1_font_italic': _('Heading 1 Font Italic'),
             'heading1_font_underline': _('Heading 1 Font Underline'),
             'heading1_font_color_red': _('Heading 1 Font Color Red') + ', [0-255]',
             'heading1_font_color_green': _('Heading 1 Font Color Green') + ', [0-255]',
             'heading1_font_color_blue': _('Heading 1 Font Color Blue') + ', [0-255]',
             'heading1_space_before': _('Heading 1 Font Space Before') + ', [0-40]',
             'heading1_space_after': _('Heading 1 Font Space After') + ', [0-40]',
+            'heading2_font_name': _('Heading 2 Font Name'),
+            'heading2_font_size': _('Heading 2 Font Size') + ', [10-40]',
+            'heading2_font_bold': _('Heading 2 Font Bold'),
+            'heading2_font_italic': _('Heading 2 Font Italic'),
+            'heading2_font_underline': _('Heading 2 Font Underline'),
+            'heading2_font_color_red': _('Heading 2 Font Color Red') + ', [0-255]',
+            'heading2_font_color_green': _('Heading 2 Font Color Green') + ', [0-255]',
+            'heading2_font_color_blue': _('Heading 2 Font Color Blue') + ', [0-255]',
+            'heading2_space_before': _('Heading 2 Font Space Before') + ', [0-40]',
+            'heading2_space_after': _('Heading 2 Font Space After') + ', [0-40]',
         }
         fields = '__all__'
         FONTNAME = (
@@ -38,10 +50,20 @@ class DocxProfileForm(ModelForm):
         widgets = {
             'title_font_name': forms.Select(choices=FONTNAME, attrs={'class': 'form-control'}),
             'heading1_font_name': forms.Select(choices=FONTNAME, attrs={'class': 'form-control'}),
+            'heading2_font_name': forms.Select(choices=FONTNAME, attrs={'class': 'form-control'}),
+
             'title_font_bold': forms.CheckboxInput,
             'heading1_font_bold': forms.CheckboxInput,
+            'heading2_font_bold': forms.CheckboxInput,
+
+            'title_font_italic': forms.CheckboxInput,
+            'heading1_font_italic': forms.CheckboxInput,
+            'heading2_font_italic': forms.CheckboxInput,
+
             'title_font_underline': forms.CheckboxInput,
             'heading1_font_underline': forms.CheckboxInput,
+            'heading2_font_underline': forms.CheckboxInput,
+
             'created_by': HiddenInput(), 'created_at': HiddenInput(),
             'updated_by': HiddenInput(), 'updated_at': HiddenInput(),
         }
