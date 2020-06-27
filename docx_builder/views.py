@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from .models import DocxProfile
 from .forms import DocxProfileForm
 from django.shortcuts import get_object_or_404
+from feature.models import FeatureList, FeatureListCategory, FeatureListItem
 from testplan.models import Testplan, Chapter, Category, Test, TestLink, TestChecklist, TestChecklistItem, TestConfig, \
     TestImage, TestComment
 import os
@@ -86,6 +87,28 @@ def shade_cells(cells, shade):
         tcVAlign = OxmlElement("w:shd")
         tcVAlign.set(qn("w:fill"), shade)
         tcPr.append(tcVAlign)
+
+
+def build_feature_list(request):
+    if request.method == 'POST':
+        fl = get_object_or_404(FeatureList, id=request.POST['feature_list'])
+        document = Document()
+        # template
+        docx_profile = DocxProfile.objects.get(id=request.POST['profile'])
+
+        # title
+        document.add_paragraph(fl.name, style='Title')
+
+        fl_filename = settings.MEDIA_ROOT + '/fl_' + str(fl.id) + '.docx'
+        document.save(fl_filename)
+
+        file_path = os.path.join(settings.MEDIA_ROOT, fl_filename)
+        if os.path.exists(file_path):
+            with open(file_path, 'rb') as fh:
+                response = HttpResponse(fh.read(), content_type="application/vnd.ms-word")
+                response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+                return response
+        raise Http404
 
 
 def build_testplan(request):

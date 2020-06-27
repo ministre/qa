@@ -60,3 +60,7 @@ class DocxTestplanForm(forms.Form):
     checklists = forms.BooleanField(label=_('Checklists'), required=False)
     links = forms.BooleanField(label=_('Links'), required=False)
     comments = forms.BooleanField(label=_('Comments'), required=False)
+
+
+class DocxFeatureListForm(forms.Form):
+    profile = forms.ModelChoiceField(queryset=DocxProfile.objects.all())

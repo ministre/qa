@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from .models import FeatureList, FeatureListCategory, FeatureListItem, DeviceType
 from .forms import FeatureListForm, FeatureListCategoryForm, FeatureListItemForm
+from docx_builder.forms import DocxFeatureListForm
 from redmine.forms import RedmineFeatureListForm
 from django.urls import reverse
 from datetime import datetime
@@ -74,11 +75,15 @@ class FeatureListDelete(DeleteView):
 def fl_details(request, pk, tab_id: int):
     feature_list = get_object_or_404(FeatureList, id=pk)
     categories = FeatureListCategory.objects.filter(feature_list=feature_list).order_by('id')
+    docx_form = DocxFeatureListForm()
     redmine_form = RedmineFeatureListForm(initial={'project': feature_list.device_type.redmine_project,
                                                    'wiki': feature_list.redmine_wiki})
     redmine_url = settings.REDMINE_URL
-    return render(request, 'feature/details.html', {'fl': feature_list, 'categories': categories, 'tab_id': tab_id,
-                                                    'redmine_form': redmine_form, 'redmine_url': redmine_url})
+    return render(request, 'feature/details.html', {'fl': feature_list, 'categories': categories,
+                                                    'docx_form': docx_form,
+                                                    'redmine_form': redmine_form,
+                                                    'redmine_url': redmine_url,
+                                                    'tab_id': tab_id})
 
 
 @login_required

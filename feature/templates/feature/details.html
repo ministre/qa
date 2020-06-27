@@ -81,7 +81,12 @@
     </div>
 
     <div class="tabs-panel {% if tab_id == 3 %}is-active{% endif %}" id="docx">
-        <a href="#" class="button small">{% trans "Build" %}</a>
+      <form method="post" action="{% url 'build_feature_list' %}">
+          {% csrf_token %}
+          <input type="hidden" name="feature_list" value="{{ fl.id }}">
+          <input type="submit" value='{% trans "Build" %}' class="button success small" />
+          {{ docx_form.as_p }}
+      </form>
     </div>
 
     <div class="tabs-panel {% if tab_id == 4 %}is-active{% endif %}" id="redmine">
