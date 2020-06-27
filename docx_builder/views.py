@@ -89,63 +89,155 @@ def shade_cells(cells, shade):
         tcPr.append(tcVAlign)
 
 
+def build_document(profile: DocxProfile):
+    document = Document()
+    document.styles['Title'].font.name = profile.title_font_name
+    document.styles['Title'].font.color.rgb = RGBColor(profile.title_font_color_red, profile.title_font_color_green,
+                                                       profile.title_font_color_blue)
+    document.styles['Title'].font.size = Pt(profile.title_font_size)
+    document.styles['Title'].font.bold = profile.title_font_bold
+    document.styles['Title'].font.italic = profile.title_font_italic
+    document.styles['Title'].font.underline = profile.title_font_underline
+    document.styles['Title'].paragraph_format.space_before = Pt(profile.title_space_before)
+    document.styles['Title'].paragraph_format.space_after = Pt(profile.title_space_after)
+    if profile.title_alignment == 0:
+        document.styles['Title'].paragraph_format.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+    elif profile.title_alignment == 1:
+        document.styles['Title'].paragraph_format.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+    elif profile.title_alignment == 2:
+        document.styles['Title'].paragraph_format.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
+    elif profile.title_alignment == 3:
+        document.styles['Title'].paragraph_format.alignment = WD_PARAGRAPH_ALIGNMENT.JUSTIFY
+
+    document.styles['Heading 1'].font.name = profile.h1_font_name
+    document.styles['Heading 1'].font.color.rgb = RGBColor(profile.h1_font_color_red, profile.h1_font_color_green,
+                                                           profile.h1_font_color_blue)
+    document.styles['Heading 1'].font.size = Pt(profile.h1_font_size)
+    document.styles['Heading 1'].font.bold = profile.h1_font_bold
+    document.styles['Heading 1'].font.italic = profile.h1_font_italic
+    document.styles['Heading 1'].font.underline = profile.h1_font_underline
+    document.styles['Heading 1'].paragraph_format.space_before = Pt(profile.h1_space_before)
+    document.styles['Heading 1'].paragraph_format.space_after = Pt(profile.h1_space_after)
+    if profile.h1_alignment == 0:
+        document.styles['Heading 1'].paragraph_format.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+    elif profile.h1_alignment == 1:
+        document.styles['Heading 1'].paragraph_format.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+    elif profile.h1_alignment == 2:
+        document.styles['Heading 1'].paragraph_format.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
+    elif profile.h1_alignment == 3:
+        document.styles['Heading 1'].paragraph_format.alignment = WD_PARAGRAPH_ALIGNMENT.JUSTIFY
+
+    document.styles['Heading 2'].font.name = profile.h2_font_name
+    document.styles['Heading 2'].font.color.rgb = RGBColor(profile.h2_font_color_red, profile.h2_font_color_green,
+                                                           profile.h2_font_color_blue)
+    document.styles['Heading 2'].font.size = Pt(profile.h2_font_size)
+    document.styles['Heading 2'].font.bold = profile.h2_font_bold
+    document.styles['Heading 2'].font.italic = profile.h2_font_italic
+    document.styles['Heading 2'].font.underline = profile.h2_font_underline
+    document.styles['Heading 2'].paragraph_format.space_before = Pt(profile.h2_space_before)
+    document.styles['Heading 2'].paragraph_format.space_after = Pt(profile.h2_space_after)
+    if profile.h2_alignment == 0:
+        document.styles['Heading 2'].paragraph_format.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+    elif profile.h2_alignment == 1:
+        document.styles['Heading 2'].paragraph_format.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+    elif profile.h2_alignment == 2:
+        document.styles['Heading 2'].paragraph_format.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
+    elif profile.h2_alignment == 3:
+        document.styles['Heading 2'].paragraph_format.alignment = WD_PARAGRAPH_ALIGNMENT.JUSTIFY
+
+    document.styles['Heading 3'].font.name = profile.h3_font_name
+    document.styles['Heading 3'].font.color.rgb = RGBColor(profile.h3_font_color_red, profile.h3_font_color_green,
+                                                           profile.h3_font_color_blue)
+    document.styles['Heading 3'].font.size = Pt(profile.h3_font_size)
+    document.styles['Heading 3'].font.bold = profile.h3_font_bold
+    document.styles['Heading 3'].font.italic = profile.h3_font_italic
+    document.styles['Heading 3'].font.underline = profile.h3_font_underline
+    document.styles['Heading 3'].paragraph_format.space_before = Pt(profile.h3_space_before)
+    document.styles['Heading 3'].paragraph_format.space_after = Pt(profile.h3_space_after)
+    if profile.h3_alignment == 0:
+        document.styles['Heading 3'].paragraph_format.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+    elif profile.h3_alignment == 1:
+        document.styles['Heading 3'].paragraph_format.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+    elif profile.h3_alignment == 2:
+        document.styles['Heading 3'].paragraph_format.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
+    elif profile.h3_alignment == 3:
+        document.styles['Heading 3'].paragraph_format.alignment = WD_PARAGRAPH_ALIGNMENT.JUSTIFY
+
+    document.styles['Normal'].font.name = profile.normal_font_name
+    document.styles['Normal'].font.color.rgb = RGBColor(profile.normal_font_color_red, profile.normal_font_color_green,
+                                                        profile.normal_font_color_blue)
+    document.styles['Normal'].font.size = Pt(profile.normal_font_size)
+    document.styles['Normal'].font.bold = profile.normal_font_bold
+    document.styles['Normal'].font.italic = profile.normal_font_italic
+    document.styles['Normal'].font.underline = profile.normal_font_underline
+    document.styles['Normal'].paragraph_format.space_before = Pt(profile.normal_space_before)
+    document.styles['Normal'].paragraph_format.space_after = Pt(profile.normal_space_after)
+    if profile.normal_alignment == 0:
+        document.styles['Normal'].paragraph_format.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+    elif profile.normal_alignment == 1:
+        document.styles['Normal'].paragraph_format.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+    elif profile.normal_alignment == 2:
+        document.styles['Normal'].paragraph_format.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
+    elif profile.normal_alignment == 3:
+        document.styles['Normal'].paragraph_format.alignment = WD_PARAGRAPH_ALIGNMENT.JUSTIFY
+
+    document.styles['Caption'].font.name = profile.caption_font_name
+    document.styles['Caption'].font.color.rgb = RGBColor(profile.caption_font_color_red,
+                                                         profile.caption_font_color_green,
+                                                         profile.caption_font_color_blue)
+    document.styles['Caption'].font.size = Pt(profile.caption_font_size)
+    document.styles['Caption'].font.bold = profile.caption_font_bold
+    document.styles['Caption'].font.italic = profile.caption_font_italic
+    document.styles['Caption'].font.underline = profile.caption_font_underline
+    document.styles['Caption'].paragraph_format.space_before = Pt(profile.caption_space_before)
+    document.styles['Caption'].paragraph_format.space_after = Pt(profile.caption_space_after)
+    if profile.caption_alignment == 0:
+        document.styles['Caption'].paragraph_format.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+    elif profile.caption_alignment == 1:
+        document.styles['Caption'].paragraph_format.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+    elif profile.caption_alignment == 2:
+        document.styles['Caption'].paragraph_format.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
+    elif profile.caption_alignment == 3:
+        document.styles['Caption'].paragraph_format.alignment = WD_PARAGRAPH_ALIGNMENT.JUSTIFY
+
+    document.styles['Quote'].font.name = profile.quote_font_name
+    document.styles['Quote'].font.color.rgb = RGBColor(profile.quote_font_color_red,
+                                                       profile.quote_font_color_green,
+                                                       profile.quote_font_color_blue)
+    document.styles['Quote'].font.size = Pt(profile.quote_font_size)
+    document.styles['Quote'].font.bold = profile.quote_font_bold
+    document.styles['Quote'].font.italic = profile.quote_font_italic
+    document.styles['Quote'].font.underline = profile.quote_font_underline
+    document.styles['Quote'].paragraph_format.space_before = Pt(profile.quote_space_before)
+    document.styles['Quote'].paragraph_format.space_after = Pt(profile.quote_space_after)
+    if profile.quote_alignment == 0:
+        document.styles['Quote'].paragraph_format.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+    elif profile.quote_alignment == 1:
+        document.styles['Quote'].paragraph_format.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+    elif profile.quote_alignment == 2:
+        document.styles['Quote'].paragraph_format.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
+    elif profile.quote_alignment == 3:
+        document.styles['Quote'].paragraph_format.alignment = WD_PARAGRAPH_ALIGNMENT.JUSTIFY
+    return document
+
+
+@login_required
 def build_feature_list(request):
     if request.method == 'POST':
         fl = get_object_or_404(FeatureList, id=request.POST['feature_list'])
-        document = Document()
-        # template
-        docx_profile = DocxProfile.objects.get(id=request.POST['profile'])
-
-        # styles
-        style = document.styles['Title']
-        style.font.name = docx_profile.title_font_name
-        style.font.color.rgb = RGBColor(docx_profile.title_font_color_red, docx_profile.title_font_color_green,
-                                        docx_profile.title_font_color_blue)
-        style.font.size = Pt(docx_profile.title_font_size)
-        style.font.bold = docx_profile.title_font_bold
-        style.font.italic = docx_profile.title_font_italic
-        style.font.underline = docx_profile.title_font_underline
-        style.paragraph_format.space_before = Pt(docx_profile.title_space_before)
-        style.paragraph_format.space_after = Pt(docx_profile.title_space_after)
-
-        style = document.styles['Heading 1']
-        style.font.name = docx_profile.h1_font_name
-        style.font.color.rgb = RGBColor(docx_profile.h1_font_color_red, docx_profile.h1_font_color_green,
-                                        docx_profile.h1_font_color_blue)
-        style.font.size = Pt(docx_profile.h1_font_size)
-        style.font.bold = docx_profile.h1_font_bold
-        style.font.underline = docx_profile.h1_font_italic
-        style.font.underline = docx_profile.h1_font_underline
-        style.paragraph_format.space_before = Pt(docx_profile.h1_space_before)
-        style.paragraph_format.space_after = Pt(docx_profile.h1_space_after)
-
-        style = document.styles['Heading 2']
-        style.font.name = docx_profile.h2_font_name
-        style.font.color.rgb = RGBColor(docx_profile.h2_font_color_red, docx_profile.h2_font_color_green,
-                                        docx_profile.h2_font_color_blue)
-        style.font.size = Pt(docx_profile.h2_font_size)
-        style.font.bold = docx_profile.h2_font_bold
-        style.font.underline = docx_profile.h2_font_italic
-        style.font.underline = docx_profile.h2_font_underline
-        style.paragraph_format.space_before = Pt(docx_profile.h2_space_before)
-        style.paragraph_format.space_after = Pt(docx_profile.h2_space_after)
-        style.paragraph_format.alignment = WD_PARAGRAPH_ALIGNMENT.JUSTIFY
-
+        document = build_document(profile=DocxProfile.objects.get(id=request.POST['profile']))
         # title
         document.add_paragraph(fl.name, style='Title')
-
         # items
         categories = FeatureListCategory.objects.filter(feature_list=fl).order_by('id')
         for i, category in enumerate(categories):
             document.add_heading(str(i+1) + '. ' + category.name, level=1)
-
             items = FeatureListItem.objects.filter(category=category).order_by('id')
             for j, item in enumerate(items):
                 document.add_heading(str(i+1) + '.' + str(j+1) + '. ' + item.name, level=2)
 
         fl_filename = settings.MEDIA_ROOT + '/fl_' + str(fl.id) + '.docx'
         document.save(fl_filename)
-
         file_path = os.path.join(settings.MEDIA_ROOT, fl_filename)
         if os.path.exists(file_path):
             with open(file_path, 'rb') as fh:
@@ -155,84 +247,14 @@ def build_feature_list(request):
         raise Http404
 
 
+@login_required
 def build_testplan(request):
     if request.method == 'POST':
         testplan = get_object_or_404(Testplan, id=request.POST['testplan'])
-        document = Document()
-
-        # template
-        docx_profile = DocxProfile.objects.get(id=request.POST['profile'])
-
-        # styles
-        style = document.styles['Title']
-        style.font.name = docx_profile.title_font_name
-        style.font.color.rgb = RGBColor(docx_profile.title_font_color_red, docx_profile.title_font_color_green,
-                                        docx_profile.title_font_color_blue)
-        style.font.size = Pt(docx_profile.title_font_size)
-        style.font.bold = docx_profile.title_font_bold
-        style.font.italic = docx_profile.title_font_italic
-        style.font.underline = docx_profile.title_font_underline
-        style.paragraph_format.space_before = Pt(docx_profile.title_space_before)
-        style.paragraph_format.space_after = Pt(docx_profile.title_space_after)
-
-        style = document.styles['Heading 1']
-        style.font.name = docx_profile.heading1_font_name
-        style.font.color.rgb = RGBColor(docx_profile.heading1_font_color_red, docx_profile.heading1_font_color_green,
-                                        docx_profile.heading1_font_color_blue)
-        style.font.size = Pt(docx_profile.heading1_font_size)
-        style.font.bold = docx_profile.heading1_font_bold
-        style.font.underline = docx_profile.heading1_font_italic
-        style.font.underline = docx_profile.heading1_font_underline
-        style.paragraph_format.space_before = Pt(docx_profile.heading1_space_before)
-        style.paragraph_format.space_after = Pt(docx_profile.heading1_space_after)
-
-        style = document.styles['Heading 2']
-        style.font.name = docx_profile.heading2_font_name
-        style.font.color.rgb = RGBColor(docx_profile.heading2_font_color_red, docx_profile.heading2_font_color_green,
-                                        docx_profile.heading2_font_color_blue)
-        style.font.size = Pt(docx_profile.heading2_font_size)
-        style.font.bold = docx_profile.heading2_font_bold
-        style.font.underline = docx_profile.heading2_font_italic
-        style.font.underline = docx_profile.heading2_font_underline
-        style.paragraph_format.space_before = Pt(docx_profile.heading2_space_before)
-        style.paragraph_format.space_after = Pt(docx_profile.heading2_space_after)
-
-        style = document.styles['Subtitle']
-        style.font.name = 'Cambria'
-        style.font.color.rgb = RGBColor(0x00, 0x00, 0x00)
-        style.font.size = Pt(13)
-        style.paragraph_format.space_before = Pt(5)
-        style.paragraph_format.space_after = Pt(5)
-        style.font.bold = True
-        style.font.underline = False
-
-        style = document.styles['Caption']
-        style.font.name = 'Cambria'
-        style.font.color.rgb = RGBColor(0x00, 0x00, 0x00)
-        style.font.size = Pt(11)
-        style.paragraph_format.space_before = Pt(5)
-        style.paragraph_format.space_after = Pt(5)
-        style.font.bold = True
-        style.font.underline = True
-
-        style = document.styles['Quote']
-        style.font.color.rgb = RGBColor(0xFF, 0x00, 0x00)
-        style.font.bold = True
-        style.font.italic = False
-        style.font.underline = False
-
-        style = document.styles['Normal']
-        style.font.name = 'Cambria'
-        style.font.color.rgb = RGBColor(0x00, 0x00, 0x00)
-        style.font.size = Pt(12)
-        style.paragraph_format.space_before = Pt(5)
-        style.paragraph_format.space_after = Pt(5)
-        style.font.bold = False
-        style.font.underline = False
-
+        profile = DocxProfile.objects.get(id=request.POST['profile'])
+        document = build_document(profile=profile)
         # title
         document.add_paragraph(testplan.name, style='Title')
-
         # page header
         try:
             if request.POST['page_header']:
@@ -255,7 +277,7 @@ def build_testplan(request):
                 row_cells = table.add_row().cells
                 paragraph = row_cells[0].paragraphs[0]
                 run = paragraph.add_run()
-                run.add_picture(docx_profile.logo, width=Inches(1.25))
+                run.add_picture(profile.header_logo, width=Inches(1.25))
                 paragraph = row_cells[1].paragraphs[0]
                 run = paragraph.add_run()
                 run.add_text(testplan.name)
@@ -265,7 +287,7 @@ def build_testplan(request):
                 run.add_text('Редакция: ' + testplan.version)
                 paragraph = row_cells[1].paragraphs[0]
                 run = paragraph.add_run()
-                run.add_text(docx_profile.branch)
+                run.add_text(profile.header_subtitle)
                 a = table.cell(0, 1)
                 b = table.cell(0, 2)
                 a.merge(b)
@@ -335,7 +357,7 @@ def build_testplan(request):
                 # purpose
                 try:
                     if request.POST['purpose']:
-                        document.add_paragraph('Цель', style='Subtitle')
+                        document.add_heading('Цель', level=3)
                         paragraph = document.add_paragraph(test.purpose, style='Normal')
                         paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.JUSTIFY
                 except MultiValueDictKeyError:
@@ -344,7 +366,7 @@ def build_testplan(request):
                 # procedure
                 try:
                     if request.POST['procedure']:
-                        document.add_paragraph('Процедура', style='Subtitle')
+                        document.add_heading('Процедура', level=3)
 
                         if convert_textile:
                             paragraphs = test.procedure.split('\r\n')
@@ -378,7 +400,7 @@ def build_testplan(request):
                 # expected
                 try:
                     if request.POST['expected']:
-                        document.add_paragraph('Ожидаемый результат', style='Subtitle')
+                        document.add_heading('Ожидаемый результат', level=3)
 
                         if convert_textile:
                             paragraphs = test.expected.split('\r\n')
@@ -414,7 +436,7 @@ def build_testplan(request):
                     if request.POST['images']:
                         images = TestImage.objects.filter(test=test).order_by('id')
                         if images:
-                            document.add_paragraph('Изображения', style='Subtitle')
+                            document.add_heading('Изображения', level=3)
                             for image in images:
                                 document.add_paragraph(image.name, style='Subtitle')
                                 document.add_picture(image.image, width=Inches(5))
@@ -426,7 +448,7 @@ def build_testplan(request):
                     if request.POST['links']:
                         links = TestLink.objects.filter(test=test).order_by('id')
                         if links:
-                            document.add_paragraph('Ссылки', style='Subtitle')
+                            document.add_heading('Ссылки', level=3)
                             for link in links:
                                 document.add_paragraph(link.name, style='Caption')
                                 document.add_paragraph(link.url, style='List Bullet')
@@ -438,7 +460,7 @@ def build_testplan(request):
                     if request.POST['checklists']:
                         checklists = TestChecklist.objects.filter(test=test).order_by('id')
                         if checklists:
-                            document.add_paragraph('Чек-листы', style='Subtitle')
+                            document.add_heading('Чек-листы', level=3)
                             for checklist in checklists:
                                 document.add_paragraph(checklist.name, style='Caption')
                                 checklist_items = TestChecklistItem.objects.filter(checklist=checklist).order_by('id')
@@ -452,7 +474,7 @@ def build_testplan(request):
                     if request.POST['configs']:
                         configs = TestConfig.objects.filter(test=test).order_by('id')
                         if configs:
-                            document.add_paragraph('Конфигурация', style='Subtitle')
+                            document.add_heading('Конфигурации', level=3)
                             for config in configs:
                                 document.add_paragraph(config.name, style='Caption')
                                 config.config = config.config.replace('\r', '')
@@ -468,7 +490,7 @@ def build_testplan(request):
                     if request.POST['comments']:
                         comments = TestComment.objects.filter(test=test).order_by('id')
                         if comments:
-                            document.add_paragraph('Комментарии', style='Subtitle')
+                            document.add_heading('Комментарии', level=3)
                             for comment in comments:
                                 document.add_paragraph(comment.name, style='Caption')
                                 document.add_paragraph(comment.text, style='List Bullet')
