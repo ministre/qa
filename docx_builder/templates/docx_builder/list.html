@@ -11,6 +11,7 @@
     <tr>
         <th>ID</th>
         <th>{% trans "Name" %}</th>
+        <th>{% trans "Type" %}</th>
         <th>{% trans "Last Update" %}</th>
     </tr>
     </thead>
@@ -19,6 +20,15 @@
     <tr data-href="{% url 'docx_profile_update' pk=docx_profile.id %}">
         <td>{{ docx_profile.id }}</td>
         <td>{{ docx_profile.name }}</td>
+        <td>
+            {% if docx_profile.type == 0 %}
+            {% trans "Technical requirements" %}
+            {% elif docx_profile.type == 1 %}
+            {% trans "Testplan" %}
+            {% elif docx_profile.type == 2 %}
+            {% trans "Protocol" %}
+            {% endif %}
+        </td>
         <td>{{ docx_profile.updated_at }} ({{ docx_profile.updated_by }})</td>
     </tr>
     {% endfor %}

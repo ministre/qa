@@ -101,7 +101,7 @@ class DocxProfileForm(ModelForm):
         fields = '__all__'
 
         TYPE = (
-            (0, 'Feature List'),
+            (0, 'Technical requirements'),
             (1, 'Testplan'),
             (2, 'Protocol'),
         )
@@ -169,7 +169,7 @@ class DocxProfileForm(ModelForm):
 
 
 class DocxTestplanForm(forms.Form):
-    profile = forms.ModelChoiceField(queryset=DocxProfile.objects.all())
+    profile = forms.ModelChoiceField(queryset=DocxProfile.objects.filter(type=1).order_by('id'))
     page_header = forms.BooleanField(label=_('Page Header'), required=False)
     convert_textile = forms.BooleanField(label=_('Convert Textile'), required=False)
     chapters = forms.BooleanField(label=_('Chapters'), required=False)
@@ -184,4 +184,4 @@ class DocxTestplanForm(forms.Form):
 
 
 class DocxFeatureListForm(forms.Form):
-    profile = forms.ModelChoiceField(queryset=DocxProfile.objects.all())
+    profile = forms.ModelChoiceField(queryset=DocxProfile.objects.filter(type=0).order_by('id'))
