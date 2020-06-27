@@ -109,26 +109,27 @@ def build_feature_list(request):
         style.paragraph_format.space_after = Pt(docx_profile.title_space_after)
 
         style = document.styles['Heading 1']
-        style.font.name = docx_profile.heading1_font_name
-        style.font.color.rgb = RGBColor(docx_profile.heading1_font_color_red, docx_profile.heading1_font_color_green,
-                                        docx_profile.heading1_font_color_blue)
-        style.font.size = Pt(docx_profile.heading1_font_size)
-        style.font.bold = docx_profile.heading1_font_bold
-        style.font.underline = docx_profile.heading1_font_italic
-        style.font.underline = docx_profile.heading1_font_underline
-        style.paragraph_format.space_before = Pt(docx_profile.heading1_space_before)
-        style.paragraph_format.space_after = Pt(docx_profile.heading1_space_after)
+        style.font.name = docx_profile.h1_font_name
+        style.font.color.rgb = RGBColor(docx_profile.h1_font_color_red, docx_profile.h1_font_color_green,
+                                        docx_profile.h1_font_color_blue)
+        style.font.size = Pt(docx_profile.h1_font_size)
+        style.font.bold = docx_profile.h1_font_bold
+        style.font.underline = docx_profile.h1_font_italic
+        style.font.underline = docx_profile.h1_font_underline
+        style.paragraph_format.space_before = Pt(docx_profile.h1_space_before)
+        style.paragraph_format.space_after = Pt(docx_profile.h1_space_after)
 
         style = document.styles['Heading 2']
-        style.font.name = docx_profile.heading2_font_name
-        style.font.color.rgb = RGBColor(docx_profile.heading2_font_color_red, docx_profile.heading2_font_color_green,
-                                        docx_profile.heading2_font_color_blue)
-        style.font.size = Pt(docx_profile.heading2_font_size)
-        style.font.bold = docx_profile.heading2_font_bold
-        style.font.underline = docx_profile.heading2_font_italic
-        style.font.underline = docx_profile.heading2_font_underline
-        style.paragraph_format.space_before = Pt(docx_profile.heading2_space_before)
-        style.paragraph_format.space_after = Pt(docx_profile.heading2_space_after)
+        style.font.name = docx_profile.h2_font_name
+        style.font.color.rgb = RGBColor(docx_profile.h2_font_color_red, docx_profile.h2_font_color_green,
+                                        docx_profile.h2_font_color_blue)
+        style.font.size = Pt(docx_profile.h2_font_size)
+        style.font.bold = docx_profile.h2_font_bold
+        style.font.underline = docx_profile.h2_font_italic
+        style.font.underline = docx_profile.h2_font_underline
+        style.paragraph_format.space_before = Pt(docx_profile.h2_space_before)
+        style.paragraph_format.space_after = Pt(docx_profile.h2_space_after)
+        style.paragraph_format.alignment = WD_PARAGRAPH_ALIGNMENT.JUSTIFY
 
         # title
         document.add_paragraph(fl.name, style='Title')
