@@ -3,10 +3,10 @@ from django.utils.decorators import method_decorator
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView, UpdateView, DeleteView
-from .models import Testplan, Category, Chapter, Test, TestConfig, TestImage, TestFile, TestWorksheet, \
-    TestWorksheetItem, TestChecklist, TestChecklistItem, TestLink, TestComment, Pattern, DeviceType
+from .models import Testplan, Category, Chapter, Test, TestConfig, TestImage, TestFile, TestChecklist, \
+    TestChecklistItem, TestIntegerValue, TestLink, TestComment, Pattern, DeviceType
 from .forms import TestplanForm, CategoryForm, ChapterForm, TestForm, TestConfigForm, TestImageForm, TestFileForm,\
-    TestWorksheetForm, WorksheetItemForm, TestChecklistForm, TestChecklistItemForm, TestLinkForm, TestCommentForm, \
+    TestChecklistForm, TestChecklistItemForm, TestLinkForm, TestCommentForm, \
     PatternForm
 from docx_builder.forms import DocxTestplanForm
 from redmine.forms import RedmineChapterForm, RedmineTestForm, RedmineExportTestplanForm, RedmineImportTestplanForm
@@ -154,16 +154,15 @@ def testplan_clone(request, pk):
                         new_file = TestFile(name=src_file.name, test=new_test, file=src_file.file)
                         new_file.save()
 
-                    src_worksheets = TestWorksheet.objects.filter(test=src_test).order_by('id')
-                    for src_worksheet in src_worksheets:
-                        new_worksheet = TestWorksheet(name=src_worksheet.name, test=new_test, type=src_worksheet.type)
-                        new_worksheet.save()
-
-                        src_worksheet_items = TestWorksheetItem.objects.filter(worksheet=src_worksheet).order_by('id')
-                        for src_worksheet_item in src_worksheet_items:
-                            new_worksheet_item = TestWorksheetItem(name=src_worksheet_item.name,
-                                                                   worksheet=new_worksheet)
-                            new_worksheet_item.save()
+                    src_checklists = TestChecklist.objects.filter(test=src_test).order_by('id')
+                    for src_checklist in src_checklists:
+                        new_checklist = TestChecklist(name=src_checklist.name, test=new_test)
+                        new_checklist.save()
+                        src_checklist_items = TestChecklistItem.objects.filter(checklist=src_checklist).order_by('id')
+                        for src_checklist_item in src_checklist_items:
+                            new_checklist_item = TestChecklistItem(name=src_checklist_item.name,
+                                                                   checklist=new_checklist)
+                            new_checklist_item.save()
 
                     src_links = TestLink.objects.filter(test=src_test).order_by('id')
                     for src_link in src_links:
@@ -598,137 +597,6 @@ class TestFileUpdate(UpdateView):
         self.object.test.update_timestamp(user=self.request.user)
         self.object.test.category.testplan.update_timestamp(user=self.request.user)
         return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 7})
-
-
-@method_decorator(login_required, name='dispatch')
-class TestWorksheetCreate(CreateView):
-    model = TestWorksheet
-    form_class = TestWorksheetForm
-    template_name = 'testplan/create.html'
-
-    def get_initial(self):
-        return {'test': self.kwargs.get('test_id')}
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan_id')
-        context['test_id'] = self.kwargs.get('test_id')
-        context['tab_id'] = 8
-        return context
-
-    def get_success_url(self):
-        test = get_object_or_404(Test, id=self.kwargs.get('test_id'))
-        test.update_timestamp(user=self.request.user)
-        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
-        testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'testplan_id': testplan.id, 'pk': test.id, 'tab_id': 8})
-
-
-@method_decorator(login_required, name='dispatch')
-class TestWorksheetDelete(DeleteView):
-    model = TestWorksheet
-    template_name = 'testplan/delete.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 8})
-        return context
-
-    def get_success_url(self):
-        test = get_object_or_404(Test, id=self.kwargs.get('test_id'))
-        test.update_timestamp(user=self.request.user)
-        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
-        testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'testplan_id': testplan.id, 'pk': test.id, 'tab_id': 8})
-
-
-@method_decorator(login_required, name='dispatch')
-class TestWorksheetUpdate(UpdateView):
-    model = TestWorksheet
-    form_class = TestWorksheetForm
-    template_name = 'testplan/update.html'
-
-    def get_initial(self):
-        return {'test': self.kwargs.get('test_id')}
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan_id')
-        context['test_id'] = self.kwargs.get('test_id')
-        context['tab_id'] = 8
-        return context
-
-    def get_success_url(self):
-        test = get_object_or_404(Test, id=self.kwargs.get('test_id'))
-        test.update_timestamp(user=self.request.user)
-        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
-        testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'testplan_id': testplan.id, 'pk': test.id, 'tab_id': 8})
-
-
-@method_decorator(login_required, name='dispatch')
-class WorksheetItemCreate(CreateView):
-    model = TestWorksheetItem
-    form_class = WorksheetItemForm
-    template_name = 'testplan/create.html'
-
-    def get_initial(self):
-        return {'worksheet': self.kwargs.get('worksheet_id')}
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['testplan_id'] = self.kwargs.get('testplan_id')
-        context['test_id'] = self.kwargs.get('test_id')
-        context['worksheet_id'] = self.kwargs.get('worksheet_id')
-        context['tab_id'] = 8
-        return context
-
-    def get_success_url(self):
-        test = get_object_or_404(Test, id=self.kwargs.get('test_id'))
-        test.update_timestamp(user=self.request.user)
-        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
-        testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'testplan_id': testplan.id, 'pk': test.id, 'tab_id': 8})
-
-
-@method_decorator(login_required, name='dispatch')
-class WorksheetItemDelete(DeleteView):
-    model = TestWorksheetItem
-    template_name = 'testplan/delete.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 8})
-        return context
-
-    def get_success_url(self):
-        test = get_object_or_404(Test, id=self.kwargs.get('test_id'))
-        test.update_timestamp(user=self.request.user)
-        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
-        testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'testplan_id': testplan.id, 'pk': test.id, 'tab_id': 8})
-
-
-@method_decorator(login_required, name='dispatch')
-class WorksheetItemUpdate(UpdateView):
-    model = TestWorksheetItem
-    form_class = WorksheetItemForm
-    template_name = 'testplan/update.html'
-
-    def get_initial(self):
-        return {'test': self.kwargs.get('test_id')}
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 8})
-        return context
-
-    def get_success_url(self):
-        test = get_object_or_404(Test, id=self.kwargs.get('test_id'))
-        test.update_timestamp(user=self.request.user)
-        testplan = get_object_or_404(Testplan, id=self.kwargs.get('testplan_id'))
-        testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'testplan_id': testplan.id, 'pk': test.id, 'tab_id': 8})
 
 
 @method_decorator(login_required, name='dispatch')

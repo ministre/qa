@@ -42,12 +42,10 @@ urlpatterns = [
     path('file/create/<int:test_id>/', views.TestFileCreate.as_view(), name='test_file_create'),
     path('file/delete/<int:pk>/', views.TestFileDelete.as_view(), name='test_file_delete'),
     path('file/update/<int:pk>/', views.TestFileUpdate.as_view(), name='test_file_update'),
-
     # checklists
     path('checklist/create/<int:test_id>/', views.TestChecklistCreate.as_view(), name='test_checklist_create'),
     path('checklist/delete/<int:pk>/', views.TestChecklistDelete.as_view(), name='test_checklist_delete'),
     path('checklist/update/<int:pk>/', views.TestChecklistUpdate.as_view(), name='test_checklist_update'),
-
     # checklist items
     path('checklist_item/create/<int:checklist_id>/', views.TestChecklistItemCreate.as_view(),
          name='test_checklist_item_create'),
@@ -55,23 +53,6 @@ urlpatterns = [
          name='test_checklist_item_delete'),
     path('checklist_item/update/<int:pk>/', views.TestChecklistItemUpdate.as_view(),
          name='test_checklist_item_update'),
-
-    # worksheets
-    path('<int:testplan_id>/test/<int:test_id>/worksheet/create/',
-         views.TestWorksheetCreate.as_view(), name='test_worksheet_create'),
-    path('<int:testplan_id>/test/<int:test_id>/worksheet/<int:pk>/delete/',
-         views.TestWorksheetDelete.as_view(), name='test_worksheet_delete'),
-    path('<int:testplan_id>/test/<int:test_id>/worksheet/<int:pk>/update/',
-         views.TestWorksheetUpdate.as_view(), name='test_worksheet_update'),
-
-    # worksheet items
-    path('<int:testplan_id>/test/<int:test_id>/worksheet/<int:worksheet_id>/item/create/',
-         views.WorksheetItemCreate.as_view(), name='worksheet_item_create'),
-    path('<int:testplan_id>/test/<int:test_id>/w_item/<int:pk>/delete/',
-         views.WorksheetItemDelete.as_view(), name='worksheet_item_delete'),
-    path('<int:testplan_id>/test/<int:test_id>/w_item/<int:pk>/update/',
-         views.WorksheetItemUpdate.as_view(), name='worksheet_item_update'),
-
     # links
     path('test_link/create/<int:test_id>/', views.TestLinkCreate.as_view(), name='test_link_create'),
     path('test_link/delete/<int:pk>/', views.TestLinkDelete.as_view(), name='test_link_delete'),

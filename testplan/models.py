@@ -88,6 +88,9 @@ class Test(models.Model):
     updated_at = models.DateTimeField(default=datetime.now, blank=True)
     redmine_wiki = models.CharField(max_length=1000, null=True, blank=True)
 
+    def __str__(self):
+        return self.name
+
     def update_timestamp(self, user):
         self.updated_by = user
         self.updated_at = datetime.now()
@@ -145,6 +148,9 @@ class TestConfig(models.Model):
     test = models.ForeignKey(Test, related_name='test_config', on_delete=models.CASCADE)
     config = models.TextField(null=True, blank=True)
 
+    def __str__(self):
+        return self.name
+
 
 class TestImage(models.Model):
     name = models.CharField(max_length=1000, blank=True, null=True)
@@ -153,32 +159,42 @@ class TestImage(models.Model):
     width = models.IntegerField(blank=True, null=True)
     height = models.IntegerField(blank=True, null=True)
 
+    def __str__(self):
+        return self.name
+
 
 class TestFile(models.Model):
     name = models.CharField(max_length=1000, blank=True, null=True)
     test = models.ForeignKey(Test, related_name='test_file', on_delete=models.CASCADE)
     file = models.FileField(upload_to="testplan/files/")
 
-
-class TestWorksheet(models.Model):
-    name = models.CharField(max_length=1000)
-    test = models.ForeignKey(Test, related_name='test_worksheet', on_delete=models.CASCADE)
-    type = models.CharField(max_length=10, default='Text')
-
-
-class TestWorksheetItem(models.Model):
-    name = models.CharField(max_length=1000)
-    worksheet = models.ForeignKey(TestWorksheet, related_name='worksheet_item', on_delete=models.CASCADE)
+    def __str__(self):
+        return self.name
 
 
 class TestChecklist(models.Model):
     test = models.ForeignKey(Test, related_name='test_checklist', on_delete=models.CASCADE)
     name = models.CharField(max_length=1000)
 
+    def __str__(self):
+        return self.name
+
 
 class TestChecklistItem(models.Model):
     checklist = models.ForeignKey(TestChecklist, related_name='test_checklist_item', on_delete=models.CASCADE)
     name = models.CharField(max_length=1000)
+
+    def __str__(self):
+        return self.name
+
+
+class TestIntegerValue(models.Model):
+    test = models.ForeignKey(Test, related_name='test_checklist', on_delete=models.CASCADE)
+    name = models.CharField(max_length=1000)
+    unit = models.CharField(max_length=100, blank=True, null=True)
+
+    def __str__(self):
+        return self.name
 
 
 class TestLink(models.Model):
@@ -186,11 +202,17 @@ class TestLink(models.Model):
     url = models.CharField(max_length=1000)
     test = models.ForeignKey(Test, related_name='test_link', on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.name
+
 
 class TestComment(models.Model):
     name = models.CharField(max_length=1000, blank=True, null=True)
     text = models.TextField(max_length=100000)
     test = models.ForeignKey(Test, related_name='test_comment', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
 
 
 class Pattern(models.Model):
@@ -217,6 +239,9 @@ class PatternTitle(models.Model):
     pattern = models.ForeignKey(Pattern, on_delete=models.CASCADE)
     device_type = models.ForeignKey(DeviceType, on_delete=models.CASCADE)
     name = models.CharField(max_length=1000)
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         unique_together = ('pattern', 'device_type',)

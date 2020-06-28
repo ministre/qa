@@ -1,6 +1,6 @@
 from django.forms import ModelForm, HiddenInput
-from testplan.models import Testplan, Category, Chapter, Test, TestConfig, TestImage, TestFile,\
-    TestWorksheet, TestWorksheetItem, TestChecklist, TestChecklistItem, TestLink, TestComment, Pattern
+from testplan.models import Testplan, Category, Chapter, Test, TestConfig, TestImage, TestFile, TestChecklist, \
+    TestChecklistItem, TestLink, TestComment, Pattern
 from django.utils.translation import gettext_lazy as _
 from django import forms
 
@@ -124,39 +124,6 @@ class TestFileForm(ModelForm):
 
         widgets = {
             'test': HiddenInput()
-        }
-
-
-class TestWorksheetForm(ModelForm):
-    class Meta:
-        model = TestWorksheet
-        labels = {
-            'name': _('Name'),
-            'type': _('Value Type'),
-        }
-        fields = '__all__'
-        TYPE = (
-            ('text', 'Text'),
-            ('number', 'Number'),
-            ('checklist', 'Checklist'),
-            ('table', 'Table'),
-        )
-        widgets = {
-            'type': forms.Select(choices=TYPE, attrs={'class': 'form-control'}),
-            'test': HiddenInput()
-        }
-
-
-class WorksheetItemForm(ModelForm):
-    class Meta:
-        model = TestWorksheetItem
-        labels = {
-            'name': _('Name'),
-        }
-        fields = '__all__'
-
-        widgets = {
-            'worksheet': HiddenInput()
         }
 
 
