@@ -118,8 +118,8 @@
       <div class="dropdown-pane" id="example-dropdown" data-dropdown data-auto-focus="true">
           <h4>{% trans "Add" %}</h4>
           <a href="{% url 'test_checklist_create' test_id=test.id %}" class="button small">{% trans "Checklist" %}</a>
+          <a href="{% url 'test_int_value_create' test_id=test.id %}" class="button small">{% trans "Integer Value" %}</a>
           <a href="#" class="button small">{% trans "Table" %}</a>
-          <a href="#" class="button small">{% trans "Value" %}</a>
       </div>
 
       {% if checklists %}
@@ -162,6 +162,23 @@
       </div>
       {% endif %}
 
+      {% if int_values %}
+      <div class="card">
+          <div class="card-section">
+              <h4>{% trans "Integer Values" %}</h4>
+              {% for int_value in int_values %}
+              <ul>
+                  <li>
+                      <b>{{ int_value.name }}, <i>{{ int_value.unit }}</i></b>
+                      <a href="{% url 'test_int_value_update' pk=int_value.id %}"><i class="step fi-pencil"></i></a>
+                      <a href="{% url 'test_int_value_delete' pk=int_value.id %}">
+                          <i class="step fi-minus" style="color: #bc104b"></i></a>
+                  </li>
+              </ul>
+              {% endfor %}
+          </div>
+      </div>
+      {% endif %}
 
       {% for worksheet in worksheets %}
       <ul style="list-style: none">

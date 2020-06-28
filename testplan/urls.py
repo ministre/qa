@@ -53,6 +53,11 @@ urlpatterns = [
          name='test_checklist_item_delete'),
     path('checklist_item/update/<int:pk>/', views.TestChecklistItemUpdate.as_view(),
          name='test_checklist_item_update'),
+    # integer values
+    path('int_value/create/<int:test_id>/', views.TestIntegerValueCreate.as_view(), name='test_int_value_create'),
+    path('int_value/delete/<int:pk>/', views.TestIntegerValueDelete.as_view(), name='test_int_value_delete'),
+    path('int_value/update/<int:pk>/', views.TestIntegerValueUpdate.as_view(), name='test_int_value_update'),
+
     # links
     path('test_link/create/<int:test_id>/', views.TestLinkCreate.as_view(), name='test_link_create'),
     path('test_link/delete/<int:pk>/', views.TestLinkDelete.as_view(), name='test_link_delete'),

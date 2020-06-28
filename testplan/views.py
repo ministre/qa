@@ -6,7 +6,7 @@ from django.views.generic import CreateView, UpdateView, DeleteView
 from .models import Testplan, Category, Chapter, Test, TestConfig, TestImage, TestFile, TestChecklist, \
     TestChecklistItem, TestIntegerValue, TestLink, TestComment, Pattern, DeviceType
 from .forms import TestplanForm, CategoryForm, ChapterForm, TestForm, TestConfigForm, TestImageForm, TestFileForm,\
-    TestChecklistForm, TestChecklistItemForm, TestLinkForm, TestCommentForm, \
+    TestChecklistForm, TestChecklistItemForm, TestIntegerValueForm, TestLinkForm, TestCommentForm, \
     PatternForm
 from docx_builder.forms import DocxTestplanForm
 from redmine.forms import RedmineChapterForm, RedmineTestForm, RedmineExportTestplanForm, RedmineImportTestplanForm
@@ -313,7 +313,8 @@ def test_details(request, pk, tab_id):
     images = TestImage.objects.filter(test=test).order_by('id')
     files = TestFile.objects.filter(test=test).order_by('id')
     checklists = TestChecklist.objects.filter(test=test).order_by('id')
-    worksheets_count = checklists.count()
+    int_values = TestIntegerValue.objects.filter(test=test).order_by('id')
+    worksheets_count = checklists.count() + int_values.count()
 
     links = TestLink.objects.filter(test=test).order_by('id')
     comments = TestComment.objects.filter(test=test).order_by('id')
@@ -328,7 +329,7 @@ def test_details(request, pk, tab_id):
     return render(request, 'testplan/test_details.html', {'tab_id': tab_id, 'testplan': testplan, 'test': test,
                                                           'procedure': procedure, 'expected': expected,
                                                           'configs': configs, 'images': images, 'files': files,
-                                                          'checklists': checklists,
+                                                          'checklists': checklists, 'int_values': int_values,
                                                           'worksheets_count': worksheets_count, 'links': links,
                                                           'comments': comments, 'redmine_form': redmine_form,
                                                           'redmine_url': settings.REDMINE_URL})
@@ -600,6 +601,175 @@ class TestFileUpdate(UpdateView):
 
 
 @method_decorator(login_required, name='dispatch')
+class TestChecklistCreate(CreateView):
+    model = TestChecklist
+    form_class = TestChecklistForm
+    template_name = 'testplan/create.html'
+
+    def get_initial(self):
+        return {'test': self.kwargs.get('test_id')}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('test_details', kwargs={'pk': self.kwargs.get('test_id'), 'tab_id': 8})
+        return context
+
+    def get_success_url(self):
+        self.object.test.update_timestamp(user=self.request.user)
+        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 8})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestChecklistDelete(DeleteView):
+    model = TestChecklist
+    template_name = 'testplan/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 8})
+        return context
+
+    def get_success_url(self):
+        self.object.test.update_timestamp(user=self.request.user)
+        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 8})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestChecklistUpdate(UpdateView):
+    model = TestChecklist
+    form_class = TestChecklistForm
+    template_name = 'testplan/update.html'
+
+    def get_initial(self):
+        return {'test_id': self.kwargs.get('test_id')}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 8})
+        return context
+
+    def get_success_url(self):
+        self.object.test.update_timestamp(user=self.request.user)
+        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 8})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestChecklistItemCreate(CreateView):
+    model = TestChecklistItem
+    form_class = TestChecklistItemForm
+    template_name = 'testplan/create.html'
+
+    def get_initial(self):
+        return {'checklist': self.kwargs.get('checklist_id')}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        checklist = get_object_or_404(TestChecklist, id=self.kwargs.get('checklist_id'))
+        context['back_url'] = reverse('test_details', kwargs={'pk': checklist.test.id, 'tab_id': 8})
+        return context
+
+    def get_success_url(self):
+        self.object.checklist.test.update_timestamp(user=self.request.user)
+        self.object.checklist.test.category.testplan.update_timestamp(user=self.request.user)
+        return reverse('test_details', kwargs={'pk': self.object.checklist.test.id, 'tab_id': 8})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestChecklistItemDelete(DeleteView):
+    model = TestChecklistItem
+    template_name = 'testplan/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('test_details', kwargs={'pk': self.object.checklist.test.id, 'tab_id': 8})
+        return context
+
+    def get_success_url(self):
+        self.object.checklist.test.update_timestamp(user=self.request.user)
+        self.object.checklist.test.category.testplan.update_timestamp(user=self.request.user)
+        return reverse('test_details', kwargs={'pk': self.object.checklist.test.id, 'tab_id': 8})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestChecklistItemUpdate(UpdateView):
+    model = TestChecklistItem
+    form_class = TestChecklistItemForm
+    template_name = 'testplan/update.html'
+
+    def get_initial(self):
+        return {'checklist_id': self.kwargs.get('checklist_id')}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('test_details', kwargs={'pk': self.object.checklist.test.id, 'tab_id': 8})
+        return context
+
+    def get_success_url(self):
+        self.object.checklist.test.update_timestamp(user=self.request.user)
+        self.object.checklist.test.category.testplan.update_timestamp(user=self.request.user)
+        return reverse('test_details', kwargs={'pk': self.object.checklist.test.id, 'tab_id': 8})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestIntegerValueCreate(CreateView):
+    model = TestIntegerValue
+    form_class = TestIntegerValueForm
+    template_name = 'testplan/create.html'
+
+    def get_initial(self):
+        return {'test': self.kwargs.get('test_id')}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('test_details', kwargs={'pk': self.kwargs.get('test_id'), 'tab_id': 8})
+        return context
+
+    def get_success_url(self):
+        self.object.test.update_timestamp(user=self.request.user)
+        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 8})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestIntegerValueDelete(DeleteView):
+    model = TestIntegerValue
+    template_name = 'testplan/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 8})
+        return context
+
+    def get_success_url(self):
+        self.object.test.update_timestamp(user=self.request.user)
+        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 8})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestIntegerValueUpdate(UpdateView):
+    model = TestIntegerValue
+    form_class = TestIntegerValueForm
+    template_name = 'testplan/update.html'
+
+    def get_initial(self):
+        return {'test_id': self.kwargs.get('test_id')}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 8})
+        return context
+
+    def get_success_url(self):
+        self.object.test.update_timestamp(user=self.request.user)
+        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 8})
+
+
+@method_decorator(login_required, name='dispatch')
 class TestLinkCreate(CreateView):
     model = TestLink
     form_class = TestLinkForm
@@ -746,116 +916,3 @@ class PatternUpdate(UpdateView):
         pattern = get_object_or_404(Pattern, id=self.object.id)
         pattern.update_timestamp(user=self.request.user)
         return reverse('pattern_details', kwargs={'pk': pattern.id, 'tab_id': 1})
-
-
-@method_decorator(login_required, name='dispatch')
-class TestChecklistCreate(CreateView):
-    model = TestChecklist
-    form_class = TestChecklistForm
-    template_name = 'testplan/create.html'
-
-    def get_initial(self):
-        return {'test': self.kwargs.get('test_id')}
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('test_details', kwargs={'pk': self.kwargs.get('test_id'), 'tab_id': 8})
-        return context
-
-    def get_success_url(self):
-        self.object.test.update_timestamp(user=self.request.user)
-        self.object.test.category.testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 8})
-
-
-@method_decorator(login_required, name='dispatch')
-class TestChecklistDelete(DeleteView):
-    model = TestChecklist
-    template_name = 'testplan/delete.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 8})
-        return context
-
-    def get_success_url(self):
-        self.object.test.update_timestamp(user=self.request.user)
-        self.object.test.category.testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 8})
-
-
-@method_decorator(login_required, name='dispatch')
-class TestChecklistUpdate(UpdateView):
-    model = TestChecklist
-    form_class = TestChecklistForm
-    template_name = 'testplan/update.html'
-
-    def get_initial(self):
-        return {'test_id': self.kwargs.get('test_id')}
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 8})
-        return context
-
-    def get_success_url(self):
-        self.object.test.update_timestamp(user=self.request.user)
-        self.object.test.category.testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 8})
-
-
-@method_decorator(login_required, name='dispatch')
-class TestChecklistItemCreate(CreateView):
-    model = TestChecklistItem
-    form_class = TestChecklistItemForm
-    template_name = 'testplan/create.html'
-
-    def get_initial(self):
-        return {'checklist': self.kwargs.get('checklist_id')}
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        checklist = get_object_or_404(TestChecklist, id=self.kwargs.get('checklist_id'))
-        context['back_url'] = reverse('test_details', kwargs={'pk': checklist.test.id, 'tab_id': 8})
-        return context
-
-    def get_success_url(self):
-        self.object.checklist.test.update_timestamp(user=self.request.user)
-        self.object.checklist.test.category.testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'pk': self.object.checklist.test.id, 'tab_id': 8})
-
-
-@method_decorator(login_required, name='dispatch')
-class TestChecklistItemDelete(DeleteView):
-    model = TestChecklistItem
-    template_name = 'testplan/delete.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('test_details', kwargs={'pk': self.object.checklist.test.id, 'tab_id': 8})
-        return context
-
-    def get_success_url(self):
-        self.object.checklist.test.update_timestamp(user=self.request.user)
-        self.object.checklist.test.category.testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'pk': self.object.checklist.test.id, 'tab_id': 8})
-
-
-@method_decorator(login_required, name='dispatch')
-class TestChecklistItemUpdate(UpdateView):
-    model = TestChecklistItem
-    form_class = TestChecklistItemForm
-    template_name = 'testplan/update.html'
-
-    def get_initial(self):
-        return {'checklist_id': self.kwargs.get('checklist_id')}
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('test_details', kwargs={'pk': self.object.checklist.test.id, 'tab_id': 8})
-        return context
-
-    def get_success_url(self):
-        self.object.checklist.test.update_timestamp(user=self.request.user)
-        self.object.checklist.test.category.testplan.update_timestamp(user=self.request.user)
-        return reverse('test_details', kwargs={'pk': self.object.checklist.test.id, 'tab_id': 8})
