@@ -189,7 +189,7 @@ class TestChecklistItem(models.Model):
 
 
 class TestIntegerValue(models.Model):
-    test = models.ForeignKey(Test, related_name='test_checklist', on_delete=models.CASCADE)
+    test = models.ForeignKey(Test, related_name='test_integer_value', on_delete=models.CASCADE)
     name = models.CharField(max_length=1000)
     unit = models.CharField(max_length=100, blank=True, null=True)
 
