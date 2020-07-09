@@ -78,8 +78,6 @@
             <li>&nbsp;</li>
             {% if user.is_authenticated %}
             <li><a href="{% url 'logout'%}?next={{request.path}}" class="button">{% trans "Sign out" %} ({{ user.get_username }})</a></li>
-            {% else %}
-            <li><a href="{% url 'login'%}?next={{request.path}}" class="button">{% trans "Sign in" %}</a></li>
             {% endif %}
         </ul>
         </form>
