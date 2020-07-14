@@ -71,10 +71,10 @@ class DeviceForm(ModelForm):
     class Meta:
         model = Device
         labels = {
+            'type': _('Type'),
             'vendor': _('Vendor'),
             'model': _('Model'),
             'hw': _('Hardware'),
-            'type': _('Type'),
             'redmine_project': _('Redmine Project ID'),
         }
         fields = '__all__'

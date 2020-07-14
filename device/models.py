@@ -65,15 +65,18 @@ class Vendor(models.Model):
     updated_by = models.ForeignKey(User, related_name='vendor_u', on_delete=models.CASCADE, blank=True, null=True)
     updated_at = models.DateTimeField(default=datetime.now, blank=True)
 
+    class Meta:
+        ordering = ["name"]
+
     def __str__(self):
         return self.name
 
 
 class Device(models.Model):
+    type = models.ForeignKey(DeviceType, on_delete=models.CASCADE)
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     model = models.CharField(max_length=400)
     hw = models.CharField(max_length=100)
-    type = models.ForeignKey(DeviceType, on_delete=models.CASCADE)
     redmine_project = models.CharField(max_length=1000, blank=True, null=True)
     created_by = models.ForeignKey(User, related_name='device_c', on_delete=models.CASCADE, blank=True, null=True)
     created_at = models.DateTimeField(default=datetime.now, blank=True)
