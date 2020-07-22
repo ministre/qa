@@ -4,18 +4,26 @@ from . import views
 urlpatterns = [
     path('', views.DeviceListView.as_view(), name='devices'),
 
+    # vendors
+    path('vendors/', views.VendorListView.as_view(), name='vendors'),
+    path('vendor/create/', views.VendorCreate.as_view(), name='vendor_create'),
+    path('vendor/update/<int:pk>/', views.VendorUpdate.as_view(), name='vendor_update'),
+    path('vendor/delete/<int:pk>/', views.VendorDelete.as_view(), name='vendor_delete'),
+    path('vendor/<int:pk>/', views.vendor_details, name='vendor_details'),
+
+    # checklists
+    path('checklists/', views.DeviceChecklistListView.as_view(), name='device_checklists'),
+    path('checklist/create/', views.DeviceChecklistCreate.as_view(), name='device_checklist_create'),
+    path('checklist/update/<int:pk>/', views.DeviceChecklistUpdate.as_view(), name='device_checklist_update'),
+    path('checklist/delete/<int:pk>/', views.DeviceChecklistDelete.as_view(), name='device_checklist_delete'),
+    path('checklist/<int:pk>/<int:tab_id>/', views.device_checklist_details, name='device_checklist_details'),
+
     # device types
     path('type/', views.DeviceTypeListView.as_view(), name='device_types'),
     path('type/create/', views.DeviceTypeCreate.as_view(), name='device_type_create'),
     path('type/details/<int:pk>/<int:tab_id>/', views.device_type_details, name='device_type_details'),
     path('type/update/<int:pk>/', views.DeviceTypeUpdate.as_view(), name='device_type_update'),
     path('type/delete/<int:pk>/', views.DeviceTypeDelete.as_view(), name='device_type_delete'),
-
-    # device vendors
-    path('vendor/', views.VendorListView.as_view(), name='vendors'),
-    path('vendor/create/', views.VendorCreate.as_view(), name='vendor_create'),
-    path('vendor/<int:pk>/', views.VendorUpdate.as_view(), name='vendor_update'),
-    path('vendor/<int:pk>/delete/', views.VendorDelete.as_view(), name='vendor_delete'),
 
     # custom fields
     path('custom_field/', views.CustomFieldListView.as_view(), name='custom_fields'),

@@ -1,10 +1,11 @@
 from django.shortcuts import render
-from .models import CustomField, CustomFieldItem, DeviceType, Vendor, Device, DevicePhoto, Sample, Specification
+from .models import Vendor, DeviceChecklist, CustomField, CustomFieldItem, DeviceType, Device, DevicePhoto, Sample, \
+    Specification
 from firmware.models import Firmware
 from docum.models import Docum
 from protocol.models import Protocol
-from .forms import CustomFieldForm, CustomFieldItemForm, DeviceTypeForm, VendorForm, DeviceForm, DevicePhotoForm, \
-    SampleForm
+from .forms import VendorForm, DeviceChecklistForm, CustomFieldForm, CustomFieldItemForm, DeviceTypeForm, DeviceForm, \
+    DevicePhotoForm, SampleForm
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -12,7 +13,134 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from datetime import datetime
-from redmine.models import RedmineProject
+
+
+@method_decorator(login_required, name='dispatch')
+class VendorListView(ListView):
+    context_object_name = 'vendors'
+    queryset = Vendor.objects.all().order_by('name')
+    template_name = 'device/vendors.html'
+
+
+@method_decorator(login_required, name='dispatch')
+class VendorCreate(CreateView):
+    model = Vendor
+    form_class = VendorForm
+    template_name = 'device/create.html'
+
+    def get_initial(self):
+        return {'created_by': self.request.user, 'updated_by': self.request.user}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('device_checklists')
+        return context
+
+    def get_success_url(self):
+        return reverse('vendors')
+
+
+@method_decorator(login_required, name='dispatch')
+class VendorUpdate(UpdateView):
+    model = Vendor
+    form_class = VendorForm
+    template_name = 'device/update.html'
+
+    def get_initial(self):
+        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('vendor_details', kwargs={'pk': self.object.id})
+        return context
+
+    def get_success_url(self):
+        self.object.update_timestamp(user=self.request.user)
+        return reverse('vendor_details', kwargs={'pk': self.object.id})
+
+
+@method_decorator(login_required, name='dispatch')
+class VendorDelete(DeleteView):
+    model = Vendor
+    template_name = 'device/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('vendor_details', kwargs={'pk': self.object.id})
+        return context
+
+    def get_success_url(self):
+        return reverse('vendors')
+
+
+@login_required
+def vendor_details(request, pk):
+    vendor = get_object_or_404(Vendor, id=pk)
+    return render(request, 'device/vendor_details.html', {'vendor': vendor})
+
+
+@method_decorator(login_required, name='dispatch')
+class DeviceChecklistListView(ListView):
+    context_object_name = 'checklists'
+    queryset = DeviceChecklist.objects.all().order_by('id')
+    template_name = 'device/checklists.html'
+
+
+@method_decorator(login_required, name='dispatch')
+class DeviceChecklistCreate(CreateView):
+    model = DeviceChecklist
+    form_class = DeviceChecklistForm
+    template_name = 'device/create.html'
+
+    def get_initial(self):
+        return {'created_by': self.request.user, 'updated_by': self.request.user}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('device_checklists')
+        return context
+
+    def get_success_url(self):
+        return reverse('device_checklists')
+
+
+@method_decorator(login_required, name='dispatch')
+class DeviceChecklistUpdate(UpdateView):
+    model = DeviceChecklist
+    form_class = DeviceChecklistForm
+    template_name = 'device/update.html'
+
+    def get_initial(self):
+        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('device_checklists')
+        return context
+
+    def get_success_url(self):
+        self.object.update_timestamp(user=self.request.user)
+        return reverse('device_checklist_details', kwargs={'pk': self.object.id, 'tab_id': 1})
+
+
+@method_decorator(login_required, name='dispatch')
+class DeviceChecklistDelete(DeleteView):
+    model = DeviceChecklist
+    template_name = 'device/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('device_checklist_details', kwargs={'pk': self.object.id, 'tab_id': 1})
+        return context
+
+    def get_success_url(self):
+        return reverse('device_checklists')
+
+
+@login_required
+def device_checklist_details(request, pk, tab_id):
+    checklist = get_object_or_404(DeviceChecklist, id=pk)
+    return render(request, 'device/checklist_details.html', {'tab_id': tab_id, 'checklist': checklist})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -167,48 +295,6 @@ class DeviceTypeDelete(DeleteView):
 
     def get_success_url(self):
         return reverse('device_types')
-
-
-@method_decorator(login_required, name='dispatch')
-class VendorListView(ListView):
-    context_object_name = 'vendors'
-    queryset = Vendor.objects.all().order_by('id')
-    template_name = 'vendor/list.html'
-
-
-@method_decorator(login_required, name='dispatch')
-class VendorCreate(CreateView):
-    model = Vendor
-    form_class = VendorForm
-    template_name = 'vendor/create.html'
-
-    def get_initial(self):
-        return {'created_by': self.request.user, 'updated_by': self.request.user}
-
-    def get_success_url(self):
-        return reverse('vendors')
-
-
-@method_decorator(login_required, name='dispatch')
-class VendorUpdate(UpdateView):
-    model = Vendor
-    form_class = VendorForm
-    template_name = 'vendor/update.html'
-
-    def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': datetime.now}
-
-    def get_success_url(self):
-        return reverse('vendors')
-
-
-@method_decorator(login_required, name='dispatch')
-class VendorDelete(DeleteView):
-    model = Vendor
-    template_name = 'vendor/delete.html'
-
-    def get_success_url(self):
-        return reverse('vendors')
 
 
 @method_decorator(login_required, name='dispatch')

@@ -1,7 +1,30 @@
 from django.forms import ModelForm, HiddenInput
-from device.models import DeviceType, Vendor, CustomField, CustomFieldItem, Device, DevicePhoto, Sample
+from device.models import Vendor, DeviceChecklist, DeviceType, CustomField, CustomFieldItem, Device, DevicePhoto, Sample
 from django.utils.translation import gettext_lazy as _
 from django import forms
+
+
+class VendorForm(ModelForm):
+    class Meta:
+        model = Vendor
+        labels = {
+            'name': _('Name'),
+        }
+        fields = '__all__'
+        widgets = {'created_by': HiddenInput(), 'created_at': HiddenInput(),
+                   'updated_by': HiddenInput(), 'updated_at': HiddenInput()}
+
+
+class DeviceChecklistForm(ModelForm):
+    class Meta:
+        model = DeviceChecklist
+        labels = {
+            'name': _('Name'),
+            'desc': _('Description'),
+        }
+        fields = '__all__'
+        widgets = {'created_by': HiddenInput(), 'created_at': HiddenInput(),
+                   'updated_by': HiddenInput(), 'updated_at': HiddenInput()}
 
 
 class CustomFieldForm(ModelForm):
@@ -50,17 +73,6 @@ class DeviceTypeForm(ModelForm):
             'cf': _('Custom fields'),
             'redmine_project': _('Redmine Project ID'),
             'redmine_project_name': _('Redmine Project Name'),
-        }
-        fields = '__all__'
-        widgets = {'created_by': HiddenInput(), 'created_at': HiddenInput(),
-                   'updated_by': HiddenInput(), 'updated_at': HiddenInput()}
-
-
-class VendorForm(ModelForm):
-    class Meta:
-        model = Vendor
-        labels = {
-            'name': _('Name'),
         }
         fields = '__all__'
         widgets = {'created_by': HiddenInput(), 'created_at': HiddenInput(),

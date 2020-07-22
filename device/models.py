@@ -18,6 +18,12 @@ class Vendor(models.Model):
     def __str__(self):
         return self.name
 
+    def update_timestamp(self, user):
+        self.updated_by = user
+        self.updated_at = datetime.now()
+        self.save()
+        return True
+
 
 class DeviceChecklist(models.Model):
     name = models.CharField(max_length=500)
@@ -29,6 +35,12 @@ class DeviceChecklist(models.Model):
 
     def __str__(self):
         return self.name
+
+    def update_timestamp(self, user):
+        self.updated_by = user
+        self.updated_at = datetime.now()
+        self.save()
+        return True
 
 
 class CustomField(models.Model):

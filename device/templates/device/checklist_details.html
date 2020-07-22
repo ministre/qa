@@ -1,0 +1,60 @@
+{% extends "device/wrapper.html" %}
+
+{% load i18n static %}
+
+{% block content %}
+
+<p><a href="{% url 'device_checklists' %}">{% trans "Checklists" %}</a> &raquo; {{ checklist.name}}</p>
+
+<ul class="tabs" data-tabs id="checklist-tabs">
+    <li class="tabs-title {% if tab_id == 1 %} is-active{% endif %}">
+        <a data-tabs-target="general" href="#general">{% trans "General" %}</a>
+    </li>
+    <li class="tabs-title {% if tab_id == 2 %} is-active{% endif %}">
+        <a data-tabs-target="items" href="#items">{% trans "Items" %}
+        {% if chapters.count > 0 %}({{ chapters.count }}){% endif %}</a>
+    </li>
+</ul>
+
+<div class="tabs-content" data-tabs-content="checklist-tabs">
+    <div class="tabs-panel {% if tab_id == 1 %}is-active{% endif %}" id="general">
+        <a href="{% url 'device_checklist_update' pk=checklist.id %}" class="button small">{% trans "Update" %}</a>
+        <a href="{% url 'device_checklist_delete' pk=checklist.id %}" class="button alert small">{% trans "Delete" %}</a>
+
+        <table class="hover unstriped">
+            <tbody>
+            <tr>
+                <td>{% trans "Name" %}:</td>
+                <td>{{ checklist.name }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Description" %}:</td>
+                <td>{{ checklist.desc }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Created" %}:</td>
+                <td>{{ checklist.created_at }} ({{ checklist.created_by }})</td>
+            </tr>
+            <tr>
+                <td>{% trans "Last Update" %}:</td>
+                <td>{{ checklist.updated_at }} ({{ checklist.updated_by }})</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="tabs-panel {% if tab_id == 2 %}is-active{% endif %}" id="items">
+        <a href="{# url 'chapter_create' tp_id=testplan.id #}" class="button small">{% trans "Add" %}</a>
+        <a href="{# url 'clear_chapters' tp_id=testplan.id #}" class="button small alert">{% trans "Clear" %}</a>
+
+        <ul style="list-style: none">
+            {% for chapter in chapters %}
+            <li>
+                <a href="{# url 'chapter_details' pk=chapter.id tab_id=1 #}">{{ forloop.counter }}. {{ chapter.name }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+{% endblock %}
