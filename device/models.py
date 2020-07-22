@@ -43,6 +43,14 @@ class DeviceChecklist(models.Model):
         return True
 
 
+class DeviceChecklistItem(models.Model):
+    checklist = models.ForeignKey(DeviceChecklist, related_name='d_checklist_item', on_delete=models.CASCADE)
+    name = models.CharField(max_length=1000)
+
+    def __str__(self):
+        return self.name
+
+
 class CustomField(models.Model):
     name = models.CharField(max_length=500)
     desc = models.CharField(max_length=1000, blank=True, null=True)
