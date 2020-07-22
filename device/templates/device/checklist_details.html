@@ -48,6 +48,22 @@
         <a href="{# url 'd_cl_items_clear' cl_id=checklist.id #}" class="button small alert">{% trans "Clear" %}</a>
 
         <table>
+
+            {% if checklist.items_order_by == "name" %}
+
+            {% for item in checklist.d_checklist_item.all|dictsort:"name" %}
+            <tr>
+                <td>{{ item.name }}
+                    <a href="{% url 'd_cl_item_update' pk=item.id %}"><i class="step fi-pencil"></i></a>
+                    <a href="{% url 'd_cl_item_delete' pk=item.id %}">
+                        <i class="step fi-minus" style="color: #bc104b"></i>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+
+            {% else %}
+
             {% for item in checklist.d_checklist_item.all|dictsort:"id" %}
             <tr>
                 <td>{{ item.name }}
@@ -58,6 +74,9 @@
                 </td>
             </tr>
             {% endfor %}
+
+            {% endif %}
+
         </table>
     </div>
 </div>

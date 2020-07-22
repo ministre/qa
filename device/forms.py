@@ -22,10 +22,18 @@ class DeviceChecklistForm(ModelForm):
         labels = {
             'name': _('Name'),
             'desc': _('Description'),
+            'items_order_by': _('Sort items by'),
         }
         fields = '__all__'
-        widgets = {'created_by': HiddenInput(), 'created_at': HiddenInput(),
-                   'updated_by': HiddenInput(), 'updated_at': HiddenInput()}
+        ORDER_BY = (
+            ('id', 'ID'),
+            ('name', 'Name'),
+        )
+        widgets = {
+            'items_order_by': forms.Select(choices=ORDER_BY, attrs={'class': 'form-control'}),
+            'created_by': HiddenInput(), 'created_at': HiddenInput(),
+            'updated_by': HiddenInput(), 'updated_at': HiddenInput()
+        }
 
 
 class DeviceChecklistItemForm(ModelForm):
