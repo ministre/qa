@@ -1,11 +1,11 @@
 from django.shortcuts import render
-from .models import Vendor, DeviceChecklist, CustomField, CustomFieldItem, DeviceType, Device, DevicePhoto, Sample, \
-    Specification
+from .models import Vendor, DeviceChecklist, DeviceChecklistItem, CustomField, CustomFieldItem, DeviceType, Device, \
+    DevicePhoto, Sample, Specification
 from firmware.models import Firmware
 from docum.models import Docum
 from protocol.models import Protocol
-from .forms import VendorForm, DeviceChecklistForm, CustomFieldForm, CustomFieldItemForm, DeviceTypeForm, DeviceForm, \
-    DevicePhotoForm, SampleForm
+from .forms import VendorForm, DeviceChecklistForm, DeviceChecklistItemForm, CustomFieldForm, CustomFieldItemForm, \
+    DeviceTypeForm, DeviceForm, DevicePhotoForm, SampleForm
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -141,6 +141,60 @@ class DeviceChecklistDelete(DeleteView):
 def device_checklist_details(request, pk, tab_id):
     checklist = get_object_or_404(DeviceChecklist, id=pk)
     return render(request, 'device/checklist_details.html', {'tab_id': tab_id, 'checklist': checklist})
+
+
+@method_decorator(login_required, name='dispatch')
+class DeviceChecklistItemCreate(CreateView):
+    model = DeviceChecklistItem
+    form_class = DeviceChecklistItemForm
+    template_name = 'device/create.html'
+
+    def get_initial(self):
+        return {'checklist': self.kwargs.get('cl_id')}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        checklist = get_object_or_404(DeviceChecklist, id=self.kwargs.get('cl_id'))
+        context['back_url'] = reverse('d_checklist_details', kwargs={'pk': checklist.id, 'tab_id': 2})
+        return context
+
+    def get_success_url(self):
+        self.object.checklist.update_timestamp(user=self.request.user)
+        return reverse('d_checklist_details', kwargs={'pk': self.object.checklist.id, 'tab_id': 2})
+
+
+@method_decorator(login_required, name='dispatch')
+class DeviceChecklistItemUpdate(UpdateView):
+    model = DeviceChecklistItem
+    form_class = DeviceChecklistItemForm
+    template_name = 'device/update.html'
+
+    def get_initial(self):
+        return {'checklist_id': self.kwargs.get('cl_id')}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('d_checklist_details', kwargs={'pk': self.object.checklist.id, 'tab_id': 2})
+        return context
+
+    def get_success_url(self):
+        self.object.checklist.update_timestamp(user=self.request.user)
+        return reverse('d_checklist_details', kwargs={'pk': self.object.checklist.id, 'tab_id': 2})
+
+
+@method_decorator(login_required, name='dispatch')
+class DeviceChecklistItemDelete(DeleteView):
+    model = DeviceChecklistItem
+    template_name = 'device/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('d_checklist_details', kwargs={'pk': self.object.checklist.id, 'tab_id': 2})
+        return context
+
+    def get_success_url(self):
+        self.object.checklist.update_timestamp(user=self.request.user)
+        return reverse('d_checklist_details', kwargs={'pk': self.object.checklist.id, 'tab_id': 2})
 
 
 @method_decorator(login_required, name='dispatch')

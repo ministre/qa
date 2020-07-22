@@ -1,9 +1,10 @@
 from django.contrib import admin
-from device.models import Vendor, DeviceChecklist, CustomField, CustomFieldItem, CustomValue, DeviceType, Device, \
-    DevicePhoto, Sample
+from device.models import Vendor, DeviceChecklist, DeviceChecklistItem, \
+    CustomField, CustomFieldItem, CustomValue, DeviceType, Device, DevicePhoto, Sample
 
 admin.site.register(Vendor)
 admin.site.register(DeviceChecklist)
+admin.site.register(DeviceChecklistItem)
 admin.site.register(CustomField)
 admin.site.register(CustomFieldItem)
 admin.site.register(CustomValue)

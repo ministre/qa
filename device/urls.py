@@ -18,6 +18,11 @@ urlpatterns = [
     path('checklist/delete/<int:pk>/', views.DeviceChecklistDelete.as_view(), name='d_checklist_delete'),
     path('checklist/<int:pk>/<int:tab_id>/', views.device_checklist_details, name='d_checklist_details'),
 
+    # checklist items
+    path('checklist/item/create/<int:cl_id>/', views.DeviceChecklistItemCreate.as_view(), name='d_cl_item_create'),
+    path('checklist/item/update/<int:pk>/', views.DeviceChecklistItemUpdate.as_view(), name='d_cl_item_update'),
+    path('checklist/item/delete/<int:pk>/', views.DeviceChecklistItemDelete.as_view(), name='d_cl_item_delete'),
+
     # device types
     path('type/', views.DeviceTypeListView.as_view(), name='device_types'),
     path('type/create/', views.DeviceTypeCreate.as_view(), name='device_type_create'),
