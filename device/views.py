@@ -97,11 +97,11 @@ class DeviceChecklistCreate(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('device_checklists')
+        context['back_url'] = reverse('d_checklists')
         return context
 
     def get_success_url(self):
-        return reverse('device_checklists')
+        return reverse('d_checklists')
 
 
 @method_decorator(login_required, name='dispatch')
@@ -115,12 +115,12 @@ class DeviceChecklistUpdate(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('device_checklists')
+        context['back_url'] = reverse('d_checklist_details', kwargs={'pk': self.object.id, 'tab_id': 1})
         return context
 
     def get_success_url(self):
         self.object.update_timestamp(user=self.request.user)
-        return reverse('device_checklist_details', kwargs={'pk': self.object.id, 'tab_id': 1})
+        return reverse('d_checklist_details', kwargs={'pk': self.object.id, 'tab_id': 1})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -130,11 +130,11 @@ class DeviceChecklistDelete(DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('device_checklist_details', kwargs={'pk': self.object.id, 'tab_id': 1})
+        context['back_url'] = reverse('d_checklist_details', kwargs={'pk': self.object.id, 'tab_id': 1})
         return context
 
     def get_success_url(self):
-        return reverse('device_checklists')
+        return reverse('d_checklists')
 
 
 @login_required

@@ -12,11 +12,11 @@ urlpatterns = [
     path('vendor/<int:pk>/', views.vendor_details, name='vendor_details'),
 
     # checklists
-    path('checklists/', views.DeviceChecklistListView.as_view(), name='device_checklists'),
-    path('checklist/create/', views.DeviceChecklistCreate.as_view(), name='device_checklist_create'),
-    path('checklist/update/<int:pk>/', views.DeviceChecklistUpdate.as_view(), name='device_checklist_update'),
-    path('checklist/delete/<int:pk>/', views.DeviceChecklistDelete.as_view(), name='device_checklist_delete'),
-    path('checklist/<int:pk>/<int:tab_id>/', views.device_checklist_details, name='device_checklist_details'),
+    path('checklists/', views.DeviceChecklistListView.as_view(), name='d_checklists'),
+    path('checklist/create/', views.DeviceChecklistCreate.as_view(), name='d_checklist_create'),
+    path('checklist/update/<int:pk>/', views.DeviceChecklistUpdate.as_view(), name='d_checklist_update'),
+    path('checklist/delete/<int:pk>/', views.DeviceChecklistDelete.as_view(), name='d_checklist_delete'),
+    path('checklist/<int:pk>/<int:tab_id>/', views.device_checklist_details, name='d_checklist_details'),
 
     # device types
     path('type/', views.DeviceTypeListView.as_view(), name='device_types'),

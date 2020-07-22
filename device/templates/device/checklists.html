@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<a href="{% url 'device_checklist_create' %}" class="button small">{% trans "Create" %}</a>
+<a href="{% url 'd_checklist_create' %}" class="button small">{% trans "Create" %}</a>
 
 <table id="checklists" class="display" style="width:100%">
     <thead>
@@ -16,7 +16,7 @@
     </thead>
     <tbody>
     {% for checklist in checklists %}
-    <tr data-href="{% url 'device_checklist_details' pk=checklist.id tab_id=1 %}">
+    <tr data-href="{% url 'd_checklist_details' pk=checklist.id tab_id=1 %}">
         <td>{{ checklist.id }}</td>
         <td>{{ checklist.name }}</td>
         <td>{{ checklist.desc }}</td>

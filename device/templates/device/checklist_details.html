@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<p><a href="{% url 'device_checklists' %}">{% trans "Checklists" %}</a> &raquo; {{ checklist.name}}</p>
+<p><a href="{% url 'd_checklists' %}">{% trans "Checklists" %}</a> &raquo; {{ checklist.name}}</p>
 
 <ul class="tabs" data-tabs id="checklist-tabs">
     <li class="tabs-title {% if tab_id == 1 %} is-active{% endif %}">
@@ -18,8 +18,8 @@
 
 <div class="tabs-content" data-tabs-content="checklist-tabs">
     <div class="tabs-panel {% if tab_id == 1 %}is-active{% endif %}" id="general">
-        <a href="{% url 'device_checklist_update' pk=checklist.id %}" class="button small">{% trans "Update" %}</a>
-        <a href="{% url 'device_checklist_delete' pk=checklist.id %}" class="button alert small">{% trans "Delete" %}</a>
+        <a href="{% url 'd_checklist_update' pk=checklist.id %}" class="button small">{% trans "Update" %}</a>
+        <a href="{% url 'd_checklist_delete' pk=checklist.id %}" class="button alert small">{% trans "Delete" %}</a>
 
         <table class="hover unstriped">
             <tbody>
