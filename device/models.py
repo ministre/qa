@@ -5,6 +5,32 @@ from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 
 
+class Vendor(models.Model):
+    name = models.CharField(max_length=400)
+    created_by = models.ForeignKey(User, related_name='vendor_c', on_delete=models.CASCADE, blank=True, null=True)
+    created_at = models.DateTimeField(default=datetime.now, blank=True)
+    updated_by = models.ForeignKey(User, related_name='vendor_u', on_delete=models.CASCADE, blank=True, null=True)
+    updated_at = models.DateTimeField(default=datetime.now, blank=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+
+class DeviceChecklist(models.Model):
+    name = models.CharField(max_length=500)
+    desc = models.CharField(max_length=1000, blank=True, null=True)
+    created_by = models.ForeignKey(User, related_name='d_checklist_c', on_delete=models.CASCADE, blank=True, null=True)
+    created_at = models.DateTimeField(default=datetime.now, blank=True)
+    updated_by = models.ForeignKey(User, related_name='d_checklist_u', on_delete=models.CASCADE, blank=True, null=True)
+    updated_at = models.DateTimeField(default=datetime.now, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
 class CustomField(models.Model):
     name = models.CharField(max_length=500)
     desc = models.CharField(max_length=1000, blank=True, null=True)
@@ -56,20 +82,6 @@ class DeviceType(models.Model):
 
     class Meta:
         ordering = ('desc',)
-
-
-class Vendor(models.Model):
-    name = models.CharField(max_length=400)
-    created_by = models.ForeignKey(User, related_name='vendor_c', on_delete=models.CASCADE, blank=True, null=True)
-    created_at = models.DateTimeField(default=datetime.now, blank=True)
-    updated_by = models.ForeignKey(User, related_name='vendor_u', on_delete=models.CASCADE, blank=True, null=True)
-    updated_at = models.DateTimeField(default=datetime.now, blank=True)
-
-    class Meta:
-        ordering = ["name"]
-
-    def __str__(self):
-        return self.name
 
 
 class Device(models.Model):
