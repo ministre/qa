@@ -28,6 +28,7 @@ class Vendor(models.Model):
 class DeviceChecklist(models.Model):
     name = models.CharField(max_length=500)
     desc = models.CharField(max_length=1000, blank=True, null=True)
+    items_order_by = models.CharField(max_length=10, default='id')
     created_by = models.ForeignKey(User, related_name='d_checklist_c', on_delete=models.CASCADE, blank=True, null=True)
     created_at = models.DateTimeField(default=datetime.now, blank=True)
     updated_by = models.ForeignKey(User, related_name='d_checklist_u', on_delete=models.CASCADE, blank=True, null=True)
