@@ -157,6 +157,12 @@ class DeviceType(models.Model):
     def __str__(self):
         return self.desc
 
+    def update_timestamp(self, user):
+        self.updated_by = user
+        self.updated_at = datetime.now()
+        self.save()
+        return True
+
     def devices_count(self):
         count = Device.objects.filter(type=self).count()
         return count

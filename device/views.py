@@ -34,7 +34,7 @@ class VendorCreate(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('device_checklists')
+        context['back_url'] = reverse('vendors')
         return context
 
     def get_success_url(self):
@@ -445,6 +445,75 @@ def device_if_details(request, pk):
 
 
 @method_decorator(login_required, name='dispatch')
+class DeviceTypeListView(ListView):
+    context_object_name = 'device_types'
+    queryset = DeviceType.objects.all().order_by('id')
+    template_name = 'device/types.html'
+
+
+@method_decorator(login_required, name='dispatch')
+class DeviceTypeCreate(CreateView):
+    model = DeviceType
+    form_class = DeviceTypeForm
+    template_name = 'device/create.html'
+
+    def get_initial(self):
+        return {'created_by': self.request.user, 'updated_by': self.request.user}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('device_types')
+        return context
+
+    def get_success_url(self):
+        return reverse('device_type_details', kwargs={'pk': self.object.id, 'tab_id': 1})
+
+
+@method_decorator(login_required, name='dispatch')
+class DeviceTypeUpdate(UpdateView):
+    model = DeviceType
+    form_class = DeviceTypeForm
+    template_name = 'device/update.html'
+
+    def get_initial(self):
+        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('device_type_details', kwargs={'pk': self.object.id, 'tab_id': 1})
+        return context
+
+    def get_success_url(self):
+        self.object.update_timestamp(user=self.request.user)
+        return reverse('device_type_details', kwargs={'pk': self.object.id, 'tab_id': 1})
+
+
+@method_decorator(login_required, name='dispatch')
+class DeviceTypeDelete(DeleteView):
+    model = DeviceType
+    template_name = 'device/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('device_type_details', kwargs={'pk': self.object.id, 'tab_id': 1})
+        return context
+
+    def get_success_url(self):
+        return reverse('device_types')
+
+
+@login_required
+def device_type_details(request, pk, tab_id):
+    device_type = get_object_or_404(DeviceType, pk=pk)
+    devices_count = device_type.devices_count()
+    testplans_count = device_type.testplans_count()
+    return render(request, 'device/type_details.html', {'device_type': device_type,
+                                                        'devices_count': devices_count,
+                                                        'testplans_count': testplans_count,
+                                                        'tab_id': tab_id})
+
+
+@method_decorator(login_required, name='dispatch')
 class CustomFieldListView(ListView):
     context_object_name = 'custom_fields'
     queryset = CustomField.objects.all()
@@ -557,48 +626,6 @@ def custom_field_update_timestamp(custom_field_id, user):
 
 
 @method_decorator(login_required, name='dispatch')
-class DeviceTypeListView(ListView):
-    context_object_name = 'device_types'
-    queryset = DeviceType.objects.all().order_by('id')
-    template_name = 'type/list.html'
-
-
-@method_decorator(login_required, name='dispatch')
-class DeviceTypeCreate(CreateView):
-    model = DeviceType
-    form_class = DeviceTypeForm
-    template_name = 'type/create.html'
-
-    def get_initial(self):
-        return {'created_by': self.request.user, 'updated_by': self.request.user}
-
-    def get_success_url(self):
-        return reverse('device_type_details', kwargs={'pk': self.object.id, 'tab_id': 1})
-
-
-@method_decorator(login_required, name='dispatch')
-class DeviceTypeUpdate(UpdateView):
-    model = DeviceType
-    form_class = DeviceTypeForm
-    template_name = 'type/update.html'
-
-    def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': datetime.now}
-
-    def get_success_url(self):
-        return reverse('device_type_details', kwargs={'pk': self.object.id, 'tab_id': 1})
-
-
-@method_decorator(login_required, name='dispatch')
-class DeviceTypeDelete(DeleteView):
-    model = DeviceType
-    template_name = 'type/delete.html'
-
-    def get_success_url(self):
-        return reverse('device_types')
-
-
-@method_decorator(login_required, name='dispatch')
 class DeviceListView(ListView):
     context_object_name = 'devices'
     queryset = Device.objects.all().order_by('id')
@@ -638,17 +665,6 @@ class DeviceDelete(DeleteView):
 
     def get_success_url(self):
         return reverse('devices')
-
-
-@login_required
-def device_type_details(request, pk, tab_id):
-    device_type = get_object_or_404(DeviceType, pk=pk)
-    devices_count = device_type.devices_count()
-    testplans_count = device_type.testplans_count()
-    return render(request, 'type/details.html', {'device_type': device_type,
-                                                 'devices_count': devices_count,
-                                                 'testplans_count': testplans_count,
-                                                 'tab_id': tab_id})
 
 
 @login_required
