@@ -513,6 +513,16 @@ def device_type_details(request, pk, tab_id):
                                                         'tab_id': tab_id})
 
 
+@login_required
+def dt_spec_create(request, dt: int, st: int):
+    pass
+
+
+@login_required
+def dt_spec_delete(request, dt: int, st: int):
+    pass
+
+
 @method_decorator(login_required, name='dispatch')
 class CustomFieldListView(ListView):
     context_object_name = 'custom_fields'

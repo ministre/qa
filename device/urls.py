@@ -52,9 +52,13 @@ urlpatterns = [
     # device types
     path('types/', views.DeviceTypeListView.as_view(), name='device_types'),
     path('type/create/', views.DeviceTypeCreate.as_view(), name='device_type_create'),
-    path('type/details/<int:pk>/<int:tab_id>/', views.device_type_details, name='device_type_details'),
     path('type/update/<int:pk>/', views.DeviceTypeUpdate.as_view(), name='device_type_update'),
     path('type/delete/<int:pk>/', views.DeviceTypeDelete.as_view(), name='device_type_delete'),
+    path('type/details/<int:pk>/<int:tab_id>/', views.device_type_details, name='device_type_details'),
+
+    # device type specs
+    path('type/spec/create/<int:dt>/<int:st>/', views.dt_spec_create, name='dt_spec_create'),
+    path('type/spec/delete/<int:dt>/<int:st>/', views.dt_spec_delete, name='dt_spec_delete'),
 
     # custom fields
     path('custom_field/', views.CustomFieldListView.as_view(), name='custom_fields'),

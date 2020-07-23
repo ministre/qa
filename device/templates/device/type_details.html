@@ -61,16 +61,16 @@
         <button class="button small" type="button" data-toggle="example-dropdown">{% trans "Add" %}</button>
         <div class="dropdown-pane" id="example-dropdown" data-dropdown data-auto-focus="true">
             <h4>{% trans "Add" %}</h4>
-            <a href="{# url 'test_checklist_create' test_id=test.id #}" class="button small">
+            <a href="{% url 'dt_spec_create' dt=device_type.id st=1 %}" class="button small">
                 {% trans "Checkbox" %}
             </a>
-            <a href="{# url 'test_int_value_create' test_id=test.id #}" class="button small">
+            <a href="{% url 'dt_spec_create' dt=device_type.id st=2 %}" class="button small">
                 {% trans "Dropdown Menu" %}
             </a>
-            <a href="#" class="button small">
+            <a href="{% url 'dt_spec_create' dt=device_type.id st=3 %}" class="button small">
                 {% trans "Text Field" %}
             </a>
-            <a href="#" class="button small">
+            <a href="{% url 'dt_spec_create' dt=device_type.id st=4 %}" class="button small">
                 {% trans "Integer Field" %}
             </a>
         </div>

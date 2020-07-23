@@ -1,6 +1,7 @@
 from django.forms import ModelForm, HiddenInput
 from device.models import Vendor, DeviceChecklist, DeviceChecklistItem, DeviceSlist, DeviceSlistItem, \
-    DeviceTextField, DeviceIntegerField, DeviceType, CustomField, CustomFieldItem, Device, DevicePhoto, Sample
+    DeviceTextField, DeviceIntegerField, DeviceType, DeviceTypeSpecification, CustomField, CustomFieldItem, Device, \
+    DevicePhoto, Sample
 from django.utils.translation import gettext_lazy as _
 from django import forms
 
@@ -104,6 +105,34 @@ class DeviceIntegerFieldForm(ModelForm):
         }
 
 
+class DeviceTypeForm(ModelForm):
+    class Meta:
+        model = DeviceType
+        labels = {
+            'tag': _('Tag'),
+            'desc': _('Description'),
+            'desc_genitive': _('Genitive Description'),
+            'redmine_parent': _('Redmine Parent Project ID'),
+            'redmine_project': _('Redmine Project ID'),
+            'redmine_project_name': _('Redmine Project Name'),
+        }
+        fields = '__all__'
+        widgets = {'created_by': HiddenInput(), 'created_at': HiddenInput(),
+                   'updated_by': HiddenInput(), 'updated_at': HiddenInput()}
+
+
+class DeviceTypeSpecificationForm(ModelForm):
+    class Meta:
+        model = DeviceTypeSpecification
+        labels = {
+            'checklist': _('Checkbox'),
+            'slist': _('Dropdown Menu'),
+            'text_field': _('Redmine Parent Project ID'),
+            'integer_field': _('Redmine Project ID'),
+        }
+        fields = '__all__'
+
+
 class CustomFieldForm(ModelForm):
     class Meta:
         model = CustomField
@@ -138,22 +167,6 @@ class CustomFieldItemForm(ModelForm):
             'created_by': HiddenInput(), 'created_at': HiddenInput(),
             'updated_by': HiddenInput(), 'updated_at': HiddenInput()
         }
-
-
-class DeviceTypeForm(ModelForm):
-    class Meta:
-        model = DeviceType
-        labels = {
-            'tag': _('Tag'),
-            'desc': _('Description'),
-            'desc_genitive': _('Genitive Description'),
-            'redmine_parent': _('Redmine Parent Project ID'),
-            'redmine_project': _('Redmine Project ID'),
-            'redmine_project_name': _('Redmine Project Name'),
-        }
-        fields = '__all__'
-        widgets = {'created_by': HiddenInput(), 'created_at': HiddenInput(),
-                   'updated_by': HiddenInput(), 'updated_at': HiddenInput()}
 
 
 class DeviceForm(ModelForm):
