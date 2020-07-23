@@ -7,8 +7,14 @@
 <p><a href="{% url 'device_types' %}">{% trans "Device Types" %}</a> &raquo; {{ device_type }}</p>
 
 <ul class="tabs" data-tabs id="type-tabs">
-    <li class="tabs-title{% if tab_id == 1 %} is-active{% endif %}"><a href="#general" aria-selected="true">{% trans "General" %}</a></li>
-    <li class="tabs-title{% if tab_id == 2 %} is-active{% endif %}"><a data-tabs-target="redmine" href="#redmine">{% trans "Redmine" %}</a></li>
+    <li class="tabs-title{% if tab_id == 1 %} is-active{% endif %}"><a href="#general" aria-selected="true">
+        {% trans "General" %}</a></li>
+    <li class="tabs-title{% if tab_id == 2 %} is-active{% endif %}"><a data-tabs-target="spec" href="#spec">
+        {% trans "Specifications" %}</a></li>
+    <li class="tabs-title{% if tab_id == 3 %} is-active{% endif %}"><a data-tabs-target="tr" href="#tr">
+        {% trans "Tehnical Requirements" %}</a></li>
+    <li class="tabs-title{% if tab_id == 4 %} is-active{% endif %}"><a data-tabs-target="redmine" href="#redmine">
+        {% trans "Redmine" %}</a></li>
 </ul>
 
 <div class="tabs-content" data-tabs-content="type-tabs">
@@ -51,7 +57,31 @@
 
     </div>
 
-  <div class="tabs-panel{% if tab_id == 2 %} is-active{% endif %}" id="redmine">
+    <div class="tabs-panel{% if tab_id == 2 %} is-active{% endif %}" id="spec">
+        <button class="button small" type="button" data-toggle="example-dropdown">{% trans "Add" %}</button>
+        <div class="dropdown-pane" id="example-dropdown" data-dropdown data-auto-focus="true">
+            <h4>{% trans "Add" %}</h4>
+            <a href="{# url 'test_checklist_create' test_id=test.id #}" class="button small">
+                {% trans "Checkbox" %}
+            </a>
+            <a href="{# url 'test_int_value_create' test_id=test.id #}" class="button small">
+                {% trans "Dropdown Menu" %}
+            </a>
+            <a href="#" class="button small">
+                {% trans "Text Field" %}
+            </a>
+            <a href="#" class="button small">
+                {% trans "Integer Field" %}
+            </a>
+        </div>
+
+    </div>
+
+    <div class="tabs-panel{% if tab_id == 3 %} is-active{% endif %}" id="tr">
+        2
+    </div>
+
+  <div class="tabs-panel{% if tab_id == 4 %} is-active{% endif %}" id="redmine">
       {% if device_type.redmine_project %}
 
       <table>

@@ -176,6 +176,14 @@ class DeviceType(models.Model):
         ordering = ('desc',)
 
 
+class DeviceTypeSpecification(models.Model):
+    type = models.ForeignKey(DeviceType, on_delete=models.CASCADE)
+    checklist = models.ForeignKey(DeviceChecklist, on_delete=models.CASCADE, blank=True, null=True)
+    slist = models.ForeignKey(DeviceSlist, on_delete=models.CASCADE, blank=True, null=True)
+    text_field = models.ForeignKey(DeviceTextField, on_delete=models.CASCADE, blank=True, null=True)
+    integer_field = models.ForeignKey(DeviceIntegerField, on_delete=models.CASCADE, blank=True, null=True)
+
+
 class Device(models.Model):
     type = models.ForeignKey(DeviceType, on_delete=models.CASCADE)
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
