@@ -4,9 +4,9 @@
 
 {% block content %}
 
-<p><a href="{% url 'd_checklists' %}">{% trans "Checkbox" %}</a> &raquo; {{ checklist.name}}</p>
+<p><a href="{% url 'd_slists' %}">{% trans "Dropdown Menu" %}</a> &raquo; {{ slist.name}}</p>
 
-<ul class="tabs" data-tabs id="checklist-tabs">
+<ul class="tabs" data-tabs id="slist-tabs">
     <li class="tabs-title {% if tab_id == 1 %} is-active{% endif %}">
         <a data-tabs-target="general" href="#general">{% trans "General" %}</a>
     </li>
@@ -16,45 +16,45 @@
     </li>
 </ul>
 
-<div class="tabs-content" data-tabs-content="checklist-tabs">
+<div class="tabs-content" data-tabs-content="slist-tabs">
     <div class="tabs-panel {% if tab_id == 1 %}is-active{% endif %}" id="general">
-        <a href="{% url 'd_checklist_update' pk=checklist.id %}" class="button small">{% trans "Update" %}</a>
-        <a href="{% url 'd_checklist_delete' pk=checklist.id %}" class="button alert small">{% trans "Delete" %}</a>
+        <a href="{% url 'd_slist_update' pk=slist.id %}" class="button small">{% trans "Update" %}</a>
+        <a href="{% url 'd_slist_delete' pk=slist.id %}" class="button alert small">{% trans "Delete" %}</a>
 
         <table class="hover unstriped">
             <tbody>
             <tr>
                 <td>{% trans "Name" %}:</td>
-                <td>{{ checklist.name }}</td>
+                <td>{{ slist.name }}</td>
             </tr>
             <tr>
                 <td>{% trans "Description" %}:</td>
-                <td>{{ checklist.desc }}</td>
+                <td>{{ slist.desc }}</td>
             </tr>
             <tr>
                 <td>{% trans "Created" %}:</td>
-                <td>{{ checklist.created_at }} ({{ checklist.created_by }})</td>
+                <td>{{ slist.created_at }} ({{ slist.created_by }})</td>
             </tr>
             <tr>
                 <td>{% trans "Last Update" %}:</td>
-                <td>{{ checklist.updated_at }} ({{ checklist.updated_by }})</td>
+                <td>{{ slist.updated_at }} ({{ slist.updated_by }})</td>
             </tr>
             </tbody>
         </table>
     </div>
 
     <div class="tabs-panel {% if tab_id == 2 %}is-active{% endif %}" id="items">
-        <a href="{% url 'd_cl_item_create' cl_id=checklist.id %}" class="button small">{% trans "Add" %}</a>
+        <a href="{% url 'd_sl_item_create' sl_id=slist.id %}" class="button small">{% trans "Add" %}</a>
 
         <table>
 
-            {% if checklist.items_order_by == "name" %}
+            {% if slist.items_order_by == "name" %}
 
-            {% for item in checklist.d_checklist_item.all|dictsort:"name" %}
+            {% for item in slist.d_slist_item.all|dictsort:"name" %}
             <tr>
                 <td>{{ item.name }}
-                    <a href="{% url 'd_cl_item_update' pk=item.id %}"><i class="step fi-pencil"></i></a>
-                    <a href="{% url 'd_cl_item_delete' pk=item.id %}">
+                    <a href="{% url 'd_sl_item_update' pk=item.id %}"><i class="step fi-pencil"></i></a>
+                    <a href="{% url 'd_sl_item_delete' pk=item.id %}">
                         <i class="step fi-minus" style="color: #bc104b"></i>
                     </a>
                 </td>
@@ -63,11 +63,11 @@
 
             {% else %}
 
-            {% for item in checklist.d_checklist_item.all|dictsort:"id" %}
+            {% for item in slist.d_slist_item.all|dictsort:"id" %}
             <tr>
                 <td>{{ item.name }}
-                    <a href="{% url 'd_cl_item_update' pk=item.id %}"><i class="step fi-pencil"></i></a>
-                    <a href="{% url 'd_cl_item_delete' pk=item.id %}">
+                    <a href="{% url 'd_sl_item_update' pk=item.id %}"><i class="step fi-pencil"></i></a>
+                    <a href="{% url 'd_sl_item_delete' pk=item.id %}">
                         <i class="step fi-minus" style="color: #bc104b"></i>
                     </a>
                 </td>

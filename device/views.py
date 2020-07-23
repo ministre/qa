@@ -1,11 +1,11 @@
 from django.shortcuts import render
-from .models import Vendor, DeviceChecklist, DeviceChecklistItem, CustomField, CustomFieldItem, DeviceType, Device, \
-    DevicePhoto, Sample, Specification
+from .models import Vendor, DeviceChecklist, DeviceChecklistItem, DeviceSlist, DeviceSlistItem, \
+    CustomField, CustomFieldItem, DeviceType, Device, DevicePhoto, Sample, Specification
 from firmware.models import Firmware
 from docum.models import Docum
 from protocol.models import Protocol
-from .forms import VendorForm, DeviceChecklistForm, DeviceChecklistItemForm, CustomFieldForm, CustomFieldItemForm, \
-    DeviceTypeForm, DeviceForm, DevicePhotoForm, SampleForm
+from .forms import VendorForm, DeviceChecklistForm, DeviceChecklistItemForm, DeviceSlistForm, DeviceSlistItemForm, \
+    CustomFieldForm, CustomFieldItemForm, DeviceTypeForm, DeviceForm, DevicePhotoForm, SampleForm
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -195,6 +195,128 @@ class DeviceChecklistItemDelete(DeleteView):
     def get_success_url(self):
         self.object.checklist.update_timestamp(user=self.request.user)
         return reverse('d_checklist_details', kwargs={'pk': self.object.checklist.id, 'tab_id': 2})
+
+###
+
+
+@method_decorator(login_required, name='dispatch')
+class DeviceSlistListView(ListView):
+    context_object_name = 'slists'
+    queryset = DeviceSlist.objects.all().order_by('id')
+    template_name = 'device/slists.html'
+
+
+@method_decorator(login_required, name='dispatch')
+class DeviceSlistCreate(CreateView):
+    model = DeviceSlist
+    form_class = DeviceSlistForm
+    template_name = 'device/create.html'
+
+    def get_initial(self):
+        return {'created_by': self.request.user, 'updated_by': self.request.user}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('d_slists')
+        return context
+
+    def get_success_url(self):
+        return reverse('d_slists')
+
+
+@method_decorator(login_required, name='dispatch')
+class DeviceSlistUpdate(UpdateView):
+    model = DeviceSlist
+    form_class = DeviceSlistForm
+    template_name = 'device/update.html'
+
+    def get_initial(self):
+        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('d_slist_details', kwargs={'pk': self.object.id, 'tab_id': 1})
+        return context
+
+    def get_success_url(self):
+        self.object.update_timestamp(user=self.request.user)
+        return reverse('d_slist_details', kwargs={'pk': self.object.id, 'tab_id': 1})
+
+
+@method_decorator(login_required, name='dispatch')
+class DeviceSlistDelete(DeleteView):
+    model = DeviceSlist
+    template_name = 'device/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('d_slist_details', kwargs={'pk': self.object.id, 'tab_id': 1})
+        return context
+
+    def get_success_url(self):
+        return reverse('d_slists')
+
+
+@login_required
+def device_slist_details(request, pk, tab_id):
+    slist = get_object_or_404(DeviceSlist, id=pk)
+    return render(request, 'device/slist_details.html', {'tab_id': tab_id, 'slist': slist})
+
+
+@method_decorator(login_required, name='dispatch')
+class DeviceSlistItemCreate(CreateView):
+    model = DeviceSlistItem
+    form_class = DeviceSlistItemForm
+    template_name = 'device/create.html'
+
+    def get_initial(self):
+        return {'slist': self.kwargs.get('sl_id')}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        slist = get_object_or_404(DeviceSlist, id=self.kwargs.get('sl_id'))
+        context['back_url'] = reverse('d_slist_details', kwargs={'pk': slist.id, 'tab_id': 2})
+        return context
+
+    def get_success_url(self):
+        self.object.slist.update_timestamp(user=self.request.user)
+        return reverse('d_slist_details', kwargs={'pk': self.object.slist.id, 'tab_id': 2})
+
+
+@method_decorator(login_required, name='dispatch')
+class DeviceSlistItemUpdate(UpdateView):
+    model = DeviceSlistItem
+    form_class = DeviceSlistItemForm
+    template_name = 'device/update.html'
+
+    def get_initial(self):
+        return {'slist_id': self.kwargs.get('sl_id')}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('d_slist_details', kwargs={'pk': self.object.slist.id, 'tab_id': 2})
+        return context
+
+    def get_success_url(self):
+        self.object.slist.update_timestamp(user=self.request.user)
+        return reverse('d_slist_details', kwargs={'pk': self.object.slist.id, 'tab_id': 2})
+
+
+@method_decorator(login_required, name='dispatch')
+class DeviceSlistItemDelete(DeleteView):
+    model = DeviceSlistItem
+    template_name = 'device/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('d_slist_details', kwargs={'pk': self.object.slist.id, 'tab_id': 2})
+        return context
+
+    def get_success_url(self):
+        self.object.slist.update_timestamp(user=self.request.user)
+        return reverse('d_slist_details', kwargs={'pk': self.object.slist.id, 'tab_id': 2})
+
+###
 
 
 @method_decorator(login_required, name='dispatch')

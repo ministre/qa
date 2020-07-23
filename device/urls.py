@@ -23,6 +23,18 @@ urlpatterns = [
     path('checklist/item/update/<int:pk>/', views.DeviceChecklistItemUpdate.as_view(), name='d_cl_item_update'),
     path('checklist/item/delete/<int:pk>/', views.DeviceChecklistItemDelete.as_view(), name='d_cl_item_delete'),
 
+    # selectable values list
+    path('slists/', views.DeviceSlistListView.as_view(), name='d_slists'),
+    path('slist/create/', views.DeviceSlistCreate.as_view(), name='d_slist_create'),
+    path('slist/update/<int:pk>/', views.DeviceSlistUpdate.as_view(), name='d_slist_update'),
+    path('slist/delete/<int:pk>/', views.DeviceSlistDelete.as_view(), name='d_slist_delete'),
+    path('slist/<int:pk>/<int:tab_id>/', views.device_slist_details, name='d_slist_details'),
+
+    # selectable values items
+    path('slist/item/create/<int:sl_id>/', views.DeviceSlistItemCreate.as_view(), name='d_sl_item_create'),
+    path('slist/item/update/<int:pk>/', views.DeviceSlistItemUpdate.as_view(), name='d_sl_item_update'),
+    path('slist/item/delete/<int:pk>/', views.DeviceSlistItemDelete.as_view(), name='d_sl_item_delete'),
+
     # device types
     path('type/', views.DeviceTypeListView.as_view(), name='device_types'),
     path('type/create/', views.DeviceTypeCreate.as_view(), name='device_type_create'),
