@@ -1,0 +1,34 @@
+{% extends "device/wrapper.html" %}
+
+{% load i18n static %}
+
+{% block content %}
+
+<p><a href="{% url 'd_ifields' %}">{% trans "Integer Field" %}</a> &raquo; {{ ifield.name}}</p>
+
+<div class="grid-x grid-margin-x">
+    <div class="cell">
+        <div class="card">
+            <div class="card-section">
+                <a href="{% url 'd_if_update' pk=ifield.id %}" class="button small">{% trans "Update" %}</a>
+                <a href="{% url 'd_if_delete' pk=ifield.id %}" class="button alert small">{% trans "Delete" %}</a>
+                <table>
+                    <tr>
+                        <td>{% trans "Name" %}:</td>
+                        <td>{{ ifield.name }}</td>
+                    </tr>
+                    <tr>
+                        <td>{% trans "Created" %}:</td>
+                        <td>{{ ifield.created_at }} ({{ ifield.created_by }})</td>
+                    </tr>
+                    <tr>
+                        <td>{% trans "Last Update" %}:</td>
+                        <td>{{ ifield.updated_at }} ({{ ifield.updated_by }})</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

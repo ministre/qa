@@ -1,6 +1,6 @@
 from django.forms import ModelForm, HiddenInput
-from device.models import Vendor, DeviceChecklist, DeviceChecklistItem, DeviceSlist, DeviceSlistItem, DeviceType, \
-    CustomField, CustomFieldItem, Device, DevicePhoto, Sample
+from device.models import Vendor, DeviceChecklist, DeviceChecklistItem, DeviceSlist, DeviceSlistItem, \
+    DeviceTextField, DeviceIntegerField, DeviceType, CustomField, CustomFieldItem, Device, DevicePhoto, Sample
 from django.utils.translation import gettext_lazy as _
 from django import forms
 
@@ -74,6 +74,34 @@ class DeviceSlistItemForm(ModelForm):
         }
         fields = '__all__'
         widgets = {'slist': HiddenInput()}
+
+
+class DeviceTextFieldForm(ModelForm):
+    class Meta:
+        model = DeviceTextField
+        labels = {
+            'name': _('Name'),
+            'desc': _('Description'),
+        }
+        fields = '__all__'
+        widgets = {
+            'created_by': HiddenInput(), 'created_at': HiddenInput(),
+            'updated_by': HiddenInput(), 'updated_at': HiddenInput()
+        }
+
+
+class DeviceIntegerFieldForm(ModelForm):
+    class Meta:
+        model = DeviceIntegerField
+        labels = {
+            'name': _('Name'),
+            'desc': _('Description'),
+        }
+        fields = '__all__'
+        widgets = {
+            'created_by': HiddenInput(), 'created_at': HiddenInput(),
+            'updated_by': HiddenInput(), 'updated_at': HiddenInput()
+        }
 
 
 class CustomFieldForm(ModelForm):

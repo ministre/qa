@@ -23,17 +23,31 @@ urlpatterns = [
     path('checklist/item/update/<int:pk>/', views.DeviceChecklistItemUpdate.as_view(), name='d_cl_item_update'),
     path('checklist/item/delete/<int:pk>/', views.DeviceChecklistItemDelete.as_view(), name='d_cl_item_delete'),
 
-    # selectable values list
+    # selectable value list
     path('slists/', views.DeviceSlistListView.as_view(), name='d_slists'),
     path('slist/create/', views.DeviceSlistCreate.as_view(), name='d_slist_create'),
     path('slist/update/<int:pk>/', views.DeviceSlistUpdate.as_view(), name='d_slist_update'),
     path('slist/delete/<int:pk>/', views.DeviceSlistDelete.as_view(), name='d_slist_delete'),
     path('slist/<int:pk>/<int:tab_id>/', views.device_slist_details, name='d_slist_details'),
 
-    # selectable values items
+    # selectable value items
     path('slist/item/create/<int:sl_id>/', views.DeviceSlistItemCreate.as_view(), name='d_sl_item_create'),
     path('slist/item/update/<int:pk>/', views.DeviceSlistItemUpdate.as_view(), name='d_sl_item_update'),
     path('slist/item/delete/<int:pk>/', views.DeviceSlistItemDelete.as_view(), name='d_sl_item_delete'),
+
+    # text field
+    path('tfs/', views.DeviceTextFieldListView.as_view(), name='d_tfields'),
+    path('tf/create/', views.DeviceTextFieldCreate.as_view(), name='d_tf_create'),
+    path('tf/update/<int:pk>/', views.DeviceTextFieldUpdate.as_view(), name='d_tf_update'),
+    path('tf/delete/<int:pk>/', views.DeviceTextFieldDelete.as_view(), name='d_tf_delete'),
+    path('tf/<int:pk>/', views.device_tf_details, name='d_tf_details'),
+
+    # integer field
+    path('ifs/', views.DeviceIntegerFieldListView.as_view(), name='d_ifields'),
+    path('if/create/', views.DeviceIntegerFieldCreate.as_view(), name='d_if_create'),
+    path('if/update/<int:pk>/', views.DeviceIntegerFieldUpdate.as_view(), name='d_if_update'),
+    path('if/delete/<int:pk>/', views.DeviceIntegerFieldDelete.as_view(), name='d_if_delete'),
+    path('if/<int:pk>/', views.device_if_details, name='d_if_details'),
 
     # device types
     path('type/', views.DeviceTypeListView.as_view(), name='device_types'),

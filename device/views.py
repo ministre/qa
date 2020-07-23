@@ -1,11 +1,12 @@
 from django.shortcuts import render
-from .models import Vendor, DeviceChecklist, DeviceChecklistItem, DeviceSlist, DeviceSlistItem, \
-    CustomField, CustomFieldItem, DeviceType, Device, DevicePhoto, Sample, Specification
+from .models import Vendor, DeviceChecklist, DeviceChecklistItem, DeviceSlist, DeviceSlistItem, DeviceTextField, \
+    DeviceIntegerField, CustomField, CustomFieldItem, DeviceType, Device, DevicePhoto, Sample, Specification
 from firmware.models import Firmware
 from docum.models import Docum
 from protocol.models import Protocol
 from .forms import VendorForm, DeviceChecklistForm, DeviceChecklistItemForm, DeviceSlistForm, DeviceSlistItemForm, \
-    CustomFieldForm, CustomFieldItemForm, DeviceTypeForm, DeviceForm, DevicePhotoForm, SampleForm
+    DeviceTextFieldForm, DeviceIntegerFieldForm, CustomFieldForm, CustomFieldItemForm, DeviceTypeForm, DeviceForm, \
+    DevicePhotoForm, SampleForm
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -196,8 +197,6 @@ class DeviceChecklistItemDelete(DeleteView):
         self.object.checklist.update_timestamp(user=self.request.user)
         return reverse('d_checklist_details', kwargs={'pk': self.object.checklist.id, 'tab_id': 2})
 
-###
-
 
 @method_decorator(login_required, name='dispatch')
 class DeviceSlistListView(ListView):
@@ -316,7 +315,133 @@ class DeviceSlistItemDelete(DeleteView):
         self.object.slist.update_timestamp(user=self.request.user)
         return reverse('d_slist_details', kwargs={'pk': self.object.slist.id, 'tab_id': 2})
 
-###
+
+@method_decorator(login_required, name='dispatch')
+class DeviceTextFieldListView(ListView):
+    context_object_name = 'tfields'
+    queryset = DeviceTextField.objects.all().order_by('id')
+    template_name = 'device/tfields.html'
+
+
+@method_decorator(login_required, name='dispatch')
+class DeviceTextFieldCreate(CreateView):
+    model = DeviceTextField
+    form_class = DeviceTextFieldForm
+    template_name = 'device/create.html'
+
+    def get_initial(self):
+        return {'created_by': self.request.user, 'updated_by': self.request.user}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('d_tfields')
+        return context
+
+    def get_success_url(self):
+        return reverse('d_tfields')
+
+
+@method_decorator(login_required, name='dispatch')
+class DeviceTextFieldUpdate(UpdateView):
+    model = DeviceTextField
+    form_class = DeviceTextFieldForm
+    template_name = 'device/update.html'
+
+    def get_initial(self):
+        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('d_tf_details', kwargs={'pk': self.object.id})
+        return context
+
+    def get_success_url(self):
+        self.object.update_timestamp(user=self.request.user)
+        return reverse('d_tf_details', kwargs={'pk': self.object.id})
+
+
+@method_decorator(login_required, name='dispatch')
+class DeviceTextFieldDelete(DeleteView):
+    model = DeviceTextField
+    template_name = 'device/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('d_tf_details', kwargs={'pk': self.object.id})
+        return context
+
+    def get_success_url(self):
+        return reverse('d_tfields')
+
+
+@login_required
+def device_tf_details(request, pk):
+    tfield = get_object_or_404(DeviceTextField, id=pk)
+    return render(request, 'device/tfield_details.html', {'tfield': tfield})
+
+
+@method_decorator(login_required, name='dispatch')
+class DeviceIntegerFieldListView(ListView):
+    context_object_name = 'ifields'
+    queryset = DeviceIntegerField.objects.all().order_by('id')
+    template_name = 'device/ifields.html'
+
+
+@method_decorator(login_required, name='dispatch')
+class DeviceIntegerFieldCreate(CreateView):
+    model = DeviceIntegerField
+    form_class = DeviceIntegerFieldForm
+    template_name = 'device/create.html'
+
+    def get_initial(self):
+        return {'created_by': self.request.user, 'updated_by': self.request.user}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('d_ifields')
+        return context
+
+    def get_success_url(self):
+        return reverse('d_ifields')
+
+
+@method_decorator(login_required, name='dispatch')
+class DeviceIntegerFieldUpdate(UpdateView):
+    model = DeviceIntegerField
+    form_class = DeviceIntegerFieldForm
+    template_name = 'device/update.html'
+
+    def get_initial(self):
+        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('d_if_details', kwargs={'pk': self.object.id})
+        return context
+
+    def get_success_url(self):
+        self.object.update_timestamp(user=self.request.user)
+        return reverse('d_if_details', kwargs={'pk': self.object.id})
+
+
+@method_decorator(login_required, name='dispatch')
+class DeviceIntegerFieldDelete(DeleteView):
+    model = DeviceIntegerField
+    template_name = 'device/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('d_if_details', kwargs={'pk': self.object.id})
+        return context
+
+    def get_success_url(self):
+        return reverse('d_ifields')
+
+
+@login_required
+def device_if_details(request, pk):
+    ifield = get_object_or_404(DeviceIntegerField, id=pk)
+    return render(request, 'device/ifield_details.html', {'ifield': ifield})
 
 
 @method_decorator(login_required, name='dispatch')
