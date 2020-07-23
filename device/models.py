@@ -44,8 +44,27 @@ class DeviceChecklist(models.Model):
         return True
 
 
-class DeviceChecklistItem(models.Model):
-    checklist = models.ForeignKey(DeviceChecklist, related_name='d_checklist_item', on_delete=models.CASCADE)
+class DeviceSlist(models.Model):
+    name = models.CharField(max_length=500)
+    desc = models.CharField(max_length=1000, blank=True, null=True)
+    items_order_by = models.CharField(max_length=10, default='id')
+    created_by = models.ForeignKey(User, related_name='d_slist_c', on_delete=models.CASCADE, blank=True, null=True)
+    created_at = models.DateTimeField(default=datetime.now, blank=True)
+    updated_by = models.ForeignKey(User, related_name='d_slist_u', on_delete=models.CASCADE, blank=True, null=True)
+    updated_at = models.DateTimeField(default=datetime.now, blank=True)
+
+    def __str__(self):
+        return self.name
+
+    def update_timestamp(self, user):
+        self.updated_by = user
+        self.updated_at = datetime.now()
+        self.save()
+        return True
+
+
+class DeviceSlistItem(models.Model):
+    slist = models.ForeignKey(DeviceSlist, related_name='d_slist_item', on_delete=models.CASCADE)
     name = models.CharField(max_length=1000)
 
     def __str__(self):
