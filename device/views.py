@@ -5,6 +5,7 @@ from .models import Vendor, DeviceChecklist, DeviceChecklistItem, DeviceSlist, D
 from firmware.models import Firmware
 from docum.models import Docum
 from protocol.models import Protocol
+from feature.models import FeatureList
 from .forms import VendorForm, DeviceChecklistForm, DeviceChecklistItemForm, DeviceSlistForm, DeviceSlistItemForm, \
     DeviceTextFieldForm, DeviceIntegerFieldForm, DeviceTypeSpecificationForm, CustomFieldForm, CustomFieldItemForm, \
     DeviceTypeForm, DeviceForm, DevicePhotoForm, SampleForm
@@ -510,10 +511,12 @@ def device_type_details(request, pk, tab_id):
     devices_count = device_type.devices_count()
     testplans_count = device_type.testplans_count()
     specs = DeviceTypeSpecification.objects.filter(type=device_type).order_by('id')
+    feature_lists = FeatureList.objects.filter(device_type=device_type).order_by('id')
     return render(request, 'device/type_details.html', {'device_type': device_type,
                                                         'devices_count': devices_count,
                                                         'testplans_count': testplans_count,
                                                         'specs': specs,
+                                                        'feature_lists': feature_lists,
                                                         'tab_id': tab_id})
 
 
@@ -552,8 +555,14 @@ def dt_spec_create(request, dt: int, st: int):
 
 
 @login_required
-def dt_spec_delete(request, dt: int, st: int):
-    pass
+def dt_spec_delete(request, dt: int, pk: int):
+    if request.method == 'POST':
+        DeviceTypeSpecification.objects.filter(id=pk).delete()
+        return HttpResponseRedirect(reverse('device_type_details', kwargs={'pk': dt, 'tab_id': 2}))
+    else:
+        spec = get_object_or_404(DeviceTypeSpecification, id=pk)
+        back_url = reverse('device_type_details', kwargs={'pk': spec.type.id, 'tab_id': 2})
+        return render(request, 'device/delete.html', {'object': spec, 'back_url': back_url})
 
 
 @method_decorator(login_required, name='dispatch')

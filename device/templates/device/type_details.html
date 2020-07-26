@@ -12,7 +12,7 @@
     <li class="tabs-title{% if tab_id == 2 %} is-active{% endif %}"><a data-tabs-target="spec" href="#spec">
         {% trans "Specifications" %}{% if specs.count > 0 %} ({{ specs.count }}){% endif %}</a></li>
     <li class="tabs-title{% if tab_id == 3 %} is-active{% endif %}"><a data-tabs-target="tr" href="#tr">
-        {% trans "Tehnical Requirements" %}</a></li>
+        {% trans "Tehnical Requirements" %}{% if feature_lists.count > 0 %} ({{ feature_lists.count }}){% endif %}</a></li>
     <li class="tabs-title{% if tab_id == 4 %} is-active{% endif %}"><a data-tabs-target="redmine" href="#redmine">
         {% trans "Redmine" %}</a></li>
 </ul>
@@ -22,7 +22,7 @@
         <a href="{% url 'device_type_update' pk=device_type.id %}" class="button small">{% trans "Update" %}</a>
         <a href="{% url 'device_type_delete' pk=device_type.id %}" class="button alert small">{% trans "Delete" %}</a>
 
-                <table class="hover unstriped">
+        <table class="hover unstriped">
             <tbody>
             <tr>
                 <td>{% trans "Tag" %}:</td>
@@ -76,7 +76,7 @@
         </div>
 
         {% if specs %}
-        <table id="t_samples" class="display" style="width:100%">
+        <table>
             <thead>
             <tr>
                 <th>ID</th>
@@ -86,10 +86,13 @@
             </thead>
             <tbody>
             {% for spec in specs %}
-            <tr data-href="{# url 'sample_update' device_id=device.id pk=sample.id #}">
+            <tr>
                 <td>{{ spec.id }}</td>
                 <td>
                     {{ spec.checklist.name }}{{ spec.slist.name }}{{ spec.text_field.name }}{{ spec.integer_field.name }}
+                    <a href="{% url 'dt_spec_delete' dt=spec.type.id pk=spec.id %}">
+                        <i class="step fi-minus" style="color: #bc104b"></i>
+                    </a>
                 </td>
                 <td>
                     {% if spec.checklist %}{% trans "Checkbox" %}{% endif %}
@@ -105,7 +108,29 @@
     </div>
 
     <div class="tabs-panel{% if tab_id == 3 %} is-active{% endif %}" id="tr">
-        2
+        <a href="{% url 'fl_create' %}" class="button small">{% trans "Add" %}</a>
+
+        {% if feature_lists %}
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>{% trans "Name" %}</th>
+                <th>{% trans "Version" %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for feature_list in feature_lists %}
+            <tr data-href="{% url 'fl_details' pk=feature_list.id tab_id=1 %}">
+                <td>{{ feature_list.id }}</td>
+                <td>{{ feature_list.name }}</td>
+                <td>{{ feature_list.version }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+
     </div>
 
   <div class="tabs-panel{% if tab_id == 4 %} is-active{% endif %}" id="redmine">
@@ -126,5 +151,28 @@
       {% endif %}
   </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+        var table = $('table').DataTable( {
+
+        {% if LANGUAGE_CODE == 'ru' %}
+            "language": { "url": "{% static '/DataTables/i18n/Russian.json' %}" },
+        {% endif %}
+
+            "pageLength": 100,
+            "order": [[ 0, "desc" ]]
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const rows = document.querySelectorAll("tr[data-href]");
+        rows.forEach(row => {
+            row.addEventListener("click", () => {
+                window.location.href = row.dataset.href;
+            });
+        });
+    });
+</script>
 
 {% endblock %}

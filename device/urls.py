@@ -58,7 +58,7 @@ urlpatterns = [
 
     # device type specs
     path('type/spec/create/<int:dt>/<int:st>/', views.dt_spec_create, name='dt_spec_create'),
-    path('type/spec/delete/<int:dt>/<int:st>/', views.dt_spec_delete, name='dt_spec_delete'),
+    path('type/spec/delete/<int:dt>/<int:pk>/', views.dt_spec_delete, name='dt_spec_delete'),
 
     # custom fields
     path('custom_field/', views.CustomFieldListView.as_view(), name='custom_fields'),
