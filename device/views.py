@@ -1,12 +1,13 @@
 from django.shortcuts import render
 from .models import Vendor, DeviceChecklist, DeviceChecklistItem, DeviceSlist, DeviceSlistItem, DeviceTextField, \
-    DeviceIntegerField, CustomField, CustomFieldItem, DeviceType, Device, DevicePhoto, Sample, Specification
+    DeviceIntegerField, DeviceTypeSpecification, CustomField, CustomFieldItem, DeviceType, Device, DevicePhoto, \
+    Sample, Specification
 from firmware.models import Firmware
 from docum.models import Docum
 from protocol.models import Protocol
 from .forms import VendorForm, DeviceChecklistForm, DeviceChecklistItemForm, DeviceSlistForm, DeviceSlistItemForm, \
-    DeviceTextFieldForm, DeviceIntegerFieldForm, CustomFieldForm, CustomFieldItemForm, DeviceTypeForm, DeviceForm, \
-    DevicePhotoForm, SampleForm
+    DeviceTextFieldForm, DeviceIntegerFieldForm, DeviceTypeSpecificationForm, CustomFieldForm, CustomFieldItemForm, \
+    DeviceTypeForm, DeviceForm, DevicePhotoForm, SampleForm
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -14,6 +15,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from datetime import datetime
+from django import forms
 
 
 @method_decorator(login_required, name='dispatch')
@@ -507,15 +509,46 @@ def device_type_details(request, pk, tab_id):
     device_type = get_object_or_404(DeviceType, pk=pk)
     devices_count = device_type.devices_count()
     testplans_count = device_type.testplans_count()
+    specs = DeviceTypeSpecification.objects.filter(type=device_type).order_by('id')
     return render(request, 'device/type_details.html', {'device_type': device_type,
                                                         'devices_count': devices_count,
                                                         'testplans_count': testplans_count,
+                                                        'specs': specs,
                                                         'tab_id': tab_id})
 
 
 @login_required
 def dt_spec_create(request, dt: int, st: int):
-    pass
+    if request.method == 'POST':
+        form = DeviceTypeSpecificationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('device_type_details', kwargs={'pk': dt, 'tab_id': 2}))
+    else:
+        device_type = get_object_or_404(DeviceType, id=dt)
+        form = DeviceTypeSpecificationForm(initial={'type': device_type})
+        if st == 1:
+            form.fields['checklist'].required = True
+            form.fields['slist'].widget = forms.HiddenInput()
+            form.fields['text_field'].widget = forms.HiddenInput()
+            form.fields['integer_field'].widget = forms.HiddenInput()
+        elif st == 2:
+            form.fields['checklist'].widget = forms.HiddenInput()
+            form.fields['slist'].required = True
+            form.fields['text_field'].widget = forms.HiddenInput()
+            form.fields['integer_field'].widget = forms.HiddenInput()
+        elif st == 3:
+            form.fields['checklist'].widget = forms.HiddenInput()
+            form.fields['slist'].widget = forms.HiddenInput()
+            form.fields['text_field'].required = True
+            form.fields['integer_field'].widget = forms.HiddenInput()
+        elif st == 4:
+            form.fields['checklist'].widget = forms.HiddenInput()
+            form.fields['slist'].widget = forms.HiddenInput()
+            form.fields['text_field'].widget = forms.HiddenInput()
+            form.fields['integer_field'].required = True
+        back_url = reverse('device_type_details', kwargs={'pk': device_type.id, 'tab_id': 2})
+        return render(request, 'device/create.html', {'form': form, 'back_url': back_url})
 
 
 @login_required

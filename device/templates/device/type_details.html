@@ -10,7 +10,7 @@
     <li class="tabs-title{% if tab_id == 1 %} is-active{% endif %}"><a href="#general" aria-selected="true">
         {% trans "General" %}</a></li>
     <li class="tabs-title{% if tab_id == 2 %} is-active{% endif %}"><a data-tabs-target="spec" href="#spec">
-        {% trans "Specifications" %}</a></li>
+        {% trans "Specifications" %}{% if specs.count > 0 %} ({{ specs.count }}){% endif %}</a></li>
     <li class="tabs-title{% if tab_id == 3 %} is-active{% endif %}"><a data-tabs-target="tr" href="#tr">
         {% trans "Tehnical Requirements" %}</a></li>
     <li class="tabs-title{% if tab_id == 4 %} is-active{% endif %}"><a data-tabs-target="redmine" href="#redmine">
@@ -75,6 +75,33 @@
             </a>
         </div>
 
+        {% if specs %}
+        <table id="t_samples" class="display" style="width:100%">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>{% trans "Name" %}</th>
+                <th>{% trans "Type" %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for spec in specs %}
+            <tr data-href="{# url 'sample_update' device_id=device.id pk=sample.id #}">
+                <td>{{ spec.id }}</td>
+                <td>
+                    {{ spec.checklist.name }}{{ spec.slist.name }}{{ spec.text_field.name }}{{ spec.integer_field.name }}
+                </td>
+                <td>
+                    {% if spec.checklist %}{% trans "Checkbox" %}{% endif %}
+                    {% if spec.slist %}{% trans "Dropdown Menu" %}{% endif %}
+                    {% if spec.text_field %}{% trans "Text Field" %}{% endif %}
+                    {% if spec.integer_field %}{% trans "Integer field" %}{% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
     </div>
 
     <div class="tabs-panel{% if tab_id == 3 %} is-active{% endif %}" id="tr">

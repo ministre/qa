@@ -127,10 +127,11 @@ class DeviceTypeSpecificationForm(ModelForm):
         labels = {
             'checklist': _('Checkbox'),
             'slist': _('Dropdown Menu'),
-            'text_field': _('Redmine Parent Project ID'),
-            'integer_field': _('Redmine Project ID'),
+            'text_field': _('Text Field'),
+            'integer_field': _('Integer Field'),
         }
         fields = '__all__'
+        widgets = {'type': HiddenInput()}
 
 
 class CustomFieldForm(ModelForm):
