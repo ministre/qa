@@ -12,13 +12,23 @@
 
 <ul class="tabs" data-tabs id="fl-tabs">
     <li class="tabs-title {% if tab_id == 1 %} is-active{% endif %}">
-        <a data-tabs-target="general" href="#general">{% trans "General" %}</a></li>
+        <a data-tabs-target="general" href="#general">{% trans "General" %}</a>
+    </li>
     <li class="tabs-title {% if tab_id == 2 %} is-active{% endif %}">
-        <a data-tabs-target="items" href="#items">{% trans "Items" %}</a></li>
+        <a data-tabs-target="items" href="#items">{% trans "Items" %}</a>
+    </li>
     <li class="tabs-title {% if tab_id == 3 %} is-active{% endif %}">
-        <a data-tabs-target="docx" href="#docx">{% trans "Docx" %}</a></li>
+        <a data-tabs-target="files" href="#files">{% trans "Files" %}</a>
+    </li>
     <li class="tabs-title {% if tab_id == 4 %} is-active{% endif %}">
-        <a data-tabs-target="redmine" href="#redmine">{% trans "Redmine" %}</a></li>
+        <a data-tabs-target="links" href="#links">{% trans "Links" %}</a>
+    </li>
+    <li class="tabs-title {% if tab_id == 5 %} is-active{% endif %}">
+        <a data-tabs-target="docx" href="#docx">{% trans "Docx" %}</a>
+    </li>
+    <li class="tabs-title {% if tab_id == 6 %} is-active{% endif %}">
+        <a data-tabs-target="redmine" href="#redmine">{% trans "Redmine" %}</a>
+    </li>
 </ul>
 
 <div class="tabs-content" data-tabs-content="fl-tabs">
@@ -82,7 +92,15 @@
         {% endfor %}
     </div>
 
-    <div class="tabs-panel {% if tab_id == 3 %}is-active{% endif %}" id="docx">
+    <div class="tabs-panel {% if tab_id == 3 %}is-active{% endif %}" id="files">
+        111
+    </div>
+
+    <div class="tabs-panel {% if tab_id == 4 %}is-active{% endif %}" id="links">
+        111
+    </div>
+
+    <div class="tabs-panel {% if tab_id == 5 %}is-active{% endif %}" id="docx">
       <form method="post" action="{% url 'build_feature_list' %}">
           {% csrf_token %}
           <input type="hidden" name="feature_list" value="{{ fl.id }}">
@@ -91,7 +109,7 @@
       </form>
     </div>
 
-    <div class="tabs-panel {% if tab_id == 4 %}is-active{% endif %}" id="redmine">
+    <div class="tabs-panel {% if tab_id == 6 %}is-active{% endif %}" id="redmine">
         <div class="grid-x grid-margin-x">
             <div class="cell">
                 <div class="card">
