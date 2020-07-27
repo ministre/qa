@@ -5,7 +5,9 @@
 {% block content %}
 
 <p>
-    <a href="{% url 'fls' %}">{% trans "Technical requirements" %}</a> &raquo; {{ fl.name }}
+    <a href="{% url 'device_types' %}">{% trans "Device Types" %}</a> &raquo;
+    <a href="{% url 'device_type_details' pk=fl.device_type.id tab_id=1 %}">{{ fl.device_type }}</a> &raquo;
+    {{ fl.name }}
 </p>
 
 <ul class="tabs" data-tabs id="fl-tabs">

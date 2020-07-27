@@ -27,15 +27,16 @@ class FeatureListCreate(CreateView):
     template_name = 'feature/create.html'
 
     def get_initial(self):
-        return {'created_by': self.request.user, 'updated_by': self.request.user}
+        return {'device_type': self.kwargs.get('dt_id'), 'created_by': self.request.user,
+                'updated_by': self.request.user}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('fls')
+        context['back_url'] = reverse('device_type_details', kwargs={'pk': self.kwargs.get('dt_id'), 'tab_id': 3})
         return context
 
     def get_success_url(self):
-        return reverse('fls')
+        return reverse('device_type_details', kwargs={'pk': self.kwargs.get('dt_id'), 'tab_id': 3})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -68,7 +69,7 @@ class FeatureListDelete(DeleteView):
         return context
 
     def get_success_url(self):
-        return reverse('fls')
+        return reverse('device_type_details', kwargs={'pk': self.object.device_type.id, 'tab_id': 3})
 
 
 @login_required

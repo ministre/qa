@@ -13,7 +13,8 @@ class FeatureListForm(ModelForm):
             'redmine_wiki': _('Redmine Wiki'),
         }
         fields = '__all__'
-        widgets = {'created_by': HiddenInput(), 'created_at': HiddenInput(),
+        widgets = {'device_type': HiddenInput(), 'redmine_wiki': HiddenInput(),
+                   'created_by': HiddenInput(), 'created_at': HiddenInput(),
                    'updated_by': HiddenInput(), 'updated_at': HiddenInput()}
 
     def __init__(self, *args, **kwargs):

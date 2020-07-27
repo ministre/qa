@@ -90,7 +90,7 @@
                 <td>{{ spec.id }}</td>
                 <td>
                     {{ spec.checklist.name }}{{ spec.slist.name }}{{ spec.text_field.name }}{{ spec.integer_field.name }}
-                    <a href="{% url 'dt_spec_delete' dt=spec.type.id pk=spec.id %}">
+                    <a href="{% url 'dt_spec_delete' dt=device_type.id pk=spec.id %}">
                         <i class="step fi-minus" style="color: #bc104b"></i>
                     </a>
                 </td>
@@ -108,7 +108,7 @@
     </div>
 
     <div class="tabs-panel{% if tab_id == 3 %} is-active{% endif %}" id="tr">
-        <a href="{% url 'fl_create' %}" class="button small">{% trans "Add" %}</a>
+        <a href="{% url 'fl_create' dt_id=device_type.id %}" class="button small">{% trans "Add" %}</a>
 
         {% if feature_lists %}
         <table>

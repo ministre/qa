@@ -3,7 +3,7 @@ from . import views
 
 urlpatterns = [
     path('', views.FeatureListListView.as_view(), name='fls'),
-    path('create/', views.FeatureListCreate.as_view(), name='fl_create'),
+    path('create/<int:dt_id>', views.FeatureListCreate.as_view(), name='fl_create'),
     path('update/<int:pk>/', views.FeatureListUpdate.as_view(), name='fl_update'),
     path('delete/<int:pk>/', views.FeatureListDelete.as_view(), name='fl_delete'),
     path('<int:pk>/<int:tab_id>/', views.fl_details, name='fl_details'),
