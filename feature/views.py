@@ -77,15 +77,15 @@ class FeatureListDelete(DeleteView):
 def fl_details(request, pk, tab_id: int):
     feature_list = get_object_or_404(FeatureList, id=pk)
     categories = FeatureListCategory.objects.filter(feature_list=feature_list).order_by('id')
+    files = FeatureListFile.objects.filter(feature_list=feature_list).order_by('id')
     links = FeatureListLink.objects.filter(feature_list=feature_list).order_by('id')
     docx_form = DocxFeatureListForm()
     redmine_form = RedmineFeatureListForm(initial={'project': feature_list.device_type.redmine_project,
                                                    'wiki': feature_list.redmine_wiki})
     redmine_url = settings.REDMINE_URL
-    return render(request, 'feature/details.html', {'fl': feature_list, 'categories': categories, 'links': links,
-                                                    'docx_form': docx_form,
-                                                    'redmine_form': redmine_form,
-                                                    'redmine_url': redmine_url,
+    return render(request, 'feature/details.html', {'fl': feature_list, 'categories': categories,
+                                                    'files': files, 'links': links, 'docx_form': docx_form,
+                                                    'redmine_form': redmine_form, 'redmine_url': redmine_url,
                                                     'tab_id': tab_id})
 
 
