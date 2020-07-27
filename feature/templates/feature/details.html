@@ -21,7 +21,8 @@
         <a data-tabs-target="files" href="#files">{% trans "Files" %}</a>
     </li>
     <li class="tabs-title {% if tab_id == 4 %} is-active{% endif %}">
-        <a data-tabs-target="links" href="#links">{% trans "Links" %}</a>
+        <a data-tabs-target="links" href="#links">{% trans "Links" %}
+            {% if links.count > 0 %} ({{ links.count }}){% endif %}</a>
     </li>
     <li class="tabs-title {% if tab_id == 5 %} is-active{% endif %}">
         <a data-tabs-target="docx" href="#docx">{% trans "Docx" %}</a>
@@ -97,7 +98,33 @@
     </div>
 
     <div class="tabs-panel {% if tab_id == 4 %}is-active{% endif %}" id="links">
-        111
+        <a href="{% url 'fl_link_create' fl_id=fl.id %}" class="button small">{% trans "Add" %}</a>
+
+        {% if links %}
+        <table>
+            <thead>
+            <tr>
+                <th>{% trans "URL" %}</th>
+                <th>{% trans "Description" %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for link in links %}
+            <tr>
+                <td>
+                    <a href="{{ link.url }}">{{ link.url }}</a>
+                    <a href="{% url 'fl_link_update' pk=link.id %}"><i class="step fi-pencil"></i></a>
+                    <a href="{% url 'fl_link_delete' pk=link.id %}"><i class="step fi-minus" style="color: #bc104b"></i></a>
+                </td>
+                <td>
+                    {{ link.name }}
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+
     </div>
 
     <div class="tabs-panel {% if tab_id == 5 %}is-active{% endif %}" id="docx">

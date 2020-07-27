@@ -1,5 +1,5 @@
 from django.forms import ModelForm, HiddenInput
-from .models import FeatureList, FeatureListCategory, FeatureListItem
+from .models import FeatureList, FeatureListCategory, FeatureListItem, FeatureListLink
 from django.utils.translation import gettext_lazy as _
 
 
@@ -45,3 +45,13 @@ class FeatureListItemForm(ModelForm):
         widgets = {'category': HiddenInput(),
                    'created_by': HiddenInput(), 'created_at': HiddenInput(),
                    'updated_by': HiddenInput(), 'updated_at': HiddenInput()}
+
+
+class FeatureListLinkForm(ModelForm):
+    class Meta:
+        model = FeatureListLink
+        labels = {
+            'name': _('Name'),
+        }
+        fields = '__all__'
+        widgets = {'feature_list': HiddenInput()}
