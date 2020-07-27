@@ -80,6 +80,15 @@ class FeatureListItem(models.Model):
         return self.name
 
 
+class FeatureListFile(models.Model):
+    feature_list = models.ForeignKey(FeatureList, on_delete=models.CASCADE, null=True)
+    name = models.CharField(max_length=1000, blank=True, null=True)
+    file = models.FileField(upload_to="feature/files/")
+
+    def __str__(self):
+        return self.name
+
+
 class FeatureListLink(models.Model):
     feature_list = models.ForeignKey(FeatureList, on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=1000)
