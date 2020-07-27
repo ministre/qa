@@ -98,6 +98,31 @@
 
     <div class="tabs-panel {% if tab_id == 3 %}is-active{% endif %}" id="files">
         <a href="{% url 'fl_file_create' fl_id=fl.id %}" class="button small">{% trans "Add" %}</a>
+
+        {% if files %}
+        <table>
+            <thead>
+            <tr>
+                <th>{% trans "File" %}</th>
+                <th>{% trans "Description" %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for file in files %}
+            <tr>
+                <td>
+                    <a href="{{ file.file.url }}">{{ file.file.url }}</a>
+                    <a href="{% url 'fl_file_update' pk=file.id %}"><i class="step fi-pencil"></i></a>
+                    <a href="{% url 'fl_file_delete' pk=file.id %}"><i class="step fi-minus" style="color: #bc104b"></i></a>
+                </td>
+                <td>
+                    {{ file.name }}
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
     </div>
 
     <div class="tabs-panel {% if tab_id == 4 %}is-active{% endif %}" id="links">
