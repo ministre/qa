@@ -2,8 +2,9 @@ from django.shortcuts import render, get_object_or_404
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
-from .models import FeatureList, FeatureListCategory, FeatureListItem, DeviceType, FeatureListLink
-from .forms import FeatureListForm, FeatureListCategoryForm, FeatureListItemForm, FeatureListLinkForm
+from .models import FeatureList, FeatureListCategory, FeatureListItem, DeviceType, FeatureListFile, FeatureListLink
+from .forms import FeatureListForm, FeatureListCategoryForm, FeatureListItemForm, FeatureListFileForm, \
+    FeatureListLinkForm
 from docx_builder.forms import DocxFeatureListForm
 from redmine.forms import RedmineFeatureListForm
 from django.urls import reverse
@@ -238,6 +239,56 @@ class FeatureListItemDelete(DeleteView):
         feature_list = self.object.category.feature_list
         feature_list.update_timestamp(user=self.request.user)
         return reverse('fl_details', kwargs={'pk': feature_list.id, 'tab_id': 2})
+
+
+@method_decorator(login_required, name='dispatch')
+class FeatureListFileCreate(CreateView):
+    model = FeatureListFile
+    form_class = FeatureListFileForm
+    template_name = 'feature/create.html'
+
+    def get_initial(self):
+        return {'feature_list': self.kwargs.get('fl_id')}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('fl_details', kwargs={'pk': self.kwargs.get('fl_id'), 'tab_id': 3})
+        return context
+
+    def get_success_url(self):
+        self.object.feature_list.update_timestamp(user=self.request.user)
+        return reverse('fl_details', kwargs={'pk': self.object.feature_list.id, 'tab_id': 3})
+
+
+@method_decorator(login_required, name='dispatch')
+class FeatureListFileUpdate(UpdateView):
+    model = FeatureListFile
+    form_class = FeatureListFileForm
+    template_name = 'feature/update.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('fl_details', kwargs={'pk': self.object.feature_list.id, 'tab_id': 3})
+        return context
+
+    def get_success_url(self):
+        self.object.feature_list.update_timestamp(user=self.request.user)
+        return reverse('fl_details', kwargs={'pk': self.object.feature_list.id, 'tab_id': 3})
+
+
+@method_decorator(login_required, name='dispatch')
+class FeatureListFileDelete(DeleteView):
+    model = FeatureListFile
+    template_name = 'feature/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('fl_details', kwargs={'pk': self.object.feature_list.id, 'tab_id': 3})
+        return context
+
+    def get_success_url(self):
+        self.object.feature_list.update_timestamp(user=self.request.user)
+        return reverse('fl_details', kwargs={'pk': self.object.feature_list.id, 'tab_id': 3})
 
 
 @method_decorator(login_required, name='dispatch')

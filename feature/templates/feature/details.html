@@ -18,11 +18,14 @@
         <a data-tabs-target="items" href="#items">{% trans "Items" %}</a>
     </li>
     <li class="tabs-title {% if tab_id == 3 %} is-active{% endif %}">
-        <a data-tabs-target="files" href="#files">{% trans "Files" %}</a>
+        <a data-tabs-target="files" href="#files">{% trans "Files" %}
+            {% if files.count > 0 %} ({{ files.count }}){% endif %}
+        </a>
     </li>
     <li class="tabs-title {% if tab_id == 4 %} is-active{% endif %}">
         <a data-tabs-target="links" href="#links">{% trans "Links" %}
-            {% if links.count > 0 %} ({{ links.count }}){% endif %}</a>
+            {% if links.count > 0 %} ({{ links.count }}){% endif %}
+        </a>
     </li>
     <li class="tabs-title {% if tab_id == 5 %} is-active{% endif %}">
         <a data-tabs-target="docx" href="#docx">{% trans "Docx" %}</a>
@@ -94,7 +97,7 @@
     </div>
 
     <div class="tabs-panel {% if tab_id == 3 %}is-active{% endif %}" id="files">
-        111
+        <a href="{% url 'fl_file_create' fl_id=fl.id %}" class="button small">{% trans "Add" %}</a>
     </div>
 
     <div class="tabs-panel {% if tab_id == 4 %}is-active{% endif %}" id="links">
