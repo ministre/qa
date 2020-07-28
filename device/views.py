@@ -821,7 +821,7 @@ class DevicePhotoDelete(DeleteView):
 class SampleCreate(CreateView):
     model = Sample
     form_class = SampleForm
-    template_name = 'sample/create.html'
+    template_name = 'device/create.html'
 
     def get_initial(self):
         return {'device': self.kwargs.get('device_id'),
@@ -830,6 +830,7 @@ class SampleCreate(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['device_id'] = self.kwargs.get('device_id')
+        context['back_url'] = reverse('device_details', kwargs={'pk': self.kwargs.get('device_id'), 'tab_id': 6})
         return context
 
     def get_success_url(self):
@@ -840,7 +841,7 @@ class SampleCreate(CreateView):
 class SampleUpdate(UpdateView):
     model = Sample
     form_class = SampleForm
-    template_name = 'sample/update.html'
+    template_name = 'device/update.html'
 
     def get_initial(self):
         return {'updated_by': self.request.user, 'updated_at': datetime.now}
@@ -848,20 +849,22 @@ class SampleUpdate(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['device_id'] = self.kwargs.get('device_id')
+        context['back_url'] = reverse('device_details', kwargs={'pk': self.kwargs.get('device_id'), 'tab_id': 6})
         return context
 
     def get_success_url(self):
-        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id'), 'tab_id': 6})
+        return reverse('device_details', kwargs={'pk': self.object.device.id, 'tab_id': 6})
 
 
 @method_decorator(login_required, name='dispatch')
 class SampleDelete(DeleteView):
     model = Sample
-    template_name = 'sample/delete.html'
+    template_name = 'device/delete.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['device_id'] = self.kwargs.get('device_id')
+        context['device_id'] = self.object.device.id
+        context['back_url'] = reverse('device_details', kwargs={'pk': self.kwargs.get('device_id'), 'tab_id': 6})
         return context
 
     def get_success_url(self):
