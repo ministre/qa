@@ -37,3 +37,15 @@ class RedmineImportTestplanForm(forms.Form):
 class RedmineFeatureListForm(forms.Form):
     project = forms.CharField(label='Project', max_length=100)
     wiki = forms.CharField(label='Wiki', max_length=100)
+
+
+class ExportDeviceTypeForm(forms.Form):
+    parent = forms.CharField(label=_('Parent Project'), max_length=100)
+    project = forms.CharField(label=_('Project'), max_length=100)
+    project_name = forms.CharField(label=_('Project Name'), max_length=1000)
+    specs = forms.BooleanField(label=_('Specifications'), required=False)
+    tech_reqs = forms.BooleanField(label=_('Technical Requirements'), required=False)
+
+
+class ImportDeviceTypeForm(forms.Form):
+    project = forms.CharField(label=_('Project'), max_length=100)

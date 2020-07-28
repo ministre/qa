@@ -9,6 +9,7 @@ from feature.models import FeatureList
 from .forms import VendorForm, DeviceChecklistForm, DeviceChecklistItemForm, DeviceSlistForm, DeviceSlistItemForm, \
     DeviceTextFieldForm, DeviceIntegerFieldForm, DeviceTypeSpecificationForm, CustomFieldForm, CustomFieldItemForm, \
     DeviceTypeForm, DeviceForm, DevicePhotoForm, SampleForm
+from redmine.forms import ExportDeviceTypeForm, ImportDeviceTypeForm
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -513,11 +514,21 @@ def device_type_details(request, pk, tab_id):
     testplans_count = device_type.testplans_count()
     specs = DeviceTypeSpecification.objects.filter(type=device_type).order_by('id')
     feature_lists = FeatureList.objects.filter(device_type=device_type).order_by('id')
+    redmine_url = settings.REDMINE_URL
+    export_form = ExportDeviceTypeForm(initial={'parent': device_type.redmine_parent,
+                                                'project': device_type.redmine_project,
+                                                'project_name': device_type.redmine_project_name,
+                                                'specs': True,
+                                                'tech_reqs': True})
+    import_form = ImportDeviceTypeForm(initial={'project': device_type.redmine_project})
     return render(request, 'device/type_details.html', {'device_type': device_type,
                                                         'devices_count': devices_count,
                                                         'testplans_count': testplans_count,
                                                         'specs': specs,
                                                         'feature_lists': feature_lists,
+                                                        'redmine_url': redmine_url,
+                                                        'export_form': export_form,
+                                                        'import_form': import_form,
                                                         'tab_id': tab_id})
 
 

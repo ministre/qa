@@ -134,22 +134,65 @@
     </div>
 
   <div class="tabs-panel{% if tab_id == 4 %} is-active{% endif %}" id="redmine">
-      {% if device_type.redmine_project %}
+      <div class="grid-x grid-margin-x">
+          <div class="cell">
+              <div class="card">
+                  <div class="card-section">
+                      <h4>Project Information</h4>
+                      <table>
+                          {% if device_type.redmine_project %}
+                          <tr>
+                              <td>Wiki URL:</td>
+                              <td>
+                                  <a href="{{ redmine_url }}/projects/{{ device_type.redmine_project }}/wiki/">
+                                      {{ redmine_url }}/projects/{{ device_type.redmine_project }}/wiki/</a>
+                              </td>
+                          </tr>
+                          {% else %}
+                          <tr>
+                              <td>
+                                  <a href="{% url 'device_type_update' pk=device_type.id %}">{% trans "Project ID is not set" %}</a>
+                              </td>
+                          </tr>
+                          {% endif %}
+                      </table>
+                  </div>
+              </div>
+          </div>
+      </div>
 
-      <table>
-          <tr>
-              <td>{% trans "Project ID" %}:</td>
-              <td>{{ device_type.redmine_project }}</td>
-          </tr>
-          <tr>
-              <td>{% trans "Project Name" %}:</td>
-              <td>{{ device_type.redmine_project_name }}</td>
-          </tr>
-      </table>
-      {% else %}
-      <a href="{% url 'device_type_update' pk=device_type.id %}">{% trans "Project ID is not set" %}</a>
-      {% endif %}
+      <div class="grid-x grid-margin-x small-up-2 medium-up-2">
+            <div class="cell">
+                <div class="card">
+                  <div class="card-section">
+                    <h4>{% trans "Export" %}</h4>
+                    <p>Click to send device type details to Redmine Wiki.</p>
+                      <form method="post" action="{# url 'export_device_type' #}">
+                          {% csrf_token %}
+                          <input type="hidden" name="device_type" value="{{ device_type.id }}">
+                          <input type="submit" value='{% trans "Export" %}' class="button success small" />
+                          {{ export_form.as_p }}
+                      </form>
+                  </div>
+                </div>
+            </div>
+            <div class="cell">
+                <div class="card">
+                  <div class="card-section">
+                    <h4>{% trans "Import" %}</h4>
+                    <p>Click to update device type details from Redmine Wiki.</p>
+                      <form method="post" action="{# url 'import_device_type' #}">
+                          {% csrf_token %}
+                          <input type="hidden" name="device_type" value="{{ device_type.id }}">
+                          <input type="submit" value='{% trans "Import" %}' class="button alert small" />
+                          {{ import_form.as_p }}
+                      </form>
+                  </div>
+                </div>
+            </div>
+      </div>
   </div>
+
 </div>
 
 <script>
