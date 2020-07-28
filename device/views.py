@@ -17,6 +17,7 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from datetime import datetime
 from django import forms
+from qa import settings
 
 
 @method_decorator(login_required, name='dispatch')
@@ -706,8 +707,14 @@ class DeviceUpdate(UpdateView):
     def get_initial(self):
         return {'updated_by': self.request.user, 'updated_at': datetime.now}
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('device_details', kwargs={'pk': self.object.id, 'tab_id': 1})
+        return context
+
     def get_success_url(self):
-        return reverse('device_details', kwargs={'pk': self.kwargs.get('pk'), 'tab_id': 1})
+        self.object.update_timestamp(user=self.request.user)
+        return reverse('device_details', kwargs={'pk': self.object.id, 'tab_id': 1})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -722,15 +729,16 @@ class DeviceDelete(DeleteView):
 @login_required
 def device_details(request, pk, tab_id):
     device = get_object_or_404(Device, pk=pk)
-    specs = Specification().get_values(device)
+    specs = None
     fws = Firmware.objects.filter(device=device)
     photos = DevicePhoto.objects.filter(device=device)
     docums = Docum.objects.filter(device=device)
     samples = Sample.objects.filter(device=device)
     protocols = Protocol.objects.filter(device=device)
+    redmine_url = settings.REDMINE_URL
     return render(request, 'device/details.html', {'device': device, 'specs': specs, 'fws': fws,
                                                    'photos': photos, 'docums': docums, 'samples': samples,
-                                                   'protocols': protocols,
+                                                   'protocols': protocols, 'redmine_url': redmine_url,
                                                    'tab_id': tab_id})
 
 

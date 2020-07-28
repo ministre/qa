@@ -199,6 +199,12 @@ class Device(models.Model):
     def __str__(self):
         return self.model
 
+    def update_timestamp(self, user):
+        self.updated_by = user
+        self.updated_at = datetime.now()
+        self.save()
+        return True
+
 
 class CustomValue(models.Model):
     field = models.ForeignKey(CustomField, on_delete=models.CASCADE)
