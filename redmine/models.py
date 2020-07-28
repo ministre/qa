@@ -6,6 +6,7 @@ from testplan.models import TestChecklistItem, Chapter, Test, TestConfig, TestIm
     TestComment
 from feature.models import FeatureList, FeatureListCategory, FeatureListItem
 import re
+from device.models import DeviceType, DeviceTypeSpecification
 
 
 class RedmineProject(object):
@@ -34,12 +35,15 @@ class RedmineProject(object):
         except ForbiddenError:
             return [False, 'Requested wiki resource is forbidden']
 
-    def create_or_update_project(self, project: str, project_name: str, parent='', description=''):
+    def create_or_update_project(self, project: str, project_name: str, parent='', description=None):
         is_project = self.check_project(project=project)
         if is_project[0]:
             # update project
-            self.redmine.project.update(resource_id=is_project[1], name=project_name,
-                                        description='__%{color:gray}' + description + '%__')
+            if description:
+                self.redmine.project.update(resource_id=is_project[1], name=project_name,
+                                            description='__%{color:gray}' + description + '%__')
+            else:
+                self.redmine.project.update(resource_id=is_project[1], name=project_name)
             return [True, 'Project updated']
         else:
             if is_project[1] == 'Project not found':
@@ -48,9 +52,13 @@ class RedmineProject(object):
                     if is_parent_project[0]:
                         # create sub-project
                         try:
-                            p = self.redmine.project.create(identifier=project, name=project_name,
-                                                            parent_id=is_parent_project[1], inherit_members=True,
-                                                            description='__%{color:gray}' + description + '%__')
+                            if description:
+                                p = self.redmine.project.create(identifier=project, name=project_name,
+                                                                parent_id=is_parent_project[1], inherit_members=True,
+                                                                description='__%{color:gray}' + description + '%__')
+                            else:
+                                p = self.redmine.project.create(identifier=project, name=project_name,
+                                                                parent_id=is_parent_project[1], inherit_members=True)
                             return [True, p.id]
                         except ValidationError:
                             return [False, 'Sub-project name validation fail']
@@ -62,8 +70,11 @@ class RedmineProject(object):
                 else:
                     # create root project
                     try:
-                        p = self.redmine.project.create(identifier=project, name=project_name, inherit_members=True,
-                                                        description='__%{color:gray}' + description + '%__')
+                        if description:
+                            p = self.redmine.project.create(identifier=project, name=project_name, inherit_members=True,
+                                                            description='__%{color:gray}' + description + '%__')
+                        else:
+                            p = self.redmine.project.create(identifier=project, name=project_name, inherit_members=True)
                         return [True, p.id]
                     except ValidationError:
                         return [False, 'Root project name validation error']
@@ -573,3 +584,45 @@ class RedmineFeatureList(object):
             return [True, feature_list]
         else:
             return [False, is_wiki[1]]
+
+
+def get_wiki_device_type_specs(device_type: DeviceType):
+    specs = DeviceTypeSpecification.objects.filter(type=device_type).order_by('id')
+    if specs:
+        ctx = '\nh2. Спецификации\r\n\r'
+        for spec in specs:
+            ctx += '\nh3. ' + spec.get_type() + '\r\n\r'
+        return ctx
+    else:
+        return None
+
+
+def get_wiki_device_type_tech_reqs(device_type: DeviceType):
+    tech_reqs = FeatureList.objects.filter(device_type=device_type).order_by('id')
+    if tech_reqs:
+        ctx = '\nh2. Технические требования\r\n\r'
+        for tech_req in tech_reqs:
+            ctx += '\n* [[tech_req_' + str(tech_req.id) + '|' + tech_req.name + ']]\r\n\r'
+        return ctx
+    else:
+        return None
+
+
+class RedmineDeviceType:
+    wiki: str
+
+    def export(self, parent: str, project: str, project_name: str, device_type: DeviceType, specs: bool,
+               tech_reqs: bool):
+        r = RedmineProject()
+        redmine_project = r.create_or_update_project(parent=parent, project=project, project_name=project_name)
+        if not redmine_project[0]:
+            return redmine_project
+        else:
+            # build wiki
+            self.wiki = 'h1. ' + project_name + '\r\n\r\n'
+            if specs:
+                self.wiki += get_wiki_device_type_specs(device_type)
+            if tech_reqs:
+                self.wiki += get_wiki_device_type_tech_reqs(device_type)
+            is_wiki = r.create_or_update_wiki(project=project, wiki_title='Wiki', wiki_text=self.wiki)
+            return is_wiki

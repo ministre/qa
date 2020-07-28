@@ -183,6 +183,16 @@ class DeviceTypeSpecification(models.Model):
     text_field = models.ForeignKey(DeviceTextField, on_delete=models.CASCADE, blank=True, null=True)
     integer_field = models.ForeignKey(DeviceIntegerField, on_delete=models.CASCADE, blank=True, null=True)
 
+    def get_type(self):
+        if self.checklist:
+            return 'checklist'
+        if self.slist:
+            return 'slist'
+        if self.text_field:
+            return 'text_field'
+        if self.integer_field:
+            return 'integer_field'
+
 
 class Device(models.Model):
     type = models.ForeignKey(DeviceType, on_delete=models.CASCADE)

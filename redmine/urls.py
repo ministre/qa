@@ -8,6 +8,9 @@ urlpatterns = [
     path('import_testplan/', views.import_testplan, name='import_testplan'),
     path('export_chapter/', views.export_chapter, name='export_chapter'),
     path('import_chapter/', views.import_chapter, name='import_chapter'),
-    path('export_fl/', views.export_fl, name='export_fl'),
-    path('import_fl/', views.import_fl, name='import_fl'),
+    path('export_tech_req/', views.export_fl, name='export_fl'),
+    path('import_tech_req/', views.import_fl, name='import_fl'),
+
+    path('export_device_type/', views.export_device_type, name='export_device_type'),
+    path('import_device_type/', views.import_device_type, name='import_device_type'),
 ]

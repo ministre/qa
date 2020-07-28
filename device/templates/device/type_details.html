@@ -167,7 +167,7 @@
                   <div class="card-section">
                     <h4>{% trans "Export" %}</h4>
                     <p>Click to send device type details to Redmine Wiki.</p>
-                      <form method="post" action="{# url 'export_device_type' #}">
+                      <form method="post" action="{% url 'export_device_type' %}">
                           {% csrf_token %}
                           <input type="hidden" name="device_type" value="{{ device_type.id }}">
                           <input type="submit" value='{% trans "Export" %}' class="button success small" />
@@ -181,7 +181,7 @@
                   <div class="card-section">
                     <h4>{% trans "Import" %}</h4>
                     <p>Click to update device type details from Redmine Wiki.</p>
-                      <form method="post" action="{# url 'import_device_type' #}">
+                      <form method="post" action="{% url 'import_device_type' %}">
                           {% csrf_token %}
                           <input type="hidden" name="device_type" value="{{ device_type.id }}">
                           <input type="submit" value='{% trans "Import" %}' class="button alert small" />

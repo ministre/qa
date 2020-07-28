@@ -1,13 +1,15 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from .models import RedmineProject, RedmineChapter, RedmineTest, RedmineTestplan, RedmineFeatureList
+from .models import RedmineProject, RedmineChapter, RedmineTest, RedmineTestplan, RedmineFeatureList, RedmineDeviceType
 from testplan.models import Test, TestConfig, TestImage, TestFile, TestChecklist, TestChecklistItem, TestLink, \
     TestComment, Testplan, Chapter, Category
+from device.models import DeviceType
 from feature.models import FeatureList
 from django.utils.datastructures import MultiValueDictKeyError
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from datetime import datetime
+from django.utils.translation import gettext_lazy as _
 
 
 @login_required
@@ -22,7 +24,7 @@ def export_chapter(request):
             return render(request, 'redmine/result.html', {'message': is_project, 'back_url': back_url})
         message = RedmineChapter().export(project=project, wiki_title=request.POST['wiki'], chapter=chapter)
     else:
-        message = [False, 'Page not found']
+        message = [False, _('Page not found')]
         back_url = reverse('testplans', kwargs={'tab_id': 1})
     return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})
 
@@ -45,7 +47,7 @@ def import_chapter(request):
         else:
             message = parse_details
     else:
-        message = [False, 'Page not found']
+        message = [False, _('Page not found')]
         back_url = reverse('testplans', kwargs={'tab_id': 1})
     return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})
 
@@ -132,7 +134,7 @@ def export_test(request):
                                        files=files, expected=expected, checklists=checklists, links=links,
                                        comments=comments)
     else:
-        message = [False, 'Page not found']
+        message = [False, _('Page not found')]
         back_url = reverse('testplans', kwargs={'tab_id': 1})
     return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})
 
@@ -237,7 +239,7 @@ def import_test(request):
         else:
             message = test_details
     else:
-        message = [False, 'Page not found']
+        message = [False, _('Page not found')]
         back_url = reverse('testplans', kwargs={'tab_id': 1})
     return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})
 
@@ -267,7 +269,7 @@ def export_testplan(request):
                                            parent=request.POST['parent'], version=testplan.version,
                                            chapters=chapters, categories=categories)
     else:
-        message = [False, 'Page not found']
+        message = [False, _('Page not found')]
         back_url = reverse('testplans', kwargs={'tab_id': 1})
     return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})
 
@@ -365,7 +367,7 @@ def import_testplan(request):
         else:
             return testplan_details
     else:
-        message = [False, 'Page not found']
+        message = [False, _('Page not found')]
         back_url = reverse('testplans', kwargs={'tab_id': 1})
     return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})
 
@@ -382,7 +384,7 @@ def export_fl(request):
             return render(request, 'redmine/result.html', {'message': is_project, 'back_url': back_url})
         message = RedmineFeatureList().export(project=project, wiki_title=request.POST['wiki'], fl=feature_list)
     else:
-        message = [False, 'Page not found']
+        message = [False, _('Page not found')]
         back_url = reverse('fls')
     return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})
 
@@ -407,6 +409,36 @@ def import_fl(request):
         else:
             message = parse_details
     else:
-        message = [False, 'Page not found']
+        message = [False, _('Page not found')]
         back_url = reverse('fls')
     return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})
+
+
+@login_required
+def export_device_type(request):
+    if request.method == "POST":
+        device_type = get_object_or_404(DeviceType, id=request.POST['device_type'])
+        back_url = reverse('device_type_details', kwargs={'pk': device_type.id, 'tab_id': 4})
+        specs = tech_reqs = False
+        try:
+            if request.POST['specs']:
+                specs = True
+        except MultiValueDictKeyError:
+            pass
+        try:
+            if request.POST['tech_reqs']:
+                tech_reqs = True
+        except MultiValueDictKeyError:
+            pass
+        message = RedmineDeviceType().export(parent=request.POST['parent'], project=request.POST['project'],
+                                             project_name=request.POST['project_name'], device_type=device_type,
+                                             specs=specs, tech_reqs=tech_reqs)
+    else:
+        message = [False, _('Page not found')]
+        back_url = reverse('device_types')
+    return render(request, 'redmine/result.html', {'message': message, 'back_url': back_url})
+
+
+@login_required
+def import_device_type(request):
+    pass
