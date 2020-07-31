@@ -4,28 +4,38 @@
 
 {% block content %}
 
-<a href="{# url 'pattern_create' #}" class="button small">{% trans "Create" %}</a>
+<ul class="tabs" data-tabs id="testpan_pattern-tabs">
+    <li class="tabs-title"><a href="{% url 'testplans' %}">{% trans "Testplans" %}</a></li>
+    <li class="tabs-title is-active">
+        <a href="#patterns" aria-selected="true">{% trans "Patterns" %}</a>
+    </li>
+</ul>
 
-<table id="patterns" class="display" style="width:100%">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>{% trans "Name" %}</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for pattern in patterns %}
-    <tr data-href="{# url 'patterns' pk=pattern.id #}">
-        <td>{{ pattern.id }}</td>
-        <td>{{ pattern.name }}</td>
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
+<div class="tabs-content" data-tabs-content="testpan_pattern-tabs">
+    <div class="tabs-panel is-active" id="patterns">
+        <a href="{# url 'pattern_create' #}" class="button small">{% trans "Create" %}</a>
+        <table id="p" class="display" style="width:100%">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>{% trans "Name" %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for pattern in patterns %}
+            <tr data-href="{# url 'pattern_details' pk=pattern.id tab_id=1 #}">
+                <td>{{ pattern.id }}</td>
+                <td>{{ pattern.name }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 
 <script>
     $(document).ready(function() {
-        var table = $('#patterns').DataTable({
+        var table = $('#p').DataTable({
         {% if LANGUAGE_CODE == 'ru' %}
             "language": { "url": "{% static '/DataTables/i18n/Russian.json' %}" },
         {% endif %}

@@ -30,6 +30,7 @@ urlpatterns = [
     path('redmine/', include('redmine.urls')),
     path('docx/', include('docx_builder.urls')),
     path('feature/', include('feature.urls')),
+    path('pattern/', include('pattern.urls')),
     path('protocol/', include('protocol.urls')),
     path('contact/', include('contact.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

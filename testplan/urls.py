@@ -3,12 +3,12 @@ from . import views
 
 urlpatterns = [
     # testplan
-    path('<int:tab_id>/', views.testplan_list, name='testplans'),
-    path('t/create/', views.TestplanCreate.as_view(), name='testplan_create'),
-    path('t/delete/<int:pk>/', views.TestplanDelete.as_view(), name='testplan_delete'),
-    path('t/update/<int:pk>/', views.TestplanUpdate.as_view(), name='testplan_update'),
-    path('t/<int:pk>/<int:tab_id>/', views.testplan_details, name='testplan_details'),
-    path('t/clone/<int:pk>/', views.testplan_clone, name='testplan_clone'),
+    path('', views.testplan_list, name='testplans'),
+    path('create/', views.TestplanCreate.as_view(), name='testplan_create'),
+    path('delete/<int:pk>/', views.TestplanDelete.as_view(), name='testplan_delete'),
+    path('update/<int:pk>/', views.TestplanUpdate.as_view(), name='testplan_update'),
+    path('<int:pk>/<int:tab_id>/', views.testplan_details, name='testplan_details'),
+    path('clone/<int:pk>/', views.testplan_clone, name='testplan_clone'),
     # chapters
     path('chapter/create/<int:tp_id>/', views.ChapterCreate.as_view(), name='chapter_create'),
     path('chapter/delete/<int:pk>/', views.ChapterDelete.as_view(), name='chapter_delete'),

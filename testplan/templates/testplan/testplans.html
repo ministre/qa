@@ -5,14 +5,14 @@
 {% block content %}
 
 <ul class="tabs" data-tabs id="example-tabs">
-    <li class="tabs-title {% if tab_id == 1 %} is-active{% endif %}">
-        <a href="#testplans" aria-selected="true">{% trans "Testplans" %}</a></li>
-    <li class="tabs-title {% if tab_id == 2 %} is-active{% endif %}">
-        <a data-tabs-target="patterns" href="#patterns">{% trans "Patterns" %}</a></li>
+    <li class="tabs-title is-active">
+        <a href="#testplans" aria-selected="true">{% trans "Testplans" %}</a>
+    </li>
+    <li class="tabs-title"><a href="{% url 'patterns' %}">{% trans "Patterns" %}</a></li>
 </ul>
 
 <div class="tabs-content" data-tabs-content="example-tabs">
-    <div class="tabs-panel {% if tab_id == 1 %}is-active{% endif %}" id="testplans">
+    <div class="tabs-panel is-active" id="testplans">
         <a href="{% url 'testplan_create' %}" class="button small">{% trans "Create" %}</a>
         <table id="t" class="display" style="width:100%">
             <thead>
@@ -32,28 +32,6 @@
                 <td width="7%">{{ testplan.version }}</td>
                 <td>{{ testplan.device_type.tag }}</td>
                 <td width="19%">{{ testplan.updated_at }} ({{ testplan.updated_by }})</td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
-    <div class="tabs-panel {% if tab_id == 2 %}is-active{% endif %}" id="patterns">
-        <a href="{% url 'pattern_create' %}" class="button small">{% trans "Create" %}</a>
-        <table id="p" class="display" style="width:100%">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>{% trans "Name" %}</th>
-                <th>{% trans "Last Update" %}</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for pattern in patterns %}
-            <tr data-href="{% url 'pattern_details' pk=pattern.id tab_id=1 %}">
-                <td width="1%">{{ pattern.id }}</td>
-                <td>{{ pattern.name }}</td>
-                <td width="19%">{{ pattern.updated_at }} ({{ pattern.updated_by }})</td>
             </tr>
             {% endfor %}
             </tbody>

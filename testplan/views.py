@@ -12,15 +12,14 @@ from redmine.forms import RedmineChapterForm, RedmineTestForm, RedmineExportTest
 from django.http import HttpResponseRedirect
 import textile
 from datetime import datetime
-from redmine.models import RedmineProject
 from qa import settings
 from django.utils.translation import gettext_lazy as _
 
 
 @login_required
-def testplan_list(request, tab_id):
+def testplan_list(request):
     testplans = Testplan.objects.all().order_by('id')
-    return render(request, 'testplan/list.html', {'testplans': testplans, 'tab_id': tab_id})
+    return render(request, 'testplan/testplans.html', {'testplans': testplans})
 
 
 @method_decorator(login_required, name='dispatch')
