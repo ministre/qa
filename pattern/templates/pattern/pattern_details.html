@@ -46,6 +46,41 @@
         </table>
     </div>
 
+    <div class="tabs-panel {% if tab_id == 2 %}is-active{% endif %}" id="chapters">
+        Chapters
+    </div>
+
+    <div class="tabs-panel {% if tab_id == 3 %}is-active{% endif %}" id="tests">
+        <a href="{# url 'category_create' tp_id=testplan.id #}" class="button small">{% trans "Add" %}</a>
+        <a href="{# url 'clear_tests' tp_id=testplan.id #}" class="button small alert">{% trans "Clear" %}</a>
+        <br>
+        {% for category in categories %}
+        <ul style="list-style: none">
+            <li>
+                <b>{{ forloop.counter }}. {{ category.name }}</b>
+                <a href="{# url 'category_update' pk=category.id #}"><i class="step fi-pencil"></i></a>
+                <a href="{# url 'category_delete' pk=category.id #}">
+                    <i class="step fi-minus" style="color: #bc104b"></i></a>
+                {% for test in category.category_test.all|dictsort:"id" %}
+                <ul style="list-style: none">
+                    <li>
+                        <a href="{# url 'test_details' pk=test.id tab_id=1 #}">
+                            {{forloop.parentloop.counter}}.{{ forloop.counter }}. {{ test.name }}</a>
+                    </li>
+                </ul>
+                {% endfor %}
+                <blockquote>
+                    <a href="{# url 'test_create' category_id=category.id #}"><i class="step fi-plus"></i></a>
+                </blockquote>
+            </li>
+        </ul>
+        {% endfor %}
+    </div>
+
+    <div class="tabs-panel {% if tab_id == 3 %}is-active{% endif %}" id="redmine">
+        Redmine
+    </div>
+
 </div>
 
 {% endblock %}
