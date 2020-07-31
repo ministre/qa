@@ -9,11 +9,6 @@ urlpatterns = [
     path('t/update/<int:pk>/', views.TestplanUpdate.as_view(), name='testplan_update'),
     path('t/<int:pk>/<int:tab_id>/', views.testplan_details, name='testplan_details'),
     path('t/clone/<int:pk>/', views.testplan_clone, name='testplan_clone'),
-    # pattern
-    path('p/create/', views.PatternCreate.as_view(), name='pattern_create'),
-    path('p/delete/<int:pk>/', views.PatternDelete.as_view(), name='pattern_delete'),
-    path('p/update/<int:pk>/', views.PatternUpdate.as_view(), name='pattern_update'),
-    path('p/<int:pk>/<int:tab_id>/', views.pattern_details, name='pattern_details'),
     # chapters
     path('chapter/create/<int:tp_id>/', views.ChapterCreate.as_view(), name='chapter_create'),
     path('chapter/delete/<int:pk>/', views.ChapterDelete.as_view(), name='chapter_delete'),

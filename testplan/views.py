@@ -20,8 +20,7 @@ from django.utils.translation import gettext_lazy as _
 @login_required
 def testplan_list(request, tab_id):
     testplans = Testplan.objects.all().order_by('id')
-    patterns = Pattern.objects.all().order_by('id')
-    return render(request, 'testplan/list.html', {'testplans': testplans, 'patterns': patterns, 'tab_id': tab_id})
+    return render(request, 'testplan/list.html', {'testplans': testplans, 'tab_id': tab_id})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -186,14 +185,6 @@ def testplan_clone(request, pk):
                                      'redmine_parent': testplan.redmine_parent,
                                      'redmine_project': testplan.redmine_project})
         return render(request, 'testplan/clone.html', {'form': form, 'tp_id': testplan.id})
-
-
-@login_required
-def pattern_details(request, pk, tab_id):
-    pattern = get_object_or_404(Pattern, id=pk)
-    r = RedmineProject(pattern.redmine_project)
-    return render(request, 'pattern/details.html', {'tab_id': tab_id, 'pattern': pattern,
-                                                    'redmine_wiki': r.get_wiki_url('wiki')})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -878,40 +869,3 @@ class TestCommentUpdate(UpdateView):
         self.object.test.update_timestamp(user=self.request.user)
         self.object.test.category.testplan.update_timestamp(user=self.request.user)
         return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 10})
-
-
-@method_decorator(login_required, name='dispatch')
-class PatternCreate(CreateView):
-    model = Pattern
-    form_class = PatternForm
-    template_name = 'testplan/create.html'
-
-    def get_initial(self):
-        return {'created_by': self.request.user, 'updated_by': self.request.user}
-
-    def get_success_url(self):
-        return reverse('pattern_details', kwargs={'pk': self.object.id, 'tab_id': 1})
-
-
-@method_decorator(login_required, name='dispatch')
-class PatternDelete(DeleteView):
-    model = Pattern
-    template_name = 'testplan/delete.html'
-
-    def get_success_url(self):
-        return reverse('testplans', kwargs={'tab_id': 2})
-
-
-@method_decorator(login_required, name='dispatch')
-class PatternUpdate(UpdateView):
-    model = Pattern
-    form_class = PatternForm
-    template_name = 'testplan/update.html'
-
-    def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': datetime.now}
-
-    def get_success_url(self):
-        pattern = get_object_or_404(Pattern, id=self.object.id)
-        pattern.update_timestamp(user=self.request.user)
-        return reverse('pattern_details', kwargs={'pk': pattern.id, 'tab_id': 1})
