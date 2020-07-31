@@ -33,7 +33,7 @@ class TestplanCreate(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('testplans', kwargs={'tab_id': 1})
+        context['back_url'] = reverse('testplans')
         return context
 
     def get_success_url(self):
@@ -51,7 +51,7 @@ class TestplanDelete(DeleteView):
         return context
 
     def get_success_url(self):
-        return reverse('testplans', kwargs={'tab_id': 1})
+        return reverse('testplans')
 
 
 @method_decorator(login_required, name='dispatch')
@@ -171,7 +171,7 @@ def testplan_clone(request, pk):
                         new_comment = TestComment(name=src_comment.name, test=new_test, text=src_comment.text)
                         new_comment.save()
 
-            return HttpResponseRedirect(reverse('testplans', kwargs={'tab_id': 1}))
+            return HttpResponseRedirect(reverse('testplans'))
     else:
         testplan = get_object_or_404(Testplan, id=pk)
         form = TestplanForm(initial={'name': testplan.name,
