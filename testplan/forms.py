@@ -1,6 +1,6 @@
 from django.forms import ModelForm, HiddenInput
 from testplan.models import Testplan, Category, Chapter, Test, TestConfig, TestImage, TestFile, TestChecklist, \
-    TestChecklistItem, TestIntegerValue, TestLink, TestComment, Pattern
+    TestChecklistItem, TestIntegerValue, TestLink, TestComment
 from django.utils.translation import gettext_lazy as _
 from django import forms
 
@@ -189,21 +189,3 @@ class TestCommentForm(ModelForm):
         widgets = {
             'test': HiddenInput()
         }
-
-
-class PatternForm(ModelForm):
-    class Meta:
-        model = Pattern
-        labels = {
-            'name': _('Name'),
-            'types': _('Device Types'),
-            'redmine_parent': _('Redmine Parent Project ID'),
-            'redmine_project': _('Redmine Project ID'),
-        }
-        fields = '__all__'
-        widgets = {'created_by': HiddenInput(), 'created_at': HiddenInput(),
-                   'updated_by': HiddenInput(), 'updated_at': HiddenInput()}
-
-    def __init__(self, *args, **kwargs):
-        super(PatternForm, self).__init__(*args, **kwargs)
-        self.fields['redmine_parent'].initial = 'patterns'

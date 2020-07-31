@@ -4,10 +4,9 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView, UpdateView, DeleteView
 from .models import Testplan, Category, Chapter, Test, TestConfig, TestImage, TestFile, TestChecklist, \
-    TestChecklistItem, TestIntegerValue, TestLink, TestComment, Pattern, DeviceType
+    TestChecklistItem, TestIntegerValue, TestLink, TestComment, DeviceType
 from .forms import TestplanForm, CategoryForm, ChapterForm, TestForm, TestConfigForm, TestImageForm, TestFileForm,\
-    TestChecklistForm, TestChecklistItemForm, TestIntegerValueForm, TestLinkForm, TestCommentForm, \
-    PatternForm
+    TestChecklistForm, TestChecklistItemForm, TestIntegerValueForm, TestLinkForm, TestCommentForm
 from docx_builder.forms import DocxTestplanForm
 from redmine.forms import RedmineChapterForm, RedmineTestForm, RedmineExportTestplanForm, RedmineImportTestplanForm
 from django.http import HttpResponseRedirect
