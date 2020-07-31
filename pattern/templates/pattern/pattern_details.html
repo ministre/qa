@@ -1,0 +1,51 @@
+{% extends "device/wrapper.html" %}
+
+{% load i18n static %}
+
+{% block content %}
+
+<p><a href="{% url 'patterns' %}">{% trans "Patterns" %}</a> &raquo; {{ pattern.name }}</p>
+
+<ul class="tabs" data-tabs id="testplan-tabs">
+    <li class="tabs-title {% if tab_id == 1 %} is-active{% endif %}">
+        <a data-tabs-target="general" href="#general">{% trans "General" %}</a>
+    </li>
+    <li class="tabs-title {% if tab_id == 2 %} is-active{% endif %}">
+        <a data-tabs-target="chapters" href="#chapters">{% trans "Chapters" %}
+        {% if chapters.count > 0 %}({{ chapters.count }}){% endif %}</a>
+    </li>
+    <li class="tabs-title {% if tab_id == 3 %} is-active{% endif %}">
+        <a data-tabs-target="tests" href="#tests">{% trans "Tests" %}
+        {% if tests_count > 0 %}({{ tests_count }}){% endif %}</a>
+    </li>
+    <li class="tabs-title {% if tab_id == 5 %} is-active{% endif %}">
+        <a data-tabs-target="redmine" href="#redmine">{% trans "Redmine" %}</a>
+    </li>
+</ul>
+
+<div class="tabs-content" data-tabs-content="testplan-tabs">
+    <div class="tabs-panel {% if tab_id == 1 %}is-active{% endif %}" id="general">
+        <a href="{# url 'pattern_update' pk=pattern.id #}" class="button small">{% trans "Update" %}</a>
+        <a href="{# url 'pattern_delete' pk=pattern.id #}" class="button alert small">{% trans "Delete" %}</a>
+
+        <table class="hover unstriped">
+            <tbody>
+            <tr>
+                <td>{% trans "Pattern name" %}:</td>
+                <td>{{ pattern.name }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Created" %}:</td>
+                <td>{{ pattern.created_at }} ({{ pattern.created_by }})</td>
+            </tr>
+            <tr>
+                <td>{% trans "Last Update" %}:</td>
+                <td>{{ pattern.updated_at }} ({{ pattern.updated_by }})</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+{% endblock %}

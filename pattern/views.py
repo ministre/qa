@@ -5,6 +5,7 @@ from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from .models import Pattern
 from .forms import PatternForm
 from django.urls import reverse
+from django.shortcuts import get_object_or_404
 
 
 @method_decorator(login_required, name='dispatch')
@@ -30,3 +31,9 @@ class PatternCreate(CreateView):
 
     def get_success_url(self):
         return reverse('patterns')
+
+
+@login_required
+def pattern_details(request, pk, tab_id: int):
+    pattern = get_object_or_404(Pattern, id=pk)
+    return render(request, 'pattern/pattern_details.html', {'pattern': pattern, 'tab_id': tab_id})

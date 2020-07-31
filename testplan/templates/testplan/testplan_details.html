@@ -4,21 +4,26 @@
 
 {% block content %}
 
-<p><a href="{% url 'testplans' tab_id=1 %}">{% trans "Testplans" %}</a> &raquo; {{ testplan.name}}</p>
+<p><a href="{% url 'testplans' %}">{% trans "Testplans" %}</a> &raquo; {{ testplan.name }}</p>
 
 <ul class="tabs" data-tabs id="testplan-tabs">
     <li class="tabs-title {% if tab_id == 1 %} is-active{% endif %}">
-        <a data-tabs-target="general" href="#general">{% trans "General" %}</a></li>
+        <a data-tabs-target="general" href="#general">{% trans "General" %}</a>
+    </li>
     <li class="tabs-title {% if tab_id == 2 %} is-active{% endif %}">
         <a data-tabs-target="chapters" href="#chapters">{% trans "Chapters" %}
-        {% if chapters.count > 0 %}({{ chapters.count }}){% endif %}</a></li>
+        {% if chapters.count > 0 %}({{ chapters.count }}){% endif %}</a>
+    </li>
     <li class="tabs-title {% if tab_id == 3 %} is-active{% endif %}">
         <a data-tabs-target="tests" href="#tests">{% trans "Tests" %}
-        {% if tests_count > 0 %}({{ tests_count }}){% endif %}</a></li>
+        {% if tests_count > 0 %}({{ tests_count }}){% endif %}</a>
+    </li>
     <li class="tabs-title {% if tab_id == 4 %} is-active{% endif %}">
-        <a data-tabs-target="docx" href="#docx">{% trans "Docx" %}</a></li>
+        <a data-tabs-target="docx" href="#docx">{% trans "Docx" %}</a>
+    </li>
     <li class="tabs-title {% if tab_id == 5 %} is-active{% endif %}">
-        <a data-tabs-target="redmine" href="#redmine">{% trans "Redmine" %}</a></li>
+        <a data-tabs-target="redmine" href="#redmine">{% trans "Redmine" %}</a>
+    </li>
 </ul>
 
 <div class="tabs-content" data-tabs-content="testplan-tabs">

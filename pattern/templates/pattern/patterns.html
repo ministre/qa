@@ -23,7 +23,7 @@
             </thead>
             <tbody>
             {% for pattern in patterns %}
-            <tr data-href="{# url 'pattern_details' pk=pattern.id tab_id=1 #}">
+            <tr data-href="{% url 'pattern_details' pk=pattern.id tab_id=1 %}">
                 <td>{{ pattern.id }}</td>
                 <td>{{ pattern.name }}</td>
             </tr>
