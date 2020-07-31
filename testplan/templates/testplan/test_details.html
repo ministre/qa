@@ -4,8 +4,8 @@
 
 {% block content %}
 
-<p><a href="{% url 'testplans' tab_id=1 %}">{% trans "Testplans" %}</a> &raquo;
-    <a href="{% url 'testplan_details' pk=testplan.id tab_id=3 %}">{{ testplan.name}}</a>
+<p><a href="{% url 'testplans' %}">{% trans "Testplans" %}</a> &raquo;
+    <a href="{% url 'testplan_details' pk=testplan.id tab_id=3 %}">{{ testplan.name }}</a>
     &raquo; {{ test.name }}
 </p>
 
