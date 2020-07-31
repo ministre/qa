@@ -594,7 +594,7 @@ def get_wiki_device_type_specs(device_type: DeviceType):
             ctx += '\nh3. ' + spec.get_type() + '\r\n\r'
         return ctx
     else:
-        return None
+        return ''
 
 
 def get_wiki_device_type_tech_reqs(device_type: DeviceType):
@@ -605,7 +605,7 @@ def get_wiki_device_type_tech_reqs(device_type: DeviceType):
             ctx += '\n* [[tech_req_' + str(tech_req.id) + '|' + tech_req.name + ']]\r\n\r'
         return ctx
     else:
-        return None
+        return ''
 
 
 class RedmineDeviceType:

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'feature',
     'docx_builder',
     'protocol',
+    'pattern',
     'redmine',
     'testplan',
     'contact',
