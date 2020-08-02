@@ -2,8 +2,8 @@ from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
-from .models import Pattern
-from .forms import PatternForm
+from .models import Pattern, PatternCategory
+from .forms import PatternForm, PatternCategoryForm
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from datetime import datetime
@@ -71,3 +71,23 @@ class PatternDelete(DeleteView):
 def pattern_details(request, pk, tab_id: int):
     pattern = get_object_or_404(Pattern, id=pk)
     return render(request, 'pattern/pattern_details.html', {'pattern': pattern, 'tab_id': tab_id})
+
+
+@method_decorator(login_required, name='dispatch')
+class PatternCategoryCreate(CreateView):
+    model = PatternCategory
+    form_class = PatternCategoryForm
+    template_name = 'pattern/create.html'
+
+    def get_initial(self):
+        return {'pattern': self.kwargs.get('p_id'), 'created_by': self.request.user, 'updated_by': self.request.user}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('pattern_details', kwargs={'pk': self.kwargs.get('p_id'), 'tab_id': 1})
+        return context
+
+    def get_success_url(self):
+        self.object.update_timestamp(user=self.request.user)
+        self.object.pattern.update_timestamp(user=self.request.user)
+        return reverse('pattern_details', kwargs={'pk': self.object.pattern.id, 'tab_id': 1})

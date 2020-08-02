@@ -46,6 +46,18 @@
         </table>
     </div>
 
+    <div class="tabs-panel {% if tab_id == 2 %}is-active{% endif %}" id="chapters">
+        Chapters
+    </div>
+
+    <div class="tabs-panel {% if tab_id == 3 %}is-active{% endif %}" id="tests">
+        <a href="{% url 'p_category_create' p_id=pattern.id %}" class="button small">{% trans "Add" %}</a>
+    </div>
+
+    <div class="tabs-panel {% if tab_id == 4 %}is-active{% endif %}" id="redmine">
+        Redmine
+    </div>
+
 </div>
 
 {% endblock %}

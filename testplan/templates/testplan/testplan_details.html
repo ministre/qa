@@ -78,14 +78,8 @@
 
 
   <div class="tabs-panel {% if tab_id == 3 %}is-active{% endif %}" id="tests">
-      <form method="post" action="/redmine/import_all_tests/">
           <a href="{% url 'category_create' tp_id=testplan.id %}" class="button small">{% trans "Add" %}</a>
-          {% csrf_token %}
-          <input type="hidden" name="testplan_id" value="{{ testplan.id }}">
-          <input type="hidden" name="redmine_url" value="{{ testplan.redmine_url }}">
-          <input type="hidden" name="tag" value="{{ testplan.device_type.tag }}">
           <a href="{% url 'clear_tests' tp_id=testplan.id %}" class="button small alert">{% trans "Clear" %}</a>
-      </form>
       <br>
       {% for category in categories %}
       <ul style="list-style: none">
