@@ -106,7 +106,7 @@ class PatternCategoryUpdate(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('pattern_details', kwargs={'pk': self.object.pattern.id, 'tab_id': 3})
+        context['back_url'] = reverse('p_category_details', kwargs={'pk': self.object.id, 'tab_id': 1})
         return context
 
     def get_success_url(self):
@@ -122,7 +122,7 @@ class PatternCategoryDelete(DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('pattern_details', kwargs={'pk': self.object.pattern.id, 'tab_id': 3})
+        context['back_url'] = reverse('p_category_details', kwargs={'pk': self.object.id, 'tab_id': 1})
         return context
 
     def get_success_url(self):
@@ -132,4 +132,5 @@ class PatternCategoryDelete(DeleteView):
 
 @login_required
 def p_category_details(request, pk, tab_id: int):
-    pass
+    p_category = get_object_or_404(PatternCategory, id=pk)
+    return render(request, 'pattern/p_category_details.html', {'p_category': p_category, 'tab_id': tab_id})

@@ -55,10 +55,13 @@
         {% for p_category in p_categories %}
         <ul style="list-style: none">
             <li>
-                <b>{{ forloop.counter }}. {{ p_category.name }}</b>
-                <a href="{% url 'p_category_update' pk=p_category.id %}"><i class="step fi-pencil"></i></a>
-                <a href="{% url 'p_category_delete' pk=p_category.id %}">
-                    <i class="step fi-minus" style="color: #bc104b"></i></a>
+                <b><a href="{% url 'p_category_details' pk=p_category.id tab_id=1 %}">{{ forloop.counter }}. {{ p_category.name }}</a></b>
+                {% if forloop.counter != 1 %}
+                <a href="{# url 'p_category_up' pk=p_category.id #}"><i class="step fi-arrow-up" style="color: #ff4f12"></i></a>
+                {% endif %}
+                {% if forloop.counter != p_categories.count %}
+                <a href="{# url 'p_category_down' pk=p_category.id #}"><i class="step fi-arrow-down" style="color: #ff4f12"></i></a>
+                {% endif %}
                 <blockquote>
                     <a href="{# url 'test_create' category_id=category.id #}"><i class="step fi-plus"></i></a>
                 </blockquote>

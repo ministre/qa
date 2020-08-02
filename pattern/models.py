@@ -25,6 +25,7 @@ class Pattern(models.Model):
 class PatternCategory(models.Model):
     pattern = models.ForeignKey(Pattern, on_delete=models.CASCADE)
     name = models.CharField(max_length=1000)
+    priority = models.IntegerField(default=0)
     created_by = models.ForeignKey(User, related_name='p_c_c', on_delete=models.CASCADE, blank=True, null=True)
     created_at = models.DateTimeField(default=datetime.now)
     updated_by = models.ForeignKey(User, related_name='p_c_u', on_delete=models.CASCADE, blank=True, null=True)
