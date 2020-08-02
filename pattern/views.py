@@ -9,6 +9,14 @@ from django.shortcuts import get_object_or_404
 from datetime import datetime
 
 
+class Item(object):
+    @staticmethod
+    def update_timestamp(foo, user):
+        foo.updated_by = user
+        foo.updated_at = datetime.now()
+        foo.save()
+
+
 @method_decorator(login_required, name='dispatch')
 class PatternListView(ListView):
     context_object_name = 'patterns'
@@ -49,7 +57,7 @@ class PatternUpdate(UpdateView):
         return context
 
     def get_success_url(self):
-        self.object.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object, user=self.request.user)
         return reverse('pattern_details', kwargs={'pk': self.object.id, 'tab_id': 1})
 
 
@@ -90,8 +98,8 @@ class PatternCategoryCreate(CreateView):
         return context
 
     def get_success_url(self):
-        self.object.update_timestamp(user=self.request.user)
-        self.object.pattern.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object, user=self.request.user)
+        Item.update_timestamp(foo=self.object.pattern, user=self.request.user)
         return reverse('pattern_details', kwargs={'pk': self.object.pattern.id, 'tab_id': 3})
 
 
@@ -110,8 +118,8 @@ class PatternCategoryUpdate(UpdateView):
         return context
 
     def get_success_url(self):
-        self.object.update_timestamp(user=self.request.user)
-        self.object.pattern.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object, user=self.request.user)
+        Item.update_timestamp(foo=self.object.pattern, user=self.request.user)
         return reverse('pattern_details', kwargs={'pk': self.object.pattern.id, 'tab_id': 3})
 
 
@@ -126,7 +134,7 @@ class PatternCategoryDelete(DeleteView):
         return context
 
     def get_success_url(self):
-        self.object.pattern.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.pattern, user=self.request.user)
         return reverse('pattern_details', kwargs={'pk': self.object.pattern.id, 'tab_id': 3})
 
 

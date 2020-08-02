@@ -15,12 +15,6 @@ class Pattern(models.Model):
     def __str__(self):
         return self.name
 
-    def update_timestamp(self, user):
-        self.updated_by = user
-        self.updated_at = datetime.now()
-        self.save()
-        return True
-
 
 class PatternCategory(models.Model):
     pattern = models.ForeignKey(Pattern, on_delete=models.CASCADE)
@@ -33,9 +27,3 @@ class PatternCategory(models.Model):
 
     def __str__(self):
         return self.name
-
-    def update_timestamp(self, user):
-        self.updated_by = user
-        self.updated_at = datetime.now()
-        self.save()
-        return True
