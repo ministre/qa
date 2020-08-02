@@ -70,7 +70,9 @@ class PatternDelete(DeleteView):
 @login_required
 def pattern_details(request, pk, tab_id: int):
     pattern = get_object_or_404(Pattern, id=pk)
-    return render(request, 'pattern/pattern_details.html', {'pattern': pattern, 'tab_id': tab_id})
+    p_categories = PatternCategory.objects.filter(pattern=pattern).order_by('id')
+    return render(request, 'pattern/pattern_details.html', {'pattern': pattern, 'p_categories': p_categories,
+                                                            'tab_id': tab_id})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -84,10 +86,50 @@ class PatternCategoryCreate(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('pattern_details', kwargs={'pk': self.kwargs.get('p_id'), 'tab_id': 1})
+        context['back_url'] = reverse('pattern_details', kwargs={'pk': self.kwargs.get('p_id'), 'tab_id': 3})
         return context
 
     def get_success_url(self):
         self.object.update_timestamp(user=self.request.user)
         self.object.pattern.update_timestamp(user=self.request.user)
-        return reverse('pattern_details', kwargs={'pk': self.object.pattern.id, 'tab_id': 1})
+        return reverse('pattern_details', kwargs={'pk': self.object.pattern.id, 'tab_id': 3})
+
+
+@method_decorator(login_required, name='dispatch')
+class PatternCategoryUpdate(UpdateView):
+    model = PatternCategory
+    form_class = PatternCategoryForm
+    template_name = 'pattern/update.html'
+
+    def get_initial(self):
+        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('pattern_details', kwargs={'pk': self.object.pattern.id, 'tab_id': 3})
+        return context
+
+    def get_success_url(self):
+        self.object.update_timestamp(user=self.request.user)
+        self.object.pattern.update_timestamp(user=self.request.user)
+        return reverse('pattern_details', kwargs={'pk': self.object.pattern.id, 'tab_id': 3})
+
+
+@method_decorator(login_required, name='dispatch')
+class PatternCategoryDelete(DeleteView):
+    model = PatternCategory
+    template_name = 'pattern/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('pattern_details', kwargs={'pk': self.object.pattern.id, 'tab_id': 3})
+        return context
+
+    def get_success_url(self):
+        self.object.pattern.update_timestamp(user=self.request.user)
+        return reverse('pattern_details', kwargs={'pk': self.object.pattern.id, 'tab_id': 3})
+
+
+@login_required
+def p_category_details(request, pk, tab_id: int):
+    pass

@@ -52,6 +52,19 @@
 
     <div class="tabs-panel {% if tab_id == 3 %}is-active{% endif %}" id="tests">
         <a href="{% url 'p_category_create' p_id=pattern.id %}" class="button small">{% trans "Add" %}</a>
+        {% for p_category in p_categories %}
+        <ul style="list-style: none">
+            <li>
+                <b>{{ forloop.counter }}. {{ p_category.name }}</b>
+                <a href="{% url 'p_category_update' pk=p_category.id %}"><i class="step fi-pencil"></i></a>
+                <a href="{% url 'p_category_delete' pk=p_category.id %}">
+                    <i class="step fi-minus" style="color: #bc104b"></i></a>
+                <blockquote>
+                    <a href="{# url 'test_create' category_id=category.id #}"><i class="step fi-plus"></i></a>
+                </blockquote>
+            </li>
+        </ul>
+        {% endfor %}
     </div>
 
     <div class="tabs-panel {% if tab_id == 4 %}is-active{% endif %}" id="redmine">
