@@ -7,6 +7,8 @@ from .forms import PatternForm, PatternCategoryForm
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from datetime import datetime
+from django.http import HttpResponseRedirect
+from django.db.models import Max, Min
 
 
 class Item(object):
@@ -14,6 +16,11 @@ class Item(object):
     def update_timestamp(foo, user):
         foo.updated_by = user
         foo.updated_at = datetime.now()
+        foo.save()
+
+    @staticmethod
+    def set_priority(foo, priority: int):
+        foo.priority = priority
         foo.save()
 
 
@@ -78,7 +85,7 @@ class PatternDelete(DeleteView):
 @login_required
 def pattern_details(request, pk, tab_id: int):
     pattern = get_object_or_404(Pattern, id=pk)
-    p_categories = PatternCategory.objects.filter(pattern=pattern).order_by('id')
+    p_categories = PatternCategory.objects.filter(pattern=pattern).order_by('priority')
     return render(request, 'pattern/pattern_details.html', {'pattern': pattern, 'p_categories': p_categories,
                                                             'tab_id': tab_id})
 
@@ -98,6 +105,7 @@ class PatternCategoryCreate(CreateView):
         return context
 
     def get_success_url(self):
+        Item.set_priority(foo=self.object, priority=self.object.id)
         Item.update_timestamp(foo=self.object, user=self.request.user)
         Item.update_timestamp(foo=self.object.pattern, user=self.request.user)
         return reverse('pattern_details', kwargs={'pk': self.object.pattern.id, 'tab_id': 3})
@@ -142,3 +150,27 @@ class PatternCategoryDelete(DeleteView):
 def p_category_details(request, pk, tab_id: int):
     p_category = get_object_or_404(PatternCategory, id=pk)
     return render(request, 'pattern/p_category_details.html', {'p_category': p_category, 'tab_id': tab_id})
+
+
+@login_required
+def p_category_up(request, pk):
+    p_category = get_object_or_404(PatternCategory, id=pk)
+    pre_categories = PatternCategory.objects.filter(pattern=p_category.pattern,
+                                                    priority__lt=p_category.priority).aggregate(Max('priority'))
+    pre_p_category = get_object_or_404(PatternCategory, pattern=p_category.pattern,
+                                       priority=pre_categories['priority__max'])
+    Item.set_priority(foo=pre_p_category, priority=p_category.priority)
+    Item.set_priority(foo=p_category, priority=pre_categories['priority__max'])
+    return HttpResponseRedirect(reverse('pattern_details', kwargs={'pk': p_category.pattern.id, 'tab_id': 3}))
+
+
+@login_required
+def p_category_down(request, pk):
+    p_category = get_object_or_404(PatternCategory, id=pk)
+    next_categories = PatternCategory.objects.filter(pattern=p_category.pattern,
+                                                     priority__gt=p_category.priority).aggregate(Min('priority'))
+    next_p_category = get_object_or_404(PatternCategory, pattern=p_category.pattern,
+                                        priority=next_categories['priority__min'])
+    Item.set_priority(foo=next_p_category, priority=p_category.priority)
+    Item.set_priority(foo=p_category, priority=next_categories['priority__min'])
+    return HttpResponseRedirect(reverse('pattern_details', kwargs={'pk': p_category.pattern.id, 'tab_id': 3}))

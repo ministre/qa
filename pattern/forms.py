@@ -21,6 +21,6 @@ class PatternCategoryForm(ModelForm):
             'name': _('Name'),
         }
         fields = '__all__'
-        widgets = {'pattern': HiddenInput(),
+        widgets = {'pattern': HiddenInput(), 'priority': HiddenInput(),
                    'created_by': HiddenInput(), 'created_at': HiddenInput(),
                    'updated_by': HiddenInput(), 'updated_at': HiddenInput()}
