@@ -303,6 +303,7 @@ class TestCreate(CreateView):
         return context
 
     def get_success_url(self):
+        Item.set_priority(foo=self.object, priority=self.object.id)
         self.object.category.testplan.update_timestamp(user=self.request.user)
         return reverse('testplan_details', kwargs={'pk': self.object.category.testplan.id, 'tab_id': 3})
 
@@ -372,6 +373,28 @@ def test_details(request, pk, tab_id):
                                                           'worksheets_count': worksheets_count, 'links': links,
                                                           'comments': comments, 'redmine_form': redmine_form,
                                                           'redmine_url': settings.REDMINE_URL})
+
+
+@login_required
+def t_test_up(request, pk):
+    t_test = get_object_or_404(Test, id=pk)
+    pre_tests = Test.objects.filter(category=t_test.category,
+                                    priority__lt=t_test.priority).aggregate(Max('priority'))
+    pre_t_test = get_object_or_404(Test, category=t_test.category, priority=pre_tests['priority__max'])
+    Item.set_priority(foo=pre_t_test, priority=t_test.priority)
+    Item.set_priority(foo=t_test, priority=pre_tests['priority__max'])
+    return HttpResponseRedirect(reverse('testplan_details', kwargs={'pk': t_test.category.testplan.id, 'tab_id': 3}))
+
+
+@login_required
+def t_test_down(request, pk):
+    t_test = get_object_or_404(Test, id=pk)
+    next_tests = Test.objects.filter(category=t_test.category,
+                                     priority__gt=t_test.priority).aggregate(Min('priority'))
+    next_t_test = get_object_or_404(Test, category=t_test.category, priority=next_tests['priority__min'])
+    Item.set_priority(foo=next_t_test, priority=t_test.priority)
+    Item.set_priority(foo=t_test, priority=next_tests['priority__min'])
+    return HttpResponseRedirect(reverse('testplan_details', kwargs={'pk': t_test.category.testplan.id, 'tab_id': 3}))
 
 
 @method_decorator(login_required, name='dispatch')

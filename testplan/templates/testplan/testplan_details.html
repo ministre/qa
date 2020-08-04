@@ -95,11 +95,18 @@
                 <a href="{% url 't_category_down' pk=t_category.id %}"><i class="step fi-arrow-down" style="color: #ff4f12"></i></a>
                 {% endif %}
 
-                {% for test in t_category.category_test.all|dictsort:"id" %}
+                {% for t_test in t_category.category_test.all|dictsort:"priority" %}
                 <ul style="list-style: none">
                     <li>
-                        <a href="{% url 'test_details' pk=test.id tab_id=1 %}">
-                            {{forloop.parentloop.counter}}.{{ forloop.counter }}. {{ test.name }}</a>
+                        <a href="{% url 'test_details' pk=t_test.id tab_id=1 %}">
+                            {{ forloop.parentloop.counter}}.{{ forloop.counter }}. {{ t_test.name }}
+                        </a>
+                        {% if forloop.counter != 1 %}
+                        <a href="{% url 't_test_up' pk=t_test.id %}"><i class="step fi-arrow-up" style="color: #ff4f12"></i></a>
+                        {% endif %}
+                        {% if forloop.counter != t_category.category_test.all.count %}
+                        <a href="{% url 't_test_down' pk=t_test.id %}"><i class="step fi-arrow-down" style="color: #ff4f12"></i></a>
+                        {% endif %}
                     </li>
                 </ul>
                 {% endfor %}

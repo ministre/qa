@@ -28,6 +28,8 @@ urlpatterns = [
     path('test/update/<int:pk>/', views.TestUpdate.as_view(), name='test_update'),
     path('test/<int:pk>/<int:tab_id>/', views.test_details, name='test_details'),
     path('clear_tests/<int:tp_id>/', views.clear_tests, name='clear_tests'),
+    path('test/up/<int:pk>/', views.t_test_up, name='t_test_up'),
+    path('test/down/<int:pk>/', views.t_test_down, name='t_test_down'),
     # configs
     path('config/create/<int:test_id>/', views.TestConfigCreate.as_view(), name='test_config_create'),
     path('config/delete/<int:pk>/', views.TestConfigDelete.as_view(), name='test_config_delete'),
