@@ -87,9 +87,10 @@ class Test(models.Model):
     purpose = models.TextField(max_length=5000, null=True, blank=True)
     procedure = models.TextField(null=True, blank=True)
     expected = models.TextField(null=True, blank=True)
-    created_by = models.ForeignKey(User, related_name='test_c', on_delete=models.CASCADE, blank=True, null=True)
+    priority = models.IntegerField(default=0)
+    created_by = models.ForeignKey(User, related_name='t_t_c', on_delete=models.CASCADE, blank=True, null=True)
     created_at = models.DateTimeField(default=datetime.now, blank=True)
-    updated_by = models.ForeignKey(User, related_name='test_u', on_delete=models.CASCADE, blank=True, null=True)
+    updated_by = models.ForeignKey(User, related_name='t_t_u', on_delete=models.CASCADE, blank=True, null=True)
     updated_at = models.DateTimeField(default=datetime.now, blank=True)
     redmine_wiki = models.CharField(max_length=1000, null=True, blank=True)
 
