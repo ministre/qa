@@ -15,10 +15,13 @@ urlpatterns = [
     path('chapter/update/<int:pk>/', views.ChapterUpdate.as_view(), name='chapter_update'),
     path('chapter/<int:pk>/<int:tab_id>/', views.chapter_details, name='chapter_details'),
     path('clear_chapters/<int:tp_id>/', views.clear_chapters, name='clear_chapters'),
-    # categories
-    path('category/create/<int:tp_id>/', views.CategoryCreate.as_view(), name='category_create'),
-    path('category/delete/<int:pk>/', views.CategoryDelete.as_view(), name='category_delete'),
-    path('category/update/<int:pk>/', views.CategoryUpdate.as_view(), name='category_update'),
+    # testplan categories
+    path('category/create/<int:t_id>/', views.TestplanCategoryCreate.as_view(), name='t_category_create'),
+    path('category/update/<int:pk>/', views.TestplanCategoryUpdate.as_view(), name='t_category_update'),
+    path('category/delete/<int:pk>/', views.TestplanCategoryDelete.as_view(), name='t_category_delete'),
+    path('category/<int:pk>/<int:tab_id>/', views.t_category_details, name='t_category_details'),
+    path('category/up/<int:pk>/', views.t_category_up, name='t_category_up'),
+    path('category/down/<int:pk>/', views.t_category_down, name='t_category_down'),
     # tests
     path('test/create/<int:category_id>/', views.TestCreate.as_view(), name='test_create'),
     path('test/delete/<int:pk>/', views.TestDelete.as_view(), name='test_delete'),

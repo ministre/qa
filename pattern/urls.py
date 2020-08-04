@@ -8,7 +8,7 @@ urlpatterns = [
     path('update/<int:pk>/', views.PatternUpdate.as_view(), name='pattern_update'),
     path('delete/<int:pk>/', views.PatternDelete.as_view(), name='pattern_delete'),
     path('<int:pk>/<int:tab_id>/', views.pattern_details, name='pattern_details'),
-    # category
+    # pattern categories
     path('category/create/<int:p_id>/', views.PatternCategoryCreate.as_view(), name='p_category_create'),
     path('category/update/<int:pk>/', views.PatternCategoryUpdate.as_view(), name='p_category_update'),
     path('category/delete/<int:pk>/', views.PatternCategoryDelete.as_view(), name='p_category_delete'),

@@ -6,7 +6,7 @@
 
 <p><a href="{% url 'patterns' %}">{% trans "Patterns" %}</a> &raquo; {{ pattern.name }}</p>
 
-<ul class="tabs" data-tabs id="testplan-tabs">
+<ul class="tabs" data-tabs id="pattern-tabs">
     <li class="tabs-title {% if tab_id == 1 %} is-active{% endif %}">
         <a data-tabs-target="general" href="#general">{% trans "General" %}</a>
     </li>
@@ -23,7 +23,7 @@
     </li>
 </ul>
 
-<div class="tabs-content" data-tabs-content="testplan-tabs">
+<div class="tabs-content" data-tabs-content="pattern-tabs">
     <div class="tabs-panel {% if tab_id == 1 %}is-active{% endif %}" id="general">
         <a href="{% url 'pattern_update' pk=pattern.id %}" class="button small">{% trans "Update" %}</a>
         <a href="{% url 'pattern_delete' pk=pattern.id %}" class="button alert small">{% trans "Delete" %}</a>

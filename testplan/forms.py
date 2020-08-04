@@ -24,14 +24,16 @@ class TestplanForm(ModelForm):
         self.fields['redmine_parent'].initial = 'testplans'
 
 
-class CategoryForm(ModelForm):
+class TestplanCategoryForm(ModelForm):
     class Meta:
         model = Category
         labels = {
             'name': _('Name'),
         }
         fields = '__all__'
-        widgets = {'testplan': HiddenInput()}
+        widgets = {'testplan': HiddenInput(), 'priority': HiddenInput(),
+                   'created_by': HiddenInput(), 'created_at': HiddenInput(),
+                   'updated_by': HiddenInput(), 'updated_at': HiddenInput()}
 
 
 class ChapterForm(ModelForm):
