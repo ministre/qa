@@ -81,7 +81,13 @@
         {% for t_category in t_categories %}
         <ul style="list-style: none">
             <li>
-                <b><a href="{% url 't_category_details' pk=t_category.id tab_id=1 %}">{{ forloop.counter }}. {{ t_category.name }}</a></b>
+                <a href="{% url 't_category_details' pk=t_category.id tab_id=1 %}"
+                   style="font-weight: bold; color: black; padding: 10px;"
+                   onmouseover="this.style.color='red';"
+                   onmouseout="this.style.color='black';">
+                    {{ forloop.counter }}. {{ t_category.name }}
+                </a>
+
                 {% if forloop.counter != 1 %}
                 <a href="{% url 't_category_up' pk=t_category.id %}"><i class="step fi-arrow-up" style="color: #ff4f12"></i></a>
                 {% endif %}
