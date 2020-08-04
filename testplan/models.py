@@ -66,14 +66,19 @@ class Chapter(models.Model):
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=1000)
     testplan = models.ForeignKey(Testplan, on_delete=models.CASCADE)
+    name = models.CharField(max_length=1000)
+    priority = models.IntegerField(default=0)
+    created_by = models.ForeignKey(User, related_name='t_c_c', on_delete=models.CASCADE, blank=True, null=True)
+    created_at = models.DateTimeField(default=datetime.now)
+    updated_by = models.ForeignKey(User, related_name='t_c_u', on_delete=models.CASCADE, blank=True, null=True)
+    updated_at = models.DateTimeField(default=datetime.now)
 
     def __str__(self):
         return self.name
 
     class Meta:
-        verbose_name_plural = "Categories"
+        verbose_name_plural = "Testplan Categories"
 
 
 class Test(models.Model):
