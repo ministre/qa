@@ -5,8 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView, UpdateView, DeleteView
 from .models import Testplan, Category, Chapter, Test, TestConfig, TestImage, TestFile, TestChecklist, \
     TestChecklistItem, TestIntegerValue, TestLink, TestComment, DeviceType
-from .forms import TestplanForm, CategoryForm, ChapterForm, TestForm, TestConfigForm, TestImageForm, TestFileForm,\
-    TestChecklistForm, TestChecklistItemForm, TestIntegerValueForm, TestLinkForm, TestCommentForm
+from .forms import TestplanForm, TestplanCategoryForm, ChapterForm, TestForm, TestConfigForm, TestImageForm, \
+    TestFileForm, TestChecklistForm, TestChecklistItemForm, TestIntegerValueForm, TestLinkForm, TestCommentForm
 from docx_builder.forms import DocxTestplanForm
 from redmine.forms import RedmineChapterForm, RedmineTestForm, RedmineExportTestplanForm, RedmineImportTestplanForm
 from django.http import HttpResponseRedirect
@@ -14,6 +14,20 @@ import textile
 from datetime import datetime
 from qa import settings
 from django.utils.translation import gettext_lazy as _
+from django.db.models import Max, Min
+
+
+class Item(object):
+    @staticmethod
+    def update_timestamp(foo, user):
+        foo.updated_by = user
+        foo.updated_at = datetime.now()
+        foo.save()
+
+    @staticmethod
+    def set_priority(foo, priority: int):
+        foo.priority = priority
+        foo.save()
 
 
 @login_required
@@ -77,7 +91,7 @@ class TestplanUpdate(UpdateView):
 def testplan_details(request, pk, tab_id):
     testplan = get_object_or_404(Testplan, id=pk)
     chapters = Chapter.objects.filter(testplan=testplan).order_by('id')
-    categories = Category.objects.filter(testplan=testplan).order_by('id')
+    t_categories = Category.objects.filter(testplan=testplan).order_by('priority')
     protocols_count = testplan.protocols_count()
     redmine_export_form = RedmineExportTestplanForm(initial={'parent': testplan.redmine_parent,
                                                              'project': testplan.redmine_project,
@@ -92,7 +106,7 @@ def testplan_details(request, pk, tab_id):
                                           'purpose': True, 'procedure': True, 'expected': True, 'configs': True,
                                           'images': True, 'checklists': True, 'links': True, 'comments': False})
     return render(request, 'testplan/testplan_details.html', {'tab_id': tab_id, 'testplan': testplan,
-                                                              'categories': categories,
+                                                              't_categories': t_categories,
                                                               'chapters': chapters,
                                                               'tests_count': testplan.tests_count(),
                                                               'protocols_count': protocols_count,
@@ -187,53 +201,89 @@ def testplan_clone(request, pk):
 
 
 @method_decorator(login_required, name='dispatch')
-class CategoryCreate(CreateView):
+class TestplanCategoryCreate(CreateView):
     model = Category
-    form_class = CategoryForm
+    form_class = TestplanCategoryForm
     template_name = 'testplan/create.html'
 
     def get_initial(self):
-        return {'testplan': self.kwargs.get('tp_id')}
+        return {'testplan': self.kwargs.get('t_id'), 'created_by': self.request.user, 'updated_by': self.request.user}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('testplan_details', kwargs={'pk': self.kwargs.get('tp_id'), 'tab_id': 3})
+        context['back_url'] = reverse('testplan_details', kwargs={'pk': self.kwargs.get('t_id'), 'tab_id': 3})
         return context
 
     def get_success_url(self):
-        self.object.testplan.update_timestamp(user=self.request.user)
+        Item.set_priority(foo=self.object, priority=self.object.id)
+        Item.update_timestamp(foo=self.object, user=self.request.user)
+        Item.update_timestamp(foo=self.object.testplan, user=self.request.user)
         return reverse('testplan_details', kwargs={'pk': self.object.testplan.id, 'tab_id': 3})
 
 
 @method_decorator(login_required, name='dispatch')
-class CategoryDelete(DeleteView):
+class TestplanCategoryUpdate(UpdateView):
+    model = Category
+    form_class = TestplanCategoryForm
+    template_name = 'testplan/update.html'
+
+    def get_initial(self):
+        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('t_category_details', kwargs={'pk': self.object.id, 'tab_id': 1})
+        return context
+
+    def get_success_url(self):
+        Item.update_timestamp(foo=self.object, user=self.request.user)
+        Item.update_timestamp(foo=self.object.testplan, user=self.request.user)
+        return reverse('testplan_details', kwargs={'pk': self.object.testplan.id, 'tab_id': 3})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestplanCategoryDelete(DeleteView):
     model = Category
     template_name = 'testplan/delete.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('testplan_details', kwargs={'pk': self.object.testplan.id, 'tab_id': 3})
+        context['back_url'] = reverse('t_category_details', kwargs={'pk': self.object.id, 'tab_id': 1})
         return context
 
     def get_success_url(self):
-        self.object.testplan.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.testplan, user=self.request.user)
         return reverse('testplan_details', kwargs={'pk': self.object.testplan.id, 'tab_id': 3})
 
 
-@method_decorator(login_required, name='dispatch')
-class CategoryUpdate(UpdateView):
-    model = Category
-    form_class = CategoryForm
-    template_name = 'testplan/update.html'
+@login_required
+def t_category_details(request, pk, tab_id: int):
+    t_category = get_object_or_404(Category, id=pk)
+    return render(request, 'testplan/t_category_details.html', {'t_category': t_category, 'tab_id': tab_id})
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('testplan_details', kwargs={'pk': self.object.testplan.id, 'tab_id': 3})
-        return context
 
-    def get_success_url(self):
-        self.object.testplan.update_timestamp(user=self.request.user)
-        return reverse('testplan_details', kwargs={'pk': self.object.testplan.id, 'tab_id': 3})
+@login_required
+def t_category_up(request, pk):
+    t_category = get_object_or_404(Category, id=pk)
+    pre_categories = Category.objects.filter(testplan=t_category.testplan,
+                                             priority__lt=t_category.priority).aggregate(Max('priority'))
+    pre_t_category = get_object_or_404(Category, testplan=t_category.testplan,
+                                       priority=pre_categories['priority__max'])
+    Item.set_priority(foo=pre_t_category, priority=t_category.priority)
+    Item.set_priority(foo=t_category, priority=pre_categories['priority__max'])
+    return HttpResponseRedirect(reverse('testplan_details', kwargs={'pk': t_category.testplan.id, 'tab_id': 3}))
+
+
+@login_required
+def t_category_down(request, pk):
+    t_category = get_object_or_404(Category, id=pk)
+    next_categories = Category.objects.filter(testplan=t_category.testplan,
+                                              priority__gt=t_category.priority).aggregate(Min('priority'))
+    next_t_category = get_object_or_404(Category, testplan=t_category.testplan,
+                                        priority=next_categories['priority__min'])
+    Item.set_priority(foo=next_t_category, priority=t_category.priority)
+    Item.set_priority(foo=t_category, priority=next_categories['priority__min'])
+    return HttpResponseRedirect(reverse('testplan_details', kwargs={'pk': t_category.testplan.id, 'tab_id': 3}))
 
 
 @method_decorator(login_required, name='dispatch')
@@ -253,6 +303,7 @@ class TestCreate(CreateView):
         return context
 
     def get_success_url(self):
+        Item.set_priority(foo=self.object, priority=self.object.id)
         self.object.category.testplan.update_timestamp(user=self.request.user)
         return reverse('testplan_details', kwargs={'pk': self.object.category.testplan.id, 'tab_id': 3})
 
@@ -322,6 +373,28 @@ def test_details(request, pk, tab_id):
                                                           'worksheets_count': worksheets_count, 'links': links,
                                                           'comments': comments, 'redmine_form': redmine_form,
                                                           'redmine_url': settings.REDMINE_URL})
+
+
+@login_required
+def t_test_up(request, pk):
+    t_test = get_object_or_404(Test, id=pk)
+    pre_tests = Test.objects.filter(category=t_test.category,
+                                    priority__lt=t_test.priority).aggregate(Max('priority'))
+    pre_t_test = get_object_or_404(Test, category=t_test.category, priority=pre_tests['priority__max'])
+    Item.set_priority(foo=pre_t_test, priority=t_test.priority)
+    Item.set_priority(foo=t_test, priority=pre_tests['priority__max'])
+    return HttpResponseRedirect(reverse('testplan_details', kwargs={'pk': t_test.category.testplan.id, 'tab_id': 3}))
+
+
+@login_required
+def t_test_down(request, pk):
+    t_test = get_object_or_404(Test, id=pk)
+    next_tests = Test.objects.filter(category=t_test.category,
+                                     priority__gt=t_test.priority).aggregate(Min('priority'))
+    next_t_test = get_object_or_404(Test, category=t_test.category, priority=next_tests['priority__min'])
+    Item.set_priority(foo=next_t_test, priority=t_test.priority)
+    Item.set_priority(foo=t_test, priority=next_tests['priority__min'])
+    return HttpResponseRedirect(reverse('testplan_details', kwargs={'pk': t_test.category.testplan.id, 'tab_id': 3}))
 
 
 @method_decorator(login_required, name='dispatch')
