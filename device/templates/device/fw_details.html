@@ -62,5 +62,9 @@
         </table>
     </div>
 
+    <div class="tabs-panel{% if tab_id == 2 %} is-active{% endif %}" id="changelog">
+        <pre><code>{{ fw.changelog|safe }}</code></pre>
+    </div>
+
 </div>
 {% endblock %}
