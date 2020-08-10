@@ -1,8 +1,7 @@
 from django.shortcuts import render
 from .models import Vendor, DeviceChecklist, DeviceChecklistItem, DeviceSlist, DeviceSlistItem, DeviceTextField, \
     DeviceIntegerField, DeviceTypeSpecification, CustomField, CustomFieldItem, DeviceType, Device, DevicePhoto, \
-    Sample, Specification
-from firmware.models import Firmware
+    Sample, Specification, Firmware
 from docum.models import Docum
 from protocol.models import Protocol
 from feature.models import FeatureList
