@@ -1,9 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
-from device.models import Device, Sample
+from device.models import Device, Sample, Firmware
 from testplan.models import Testplan, Test
-from firmware.models import Firmware
 
 
 class Resolution(models.Model):
