@@ -320,6 +320,7 @@ class Firmware(models.Model):
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
     version = models.CharField(max_length=300)
     description = models.CharField(max_length=1000, blank=True, null=True)
+    changelog = models.TextField(null=True, blank=True)
     # file = models.FileField(upload_to="device/firmware/", blank=True, null=True)
     # checksum = models.CharField(max_length=300, blank=True, null=True)
     # sysinfo_cli = models.TextField(null=True, blank=True)
