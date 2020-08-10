@@ -15,7 +15,7 @@ class Resolution(models.Model):
 class Protocol(models.Model):
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
     testplan = models.ForeignKey(Testplan, on_delete=models.CASCADE)
-    firmware = models.ForeignKey(Firmware, on_delete=models.CASCADE)
+    # firmware = models.ForeignKey(Firmware, on_delete=models.CASCADE)
     started = models.DateField(default=datetime.now, blank=True)
     completed = models.DateField(blank=True, null=True)
     status = models.ForeignKey(Resolution, on_delete=models.CASCADE, blank=True, null=True)
