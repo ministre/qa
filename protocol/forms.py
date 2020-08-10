@@ -9,7 +9,7 @@ class ProtocolForm(ModelForm):
         labels = {
             'device': _('Device'),
             'testplan': _('Testplan'),
-            'firmware': _('Firmware'),
+            #'firmware': _('Firmware'),
             'started': _('Date of start'),
             'completed': _('Date of completion'),
             'status': _('Status'),
