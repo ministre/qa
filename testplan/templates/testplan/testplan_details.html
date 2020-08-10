@@ -107,6 +107,13 @@
                         {% if forloop.counter != t_category.category_test.all.count %}
                         <a href="{% url 't_test_down' pk=t_test.id %}"><i class="step fi-arrow-down" style="color: #ff4f12"></i></a>
                         {% endif %}
+                        <a href="{% url 't_test_copy' pk=t_test.id %}">
+                            <i class="step fi-page-copy" style="color: #ff4f12"></i>
+                        </a>
+                        <a href="{% url 't_test_move' pk=t_test.id %}">
+                            <i class="step fi-page-export" style="color: #ff4f12"></i>
+                        </a>
+
                     </li>
                 </ul>
                 {% endfor %}

@@ -15,6 +15,7 @@ from datetime import datetime
 from qa import settings
 from django.utils.translation import gettext_lazy as _
 from django.db.models import Max, Min
+from django import forms
 
 
 class Item(object):
@@ -341,6 +342,60 @@ class TestUpdate(UpdateView):
     def get_success_url(self):
         self.object.category.testplan.update_timestamp(user=self.request.user)
         return reverse('test_details', kwargs={'pk': self.object.id, 'tab_id': 1})
+
+
+@login_required
+def t_test_move(request, pk):
+    test = get_object_or_404(Test, id=pk)
+    if request.method == 'POST':
+        form = TestForm(request.POST)
+        if form.is_valid():
+            test.category = get_object_or_404(Category, id=request.POST['category'])
+            test.save()
+            return HttpResponseRedirect(reverse('testplan_details', kwargs={'pk': test.category.testplan.id,
+                                                                            'tab_id': 3}))
+    else:
+        test = get_object_or_404(Test, id=pk)
+        categories = Category.objects.filter(testplan=test.category.testplan)
+        cat_choices = []
+        for category in categories:
+            cat_choices.append((category.id, category.name))
+        form = TestForm(initial={'category': test.category, 'name': test.name, 'purpose': test.purpose,
+                                 'procedure': test.procedure, 'expected': test.expected,
+                                 'redmine_wiki': test.redmine_wiki})
+        form.fields['category'].widget = forms.Select(choices=cat_choices)
+        form.fields['name'].widget = forms.HiddenInput()
+        form.fields['purpose'].widget = forms.HiddenInput()
+        form.fields['procedure'].widget = forms.HiddenInput()
+        form.fields['expected'].widget = forms.HiddenInput()
+        form.fields['redmine_wiki'].widget = forms.HiddenInput()
+        back_url = reverse('testplan_details', kwargs={'pk': test.category.testplan.id, 'tab_id': 3})
+        return render(request, 'testplan/update.html', {'form': form, 'back_url': back_url})
+
+
+@login_required
+def t_test_copy(request, pk):
+    test = get_object_or_404(Test, id=pk)
+    if request.method == 'POST':
+        form = TestForm(request.POST)
+        if form.is_valid():
+            new_test = form.save()
+            new_test.priority = new_test.id
+            new_test.save()
+            return HttpResponseRedirect(reverse('testplan_details', kwargs={'pk': test.category.testplan.id,
+                                                                            'tab_id': 3}))
+    else:
+        test = get_object_or_404(Test, id=pk)
+        categories = Category.objects.filter(testplan=test.category.testplan)
+        cat_choices = []
+        for category in categories:
+            cat_choices.append((category.id, category.name))
+        form = TestForm(initial={'category': test.category, 'name': test.name, 'purpose': test.purpose,
+                                 'procedure': test.procedure, 'expected': test.expected, 'priority': test.priority,
+                                 'redmine_wiki': test.redmine_wiki})
+        form.fields['category'].widget = forms.Select(choices=cat_choices)
+        back_url = reverse('testplan_details', kwargs={'pk': test.category.testplan.id, 'tab_id': 3})
+        return render(request, 'testplan/create.html', {'form': form, 'back_url': back_url})
 
 
 @login_required
