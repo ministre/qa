@@ -5,9 +5,8 @@ from django.contrib.auth.decorators import login_required
 from .models import Protocol, TestResult
 from .forms import ProtocolForm
 from django.urls import reverse
-from firmware.models import Firmware
 from testplan.models import Testplan, Category, Test
-from device.models import Device, Sample
+from device.models import Device, Sample, Firmware
 from datetime import datetime
 from django import forms
 from django.shortcuts import get_object_or_404
