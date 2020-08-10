@@ -24,7 +24,6 @@ urlpatterns = [
     path('', include('device.urls')),
     path('auth/', include('django.contrib.auth.urls')),
     path('device/', include('device.urls')),
-    path('firmware/', include('firmware.urls')),
     path('docum/', include('docum.urls')),
     path('testplan/', include('testplan.urls')),
     path('redmine/', include('redmine.urls')),
