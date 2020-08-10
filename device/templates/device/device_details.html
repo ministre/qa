@@ -104,7 +104,7 @@
             <tr data-href="{% url 'fw_details' pk=fw.id tab_id=1 %}">
                 <td>{{ fw.id }}</td>
                 <td>{{ fw.version }}</td>
-                <td>{{ fw.description }}</td>
+                <td>{% if fw.description %}{{ fw.description }}{% endif %}</td>
             </tr>
             {% endfor %}
             </tbody>

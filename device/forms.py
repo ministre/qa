@@ -220,6 +220,7 @@ class FirmwareForm(ModelForm):
         model = Firmware
         labels = {
             'version': _('FW Version'),
+            'checksum': _('Checksum'),
             'description': _('Description'),
         }
         fields = '__all__'

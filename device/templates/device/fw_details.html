@@ -47,6 +47,10 @@
                 <td>{{ fw.version }}</td>
             </tr>
             <tr>
+                <td>{% trans "Checksum" %}:</td>
+                <td>{% if fw.checksum %}{{ fw.checksum }}{% endif %}</td>
+            </tr>
+            <tr>
                 <td>{% trans "Description" %}:</td>
                 <td>{% if fw.description %}{{ fw.description }}{% endif %}</td>
             </tr>
