@@ -2,8 +2,6 @@
 #from device.models import Device
 #from django.contrib.auth.models import User
 #from datetime import datetime
-
-
 #class Firmware(models.Model):
 #    device = models.ForeignKey(Device, on_delete=models.CASCADE)
 #    version = models.CharField(max_length=300)
