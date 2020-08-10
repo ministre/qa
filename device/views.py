@@ -7,7 +7,7 @@ from protocol.models import Protocol
 from feature.models import FeatureList
 from .forms import VendorForm, DeviceChecklistForm, DeviceChecklistItemForm, DeviceSlistForm, DeviceSlistItemForm, \
     DeviceTextFieldForm, DeviceIntegerFieldForm, DeviceTypeSpecificationForm, CustomFieldForm, CustomFieldItemForm, \
-    DeviceTypeForm, DeviceForm, DevicePhotoForm, SampleForm
+    DeviceTypeForm, DeviceForm, DevicePhotoForm, SampleForm, FirmwareForm
 from redmine.forms import ExportDeviceTypeForm, ImportDeviceTypeForm
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.urls import reverse
@@ -746,10 +746,10 @@ def device_details(request, pk, tab_id):
     samples = Sample.objects.filter(device=device)
     protocols = Protocol.objects.filter(device=device)
     redmine_url = settings.REDMINE_URL
-    return render(request, 'device/details.html', {'device': device, 'specs': specs, 'fws': fws,
-                                                   'photos': photos, 'docums': docums, 'samples': samples,
-                                                   'protocols': protocols, 'redmine_url': redmine_url,
-                                                   'tab_id': tab_id})
+    return render(request, 'device/device_details.html', {'device': device, 'specs': specs, 'fws': fws,
+                                                          'photos': photos, 'docums': docums, 'samples': samples,
+                                                          'protocols': protocols, 'redmine_url': redmine_url,
+                                                          'tab_id': tab_id})
 
 
 @login_required
@@ -879,3 +879,60 @@ class SampleDelete(DeleteView):
 
     def get_success_url(self):
         return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id'), 'tab_id': 6})
+
+
+@method_decorator(login_required, name='dispatch')
+class FirmwareCreate(CreateView):
+    model = Firmware
+    form_class = FirmwareForm
+    template_name = 'device/create.html'
+
+    def get_initial(self):
+        return {'device': self.kwargs.get('d_id'),
+                'created_by': self.request.user, 'updated_by': self.request.user}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('device_details', kwargs={'pk': self.kwargs.get('d_id'), 'tab_id': 3})
+        return context
+
+    def get_success_url(self):
+        return reverse('device_details', kwargs={'pk': self.kwargs.get('d_id'), 'tab_id': 3})
+
+
+@method_decorator(login_required, name='dispatch')
+class FirmwareUpdate(UpdateView):
+    model = Firmware
+    form_class = FirmwareForm
+    template_name = 'device/update.html'
+
+    def get_initial(self):
+        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('fw_details', kwargs={'pk': self.object.id, 'tab_id': 1})
+        return context
+
+    def get_success_url(self):
+        return reverse('fw_details', kwargs={'pk': self.object.id, 'tab_id': 1})
+
+
+@method_decorator(login_required, name='dispatch')
+class FirmwareDelete(DeleteView):
+    model = Firmware
+    template_name = 'device/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('fw_details', kwargs={'pk': self.object.id, 'tab_id': 1})
+        return context
+
+    def get_success_url(self):
+        return reverse('device_details', kwargs={'pk': self.object.device.id, 'tab_id': 3})
+
+
+@login_required
+def fw_details(request, pk, tab_id: int):
+    fw = get_object_or_404(Firmware, id=pk)
+    return render(request, 'device/fw_details.html', {'fw': fw, 'tab_id': tab_id})

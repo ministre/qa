@@ -1,7 +1,7 @@
 from django.forms import ModelForm, HiddenInput
 from device.models import Vendor, DeviceChecklist, DeviceChecklistItem, DeviceSlist, DeviceSlistItem, \
     DeviceTextField, DeviceIntegerField, DeviceType, DeviceTypeSpecification, CustomField, CustomFieldItem, Device, \
-    DevicePhoto, Sample
+    DevicePhoto, Sample, Firmware
 from django.utils.translation import gettext_lazy as _
 from django import forms
 
@@ -208,6 +208,19 @@ class SampleForm(ModelForm):
             'user_password': _('User Password'),
             'support_login': _('Support Login'),
             'support_password': _('Support Password'),
+        }
+        fields = '__all__'
+        widgets = {'device': HiddenInput(),
+                   'created_by': HiddenInput(), 'created_at': HiddenInput(),
+                   'updated_by': HiddenInput(), 'updated_at': HiddenInput()}
+
+
+class FirmwareForm(ModelForm):
+    class Meta:
+        model = Firmware
+        labels = {
+            'version': _('FW Version'),
+            'description': _('Description'),
         }
         fields = '__all__'
         widgets = {'device': HiddenInput(),

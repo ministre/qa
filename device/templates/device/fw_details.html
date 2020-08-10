@@ -1,0 +1,66 @@
+{% extends "device/wrapper.html" %}
+
+{% load i18n static %}
+
+{% block content %}
+
+<p>
+    <a href="{% url 'devices' %}">{% trans "Devices" %}</a>
+    &raquo;
+    <a href="{% url 'device_details' pk=fw.device.id tab_id=3 %}">{{ fw.device.vendor }} {{ fw.device.model }}
+        ({{ fw.device.hw }})
+    </a>
+    &raquo;
+    {{ fw.version }}
+</p>
+
+<ul class="tabs" data-tabs id="fw-tabs">
+    <li class="tabs-title{% if tab_id == 1 %} is-active{% endif %}">
+        <a href="#general" aria-selected="true">{% trans "General" %}</a>
+    </li>
+    <li class="tabs-title{% if tab_id == 2 %} is-active{% endif %}">
+        <a href="#changelog" aria-selected="true">{% trans "Changelog" %}</a>
+    </li>
+    <li class="tabs-title{% if tab_id == 3 %} is-active{% endif %}">
+        <a href="#accounts" aria-selected="true">{% trans "Accounts" %}</a>
+    </li>
+    <li class="tabs-title{% if tab_id == 4 %} is-active{% endif %}">
+        <a href="#files" aria-selected="true">{% trans "Files" %}</a>
+    </li>
+    <li class="tabs-title{% if tab_id == 5 %} is-active{% endif %}">
+        <a href="#configs" aria-selected="true">{% trans "Configurations" %}</a>
+    </li>
+    <li class="tabs-title{% if tab_id == 6 %} is-active{% endif %}">
+        <a href="#screenshots" aria-selected="true">{% trans "Screenshots" %}</a>
+    </li>
+</ul>
+
+<div class="tabs-content" data-tabs-content="fw-tabs">
+    <div class="tabs-panel{% if tab_id == 1 %} is-active{% endif %}" id="general">
+        <a href="{% url 'fw_update' pk=fw.id %}" class="button small">{% trans "Update" %}</a>
+        <a href="{% url 'fw_delete' pk=fw.id %}" class="button alert small">{% trans "Delete" %}</a>
+
+        <table class="hover unstriped">
+            <tbody>
+            <tr>
+                <td>{% trans "FW Version" %}:</td>
+                <td>{{ fw.version }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Description" %}:</td>
+                <td>{% if fw.description %}{{ fw.description }}{% endif %}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Created" %}:</td>
+                <td>{{ fw.created_at }} ({{ fw.created_by }})</td>
+            </tr>
+            <tr>
+                <td>{% trans "Last Update" %}:</td>
+                <td>{{ fw.updated_at }} ({{ fw.updated_by }})</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endblock %}

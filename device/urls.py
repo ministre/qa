@@ -89,4 +89,10 @@ urlpatterns = [
     path('sample/<int:device_id>/create/', views.SampleCreate.as_view(), name='sample_create'),
     path('sample/<int:device_id>/update/<int:pk>/', views.SampleUpdate.as_view(), name='sample_update'),
     path('sample/<int:device_id>/delete/<int:pk>/', views.SampleDelete.as_view(), name='sample_delete'),
+
+    # firmware
+    path('fw/create/<int:d_id>/', views.FirmwareCreate.as_view(), name='fw_create'),
+    path('fw/update/<int:pk>/', views.FirmwareUpdate.as_view(), name='fw_update'),
+    path('fw/delete/<int:pk>/', views.FirmwareDelete.as_view(), name='fw_delete'),
+    path('fw/<int:pk>/<int:tab_id>/', views.fw_details, name='fw_details'),
 ]
