@@ -332,3 +332,12 @@ class Firmware(models.Model):
 
     def __str__(self):
         return self.version
+
+
+class FirmwareAccount(models.Model):
+    username = models.CharField(max_length=1000, blank=True, null=True)
+    password = models.CharField(max_length=1000, blank=True, null=True)
+    description = models.CharField(max_length=1000, blank=True, null=True)
+
+    def __str__(self):
+        return self.username
