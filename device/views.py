@@ -1,13 +1,13 @@
 from django.shortcuts import render
 from .models import Vendor, DeviceChecklist, DeviceChecklistItem, DeviceSlist, DeviceSlistItem, DeviceTextField, \
     DeviceIntegerField, DeviceTypeSpecification, CustomField, CustomFieldItem, DeviceType, Device, DevicePhoto, \
-    Sample, Specification, Firmware
+    Sample, Specification, Firmware, FirmwareAccount
 from docum.models import Docum
 from protocol.models import Protocol
 from feature.models import FeatureList
 from .forms import VendorForm, DeviceChecklistForm, DeviceChecklistItemForm, DeviceSlistForm, DeviceSlistItemForm, \
     DeviceTextFieldForm, DeviceIntegerFieldForm, DeviceTypeSpecificationForm, CustomFieldForm, CustomFieldItemForm, \
-    DeviceTypeForm, DeviceForm, DevicePhotoForm, SampleForm, FirmwareForm
+    DeviceTypeForm, DeviceForm, DevicePhotoForm, SampleForm, FirmwareForm, FirmwareAccountForm
 from redmine.forms import ExportDeviceTypeForm, ImportDeviceTypeForm
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.urls import reverse
@@ -936,3 +936,22 @@ class FirmwareDelete(DeleteView):
 def fw_details(request, pk, tab_id: int):
     fw = get_object_or_404(Firmware, id=pk)
     return render(request, 'device/fw_details.html', {'fw': fw, 'tab_id': tab_id})
+
+
+@method_decorator(login_required, name='dispatch')
+class FirmwareAccountCreate(CreateView):
+    model = FirmwareAccount
+    form_class = FirmwareAccountForm
+    template_name = 'device/create.html'
+
+    def get_initial(self):
+        return {'firmware': self.kwargs.get('d_id'),
+                'created_by': self.request.user, 'updated_by': self.request.user}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('device_details', kwargs={'pk': self.kwargs.get('d_id'), 'tab_id': 3})
+        return context
+
+    def get_success_url(self):
+        return reverse('device_details', kwargs={'pk': self.kwargs.get('d_id'), 'tab_id': 3})

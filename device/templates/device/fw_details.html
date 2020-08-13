@@ -70,5 +70,9 @@
         <pre><code>{{ fw.changelog|safe }}</code></pre>
     </div>
 
+    <div class="tabs-panel{% if tab_id == 3 %} is-active{% endif %}" id="accounts">
+        <a href="{% url 'fw_account_create' fw_id=fw.id %}" class="button small">{% trans "Create" %}</a>
+    </div>
+
 </div>
 {% endblock %}
