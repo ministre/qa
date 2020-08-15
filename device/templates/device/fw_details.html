@@ -22,7 +22,9 @@
         <a href="#changelog" aria-selected="true">{% trans "Changelog" %}</a>
     </li>
     <li class="tabs-title{% if tab_id == 3 %} is-active{% endif %}">
-        <a href="#accounts" aria-selected="true">{% trans "Accounts" %}</a>
+        <a href="#accounts" aria-selected="true">{% trans "Accounts" %}
+            {% if fw_accounts.count > 0 %}({{ fw_accounts.count }}){% endif %}
+        </a>
     </li>
     <li class="tabs-title{% if tab_id == 4 %} is-active{% endif %}">
         <a href="#files" aria-selected="true">{% trans "Files" %}</a>
@@ -72,6 +74,35 @@
 
     <div class="tabs-panel{% if tab_id == 3 %} is-active{% endif %}" id="accounts">
         <a href="{% url 'fw_account_create' fw_id=fw.id %}" class="button small">{% trans "Create" %}</a>
+
+        {% if fw_accounts %}
+        <table class="display" style="width:100%">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>{% trans "Username" %}</th>
+                <th>{% trans "Password" %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for fw_account in fw_accounts %}
+            <tr>
+                <td>{{ fw_account.id }}
+                    <a href="{# url 'protocol_update' device_id=device.id pk=protocol.id #}">
+                        <i class="step fi-pencil"></i>
+                    </a>
+                    <a href="{# url 'protocol_delete' device_id=device.id pk=protocol.id #}">
+                        <i class="step fi-minus" style="color: #bc104b"></i>
+                    </a>
+                </td>
+                <td>{{ fw_account.username }}</td>
+                <td>{{ fw_account.password }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+
     </div>
 
 </div>

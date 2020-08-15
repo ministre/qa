@@ -935,7 +935,8 @@ class FirmwareDelete(DeleteView):
 @login_required
 def fw_details(request, pk, tab_id: int):
     fw = get_object_or_404(Firmware, id=pk)
-    return render(request, 'device/fw_details.html', {'fw': fw, 'tab_id': tab_id})
+    fw_accounts = FirmwareAccount.objects.filter(firmware=fw).order_by('id')
+    return render(request, 'device/fw_details.html', {'fw': fw, 'fw_accounts': fw_accounts, 'tab_id': tab_id})
 
 
 @method_decorator(login_required, name='dispatch')
