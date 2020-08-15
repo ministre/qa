@@ -335,7 +335,7 @@ class Firmware(models.Model):
 
 
 class FirmwareAccount(models.Model):
-    firmware = models.ForeignKey(Firmware, on_delete=models.CASCADE)
+    firmware = models.ForeignKey(Firmware, on_delete=models.CASCADE, blank=True, null=True)
     username = models.CharField(max_length=1000, blank=True, null=True)
     password = models.CharField(max_length=1000, blank=True, null=True)
     description = models.CharField(max_length=1000, blank=True, null=True)
