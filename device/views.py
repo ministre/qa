@@ -945,13 +945,12 @@ class FirmwareAccountCreate(CreateView):
     template_name = 'device/create.html'
 
     def get_initial(self):
-        return {'firmware': self.kwargs.get('d_id'),
-                'created_by': self.request.user, 'updated_by': self.request.user}
+        return {'firmware': self.kwargs.get('fw_id')}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('device_details', kwargs={'pk': self.kwargs.get('d_id'), 'tab_id': 3})
+        context['back_url'] = reverse('fw_details', kwargs={'pk': self.kwargs.get('fw_id'), 'tab_id': 3})
         return context
 
     def get_success_url(self):
-        return reverse('device_details', kwargs={'pk': self.kwargs.get('d_id'), 'tab_id': 3})
+        return reverse('fw_details', kwargs={'pk': self.kwargs.get('fw_id'), 'tab_id': 3})
