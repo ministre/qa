@@ -8,7 +8,7 @@
     <a href="{% url 'devices' %}">{% trans "Devices" %}</a>
     &raquo;
     <a href="{% url 'device_details' pk=fw.device.id tab_id=3 %}">{{ fw.device.vendor }} {{ fw.device.model }}
-        ({{ fw.device.hw }})
+        {% if fw.device.hw %}{{ fw.device.hw }}){% endif %}
     </a>
     &raquo;
     {{ fw.version }}
@@ -74,7 +74,9 @@
     </div>
 
     <div class="tabs-panel{% if tab_id == 2 %} is-active{% endif %}" id="changelog">
+        {% if fw.changelog %}
         <pre><code>{{ fw.changelog|safe }}</code></pre>
+        {% endif %}
     </div>
 
     <div class="tabs-panel{% if tab_id == 3 %} is-active{% endif %}" id="accounts">

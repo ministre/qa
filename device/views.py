@@ -692,7 +692,7 @@ def custom_field_update_timestamp(custom_field_id, user):
 class DeviceListView(ListView):
     context_object_name = 'devices'
     queryset = Device.objects.all().order_by('id')
-    template_name = 'device/list.html'
+    template_name = 'device/device_list.html'
 
 
 @method_decorator(login_required, name='dispatch')

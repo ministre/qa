@@ -14,7 +14,7 @@
         <th>{% trans "Model" %}</th>
         <th>{% trans "HW" %}</th>
         <th>{% trans "Type" %}</th>
-        <th>{% trans "Last Update" %}</th>
+        <th>{% trans "Tag" %}</th>
     </tr>
     </thead>
     <tbody>
@@ -23,9 +23,9 @@
         <td>{{ device.id }}</td>
         <td>{{ device.vendor }}</td>
         <td>{{ device.model }}</td>
-        <td>{{ device.hw }}</td>
-        <td>{{ device.type }} ({{ device.type.tag }})</td>
-        <td>{{ device.updated_at }} ({{ device.updated_by }})</td>
+        <td>{% if device.hw %}{{ device.hw }}{% endif %}</td>
+        <td>{{ device.type }}</td>
+        <td>{{ device.type.tag }}</td>
     </tr>
     {% endfor %}
     </tbody>
