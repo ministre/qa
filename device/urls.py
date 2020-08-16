@@ -98,6 +98,11 @@ urlpatterns = [
 
     # firmware account
     path('fw/account/create/<int:fw_id>/', views.FirmwareAccountCreate.as_view(), name='fw_account_create'),
-#    path('fw/account/update/<int:pk>/', views.FirmwareAccountUpdate.as_view(), name='fw_account_update'),
-#    path('fw/account/delete/<int:pk>/', views.FirmwareAccountDelete.as_view(), name='fw_account_delete'),
+    path('fw/account/update/<int:pk>/', views.FirmwareAccountUpdate.as_view(), name='fw_account_update'),
+    path('fw/account/delete/<int:pk>/', views.FirmwareAccountDelete.as_view(), name='fw_account_delete'),
+
+    # firmware howto
+    path('fw/howto/create/<int:fw_id>/', views.FirmwareHowtoCreate.as_view(), name='fw_howto_create'),
+    path('fw/howto/update/<int:pk>/', views.FirmwareHowtoUpdate.as_view(), name='fw_howto_update'),
+    path('fw/howto/delete/<int:pk>/', views.FirmwareHowtoDelete.as_view(), name='fw_howto_delete'),
 ]

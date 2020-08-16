@@ -35,6 +35,11 @@
     <li class="tabs-title{% if tab_id == 6 %} is-active{% endif %}">
         <a href="#screenshots" aria-selected="true">{% trans "Screenshots" %}</a>
     </li>
+    <li class="tabs-title{% if tab_id == 7 %} is-active{% endif %}">
+        <a href="#howto" aria-selected="true">{% trans "HowTo" %}
+            {% if fw_hts.count > 0 %}({{ fw_hts.count }}){% endif %}
+        </a>
+    </li>
 </ul>
 
 <div class="tabs-content" data-tabs-content="fw-tabs">
@@ -88,15 +93,60 @@
             {% for fw_account in fw_accounts %}
             <tr>
                 <td>{{ fw_account.id }}
-                    <a href="{# url 'protocol_update' device_id=device.id pk=protocol.id #}">
+                    <a href="{% url 'fw_account_update' pk=fw_account.id %}">
                         <i class="step fi-pencil"></i>
                     </a>
-                    <a href="{# url 'protocol_delete' device_id=device.id pk=protocol.id #}">
+                    <a href="{% url 'fw_account_delete' pk=fw_account.id %}">
                         <i class="step fi-minus" style="color: #bc104b"></i>
                     </a>
                 </td>
                 <td>{{ fw_account.username }}</td>
                 <td>{{ fw_account.password }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+
+    </div>
+
+    <div class="tabs-panel{% if tab_id == 4 %} is-active{% endif %}" id="files">
+        Files
+    </div>
+
+    <div class="tabs-panel{% if tab_id == 5 %} is-active{% endif %}" id="configs">
+        Files
+    </div>
+
+    <div class="tabs-panel{% if tab_id == 6 %} is-active{% endif %}" id="screenshots">
+        Files
+    </div>
+
+    <div class="tabs-panel{% if tab_id == 7 %} is-active{% endif %}" id="howto">
+        <a href="{% url 'fw_howto_create' fw_id=fw.id %}" class="button small">{% trans "Create" %}</a>
+
+        {% if fw_hts %}
+        <table class="display" style="width:100%">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>{% trans "Name" %}</th>
+                <th>{% trans "Text" %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for fw_howto in fw_hts %}
+            <tr>
+                <td>{{ fw_howto.id }}
+                    <a href="{% url 'fw_howto_update' pk=fw_howto.id %}">
+                        <i class="step fi-pencil"></i>
+                    </a>
+                    <a href="{% url 'fw_howto_delete' pk=fw_howto.id %}">
+                        <i class="step fi-minus" style="color: #bc104b"></i>
+                    </a>
+                </td>
+                <td>{{ fw_howto.name }}</td>
+                <td>{{ fw_howto.text }}</td>
             </tr>
             {% endfor %}
             </tbody>
