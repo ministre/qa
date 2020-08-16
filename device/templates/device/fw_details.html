@@ -8,7 +8,7 @@
     <a href="{% url 'devices' %}">{% trans "Devices" %}</a>
     &raquo;
     <a href="{% url 'device_details' pk=fw.device.id tab_id=3 %}">{{ fw.device.vendor }} {{ fw.device.model }}
-        {% if fw.device.hw %}{{ fw.device.hw }}){% endif %}
+        {% if fw.device.hw %}({{ fw.device.hw }}){% endif %}
     </a>
     &raquo;
     {{ fw.version }}
@@ -125,34 +125,29 @@
     </div>
 
     <div class="tabs-panel{% if tab_id == 7 %} is-active{% endif %}" id="howto">
-        <a href="{% url 'fw_howto_create' fw_id=fw.id %}" class="button small">{% trans "Create" %}</a>
 
+        <a href="{% url 'fw_howto_create' fw_id=fw.id %}" class="button small">{% trans "Add" %}</a>
         {% if fw_hts %}
-        <table class="display" style="width:100%">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>{% trans "Name" %}</th>
-                <th>{% trans "Text" %}</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for fw_howto in fw_hts %}
-            <tr>
-                <td>{{ fw_howto.id }}
-                    <a href="{% url 'fw_howto_update' pk=fw_howto.id %}">
-                        <i class="step fi-pencil"></i>
-                    </a>
-                    <a href="{% url 'fw_howto_delete' pk=fw_howto.id %}">
-                        <i class="step fi-minus" style="color: #bc104b"></i>
-                    </a>
-                </td>
-                <td>{{ fw_howto.name }}</td>
-                <td>{{ fw_howto.text }}</td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+        {% for fw_howto in fw_hts %}
+        <div class="grid-x grid-margin-x">
+            <div class="cell">
+                <div class="card">
+                    <div class="card-section">
+                        <h4>{{ fw_howto.name }}</h4>
+                        <pre><code>{{ fw_howto.text|safe }}</code></pre>
+                        <p>
+                            <a href="{% url 'fw_howto_update' pk=fw_howto.id %}" class="button small">
+                                {% trans "Update" %}
+                            </a>
+                            <a href="{% url 'fw_howto_delete' pk=fw_howto.id %}" class="button small alert">
+                                {% trans "Delete" %}
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
         {% endif %}
 
     </div>
