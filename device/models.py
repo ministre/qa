@@ -198,7 +198,7 @@ class Device(models.Model):
     type = models.ForeignKey(DeviceType, on_delete=models.CASCADE)
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     model = models.CharField(max_length=400)
-    hw = models.CharField(max_length=100)
+    hw = models.CharField(max_length=100, blank=True, null=True)
     redmine_project = models.CharField(max_length=1000, blank=True, null=True)
     # members = models.ManyToManyField(User, related_name='device_members', blank=True)
     created_by = models.ForeignKey(User, related_name='device_c', on_delete=models.CASCADE, blank=True, null=True)
