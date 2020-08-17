@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'device',
     'docum',
-    'firmware',
     'feature',
     'docx_builder',
     'protocol',

@@ -21,6 +21,14 @@ from django import forms
 from qa import settings
 
 
+class Item(object):
+    @staticmethod
+    def update_timestamp(foo, user):
+        foo.updated_by = user
+        foo.updated_at = datetime.now()
+        foo.save()
+
+
 @method_decorator(login_required, name='dispatch')
 class VendorListView(ListView):
     context_object_name = 'vendors'
@@ -61,7 +69,7 @@ class VendorUpdate(UpdateView):
         return context
 
     def get_success_url(self):
-        self.object.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object, user=self.request.user)
         return reverse('vendor_details', kwargs={'pk': self.object.id})
 
 
@@ -705,6 +713,11 @@ class DeviceCreate(CreateView):
     def get_initial(self):
         return {'created_by': self.request.user, 'updated_by': self.request.user}
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('devices')
+        return context
+
     def get_success_url(self):
         return reverse('device_update_spec', kwargs={'pk': self.object.id})
 
@@ -732,6 +745,11 @@ class DeviceUpdate(UpdateView):
 class DeviceDelete(DeleteView):
     model = Device
     template_name = 'device/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('device_details', kwargs={'pk': self.object.id, 'tab_id': 1})
+        return context
 
     def get_success_url(self):
         return reverse('devices')
