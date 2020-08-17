@@ -161,8 +161,8 @@
                 <div class="card">
                     <div class="card-section">
                         <h4>{{ fw_screenshot.description }}</h4>
+                        <p><img src="{{ fw_screenshot.image.url }}"></p>
                         <p>
-                            <img src="{{ fw_screenshot.image.url }}">
                             <a href="{% url 'fw_screenshot_update' pk=fw_screenshot.id %}" class="button small">
                                 {% trans "Update" %}
                             </a>
