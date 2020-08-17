@@ -90,28 +90,20 @@
         {% endfor %}
     </div>
 
+
+
     <div class="tabs-panel{% if tab_id == 3 %} is-active{% endif %}" id="firmware">
         <a href="{% url 'fw_create' d_id=device.id %}" class="button small">{% trans "Add" %}</a>
+
         {% if fws %}
-        <table id="fws" class="display" style="width:100%">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>{% trans "FW Version" %}</th>
-                <th>{% trans "Description" %}</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for fw in fws %}
-            <tr data-href="{% url 'fw_details' pk=fw.id tab_id=1 %}">
-                <td>{{ fw.id }}</td>
-                <td>{{ fw.version }}</td>
-                <td>{% if fw.description %}{{ fw.description }}{% endif %}</td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+        {% for fw in fws %}
+        <div class="callout secondary">
+            <h5><a href="{% url 'fw_details' pk=fw.id tab_id=1 %}">{{ fw.version }}</a></h5>
+            <p>{% if fw.description %}{{ fw.description }}{% endif %}</p>
+        </div>
+        {% endfor %}
         {% endif %}
+
     </div>
 
     <div class="tabs-panel{% if tab_id == 4 %} is-active{% endif %}" id="photo">
