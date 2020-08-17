@@ -18,12 +18,6 @@ class Vendor(models.Model):
     def __str__(self):
         return self.name
 
-    def update_timestamp(self, user):
-        self.updated_by = user
-        self.updated_at = datetime.now()
-        self.save()
-        return True
-
 
 class DeviceChecklist(models.Model):
     name = models.CharField(max_length=500)
@@ -36,12 +30,6 @@ class DeviceChecklist(models.Model):
 
     def __str__(self):
         return self.name
-
-    def update_timestamp(self, user):
-        self.updated_by = user
-        self.updated_at = datetime.now()
-        self.save()
-        return True
 
 
 class DeviceChecklistItem(models.Model):
@@ -64,12 +52,6 @@ class DeviceSlist(models.Model):
     def __str__(self):
         return self.name
 
-    def update_timestamp(self, user):
-        self.updated_by = user
-        self.updated_at = datetime.now()
-        self.save()
-        return True
-
 
 class DeviceSlistItem(models.Model):
     slist = models.ForeignKey(DeviceSlist, related_name='d_slist_item', on_delete=models.CASCADE)
@@ -90,12 +72,6 @@ class DeviceTextField(models.Model):
     def __str__(self):
         return self.name
 
-    def update_timestamp(self, user):
-        self.updated_by = user
-        self.updated_at = datetime.now()
-        self.save()
-        return True
-
 
 class DeviceIntegerField(models.Model):
     name = models.CharField(max_length=500)
@@ -108,12 +84,6 @@ class DeviceIntegerField(models.Model):
 
     def __str__(self):
         return self.name
-
-    def update_timestamp(self, user):
-        self.updated_by = user
-        self.updated_at = datetime.now()
-        self.save()
-        return True
 
 
 class CustomField(models.Model):
@@ -156,12 +126,6 @@ class DeviceType(models.Model):
 
     def __str__(self):
         return self.desc
-
-    def update_timestamp(self, user):
-        self.updated_by = user
-        self.updated_at = datetime.now()
-        self.save()
-        return True
 
     def devices_count(self):
         count = Device.objects.filter(type=self).count()
@@ -208,12 +172,6 @@ class Device(models.Model):
 
     def __str__(self):
         return self.model
-
-    def update_timestamp(self, user):
-        self.updated_by = user
-        self.updated_at = datetime.now()
-        self.save()
-        return True
 
 
 class CustomValue(models.Model):

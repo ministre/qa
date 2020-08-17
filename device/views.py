@@ -133,7 +133,7 @@ class DeviceChecklistUpdate(UpdateView):
         return context
 
     def get_success_url(self):
-        self.object.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object, user=self.request.user)
         return reverse('d_checklist_details', kwargs={'pk': self.object.id, 'tab_id': 1})
 
 
@@ -173,7 +173,7 @@ class DeviceChecklistItemCreate(CreateView):
         return context
 
     def get_success_url(self):
-        self.object.checklist.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.checklist, user=self.request.user)
         return reverse('d_checklist_details', kwargs={'pk': self.object.checklist.id, 'tab_id': 2})
 
 
@@ -192,7 +192,7 @@ class DeviceChecklistItemUpdate(UpdateView):
         return context
 
     def get_success_url(self):
-        self.object.checklist.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.checklist, user=self.request.user)
         return reverse('d_checklist_details', kwargs={'pk': self.object.checklist.id, 'tab_id': 2})
 
 
@@ -207,7 +207,7 @@ class DeviceChecklistItemDelete(DeleteView):
         return context
 
     def get_success_url(self):
-        self.object.checklist.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.checklist, user=self.request.user)
         return reverse('d_checklist_details', kwargs={'pk': self.object.checklist.id, 'tab_id': 2})
 
 
@@ -251,7 +251,7 @@ class DeviceSlistUpdate(UpdateView):
         return context
 
     def get_success_url(self):
-        self.object.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object, user=self.request.user)
         return reverse('d_slist_details', kwargs={'pk': self.object.id, 'tab_id': 1})
 
 
@@ -291,7 +291,7 @@ class DeviceSlistItemCreate(CreateView):
         return context
 
     def get_success_url(self):
-        self.object.slist.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.slist, user=self.request.user)
         return reverse('d_slist_details', kwargs={'pk': self.object.slist.id, 'tab_id': 2})
 
 
@@ -310,7 +310,7 @@ class DeviceSlistItemUpdate(UpdateView):
         return context
 
     def get_success_url(self):
-        self.object.slist.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.slist, user=self.request.user)
         return reverse('d_slist_details', kwargs={'pk': self.object.slist.id, 'tab_id': 2})
 
 
@@ -325,7 +325,7 @@ class DeviceSlistItemDelete(DeleteView):
         return context
 
     def get_success_url(self):
-        self.object.slist.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.slist, user=self.request.user)
         return reverse('d_slist_details', kwargs={'pk': self.object.slist.id, 'tab_id': 2})
 
 
@@ -369,7 +369,7 @@ class DeviceTextFieldUpdate(UpdateView):
         return context
 
     def get_success_url(self):
-        self.object.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object, user=self.request.user)
         return reverse('d_tf_details', kwargs={'pk': self.object.id})
 
 
@@ -433,7 +433,7 @@ class DeviceIntegerFieldUpdate(UpdateView):
         return context
 
     def get_success_url(self):
-        self.object.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object, user=self.request.user)
         return reverse('d_if_details', kwargs={'pk': self.object.id})
 
 
@@ -497,7 +497,7 @@ class DeviceTypeUpdate(UpdateView):
         return context
 
     def get_success_url(self):
-        self.object.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object, user=self.request.user)
         return reverse('device_type_details', kwargs={'pk': self.object.id, 'tab_id': 1})
 
 
@@ -737,7 +737,7 @@ class DeviceUpdate(UpdateView):
         return context
 
     def get_success_url(self):
-        self.object.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object, user=self.request.user)
         return reverse('device_details', kwargs={'pk': self.object.id, 'tab_id': 1})
 
 
@@ -1149,4 +1149,3 @@ class FirmwareHowtoDelete(DeleteView):
 
     def get_success_url(self):
         return reverse('fw_details', kwargs={'pk': self.object.firmware.id, 'tab_id': 7})
-
