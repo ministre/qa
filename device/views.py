@@ -956,11 +956,11 @@ class FirmwareAccountCreate(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('fw_details', kwargs={'pk': self.kwargs.get('fw_id'), 'tab_id': 3})
+        context['back_url'] = reverse('fw_details', kwargs={'pk': self.kwargs.get('fw_id'), 'tab_id': 4})
         return context
 
     def get_success_url(self):
-        return reverse('fw_details', kwargs={'pk': self.kwargs.get('fw_id'), 'tab_id': 3})
+        return reverse('fw_details', kwargs={'pk': self.kwargs.get('fw_id'), 'tab_id': 4})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -971,11 +971,11 @@ class FirmwareAccountUpdate(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('fw_details', kwargs={'pk': self.object.firmware.id, 'tab_id': 3})
+        context['back_url'] = reverse('fw_details', kwargs={'pk': self.object.firmware.id, 'tab_id': 4})
         return context
 
     def get_success_url(self):
-        return reverse('fw_details', kwargs={'pk': self.object.firmware.id, 'tab_id': 3})
+        return reverse('fw_details', kwargs={'pk': self.object.firmware.id, 'tab_id': 4})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -985,11 +985,11 @@ class FirmwareAccountDelete(DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('fw_details', kwargs={'pk': self.object.firmware.id, 'tab_id': 3})
+        context['back_url'] = reverse('fw_details', kwargs={'pk': self.object.firmware.id, 'tab_id': 4})
         return context
 
     def get_success_url(self):
-        return reverse('fw_details', kwargs={'pk': self.object.firmware.id, 'tab_id': 3})
+        return reverse('fw_details', kwargs={'pk': self.object.firmware.id, 'tab_id': 4})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -1003,11 +1003,11 @@ class FirmwareFileCreate(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('fw_details', kwargs={'pk': self.kwargs.get('fw_id'), 'tab_id': 4})
+        context['back_url'] = reverse('fw_details', kwargs={'pk': self.kwargs.get('fw_id'), 'tab_id': 5})
         return context
 
     def get_success_url(self):
-        return reverse('fw_details', kwargs={'pk': self.kwargs.get('fw_id'), 'tab_id': 4})
+        return reverse('fw_details', kwargs={'pk': self.kwargs.get('fw_id'), 'tab_id': 5})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -1018,11 +1018,11 @@ class FirmwareFileUpdate(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('fw_details', kwargs={'pk': self.object.firmware.id, 'tab_id': 4})
+        context['back_url'] = reverse('fw_details', kwargs={'pk': self.object.firmware.id, 'tab_id': 5})
         return context
 
     def get_success_url(self):
-        return reverse('fw_details', kwargs={'pk': self.object.firmware.id, 'tab_id': 4})
+        return reverse('fw_details', kwargs={'pk': self.object.firmware.id, 'tab_id': 5})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -1032,11 +1032,58 @@ class FirmwareFileDelete(DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('fw_details', kwargs={'pk': self.object.firmware.id, 'tab_id': 4})
+        context['back_url'] = reverse('fw_details', kwargs={'pk': self.object.firmware.id, 'tab_id': 5})
         return context
 
     def get_success_url(self):
-        return reverse('fw_details', kwargs={'pk': self.object.firmware.id, 'tab_id': 4})
+        return reverse('fw_details', kwargs={'pk': self.object.firmware.id, 'tab_id': 5})
+
+
+@method_decorator(login_required, name='dispatch')
+class FirmwareScreenshotCreate(CreateView):
+    model = FirmwareScreenshot
+    form_class = FirmwareScreenshotForm
+    template_name = 'device/create.html'
+
+    def get_initial(self):
+        return {'firmware': self.kwargs.get('fw_id')}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('fw_details', kwargs={'pk': self.kwargs.get('fw_id'), 'tab_id': 6})
+        return context
+
+    def get_success_url(self):
+        return reverse('fw_details', kwargs={'pk': self.kwargs.get('fw_id'), 'tab_id': 6})
+
+
+@method_decorator(login_required, name='dispatch')
+class FirmwareScreenshotUpdate(UpdateView):
+    model = FirmwareScreenshot
+    form_class = FirmwareScreenshotForm
+    template_name = 'device/update.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('fw_details', kwargs={'pk': self.object.firmware.id, 'tab_id': 6})
+        return context
+
+    def get_success_url(self):
+        return reverse('fw_details', kwargs={'pk': self.object.firmware.id, 'tab_id': 6})
+
+
+@method_decorator(login_required, name='dispatch')
+class FirmwareScreenshotDelete(DeleteView):
+    model = FirmwareScreenshot
+    template_name = 'device/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('fw_details', kwargs={'pk': self.object.firmware.id, 'tab_id': 6})
+        return context
+
+    def get_success_url(self):
+        return reverse('fw_details', kwargs={'pk': self.object.firmware.id, 'tab_id': 6})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -1085,49 +1132,3 @@ class FirmwareHowtoDelete(DeleteView):
     def get_success_url(self):
         return reverse('fw_details', kwargs={'pk': self.object.firmware.id, 'tab_id': 7})
 
-
-@method_decorator(login_required, name='dispatch')
-class FirmwareScreenshotCreate(CreateView):
-    model = FirmwareScreenshot
-    form_class = FirmwareScreenshotForm
-    template_name = 'device/create.html'
-
-    def get_initial(self):
-        return {'firmware': self.kwargs.get('fw_id')}
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('fw_details', kwargs={'pk': self.kwargs.get('fw_id'), 'tab_id': 6})
-        return context
-
-    def get_success_url(self):
-        return reverse('fw_details', kwargs={'pk': self.kwargs.get('fw_id'), 'tab_id': 6})
-
-
-@method_decorator(login_required, name='dispatch')
-class FirmwareScreenshotUpdate(UpdateView):
-    model = FirmwareScreenshot
-    form_class = FirmwareScreenshotForm
-    template_name = 'device/update.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('fw_details', kwargs={'pk': self.object.firmware.id, 'tab_id': 6})
-        return context
-
-    def get_success_url(self):
-        return reverse('fw_details', kwargs={'pk': self.object.firmware.id, 'tab_id': 6})
-
-
-@method_decorator(login_required, name='dispatch')
-class FirmwareScreenshotDelete(DeleteView):
-    model = FirmwareScreenshot
-    template_name = 'device/delete.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('fw_details', kwargs={'pk': self.object.firmware.id, 'tab_id': 6})
-        return context
-
-    def get_success_url(self):
-        return reverse('fw_details', kwargs={'pk': self.object.firmware.id, 'tab_id': 6})

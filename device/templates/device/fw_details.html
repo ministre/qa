@@ -19,20 +19,20 @@
         <a href="#general" aria-selected="true">{% trans "General" %}</a>
     </li>
     <li class="tabs-title{% if tab_id == 2 %} is-active{% endif %}">
-        <a href="#changelog" aria-selected="true">{% trans "Changelog" %}</a>
+        <a href="#configs" aria-selected="true">{% trans "System Information" %}</a>
     </li>
     <li class="tabs-title{% if tab_id == 3 %} is-active{% endif %}">
+        <a href="#changelog" aria-selected="true">{% trans "Changelog" %}</a>
+    </li>
+    <li class="tabs-title{% if tab_id == 4 %} is-active{% endif %}">
         <a href="#accounts" aria-selected="true">{% trans "Accounts" %}
             {% if fw_accounts.count > 0 %}({{ fw_accounts.count }}){% endif %}
         </a>
     </li>
-    <li class="tabs-title{% if tab_id == 4 %} is-active{% endif %}">
+    <li class="tabs-title{% if tab_id == 5 %} is-active{% endif %}">
         <a href="#files" aria-selected="true">{% trans "Files" %}
             {% if fw_files.count > 0 %}({{ fw_files.count }}){% endif %}
         </a>
-    </li>
-    <li class="tabs-title{% if tab_id == 5 %} is-active{% endif %}">
-        <a href="#configs" aria-selected="true">{% trans "CLI Information" %}</a>
     </li>
     <li class="tabs-title{% if tab_id == 6 %} is-active{% endif %}">
         <a href="#screenshots" aria-selected="true">{% trans "Screenshots" %}
@@ -77,13 +77,19 @@
         </table>
     </div>
 
-    <div class="tabs-panel{% if tab_id == 2 %} is-active{% endif %}" id="changelog">
+    <div class="tabs-panel{% if tab_id == 2 %} is-active{% endif %}" id="configs">
+        {% if fw.sysinfo %}
+        <pre><code>{{ fw.sysinfo|safe }}</code></pre>
+        {% endif %}
+    </div>
+
+    <div class="tabs-panel{% if tab_id == 3 %} is-active{% endif %}" id="changelog">
         {% if fw.changelog %}
         <pre><code>{{ fw.changelog|safe }}</code></pre>
         {% endif %}
     </div>
 
-    <div class="tabs-panel{% if tab_id == 3 %} is-active{% endif %}" id="accounts">
+    <div class="tabs-panel{% if tab_id == 4 %} is-active{% endif %}" id="accounts">
         <a href="{% url 'fw_account_create' fw_id=fw.id %}" class="button small">{% trans "Create" %}</a>
 
         {% if fw_accounts %}
@@ -116,7 +122,7 @@
 
     </div>
 
-    <div class="tabs-panel{% if tab_id == 4 %} is-active{% endif %}" id="files">
+    <div class="tabs-panel{% if tab_id == 5 %} is-active{% endif %}" id="files">
         <a href="{% url 'fw_file_create' fw_id=fw.id %}" class="button small">{% trans "Add" %}</a>
 
         {% if fw_files %}
@@ -148,9 +154,6 @@
         {% endif %}
     </div>
 
-    <div class="tabs-panel{% if tab_id == 5 %} is-active{% endif %}" id="configs">
-        Files
-    </div>
 
     <div class="tabs-panel{% if tab_id == 6 %} is-active{% endif %}" id="screenshots">
         <a href="{% url 'fw_screenshot_create' fw_id=fw.id %}" class="button small">{% trans "Add" %}</a>
