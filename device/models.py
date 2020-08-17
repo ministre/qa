@@ -346,6 +346,12 @@ class FirmwareFile(models.Model):
     description = models.CharField(max_length=1000, blank=True, null=True)
 
 
+class FirmwareScreenshot(models.Model):
+    firmware = models.ForeignKey(Firmware, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to="device/fw_screenshot")
+    description = models.CharField(max_length=1000, blank=True, null=True)
+
+
 class FirmwareHowto(models.Model):
     firmware = models.ForeignKey(Firmware, on_delete=models.CASCADE)
     name = models.CharField(max_length=1000, blank=True, null=True)
