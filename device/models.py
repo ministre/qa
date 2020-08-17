@@ -322,11 +322,10 @@ class Firmware(models.Model):
     description = models.CharField(max_length=1000, blank=True, null=True)
     checksum = models.CharField(max_length=300, blank=True, null=True)
     changelog = models.TextField(null=True, blank=True)
-    # sysinfo_cli = models.TextField(null=True, blank=True)
-    # sysinfo_snapshot = models.ImageField(upload_to="firmware/snapshots/", null=True, blank=True)
-    created_by = models.ForeignKey(User, related_name='firmware_c', on_delete=models.CASCADE, blank=True, null=True)
+    sysinfo = models.TextField(null=True, blank=True)
+    created_by = models.ForeignKey(User, related_name='fw_c', on_delete=models.CASCADE, blank=True, null=True)
     created_at = models.DateTimeField(default=datetime.now, blank=True)
-    updated_by = models.ForeignKey(User, related_name='firmware_u', on_delete=models.CASCADE, blank=True, null=True)
+    updated_by = models.ForeignKey(User, related_name='fw_u', on_delete=models.CASCADE, blank=True, null=True)
     updated_at = models.DateTimeField(default=datetime.now, blank=True)
 
     def __str__(self):
