@@ -48,7 +48,7 @@
             <tbody>
             <tr>
                 <td>{% trans "Type" %}:</td>
-                <td>{{ device.type }}</td>
+                <td><a href="{% url 'device_type_details' pk=device.type.id tab_id=1 %}">{{ device.type }}</a></td>
             </tr>
             <tr>
                 <td>{% trans "Vendor" %}:</td>
