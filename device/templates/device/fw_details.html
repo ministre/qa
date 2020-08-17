@@ -154,33 +154,27 @@
 
     <div class="tabs-panel{% if tab_id == 6 %} is-active{% endif %}" id="screenshots">
         <a href="{% url 'fw_screenshot_create' fw_id=fw.id %}" class="button small">{% trans "Add" %}</a>
-
         {% if fw_screenshots %}
-        <table class="display" style="width:100%">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>{% trans "File" %}</th>
-                <th>{% trans "Description" %}</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for fw_screenshot in fw_screenshots %}
-            <tr>
-                <td>{{ fw_screenshot.id }}
-                    <a href="{% url 'fw_screenshot_update' pk=fw_screenshot.id %}">
-                        <i class="step fi-pencil"></i>
-                    </a>
-                    <a href="{% url 'fw_screenshot_delete' pk=fw_screenshot.id %}">
-                        <i class="step fi-minus" style="color: #bc104b"></i>
-                    </a>
-                </td>
-                <td>{{ fw_screenshot.image }}</td>
-                <td>{{ fw_screenshot.description }}</td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+        {% for fw_screenshot in fw_screenshots %}
+        <div class="grid-x grid-margin-x">
+            <div class="cell">
+                <div class="card">
+                    <div class="card-section">
+                        <h4>{{ fw_screenshot.description }}</h4>
+                        <p>
+                            <img src="{{ fw_screenshot.image.url }}">
+                            <a href="{% url 'fw_screenshot_update' pk=fw_screenshot.id %}" class="button small">
+                                {% trans "Update" %}
+                            </a>
+                            <a href="{% url 'fw_screenshot_delete' pk=fw_screenshot.id %}" class="button small alert">
+                                {% trans "Delete" %}
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
         {% endif %}
     </div>
 
