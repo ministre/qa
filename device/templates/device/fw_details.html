@@ -168,10 +168,10 @@
             {% for fw_screenshot in fw_screenshots %}
             <tr>
                 <td>{{ fw_screenshot.id }}
-                    <a href="{% url 'fw_screenshot_update' pk=fw_file.id %}">
+                    <a href="{% url 'fw_screenshot_update' pk=fw_screenshot.id %}">
                         <i class="step fi-pencil"></i>
                     </a>
-                    <a href="{% url 'fw_screenshot_delete' pk=fw_file.id %}">
+                    <a href="{% url 'fw_screenshot_delete' pk=fw_screenshot.id %}">
                         <i class="step fi-minus" style="color: #bc104b"></i>
                     </a>
                 </td>
