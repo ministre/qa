@@ -101,6 +101,11 @@ urlpatterns = [
     path('fw/account/update/<int:pk>/', views.FirmwareAccountUpdate.as_view(), name='fw_account_update'),
     path('fw/account/delete/<int:pk>/', views.FirmwareAccountDelete.as_view(), name='fw_account_delete'),
 
+    # firmware file
+    path('fw/file/create/<int:fw_id>/', views.FirmwareFileCreate.as_view(), name='fw_file_create'),
+    path('fw/file/update/<int:pk>/', views.FirmwareFileUpdate.as_view(), name='fw_file_update'),
+    path('fw/file/delete/<int:pk>/', views.FirmwareFileDelete.as_view(), name='fw_file_delete'),
+
     # firmware howto
     path('fw/howto/create/<int:fw_id>/', views.FirmwareHowtoCreate.as_view(), name='fw_howto_create'),
     path('fw/howto/update/<int:pk>/', views.FirmwareHowtoUpdate.as_view(), name='fw_howto_update'),

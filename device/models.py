@@ -322,7 +322,6 @@ class Firmware(models.Model):
     description = models.CharField(max_length=1000, blank=True, null=True)
     checksum = models.CharField(max_length=300, blank=True, null=True)
     changelog = models.TextField(null=True, blank=True)
-    # file = models.FileField(upload_to="device/firmware/", blank=True, null=True)
     # sysinfo_cli = models.TextField(null=True, blank=True)
     # sysinfo_snapshot = models.ImageField(upload_to="firmware/snapshots/", null=True, blank=True)
     created_by = models.ForeignKey(User, related_name='firmware_c', on_delete=models.CASCADE, blank=True, null=True)
@@ -342,6 +341,15 @@ class FirmwareAccount(models.Model):
 
     def __str__(self):
         return self.username
+
+
+class FirmwareFile(models.Model):
+    firmware = models.ForeignKey(Firmware, on_delete=models.CASCADE)
+    file = models.FileField(upload_to="device/firmware/", blank=True, null=True)
+    description = models.CharField(max_length=1000, blank=True, null=True)
+
+    def __str__(self):
+        return self.description
 
 
 class FirmwareHowto(models.Model):

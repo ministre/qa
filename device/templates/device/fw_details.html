@@ -27,7 +27,9 @@
         </a>
     </li>
     <li class="tabs-title{% if tab_id == 4 %} is-active{% endif %}">
-        <a href="#files" aria-selected="true">{% trans "Files" %}</a>
+        <a href="#files" aria-selected="true">{% trans "Files" %}
+            {% if fw_files.count > 0 %}({{ fw_files.count }}){% endif %}
+        </a>
     </li>
     <li class="tabs-title{% if tab_id == 5 %} is-active{% endif %}">
         <a href="#configs" aria-selected="true">{% trans "Configurations" %}</a>
@@ -113,7 +115,35 @@
     </div>
 
     <div class="tabs-panel{% if tab_id == 4 %} is-active{% endif %}" id="files">
-        Files
+        <a href="{% url 'fw_file_create' fw_id=fw.id %}" class="button small">{% trans "Add" %}</a>
+
+        {% if fw_files %}
+        <table class="display" style="width:100%">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>{% trans "File" %}</th>
+                <th>{% trans "Description" %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for fw_file in fw_files %}
+            <tr>
+                <td>{{ fw_file.id }}
+                    <a href="{% url 'fw_file_update' pk=fw_file.id %}">
+                        <i class="step fi-pencil"></i>
+                    </a>
+                    <a href="{% url 'fw_file_delete' pk=fw_file.id %}">
+                        <i class="step fi-minus" style="color: #bc104b"></i>
+                    </a>
+                </td>
+                <td>{{ fw_file.file }}</td>
+                <td>{{ fw_file.description }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
     </div>
 
     <div class="tabs-panel{% if tab_id == 5 %} is-active{% endif %}" id="configs">
