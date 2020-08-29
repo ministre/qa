@@ -113,6 +113,10 @@
                             </select>
                             {% endif %}
 
+                            {% if spec.type == 'text_field' %}
+                            <input type="text" name="{{ spec.id }}" value="{{ spec.custom_value }}" maxlength="2000">
+                            {% endif %}
+
                             <input type="submit" value='{% trans "Apply" %}' class="button success small" />
                         </div>
                     </div>

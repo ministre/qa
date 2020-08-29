@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from .models import Vendor, DeviceChecklist, DeviceChecklistItem, DeviceChecklistItemValue, DeviceSlist, \
-    DeviceSlistItem, DeviceSlistItemValue, DeviceTextField, DeviceIntegerField, DeviceTypeSpecification, CustomField, \
-    CustomFieldItem, DeviceType, Device, DevicePhoto, Sample, Specification, Firmware, FirmwareAccount, FirmwareFile, \
-    FirmwareScreenshot, FirmwareHowto
+    DeviceSlistItem, DeviceSlistItemValue, DeviceTextField, DeviceTextFieldValue, DeviceIntegerField, \
+    DeviceTypeSpecification, CustomField, CustomFieldItem, DeviceType, Device, DevicePhoto, Sample, Specification, \
+    Firmware, FirmwareAccount, FirmwareFile, FirmwareScreenshot, FirmwareHowto
 from docum.models import Docum
 from protocol.models import Protocol
 from feature.models import FeatureList
@@ -39,6 +39,7 @@ class Spec(object):
             spec_type = spec.get_type()
             spec_name = None
             spec_unit = None
+            custom_value = None
             spec_items = []
             if spec_type == 'checklist':
                 spec_name = spec.checklist.name
@@ -66,12 +67,16 @@ class Spec(object):
 
             if spec_type == 'text_field':
                 spec_name = spec.text_field.name
+                item_values = DeviceTextFieldValue.objects.filter(device=device, field=spec.text_field)
+                for item_value in item_values:
+                    custom_value = item_value.value
+
             if spec_type == 'integer_field':
                 spec_name = spec.integer_field.name
                 spec_unit = spec.integer_field.unit
 
             specifications.append({'id': spec.id, 'type': spec_type, 'name': spec_name, 'unit': spec_unit,
-                                   'items': spec_items})
+                                   'items': spec_items, 'custom_value': custom_value})
 
         return specifications
 
