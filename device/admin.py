@@ -1,7 +1,7 @@
 from django.contrib import admin
 from device.models import Vendor, DeviceChecklist, DeviceChecklistItem, DeviceChecklistItemValue, DeviceSlist, \
-    DeviceSlistItem, DeviceSlistItemValue, DeviceTextField, DeviceIntegerField, DeviceType, DeviceTypeSpecification, \
-    Device, DevicePhoto, Sample, Firmware, FirmwareAccount
+    DeviceSlistItem, DeviceSlistItemValue, DeviceTextField, DeviceTextFieldValue, DeviceIntegerField, DeviceType, \
+    DeviceTypeSpecification, Device, DevicePhoto, Sample, Firmware, FirmwareAccount
 
 admin.site.register(Vendor)
 admin.site.register(DeviceChecklist)
@@ -11,6 +11,7 @@ admin.site.register(DeviceSlist)
 admin.site.register(DeviceSlistItem)
 admin.site.register(DeviceSlistItemValue)
 admin.site.register(DeviceTextField)
+admin.site.register(DeviceTextFieldValue)
 admin.site.register(DeviceIntegerField)
 admin.site.register(DeviceType)
 admin.site.register(DeviceTypeSpecification)

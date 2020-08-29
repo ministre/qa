@@ -185,6 +185,12 @@ class DeviceSlistItemValue(models.Model):
     value = models.ForeignKey(DeviceSlistItem, on_delete=models.CASCADE, blank=True, null=True)
 
 
+class DeviceTextFieldValue(models.Model):
+    device = models.ForeignKey(Device, on_delete=models.CASCADE)
+    field = models.ForeignKey(DeviceTextField, on_delete=models.CASCADE)
+    value = models.CharField(max_length=2000, blank=True, null=True)
+
+
 class CustomValue(models.Model):
     field = models.ForeignKey(CustomField, on_delete=models.CASCADE)
     item = models.ForeignKey(CustomFieldItem, on_delete=models.CASCADE, blank=True, null=True)
