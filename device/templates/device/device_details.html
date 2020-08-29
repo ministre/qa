@@ -77,37 +77,39 @@
     </div>
 
     <div class="tabs-panel{% if tab_id == 2 %} is-active{% endif %}" id="specs">
-        <a href="{% url 'device_update_spec' pk=device.id %}" class="button small">{% trans "Update" %}</a>
+
         {% for spec in specs %}
-        <div class="grid-x grid-margin-x">
-            <div class="cell">
-                <div class="card">
-                    <div class="card-section">
-                        <h4>{{ spec.type }}</h4>
-                        <table>
-                            <tr>
-                                <td>{{ spec.name }}</td>
-                            </tr>
-                            {% if spec.unit %}
-                            <tr>
-                                <td>{{ spec.unit }}</td>
-                            </tr>
+        <form method="post" action="">
+            {% csrf_token %}
+            <div class="grid-x grid-margin-x">
+                <div class="cell">
+                    <div class="card">
+                        <div class="card-section">
+                            <h4>{{ spec.name }}</h4>
+
+                            {% if spec.type == 'checklist' %}
+                            <input hidden name="device_id" value="{{ device.id }}">
+                            <input hidden name="spec_id" value="{{ spec.id }}">
+                            <ul style="list-style: none">
+                                {% for item in spec.checklist_items %}
+                                <li>
+                                    <input type="checkbox" name="item_{{ item.id }}"
+                                           {% if item.value == True %}
+                                           checked
+                                           {% endif %}
+                                    > {{ item.name }}
+                                </li>
+                                {% endfor %}
+                            </ul>
                             {% endif %}
-                        </table>
-                        {% if spec.type == 'checklist' %}
-                        <table>
-                            {% for item in spec.items %}
-                            <tr>
-                                <td>{{ item.name }}</td>
-                            </tr>
-                            {% endfor %}
-                        </table>
-                        {% endif %}
+                            <input type="submit" value='{% trans "Update" %}' class="button success small" />
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </form>
         {% endfor %}
+
     </div>
 
 

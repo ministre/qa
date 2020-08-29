@@ -1,7 +1,8 @@
 from django.shortcuts import render
-from .models import Vendor, DeviceChecklist, DeviceChecklistItem, DeviceSlist, DeviceSlistItem, DeviceTextField, \
-    DeviceIntegerField, DeviceTypeSpecification, CustomField, CustomFieldItem, DeviceType, Device, DevicePhoto, \
-    Sample, Specification, Firmware, FirmwareAccount, FirmwareFile, FirmwareScreenshot, FirmwareHowto
+from .models import Vendor, DeviceChecklist, DeviceChecklistItem, DeviceChecklistItemValue, DeviceSlist, \
+    DeviceSlistItem, DeviceTextField, DeviceIntegerField, DeviceTypeSpecification, CustomField, CustomFieldItem, \
+    DeviceType, Device, DevicePhoto, Sample, Specification, Firmware, FirmwareAccount, FirmwareFile, \
+    FirmwareScreenshot, FirmwareHowto
 from docum.models import Docum
 from protocol.models import Protocol
 from feature.models import FeatureList
@@ -38,13 +39,18 @@ class Spec(object):
             spec_type = spec.get_type()
             spec_name = None
             spec_unit = None
-            spec_items = []
+            spec_checklist_items = []
             if spec_type == 'checklist':
                 spec_name = spec.checklist.name
 
                 items = DeviceChecklistItem.objects.filter(checklist=spec.checklist).order_by('id')
                 for item in items:
-                    spec_items.append({'id': item.id, 'name': item.name, 'selected': False})
+                    value = False
+                    item_values = DeviceChecklistItemValue.objects.filter(device=device, item=item)
+                    for item_value in item_values:
+                        value = item_value.value
+
+                    spec_checklist_items.append({'id': item.id, 'name': item.name, 'value': value})
 
             if spec_type == 'slist':
                 spec_name = spec.slist.name
@@ -55,7 +61,7 @@ class Spec(object):
                 spec_unit = spec.integer_field.unit
 
             specifications.append({'id': spec.id, 'type': spec_type, 'name': spec_name, 'unit': spec_unit,
-                                   'items': spec_items})
+                                   'checklist_items': spec_checklist_items})
 
         return specifications
 
