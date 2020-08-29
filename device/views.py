@@ -29,6 +29,37 @@ class Item(object):
         foo.save()
 
 
+class Spec(object):
+    @staticmethod
+    def get_values(device: Device):
+        specs = DeviceTypeSpecification.objects.filter(type=device.type).order_by('id')
+        specifications = []
+        for spec in specs:
+            spec_type = spec.get_type()
+            spec_name = None
+            spec_unit = None
+            spec_items = []
+            if spec_type == 'checklist':
+                spec_name = spec.checklist.name
+
+                items = DeviceChecklistItem.objects.filter(checklist=spec.checklist).order_by('id')
+                for item in items:
+                    spec_items.append({'id': item.id, 'name': item.name, 'selected': False})
+
+            if spec_type == 'slist':
+                spec_name = spec.slist.name
+            if spec_type == 'text_field':
+                spec_name = spec.text_field.name
+            if spec_type == 'integer_field':
+                spec_name = spec.integer_field.name
+                spec_unit = spec.integer_field.unit
+
+            specifications.append({'id': spec.id, 'type': spec_type, 'name': spec_name, 'unit': spec_unit,
+                                   'items': spec_items})
+
+        return specifications
+
+
 @method_decorator(login_required, name='dispatch')
 class VendorListView(ListView):
     context_object_name = 'vendors'
@@ -758,7 +789,7 @@ class DeviceDelete(DeleteView):
 @login_required
 def device_details(request, pk, tab_id):
     device = get_object_or_404(Device, pk=pk)
-    specs = None
+    specs = Spec.get_values(device)
     fws = Firmware.objects.filter(device=device)
     photos = DevicePhoto.objects.filter(device=device)
     docums = Docum.objects.filter(device=device)

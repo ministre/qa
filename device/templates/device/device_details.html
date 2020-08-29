@@ -13,7 +13,9 @@
         <a href="#general" aria-selected="true">{% trans "General" %}</a>
     </li>
     <li class="tabs-title{% if tab_id == 2 %} is-active{% endif %}">
-        <a data-tabs-target="spec" href="#spec">{% trans "Specifications" %}</a>
+        <a data-tabs-target="specs" href="#specs">{% trans "Specifications" %}
+            {% if specs|length > 0 %}({{ specs|length }}){% endif %}
+        </a>
     </li>
     <li class="tabs-title{% if tab_id == 3 %} is-active{% endif %}">
         <a data-tabs-target="firmware" href="#firmware">{% trans "Firmware" %}
@@ -74,22 +76,39 @@
         </table>
     </div>
 
-    <div class="tabs-panel{% if tab_id == 2 %} is-active{% endif %}" id="spec">
+    <div class="tabs-panel{% if tab_id == 2 %} is-active{% endif %}" id="specs">
         <a href="{% url 'device_update_spec' pk=device.id %}" class="button small">{% trans "Update" %}</a>
         {% for spec in specs %}
-        <ul style="list-style: none">
-            <li>
-                <b>{{ spec.name }}:</b>
-                {% for value in spec.values %}
-                <ul style="list-style: none">
-                    <li>{{ value }}</li>
-                </ul>
-                {% endfor %}
-            </li>
-        </ul>
+        <div class="grid-x grid-margin-x">
+            <div class="cell">
+                <div class="card">
+                    <div class="card-section">
+                        <h4>{{ spec.type }}</h4>
+                        <table>
+                            <tr>
+                                <td>{{ spec.name }}</td>
+                            </tr>
+                            {% if spec.unit %}
+                            <tr>
+                                <td>{{ spec.unit }}</td>
+                            </tr>
+                            {% endif %}
+                        </table>
+                        {% if spec.type == 'checklist' %}
+                        <table>
+                            {% for item in spec.items %}
+                            <tr>
+                                <td>{{ item.name }}</td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
         {% endfor %}
     </div>
-
 
 
     <div class="tabs-panel{% if tab_id == 3 %} is-active{% endif %}" id="firmware">

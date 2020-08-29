@@ -174,6 +174,12 @@ class Device(models.Model):
         return self.model
 
 
+class DeviceChecklistItemValue(models.Model):
+    device = models.ForeignKey(Device, on_delete=models.CASCADE)
+    item = models.ForeignKey(DeviceChecklistItem, on_delete=models.CASCADE)
+    value = models.BooleanField(blank=True, null=True)
+
+
 class CustomValue(models.Model):
     field = models.ForeignKey(CustomField, on_delete=models.CASCADE)
     item = models.ForeignKey(CustomFieldItem, on_delete=models.CASCADE, blank=True, null=True)
