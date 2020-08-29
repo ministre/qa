@@ -91,7 +91,7 @@
                             <input hidden name="device_id" value="{{ device.id }}">
                             <input hidden name="spec_id" value="{{ spec.id }}">
                             <ul style="list-style: none">
-                                {% for item in spec.checklist_items %}
+                                {% for item in spec.items %}
                                 <li>
                                     <input type="checkbox" name="item_{{ item.id }}"
                                            {% if item.value == True %}
@@ -102,6 +102,17 @@
                                 {% endfor %}
                             </ul>
                             {% endif %}
+
+                            {% if spec.type == 'slist' %}
+                            <input hidden name="device_id" value="{{ device.id }}">
+                            <select name="{{ spec.id }}">
+                                <option value="">---------</option>
+                                {% for item in spec.items %}
+                                <option {% if item.value != False %} selected{% endif %} value="{{ item.id }}">{{ item.name }}</option>
+                                {% endfor %}
+                            </select>
+                            {% endif %}
+
                             <input type="submit" value='{% trans "Update" %}' class="button success small" />
                         </div>
                     </div>

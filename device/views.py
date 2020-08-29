@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .models import Vendor, DeviceChecklist, DeviceChecklistItem, DeviceChecklistItemValue, DeviceSlist, \
-    DeviceSlistItem, DeviceTextField, DeviceIntegerField, DeviceTypeSpecification, CustomField, CustomFieldItem, \
-    DeviceType, Device, DevicePhoto, Sample, Specification, Firmware, FirmwareAccount, FirmwareFile, \
+    DeviceSlistItem, DeviceSlistItemValue, DeviceTextField, DeviceIntegerField, DeviceTypeSpecification, CustomField, \
+    CustomFieldItem, DeviceType, Device, DevicePhoto, Sample, Specification, Firmware, FirmwareAccount, FirmwareFile, \
     FirmwareScreenshot, FirmwareHowto
 from docum.models import Docum
 from protocol.models import Protocol
@@ -39,7 +39,7 @@ class Spec(object):
             spec_type = spec.get_type()
             spec_name = None
             spec_unit = None
-            spec_checklist_items = []
+            spec_items = []
             if spec_type == 'checklist':
                 spec_name = spec.checklist.name
 
@@ -50,10 +50,20 @@ class Spec(object):
                     for item_value in item_values:
                         value = item_value.value
 
-                    spec_checklist_items.append({'id': item.id, 'name': item.name, 'value': value})
+                    spec_items.append({'id': item.id, 'name': item.name, 'value': value})
 
             if spec_type == 'slist':
                 spec_name = spec.slist.name
+
+                items = DeviceSlistItem.objects.filter(slist=spec.slist).order_by('id')
+                for item in items:
+                    value = False
+                    item_values = DeviceSlistItemValue.objects.filter(device=device, value=item)
+                    for item_value in item_values:
+                        value = item_value.value
+
+                    spec_items.append({'id': item.id, 'name': item.name, 'value': value})
+
             if spec_type == 'text_field':
                 spec_name = spec.text_field.name
             if spec_type == 'integer_field':
@@ -61,7 +71,7 @@ class Spec(object):
                 spec_unit = spec.integer_field.unit
 
             specifications.append({'id': spec.id, 'type': spec_type, 'name': spec_name, 'unit': spec_unit,
-                                   'checklist_items': spec_checklist_items})
+                                   'items': spec_items})
 
         return specifications
 
@@ -756,7 +766,7 @@ class DeviceCreate(CreateView):
         return context
 
     def get_success_url(self):
-        return reverse('device_update_spec', kwargs={'pk': self.object.id})
+        return reverse('device_details', kwargs={'pk': self.object.id, 'tab_id': 2})
 
 
 @method_decorator(login_required, name='dispatch')
