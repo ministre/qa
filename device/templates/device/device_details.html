@@ -85,7 +85,7 @@
                 <div class="cell">
                     <div class="card">
                         <div class="card-section">
-                            <h4>{{ spec.name }}</h4>
+                            <h4>{{ spec.name }}{% if spec.unit %}, {{ spec.unit}}{% endif %}</h4>
 
                             {% if spec.type == 'checklist' %}
                             <input hidden name="device_id" value="{{ device.id }}">
@@ -114,7 +114,7 @@
                             {% endif %}
 
                             {% if spec.type == 'text_field' %}
-                            <input type="text" name="{{ spec.id }}" value="{{ spec.custom_value }}" maxlength="2000">
+                            <input type="text" name="{{ spec.id }}" value="{% if spec.custom_value %}{{ spec.custom_value }}{% endif %}" maxlength="2000">
                             {% endif %}
 
                             {% if spec.type == 'integer_field' %}
