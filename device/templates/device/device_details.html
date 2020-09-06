@@ -117,6 +117,10 @@
                             <input type="text" name="{{ spec.id }}" value="{{ spec.custom_value }}" maxlength="2000">
                             {% endif %}
 
+                            {% if spec.type == 'integer_field' %}
+                            <input type="number" name="{{ spec.id }}" value="{{ spec.custom_value }}">
+                            {% endif %}
+
                             <input type="submit" value='{% trans "Apply" %}' class="button success small" />
                         </div>
                     </div>

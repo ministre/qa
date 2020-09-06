@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from .models import Vendor, DeviceChecklist, DeviceChecklistItem, DeviceChecklistItemValue, DeviceSlist, \
     DeviceSlistItem, DeviceSlistItemValue, DeviceTextField, DeviceTextFieldValue, DeviceIntegerField, \
-    DeviceTypeSpecification, CustomField, CustomFieldItem, DeviceType, Device, DevicePhoto, Sample, Specification, \
-    Firmware, FirmwareAccount, FirmwareFile, FirmwareScreenshot, FirmwareHowto
+    DeviceIntegerFieldValue, DeviceTypeSpecification, CustomField, CustomFieldItem, DeviceType, Device, DevicePhoto, \
+    Sample, Specification, Firmware, FirmwareAccount, FirmwareFile, FirmwareScreenshot, FirmwareHowto
 from docum.models import Docum
 from protocol.models import Protocol
 from feature.models import FeatureList
@@ -74,6 +74,9 @@ class Spec(object):
             if spec_type == 'integer_field':
                 spec_name = spec.integer_field.name
                 spec_unit = spec.integer_field.unit
+                item_values = DeviceIntegerFieldValue.objects.filter(device=device, field=spec.integer_field)
+                for item_value in item_values:
+                    custom_value = item_value.value
 
             specifications.append({'id': spec.id, 'type': spec_type, 'name': spec_name, 'unit': spec_unit,
                                    'items': spec_items, 'custom_value': custom_value})
