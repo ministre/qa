@@ -83,6 +83,29 @@ class Spec(object):
 
         return specifications
 
+    @staticmethod
+    def set_values(device: Device, dt_spec: DeviceTypeSpecification, value):
+        if dt_spec.checklist:
+            pass
+        if dt_spec.text_field:
+            DeviceTextFieldValue.objects.update_or_create(device=device, field=dt_spec.text_field,
+                                                          defaults={'value': value})
+        if dt_spec.integer_field:
+            DeviceIntegerFieldValue.objects.update_or_create(device=device, field=dt_spec.integer_field,
+                                                             defaults={'value': value})
+
+
+@login_required
+def spec_update(request):
+    if request.method == 'POST':
+        device = get_object_or_404(Device, id=request.POST['device_id'])
+        dt_spec = get_object_or_404(DeviceTypeSpecification, id=request.POST['spec_id'])
+        value = request.POST['spec_value']
+        Spec.set_values(device=device, dt_spec=dt_spec, value=value)
+        return HttpResponseRedirect(reverse('device_details', kwargs={'pk': device.id, 'tab_id': 2}))
+    else:
+        return HttpResponseRedirect(reverse('devices'))
+
 
 @method_decorator(login_required, name='dispatch')
 class VendorListView(ListView):

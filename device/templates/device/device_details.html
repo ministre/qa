@@ -79,8 +79,10 @@
     <div class="tabs-panel{% if tab_id == 2 %} is-active{% endif %}" id="specs">
 
         {% for spec in specs %}
-        <form method="post" action="">
+        <form method="post" action="{% url 'spec_update' %}">
             {% csrf_token %}
+            <input hidden name="device_id" value="{{ device.id }}">
+            <input hidden name="spec_id" value="{{ spec.id }}">
             <div class="grid-x grid-margin-x">
                 <div class="cell">
                     <div class="card">
@@ -88,8 +90,6 @@
                             <h4>{{ spec.name }}{% if spec.unit %}, {{ spec.unit}}{% endif %}</h4>
 
                             {% if spec.type == 'checklist' %}
-                            <input hidden name="device_id" value="{{ device.id }}">
-                            <input hidden name="spec_id" value="{{ spec.id }}">
                             <ul style="list-style: none">
                                 {% for item in spec.items %}
                                 <li>
@@ -104,21 +104,16 @@
                             {% endif %}
 
                             {% if spec.type == 'slist' %}
-                            <input hidden name="device_id" value="{{ device.id }}">
-                            <select name="{{ spec.id }}">
+                            <select name="spec_value">
                                 <option value="">---------</option>
                                 {% for item in spec.items %}
                                 <option {% if item.value != False %} selected{% endif %} value="{{ item.id }}">{{ item.name }}</option>
                                 {% endfor %}
                             </select>
-                            {% endif %}
-
-                            {% if spec.type == 'text_field' %}
-                            <input type="text" name="{{ spec.id }}" value="{% if spec.custom_value %}{{ spec.custom_value }}{% endif %}" maxlength="2000">
-                            {% endif %}
-
-                            {% if spec.type == 'integer_field' %}
-                            <input type="number" name="{{ spec.id }}" value="{{ spec.custom_value }}">
+                            {% elif spec.type == 'text_field' %}
+                            <input type="text" name="spec_value" value="{% if spec.custom_value %}{{ spec.custom_value }}{% endif %}" maxlength="2000">
+                            {% elif spec.type == 'integer_field' %}
+                            <input type="number" name="spec_value" value="{{ spec.custom_value }}">
                             {% endif %}
 
                             <input type="submit" value='{% trans "Apply" %}' class="button success small" />
