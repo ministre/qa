@@ -144,7 +144,7 @@
     </div>
 
     <div class="tabs-panel{% if tab_id == 4 %} is-active{% endif %}" id="photo">
-        <a href="{% url 'photo_create' device_id=device.id %}" class="button small">{% trans "Add" %}</a>
+        <a href="{% url 'photo_create' d_id=device.id %}" class="button small">{% trans "Add" %}</a>
 
         {% if photos %}
 
@@ -168,8 +168,8 @@
         <p>
             {% for photo in photos %}
             {{ photo.desc }}<br>
-            <a href="{% url 'photo_update' device_id=device.id pk=photo.id %}">{{ photo.photo }}</a>
-            <a href="{% url 'photo_delete' device_id=device.id pk=photo.id %}"><i class="step fi-minus" style="color: #bc104b"></i></a><br>
+            <a href="{% url 'photo_update' pk=photo.id %}">{{ photo.photo }}</a>
+            <a href="{% url 'photo_delete' pk=photo.id %}"><i class="step fi-minus" style="color: #bc104b"></i></a><br>
             <br>
             {% endfor %}
         </p>

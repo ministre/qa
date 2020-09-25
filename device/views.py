@@ -877,51 +877,51 @@ class DevicePhotoListView(ListView):
 class DevicePhotoCreate(CreateView):
     model = DevicePhoto
     form_class = DevicePhotoForm
-    template_name = 'photo/create.html'
+    template_name = 'device/create.html'
 
     def get_initial(self):
-        return {'device': self.kwargs.get('device_id'),
+        return {'device': self.kwargs.get('d_id'),
                 'created_by': self.request.user, 'updated_by': self.request.user}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['device_id'] = self.kwargs.get('device_id')
+        context['back_url'] = reverse('device_details', kwargs={'pk': self.kwargs.get('d_id'), 'tab_id': 4})
         return context
 
     def get_success_url(self):
-        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id'), 'tab_id': 4})
+        return reverse('device_details', kwargs={'pk': self.kwargs.get('d_id'), 'tab_id': 4})
 
 
 @method_decorator(login_required, name='dispatch')
 class DevicePhotoUpdate(UpdateView):
     model = DevicePhoto
     form_class = DevicePhotoForm
-    template_name = 'photo/update.html'
+    template_name = 'device/update.html'
 
     def get_initial(self):
         return {'updated_by': self.request.user, 'updated_at': datetime.now}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['device_id'] = self.kwargs.get('device_id')
+        context['back_url'] = reverse('device_details', kwargs={'pk': self.object.device.id, 'tab_id': 4})
         return context
 
     def get_success_url(self):
-        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id'), 'tab_id': 4})
+        return reverse('device_details', kwargs={'pk': self.object.device.id, 'tab_id': 4})
 
 
 @method_decorator(login_required, name='dispatch')
 class DevicePhotoDelete(DeleteView):
     model = DevicePhoto
-    template_name = 'photo/delete.html'
+    template_name = 'device/delete.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['device_id'] = self.kwargs.get('device_id')
+        context['back_url'] = reverse('device_details', kwargs={'pk': self.object.device.id, 'tab_id': 4})
         return context
 
     def get_success_url(self):
-        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id'), 'tab_id': 4})
+        return reverse('device_details', kwargs={'pk': self.object.device.id, 'tab_id': 4})
 
 
 @method_decorator(login_required, name='dispatch')

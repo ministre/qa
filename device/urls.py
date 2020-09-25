@@ -82,9 +82,9 @@ urlpatterns = [
          views.CustomFieldItemUpdate.as_view(), name='custom_field_item_update'),
 
     # photos
-    path('photo/<int:device_id>/create/', views.DevicePhotoCreate.as_view(), name='photo_create'),
-    path('photo/<int:device_id>/update/<int:pk>/', views.DevicePhotoUpdate.as_view(), name='photo_update'),
-    path('photo/<int:device_id>/delete/<int:pk>/', views.DevicePhotoDelete.as_view(), name='photo_delete'),
+    path('photo/create/<int:d_id>/', views.DevicePhotoCreate.as_view(), name='photo_create'),
+    path('photo/update/<int:pk>/', views.DevicePhotoUpdate.as_view(), name='photo_update'),
+    path('photo/delete/<int:pk>/', views.DevicePhotoDelete.as_view(), name='photo_delete'),
 
     # samples
     path('sample/<int:device_id>/create/', views.SampleCreate.as_view(), name='sample_create'),
