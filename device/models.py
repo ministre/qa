@@ -214,6 +214,28 @@ class DevicePhoto(models.Model):
     updated_at = models.DateTimeField(default=datetime.now, blank=True)
 
 
+class DeviceDocumentType(models.Model):
+    name = models.CharField(max_length=300)
+    created_by = models.ForeignKey(User, related_name='doc_type_c', on_delete=models.CASCADE, blank=True, null=True)
+    created_at = models.DateTimeField(default=datetime.now, blank=True)
+    updated_by = models.ForeignKey(User, related_name='doc_type_u', on_delete=models.CASCADE, blank=True, null=True)
+    updated_at = models.DateTimeField(default=datetime.now, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+class DeviceDocument(models.Model):
+    device = models.ForeignKey(Device, on_delete=models.CASCADE)
+    type = models.ForeignKey(DeviceDocumentType, on_delete=models.CASCADE)
+    file = models.FileField(upload_to="device/docs/")
+    desc = models.CharField(max_length=300, blank=True, null=True)
+    created_by = models.ForeignKey(User, related_name='doc_c', on_delete=models.CASCADE, blank=True, null=True)
+    created_at = models.DateTimeField(default=datetime.now, blank=True)
+    updated_by = models.ForeignKey(User, related_name='doc_u', on_delete=models.CASCADE, blank=True, null=True)
+    updated_at = models.DateTimeField(default=datetime.now, blank=True)
+
+
 class Sample(models.Model):
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
     sn = models.CharField(max_length=50)
