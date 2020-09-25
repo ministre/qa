@@ -23,7 +23,9 @@
         </a>
     </li>
     <li class="tabs-title{% if tab_id == 4 %} is-active{% endif %}">
-        <a data-tabs-target="photo" href="#photo">{% trans "Photo" %}</a>
+        <a data-tabs-target="photo" href="#photo">{% trans "Photo" %}
+            {% if photos.count > 0 %}({{ photos.count }}){% endif %}
+        </a>
     </li>
     <li class="tabs-title{% if tab_id == 5 %} is-active{% endif %}">
         <a data-tabs-target="doc" href="#doc">{% trans "Documentation" %}</a>
