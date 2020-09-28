@@ -206,7 +206,7 @@ class CustomValue(models.Model):
 
 class DevicePhoto(models.Model):
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
-    photo = models.ImageField(upload_to="device/")
+    photo = models.ImageField(upload_to="device/photos/")
     desc = models.CharField(max_length=500)
     created_by = models.ForeignKey(User, related_name='photo_c', on_delete=models.CASCADE, blank=True, null=True)
     created_at = models.DateTimeField(default=datetime.now, blank=True)
