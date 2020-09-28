@@ -1,15 +1,16 @@
 from django.shortcuts import render
 from .models import Vendor, DeviceChecklist, DeviceChecklistItem, DeviceChecklistItemValue, DeviceSlist, \
     DeviceSlistItem, DeviceSlistItemValue, DeviceTextField, DeviceTextFieldValue, DeviceIntegerField, \
-    DeviceIntegerFieldValue, DeviceTypeSpecification, CustomField, CustomFieldItem, DeviceType, Device, DevicePhoto, \
-    Sample, Specification, Firmware, FirmwareAccount, FirmwareFile, FirmwareScreenshot, FirmwareHowto
+    DeviceIntegerFieldValue, DeviceTypeSpecification, CustomField, CustomFieldItem, DeviceType, Device, \
+    DeviceDocumentType, DevicePhoto, Sample, Specification, Firmware, FirmwareAccount, FirmwareFile, \
+    FirmwareScreenshot, FirmwareHowto
 from docum.models import Docum
 from protocol.models import Protocol
 from feature.models import FeatureList
 from .forms import VendorForm, DeviceChecklistForm, DeviceChecklistItemForm, DeviceSlistForm, DeviceSlistItemForm, \
     DeviceTextFieldForm, DeviceIntegerFieldForm, DeviceTypeSpecificationForm, CustomFieldForm, CustomFieldItemForm, \
-    DeviceTypeForm, DeviceForm, DevicePhotoForm, SampleForm, FirmwareForm, FirmwareAccountForm, FirmwareFileForm,\
-    FirmwareScreenshotForm, FirmwareHowtoForm
+    DeviceTypeForm, DeviceForm, DeviceDocumentTypeForm, DevicePhotoForm, SampleForm, FirmwareForm, FirmwareAccountForm,\
+    FirmwareFileForm, FirmwareScreenshotForm, FirmwareHowtoForm
 from redmine.forms import ExportDeviceTypeForm, ImportDeviceTypeForm
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.urls import reverse
@@ -864,6 +865,64 @@ def device_update_spec(request, pk):
     else:
         specs = s.get_form_metadata(device)
         return render(request, 'device/update_spec.html', {'device': device, 'specs': specs})
+
+
+@method_decorator(login_required, name='dispatch')
+class DeviceDocumentTypeListView(ListView):
+    context_object_name = 'doc_types'
+    queryset = DeviceDocumentType.objects.all().order_by('id')
+    template_name = 'device/doc_types.html'
+
+
+@method_decorator(login_required, name='dispatch')
+class DeviceDocumentTypeCreate(CreateView):
+    model = DeviceDocumentType
+    form_class = DeviceDocumentTypeForm
+    template_name = 'device/create.html'
+
+    def get_initial(self):
+        return {'created_by': self.request.user, 'updated_by': self.request.user}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('d_doc_types')
+        return context
+
+    def get_success_url(self):
+        return reverse('d_doc_types')
+
+
+@method_decorator(login_required, name='dispatch')
+class DeviceDocumentTypeUpdate(UpdateView):
+    model = DeviceDocumentType
+    form_class = DeviceDocumentTypeForm
+    template_name = 'device/update.html'
+
+    def get_initial(self):
+        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('d_doc_types')
+        return context
+
+    def get_success_url(self):
+        Item.update_timestamp(foo=self.object, user=self.request.user)
+        return reverse('d_doc_types')
+
+
+@method_decorator(login_required, name='dispatch')
+class DeviceDocumentTypeDelete(DeleteView):
+    model = DeviceDocumentType
+    template_name = 'device/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('d_doc_types')
+        return context
+
+    def get_success_url(self):
+        return reverse('d_doc_types')
 
 
 @method_decorator(login_required, name='dispatch')

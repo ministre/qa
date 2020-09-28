@@ -81,6 +81,15 @@ urlpatterns = [
     path('custom_field/<int:custom_field_id>/item/<int:pk>/update/',
          views.CustomFieldItemUpdate.as_view(), name='custom_field_item_update'),
 
+    # document types
+    path('doc/type/', views.DeviceDocumentTypeListView.as_view(), name='d_doc_types'),
+    path('doc/type/create/', views.DeviceDocumentTypeCreate.as_view(), name='d_doc_type_create'),
+    path('doc/type/update/<int:pk>/', views.DeviceDocumentTypeUpdate.as_view(), name='d_doc_type_update'),
+    path('doc/type/delete/<int:pk>/', views.DeviceDocumentTypeDelete.as_view(), name='d_doc_type_delete'),
+
+    # document type
+    
+
     # photos
     path('photo/create/<int:d_id>/', views.DevicePhotoCreate.as_view(), name='photo_create'),
     path('photo/update/<int:pk>/', views.DevicePhotoUpdate.as_view(), name='photo_update'),

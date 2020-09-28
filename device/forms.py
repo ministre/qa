@@ -1,7 +1,8 @@
 from django.forms import ModelForm, HiddenInput
 from device.models import Vendor, DeviceChecklist, DeviceChecklistItem, DeviceSlist, DeviceSlistItem, \
     DeviceTextField, DeviceIntegerField, DeviceType, DeviceTypeSpecification, CustomField, CustomFieldItem, Device, \
-    DevicePhoto, Sample, Firmware, FirmwareAccount, FirmwareFile, FirmwareScreenshot, FirmwareHowto
+    DeviceDocumentType, DeviceDocument, DevicePhoto, Sample, Firmware, FirmwareAccount, FirmwareFile, \
+    FirmwareScreenshot, FirmwareHowto
 from django.utils.translation import gettext_lazy as _
 from django import forms
 
@@ -182,6 +183,31 @@ class DeviceForm(ModelForm):
         }
         fields = '__all__'
         widgets = {'created_by': HiddenInput(), 'created_at': HiddenInput(),
+                   'updated_by': HiddenInput(), 'updated_at': HiddenInput()}
+
+
+class DeviceDocumentTypeForm(ModelForm):
+    class Meta:
+        model = DeviceDocumentType
+        labels = {
+            'name': _('Name'),
+        }
+        fields = '__all__'
+        widgets = {'created_by': HiddenInput(), 'created_at': HiddenInput(),
+                   'updated_by': HiddenInput(), 'updated_at': HiddenInput()}
+
+
+class DeviceDocumentForm(ModelForm):
+    class Meta:
+        model = DeviceDocument
+        labels = {
+            'file': _('Document File'),
+            'type': _('Document Type'),
+            'desc': _('Description'),
+        }
+        fields = '__all__'
+        widgets = {'device': HiddenInput(),
+                   'created_by': HiddenInput(), 'created_at': HiddenInput(),
                    'updated_by': HiddenInput(), 'updated_at': HiddenInput()}
 
 

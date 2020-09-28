@@ -211,7 +211,8 @@
             <td>
                 {{ sample.sn }}
                 <a href="{% url 'sample_delete' device_id=device.id pk=sample.id %}">
-                    <i class="step fi-minus" style="color: #bc104b"></i></a>
+                    <i class="step fi-minus" style="color: #bc104b"></i>
+                </a>
             </td>
             <td>{{ sample.user_login }}</td>
             <td>{{ sample.user_password }}</td>
