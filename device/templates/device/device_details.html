@@ -177,12 +177,13 @@
     </div>
 
     <div class="tabs-panel{% if tab_id == 5 %} is-active{% endif %}" id="doc">
-        <a href="{% url 'docum_create' device_id=device.id %}" class="button small">{% trans "Add" %}</a>
+        <a href="{% url 'doc_create' d_id=device.id %}" class="button small">{% trans "Add" %}</a>
         <p>
-            {% for docum in docums %}
-            {{ docum.type }}<br>
-            <a href="{% url 'docum_update' device_id=device.id pk=docum.id %}">{{ docum.file }}</a>
-            <a href="{% url 'docum_delete' device_id=device.id pk=docum.id %}"><i class="step fi-minus" style="color: #bc104b"></i></a><br>
+            {% for doc in docs %}
+            {{ doc.type }}
+            <br>
+            <a href="{% url 'doc_update' pk=doc.id %}">{{ doc.file }}</a>
+            <a href="{% url 'doc_delete' pk=doc.id %}"><i class="step fi-minus" style="color: #bc104b"></i></a><br>
             <br>
             {% endfor %}
         </p>

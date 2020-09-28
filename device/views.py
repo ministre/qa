@@ -2,15 +2,15 @@ from django.shortcuts import render
 from .models import Vendor, DeviceChecklist, DeviceChecklistItem, DeviceChecklistItemValue, DeviceSlist, \
     DeviceSlistItem, DeviceSlistItemValue, DeviceTextField, DeviceTextFieldValue, DeviceIntegerField, \
     DeviceIntegerFieldValue, DeviceTypeSpecification, CustomField, CustomFieldItem, DeviceType, Device, \
-    DeviceDocumentType, DevicePhoto, Sample, Specification, Firmware, FirmwareAccount, FirmwareFile, \
+    DeviceDocumentType, DeviceDocument, DevicePhoto, Sample, Specification, Firmware, FirmwareAccount, FirmwareFile, \
     FirmwareScreenshot, FirmwareHowto
 from docum.models import Docum
 from protocol.models import Protocol
 from feature.models import FeatureList
 from .forms import VendorForm, DeviceChecklistForm, DeviceChecklistItemForm, DeviceSlistForm, DeviceSlistItemForm, \
     DeviceTextFieldForm, DeviceIntegerFieldForm, DeviceTypeSpecificationForm, CustomFieldForm, CustomFieldItemForm, \
-    DeviceTypeForm, DeviceForm, DeviceDocumentTypeForm, DevicePhotoForm, SampleForm, FirmwareForm, FirmwareAccountForm,\
-    FirmwareFileForm, FirmwareScreenshotForm, FirmwareHowtoForm
+    DeviceTypeForm, DeviceForm, DeviceDocumentTypeForm, DeviceDocumentForm, DevicePhotoForm, SampleForm, FirmwareForm, \
+    FirmwareAccountForm, FirmwareFileForm, FirmwareScreenshotForm, FirmwareHowtoForm
 from redmine.forms import ExportDeviceTypeForm, ImportDeviceTypeForm
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.urls import reverse
@@ -840,12 +840,12 @@ def device_details(request, pk, tab_id):
     specs = Spec.get_values(device)
     fws = Firmware.objects.filter(device=device)
     photos = DevicePhoto.objects.filter(device=device)
-    docums = Docum.objects.filter(device=device)
+    docs = DeviceDocument.objects.filter(device=device).order_by('id')
     samples = Sample.objects.filter(device=device)
     protocols = Protocol.objects.filter(device=device)
     redmine_url = settings.REDMINE_URL
     return render(request, 'device/device_details.html', {'device': device, 'specs': specs, 'fws': fws,
-                                                          'photos': photos, 'docums': docums, 'samples': samples,
+                                                          'photos': photos, 'docs': docs, 'samples': samples,
                                                           'protocols': protocols, 'redmine_url': redmine_url,
                                                           'tab_id': tab_id})
 
@@ -981,6 +981,57 @@ class DevicePhotoDelete(DeleteView):
 
     def get_success_url(self):
         return reverse('device_details', kwargs={'pk': self.object.device.id, 'tab_id': 4})
+
+
+@method_decorator(login_required, name='dispatch')
+class DeviceDocumentCreate(CreateView):
+    model = DeviceDocument
+    form_class = DeviceDocumentForm
+    template_name = 'device/create.html'
+
+    def get_initial(self):
+        return {'device': self.kwargs.get('d_id'),
+                'created_by': self.request.user, 'updated_by': self.request.user}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('device_details', kwargs={'pk': self.kwargs.get('d_id'), 'tab_id': 5})
+        return context
+
+    def get_success_url(self):
+        return reverse('device_details', kwargs={'pk': self.kwargs.get('d_id'), 'tab_id': 5})
+
+
+@method_decorator(login_required, name='dispatch')
+class DeviceDocumentUpdate(UpdateView):
+    model = DeviceDocument
+    form_class = DeviceDocumentForm
+    template_name = 'device/update.html'
+
+    def get_initial(self):
+        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('device_details', kwargs={'pk': self.object.device.id, 'tab_id': 5})
+        return context
+
+    def get_success_url(self):
+        return reverse('device_details', kwargs={'pk': self.object.device.id, 'tab_id': 5})
+
+
+@method_decorator(login_required, name='dispatch')
+class DeviceDocumentDelete(DeleteView):
+    model = DeviceDocument
+    template_name = 'device/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('device_details', kwargs={'pk': self.object.device.id, 'tab_id': 5})
+        return context
+
+    def get_success_url(self):
+        return reverse('device_details', kwargs={'pk': self.object.device.id, 'tab_id': 5})
 
 
 @method_decorator(login_required, name='dispatch')

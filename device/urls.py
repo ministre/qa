@@ -81,19 +81,21 @@ urlpatterns = [
     path('custom_field/<int:custom_field_id>/item/<int:pk>/update/',
          views.CustomFieldItemUpdate.as_view(), name='custom_field_item_update'),
 
-    # document types
+    # device photos
+    path('photo/create/<int:d_id>/', views.DevicePhotoCreate.as_view(), name='photo_create'),
+    path('photo/update/<int:pk>/', views.DevicePhotoUpdate.as_view(), name='photo_update'),
+    path('photo/delete/<int:pk>/', views.DevicePhotoDelete.as_view(), name='photo_delete'),
+
+    # device document types
     path('doc/type/', views.DeviceDocumentTypeListView.as_view(), name='d_doc_types'),
     path('doc/type/create/', views.DeviceDocumentTypeCreate.as_view(), name='d_doc_type_create'),
     path('doc/type/update/<int:pk>/', views.DeviceDocumentTypeUpdate.as_view(), name='d_doc_type_update'),
     path('doc/type/delete/<int:pk>/', views.DeviceDocumentTypeDelete.as_view(), name='d_doc_type_delete'),
 
-    # document type
-    
-
-    # photos
-    path('photo/create/<int:d_id>/', views.DevicePhotoCreate.as_view(), name='photo_create'),
-    path('photo/update/<int:pk>/', views.DevicePhotoUpdate.as_view(), name='photo_update'),
-    path('photo/delete/<int:pk>/', views.DevicePhotoDelete.as_view(), name='photo_delete'),
+    # device documents
+    path('doc/create/<int:d_id>/', views.DeviceDocumentCreate.as_view(), name='doc_create'),
+    path('doc/update/<int:pk>/', views.DeviceDocumentUpdate.as_view(), name='doc_update'),
+    path('doc/delete/<int:pk>/', views.DeviceDocumentDelete.as_view(), name='doc_delete'),
 
     # samples
     path('sample/<int:device_id>/create/', views.SampleCreate.as_view(), name='sample_create'),
