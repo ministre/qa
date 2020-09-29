@@ -4,7 +4,6 @@ from .models import Vendor, DeviceChecklist, DeviceChecklistItem, DeviceChecklis
     DeviceIntegerFieldValue, DeviceTypeSpecification, CustomField, CustomFieldItem, DeviceType, Device, \
     DeviceDocumentType, DeviceDocument, DevicePhoto, Sample, Specification, Firmware, FirmwareAccount, FirmwareFile, \
     FirmwareScreenshot, FirmwareHowto
-from docum.models import Docum
 from protocol.models import Protocol
 from feature.models import FeatureList
 from .forms import VendorForm, DeviceChecklistForm, DeviceChecklistItemForm, DeviceSlistForm, DeviceSlistItemForm, \
