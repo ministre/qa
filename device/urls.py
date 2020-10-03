@@ -127,4 +127,8 @@ urlpatterns = [
     path('fw/howto/create/<int:fw_id>/', views.FirmwareHowtoCreate.as_view(), name='fw_howto_create'),
     path('fw/howto/update/<int:pk>/', views.FirmwareHowtoUpdate.as_view(), name='fw_howto_update'),
     path('fw/howto/delete/<int:pk>/', views.FirmwareHowtoDelete.as_view(), name='fw_howto_delete'),
+
+    # support contact
+    path('support/create/<int:d_id>/', views.DeviceSupportCreate.as_view(), name='d_support_create'),
+    path('support/delete/<int:pk>/', views.DeviceSupportDelete.as_view(), name='d_support_delete'),
 ]

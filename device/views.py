@@ -8,8 +8,8 @@ from protocol.models import Protocol
 from feature.models import FeatureList
 from .forms import VendorForm, DeviceChecklistForm, DeviceChecklistItemForm, DeviceSlistForm, DeviceSlistItemForm, \
     DeviceTextFieldForm, DeviceIntegerFieldForm, DeviceTypeSpecificationForm, CustomFieldForm, CustomFieldItemForm, \
-    DeviceTypeForm, DeviceForm, DeviceDocumentTypeForm, DeviceDocumentForm, DevicePhotoForm, SampleForm, FirmwareForm, \
-    FirmwareAccountForm, FirmwareFileForm, FirmwareScreenshotForm, FirmwareHowtoForm
+    DeviceTypeForm, DeviceForm, DeviceDocumentTypeForm, DeviceDocumentForm, DevicePhotoForm, SampleForm, \
+    DeviceSupportForm, FirmwareForm, FirmwareAccountForm, FirmwareFileForm, FirmwareScreenshotForm, FirmwareHowtoForm
 from redmine.forms import ExportDeviceTypeForm, ImportDeviceTypeForm
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.urls import reverse
@@ -1338,3 +1338,36 @@ class FirmwareHowtoDelete(DeleteView):
 
     def get_success_url(self):
         return reverse('fw_details', kwargs={'pk': self.object.firmware.id, 'tab_id': 7})
+
+
+@method_decorator(login_required, name='dispatch')
+class DeviceSupportCreate(CreateView):
+    model = DeviceSupport
+    form_class = DeviceSupportForm
+    template_name = 'device/create.html'
+
+    def get_initial(self):
+        return {'device': self.kwargs.get('d_id'),
+                'created_by': self.request.user, 'updated_by': self.request.user}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('device_details', kwargs={'pk': self.kwargs.get('d_id'), 'tab_id': 8})
+        return context
+
+    def get_success_url(self):
+        return reverse('device_details', kwargs={'pk': self.kwargs.get('d_id'), 'tab_id': 8})
+
+
+@method_decorator(login_required, name='dispatch')
+class DeviceSupportDelete(DeleteView):
+    model = DeviceSupport
+    template_name = 'device/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('device_details', kwargs={'pk': self.object.device.id, 'tab_id': 8})
+        return context
+
+    def get_success_url(self):
+        return reverse('device_details', kwargs={'pk': self.object.device.id, 'tab_id': 8})

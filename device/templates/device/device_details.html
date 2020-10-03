@@ -287,7 +287,7 @@
     </div>
 
     <div class="tabs-panel{% if tab_id == 8 %} is-active{% endif %}" id="contacts">
-        <a href="{# url 'd_support_create' d_id=device.id #}" class="button small">{% trans "Add" %}</a>
+        <a href="{% url 'd_support_create' d_id=device.id %}" class="button small">{% trans "Add" %}</a>
         {% if supports %}
         <table class="display" style="width:100%">
             <thead>
@@ -303,6 +303,7 @@
             <tr>
                 <td>{{ support.contact }}
                     {% if support.contact.post %}
+                    <a href="{% url 'd_support_delete' pk=support.id %}"><i class="step fi-minus" style="color: #bc104b"></i></a>
                     <br>
                     <span style="color: #7700ff; font-style: italic">{{ support.contact.post }}</span>
                     {% endif %}
