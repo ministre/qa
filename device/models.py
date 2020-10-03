@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from datetime import datetime
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
+from contact.models import Contact
 
 
 class Vendor(models.Model):
@@ -251,6 +252,15 @@ class Sample(models.Model):
 
     def __str__(self):
         return self.sn
+
+
+class DeviceSupport(models.Model):
+    device = models.ForeignKey(Device, on_delete=models.CASCADE)
+    contact = models.ForeignKey(Contact, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(User, related_name='d_support_c', on_delete=models.CASCADE, blank=True, null=True)
+    created_at = models.DateTimeField(default=datetime.now, blank=True)
+    updated_by = models.ForeignKey(User, related_name='d_support_u', on_delete=models.CASCADE, blank=True, null=True)
+    updated_at = models.DateTimeField(default=datetime.now, blank=True)
 
 
 class Specification:
