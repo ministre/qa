@@ -9,29 +9,24 @@
 <table id="contacts" class="display" style="width:100%">
     <thead>
     <tr>
-        <th>ID</th>
-        <th>{% trans "Surname" %}</th>
-        <th>{% trans "Name" %}</th>
-        <th>{% trans "Patronymic" %}</th>
-        <th>{% trans "Post" %}</th>
+        <th>{% trans "Full Name" %}</th>
+        <th>{% trans "Company" %}</th>
         <th>{% trans "E-mail" %}</th>
         <th>{% trans "Phone" %}</th>
-        <th>{% trans "Vendor" %}</th>
-        <th>{% trans "Username" %}</th>
     </tr>
     </thead>
     <tbody>
     {% for contact in contacts %}
     <tr data-href="{% url 'contact_update' pk=contact.id %}">
-        <td>{{ contact.id }}</td>
-        <td>{{ contact.surname }}</td>
-        <td>{{ contact.name }}</td>
-        <td>{{ contact.patronymic }}</td>
-        <td>{{ contact.post }}</td>
-        <td>{{ contact.email }}</td>
-        <td>{{ contact.phone }}</td>
-        <td>{{ contact.vendor }}</td>
-        <td>{{ contact.username }}</td>
+        <td>{{ contact }}
+            {% if contact.post %}
+            <br>
+            <span style="color: #7700ff; font-style: italic">{{ contact.post }}</span>
+            {% endif %}
+        </td>
+        <td>{% if contact.vendor %}{{ contact.vendor }}{% endif %}</td>
+        <td>{% if contact.email %}{{ contact.email }}{% endif %}</td>
+        <td>{% if contact.phone %}{{ contact.phone }}{% endif %}</td>
     </tr>
     {% endfor %}
     </tbody>
@@ -44,7 +39,7 @@
             "language": { "url": "{% static '/DataTables/i18n/Russian.json' %}" },
         {% endif %}
         "pageLength": 100,
-        "order": [[ 0, "desc" ]]
+        "order": [[ 0, "asc" ]]
         });
     });
 

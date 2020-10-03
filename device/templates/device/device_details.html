@@ -41,6 +41,11 @@
         <a data-tabs-target="protocols" href="#protocols">{% trans "Protocols" %}</a>
     </li>
     <li class="tabs-title{% if tab_id == 8 %} is-active{% endif %}">
+        <a data-tabs-target="contacts" href="#contacts">{% trans "Contacts" %}
+            {% if supports.count > 0 %}({{ supports.count }}){% endif %}
+        </a>
+    </li>
+    <li class="tabs-title{% if tab_id == 9 %} is-active{% endif %}">
         <a data-tabs-target="redmine" href="#redmine">{% trans "Redmine" %}</a>
     </li>
 </ul>
@@ -281,7 +286,38 @@
         {% endif %}
     </div>
 
-  <div class="tabs-panel{% if tab_id == 8 %} is-active{% endif %}" id="redmine">
+    <div class="tabs-panel{% if tab_id == 8 %} is-active{% endif %}" id="contacts">
+        <a href="{# url 'd_support_create' d_id=device.id #}" class="button small">{% trans "Add" %}</a>
+        {% if supports %}
+        <table class="display" style="width:100%">
+            <thead>
+            <tr>
+                <th>{% trans "Full Name" %}</th>
+                <th>{% trans "Company" %}</th>
+                <th>{% trans "E-Mail" %}</th>
+                <th>{% trans "Phone" %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for support in supports %}
+            <tr>
+                <td>{{ support.contact }}
+                    {% if support.contact.post %}
+                    <br>
+                    <span style="color: #7700ff; font-style: italic">{{ support.contact.post }}</span>
+                    {% endif %}
+                </td>
+                <td>{{ support.contact.vendor }}</td>
+                <td>{{ support.contact.email }}</td>
+                <td>{{ support.contact.phone }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+
+  <div class="tabs-panel{% if tab_id == 9 %} is-active{% endif %}" id="redmine">
       <div class="grid-x grid-margin-x">
           <div class="cell">
               <div class="card">

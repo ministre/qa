@@ -10,7 +10,7 @@ from datetime import datetime
 @method_decorator(login_required, name='dispatch')
 class ContactListView(ListView):
     context_object_name = 'contacts'
-    queryset = Contact.objects.all()
+    queryset = Contact.objects.all().order_by('surname')
     template_name = 'contact/list.html'
 
 
