@@ -18,6 +18,9 @@ class Contact(models.Model):
     updated_by = models.ForeignKey(User, related_name='contact_u', on_delete=models.CASCADE, blank=True, null=True)
     updated_at = models.DateTimeField(default=datetime.now, blank=True)
 
+    class Meta:
+        order_with_respect_to = 'surname'
+
     def __str__(self):
         full_name = str(self.surname) + ' ' + str(self.name)
         if self.patronymic:

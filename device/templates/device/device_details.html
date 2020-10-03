@@ -288,6 +288,7 @@
 
     <div class="tabs-panel{% if tab_id == 8 %} is-active{% endif %}" id="contacts">
         <a href="{% url 'd_support_create' d_id=device.id %}" class="button small">{% trans "Add" %}</a>
+        <a href="{% url 'contacts' %}" class="button small">{% trans "Contacts" %}</a>
         {% if supports %}
         <table class="display" style="width:100%">
             <thead>
