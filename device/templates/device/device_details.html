@@ -310,8 +310,8 @@
                     {% endif %}
                 </td>
                 <td>{{ support.contact.vendor }}</td>
-                <td>{{ support.contact.email }}</td>
-                <td>{{ support.contact.phone }}</td>
+                <td>{% if support.contact.email %}{{ support.contact.email }}{% endif %}</td>
+                <td>{% if support.contact.phone %}{{ support.contact.phone }}{% endif %}</td>
             </tr>
             {% endfor %}
             </tbody>

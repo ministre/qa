@@ -6,6 +6,7 @@ from .models import Vendor, DeviceChecklist, DeviceChecklistItem, DeviceChecklis
     FirmwareFile, FirmwareScreenshot, FirmwareHowto
 from protocol.models import Protocol
 from feature.models import FeatureList
+from contact.models import Contact
 from .forms import VendorForm, DeviceChecklistForm, DeviceChecklistItemForm, DeviceSlistForm, DeviceSlistItemForm, \
     DeviceTextFieldForm, DeviceIntegerFieldForm, DeviceTypeSpecificationForm, CustomFieldForm, CustomFieldItemForm, \
     DeviceTypeForm, DeviceForm, DeviceDocumentTypeForm, DeviceDocumentForm, DevicePhotoForm, SampleForm, \
@@ -1349,6 +1350,11 @@ class DeviceSupportCreate(CreateView):
     def get_initial(self):
         return {'device': self.kwargs.get('d_id'),
                 'created_by': self.request.user, 'updated_by': self.request.user}
+
+    def get_form(self, form_class=DeviceSupportForm):
+        form = super(DeviceSupportCreate, self).get_form(form_class)
+        form.fields['contact'].queryset = Contact.objects.exclude(vendor__isnull=True).order_by('surname')
+        return form
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
