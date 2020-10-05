@@ -88,6 +88,16 @@ class Spec(object):
     def set_values(device: Device, dt_spec: DeviceTypeSpecification, value):
         if dt_spec.checklist:
             pass
+        if dt_spec.slist:
+            device_slist_items = DeviceSlistItem.objects.filter(slist=dt_spec.slist)
+            # clear value
+            for device_slist_item in device_slist_items:
+                DeviceSlistItemValue.objects.filter(device=device, value=device_slist_item).delete()
+            # update value
+            if value:
+                device_slist_item = DeviceSlistItem.objects.get(slist=dt_spec.slist, id=value)
+                DeviceSlistItemValue.objects.create(device=device, value=device_slist_item)
+
         if dt_spec.text_field:
             if value:
                 DeviceTextFieldValue.objects.update_or_create(device=device, field=dt_spec.text_field,
