@@ -89,11 +89,17 @@ class Spec(object):
         if dt_spec.checklist:
             pass
         if dt_spec.text_field:
-            DeviceTextFieldValue.objects.update_or_create(device=device, field=dt_spec.text_field,
-                                                          defaults={'value': value})
+            if value:
+                DeviceTextFieldValue.objects.update_or_create(device=device, field=dt_spec.text_field,
+                                                              defaults={'value': value})
+            else:
+                DeviceTextFieldValue.objects.filter(device=device, field=dt_spec.text_field).delete()
         if dt_spec.integer_field:
-            DeviceIntegerFieldValue.objects.update_or_create(device=device, field=dt_spec.integer_field,
-                                                             defaults={'value': value})
+            if value:
+                DeviceIntegerFieldValue.objects.update_or_create(device=device, field=dt_spec.integer_field,
+                                                                 defaults={'value': value})
+            else:
+                DeviceIntegerFieldValue.objects.filter(device=device, field=dt_spec.integer_field).delete()
 
 
 @login_required
