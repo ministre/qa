@@ -115,7 +115,6 @@ class DeviceType(models.Model):
     tag = models.CharField(max_length=100)
     desc = models.CharField(max_length=1000)
     desc_genitive = models.CharField(max_length=1000, null=True, blank=True)
-    # cf = models.ManyToManyField(CustomField, related_name='custom_fields', blank=True)
     redmine_parent = models.CharField(max_length=1000, blank=True, null=True)
     redmine_project = models.CharField(max_length=1000, blank=True, null=True)
     redmine_project_name = models.CharField(max_length=1000, blank=True, null=True)
