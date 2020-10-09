@@ -1,16 +1,16 @@
 from django.shortcuts import render
 from .models import Vendor, DeviceChecklist, DeviceChecklistItem, DeviceChecklistItemValue, DeviceSlist, \
     DeviceSlistItem, DeviceSlistItemValue, DeviceTextField, DeviceTextFieldValue, DeviceIntegerField, \
-    DeviceIntegerFieldValue, DeviceTypeSpecification, CustomField, CustomFieldItem, DeviceType, Device, \
-    DeviceDocumentType, DeviceDocument, DevicePhoto, Sample, DeviceSupport, Specification, Firmware, FirmwareAccount, \
-    FirmwareFile, FirmwareScreenshot, FirmwareHowto
+    DeviceIntegerFieldValue, DeviceTypeSpecification, DeviceType, Device, DeviceDocumentType, DeviceDocument, \
+    DevicePhoto, Sample, DeviceSupport, Specification, Firmware, FirmwareAccount, FirmwareFile, FirmwareScreenshot, \
+    FirmwareHowto
 from protocol.models import Protocol
 from feature.models import FeatureList
 from contact.models import Contact
 from .forms import VendorForm, DeviceChecklistForm, DeviceChecklistItemForm, DeviceSlistForm, DeviceSlistItemForm, \
-    DeviceTextFieldForm, DeviceIntegerFieldForm, DeviceTypeSpecificationForm, CustomFieldForm, CustomFieldItemForm, \
-    DeviceTypeForm, DeviceForm, DeviceDocumentTypeForm, DeviceDocumentForm, DevicePhotoForm, SampleForm, \
-    DeviceSupportForm, FirmwareForm, FirmwareAccountForm, FirmwareFileForm, FirmwareScreenshotForm, FirmwareHowtoForm
+    DeviceTextFieldForm, DeviceIntegerFieldForm, DeviceTypeSpecificationForm, DeviceTypeForm, DeviceForm, \
+    DeviceDocumentTypeForm, DeviceDocumentForm, DevicePhotoForm, SampleForm, DeviceSupportForm, FirmwareForm, \
+    FirmwareAccountForm, FirmwareFileForm, FirmwareScreenshotForm, FirmwareHowtoForm
 from redmine.forms import ExportDeviceTypeForm, ImportDeviceTypeForm
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.urls import reverse
@@ -85,29 +85,34 @@ class Spec(object):
         return specifications
 
     @staticmethod
-    def set_values(device: Device, dt_spec: DeviceTypeSpecification, value):
+    def set_values(device: Device, dt_spec: DeviceTypeSpecification, values):
         if dt_spec.checklist:
-            pass
+            items = DeviceChecklistItem.objects.filter(checklist=dt_spec.checklist)
+            for item in items:
+                DeviceChecklistItemValue.objects.filter(device=device, item=item).delete()
+            for value in values:
+                item = DeviceChecklistItem.objects.get(checklist=dt_spec.checklist, id=value)
+                DeviceChecklistItemValue.objects.create(device=device, item=item, value=True)
+
         if dt_spec.slist:
-            device_slist_items = DeviceSlistItem.objects.filter(slist=dt_spec.slist)
-            # clear value
-            for device_slist_item in device_slist_items:
-                DeviceSlistItemValue.objects.filter(device=device, value=device_slist_item).delete()
-            # update value
-            if value:
-                device_slist_item = DeviceSlistItem.objects.get(slist=dt_spec.slist, id=value)
-                DeviceSlistItemValue.objects.create(device=device, value=device_slist_item)
+            items = DeviceSlistItem.objects.filter(slist=dt_spec.slist)
+            for item in items:
+                DeviceSlistItemValue.objects.filter(device=device, value=item).delete()
+            if values[0]:
+                item = DeviceSlistItem.objects.get(slist=dt_spec.slist, id=values[0])
+                DeviceSlistItemValue.objects.create(device=device, value=item)
 
         if dt_spec.text_field:
-            if value:
+            if values[0]:
                 DeviceTextFieldValue.objects.update_or_create(device=device, field=dt_spec.text_field,
-                                                              defaults={'value': value})
+                                                              defaults={'value': values[0]})
             else:
                 DeviceTextFieldValue.objects.filter(device=device, field=dt_spec.text_field).delete()
+
         if dt_spec.integer_field:
-            if value:
+            if values[0]:
                 DeviceIntegerFieldValue.objects.update_or_create(device=device, field=dt_spec.integer_field,
-                                                                 defaults={'value': value})
+                                                                 defaults={'value': values[0]})
             else:
                 DeviceIntegerFieldValue.objects.filter(device=device, field=dt_spec.integer_field).delete()
 
@@ -117,8 +122,16 @@ def spec_update(request):
     if request.method == 'POST':
         device = get_object_or_404(Device, id=request.POST['device_id'])
         dt_spec = get_object_or_404(DeviceTypeSpecification, id=request.POST['spec_id'])
-        value = request.POST['spec_value']
-        Spec.set_values(device=device, dt_spec=dt_spec, value=value)
+
+        values = []
+        if dt_spec.checklist:
+            for item in request.POST.dict().items():
+                if item[0].startswith('item_'):
+                    values.append(item[0][5:])
+        else:
+            values.append(request.POST['spec_value'])
+
+        Spec.set_values(device=device, dt_spec=dt_spec, values=values)
         return HttpResponseRedirect(reverse('device_details', kwargs={'pk': device.id, 'tab_id': 2}))
     else:
         return HttpResponseRedirect(reverse('devices'))
@@ -678,118 +691,6 @@ def dt_spec_delete(request, dt: int, pk: int):
         spec = get_object_or_404(DeviceTypeSpecification, id=pk)
         back_url = reverse('device_type_details', kwargs={'pk': spec.type.id, 'tab_id': 2})
         return render(request, 'device/delete.html', {'object': spec, 'back_url': back_url})
-
-
-@method_decorator(login_required, name='dispatch')
-class CustomFieldListView(ListView):
-    context_object_name = 'custom_fields'
-    queryset = CustomField.objects.all()
-    template_name = 'custom_field/list.html'
-
-
-@method_decorator(login_required, name='dispatch')
-class CustomFieldCreate(CreateView):
-    model = CustomField
-    form_class = CustomFieldForm
-    template_name = 'custom_field/create.html'
-
-    def get_initial(self):
-        return {'created_by': self.request.user, 'updated_by': self.request.user}
-
-    def get_success_url(self):
-        return reverse('custom_fields')
-
-
-@method_decorator(login_required, name='dispatch')
-class CustomFieldUpdate(UpdateView):
-    model = CustomField
-    form_class = CustomFieldForm
-    template_name = 'custom_field/update.html'
-
-    def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': datetime.now}
-
-    def get_success_url(self):
-        return reverse('custom_field_details', kwargs={'pk': self.kwargs.get('pk')})
-
-
-@method_decorator(login_required, name='dispatch')
-class CustomFieldDelete(DeleteView):
-    model = CustomField
-    template_name = 'custom_field/delete.html'
-
-    def get_success_url(self):
-        return reverse('custom_fields')
-
-
-@login_required
-def custom_field_details(request, pk):
-    custom_field = get_object_or_404(CustomField, id=pk)
-    custom_field_items = CustomFieldItem.objects.filter(custom_field=custom_field).order_by('id')
-    return render(request, 'custom_field_item/list.html', {'custom_field': custom_field,
-                                                           'custom_field_items': custom_field_items})
-
-
-@method_decorator(login_required, name='dispatch')
-class CustomFieldItemCreate(CreateView):
-    model = CustomFieldItem
-    form_class = CustomFieldItemForm
-    template_name = 'custom_field_item/create.html'
-
-    def get_initial(self):
-        return {'custom_field': self.kwargs.get('custom_field_id'),
-                'created_by': self.request.user, 'updated_by': self.request.user}
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['custom_field_id'] = self.kwargs.get('custom_field_id')
-        return context
-
-    def get_success_url(self):
-        custom_field_update_timestamp(self.kwargs.get('custom_field_id'), self.request.user)
-        return reverse('custom_field_details', kwargs={'pk': self.kwargs.get('custom_field_id')})
-
-
-@method_decorator(login_required, name='dispatch')
-class CustomFieldItemDelete(DeleteView):
-    model = CustomFieldItem
-    template_name = 'custom_field_item/delete.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['custom_field_id'] = self.kwargs.get('custom_field_id')
-        return context
-
-    def get_success_url(self):
-        custom_field_update_timestamp(self.kwargs.get('custom_field_id'), self.request.user)
-        return reverse('custom_field_details', kwargs={'pk': self.kwargs.get('custom_field_id')})
-
-
-@method_decorator(login_required, name='dispatch')
-class CustomFieldItemUpdate(UpdateView):
-    model = CustomFieldItem
-    form_class = CustomFieldItemForm
-    template_name = 'custom_field_item/update.html'
-
-    def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': datetime.now}
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['custom_field_id'] = self.kwargs.get('custom_field_id')
-        return context
-
-    def get_success_url(self):
-        custom_field_update_timestamp(self.kwargs.get('custom_field_id'), self.request.user)
-        return reverse('custom_field_details', kwargs={'pk': self.kwargs.get('custom_field_id')})
-
-
-def custom_field_update_timestamp(custom_field_id, user):
-    custom_field = CustomField.objects.get(id=custom_field_id)
-    custom_field.updated_by = user
-    custom_field.updated_at = datetime.now()
-    custom_field.save()
-    return True
 
 
 @method_decorator(login_required, name='dispatch')

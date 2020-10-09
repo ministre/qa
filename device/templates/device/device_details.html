@@ -101,13 +101,7 @@
                             {% if spec.type == 'checklist' %}
                             <ul style="list-style: none">
                                 {% for item in spec.items %}
-                                <li>
-                                    <input type="checkbox" name="item_{{ item.id }}"
-                                           {% if item.value == True %}
-                                           checked
-                                           {% endif %}
-                                    > {{ item.name }}
-                                </li>
+                                <li><input type="checkbox" name="item_{{ item.id }}"{% if item.value == True %} checked{% endif %}> {{ item.name }}</li>
                                 {% endfor %}
                             </ul>
                             {% endif %}

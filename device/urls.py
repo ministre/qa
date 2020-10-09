@@ -56,7 +56,7 @@ urlpatterns = [
     path('type/delete/<int:pk>/', views.DeviceTypeDelete.as_view(), name='device_type_delete'),
     path('type/details/<int:pk>/<int:tab_id>/', views.device_type_details, name='device_type_details'),
 
-    # device type specs
+    # device type specifications
     path('type/spec/create/<int:dt>/<int:st>/', views.dt_spec_create, name='dt_spec_create'),
     path('type/spec/delete/<int:dt>/<int:pk>/', views.dt_spec_delete, name='dt_spec_delete'),
 
@@ -67,19 +67,6 @@ urlpatterns = [
     path('<int:pk>/delete/', views.DeviceDelete.as_view(), name='device_delete'),
     path('details/<int:pk>/<int:tab_id>/', views.device_details, name='device_details'),
     path('spec/update/', views.spec_update, name='spec_update'),
-
-    # custom fields
-    path('custom_field/', views.CustomFieldListView.as_view(), name='custom_fields'),
-    path('custom_field/create/', views.CustomFieldCreate.as_view(), name='custom_field_create'),
-    path('custom_field/update/<int:pk>/', views.CustomFieldUpdate.as_view(), name='custom_field_update'),
-    path('custom_field/<int:pk>/', views.custom_field_details, name='custom_field_details'),
-    path('custom_field/<int:pk>/delete/', views.CustomFieldDelete.as_view(), name='custom_field_delete'),
-    path('custom_field/<int:custom_field_id>/item/create/',
-         views.CustomFieldItemCreate.as_view(), name='custom_field_item_create'),
-    path('custom_field/<int:custom_field_id>/item/<int:pk>/delete/',
-         views.CustomFieldItemDelete.as_view(), name='custom_field_item_delete'),
-    path('custom_field/<int:custom_field_id>/item/<int:pk>/update/',
-         views.CustomFieldItemUpdate.as_view(), name='custom_field_item_update'),
 
     # device photos
     path('photo/create/<int:d_id>/', views.DevicePhotoCreate.as_view(), name='photo_create'),
