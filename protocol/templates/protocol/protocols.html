@@ -10,10 +10,9 @@
         <th>ID</th>
         <th>{% trans "Device" %}</th>
         <th>{% trans "Firmware" %}</th>
-        <th>{% trans "Started" %}</th>
         <th>{% trans "Completed" %}</th>
+        <th>{% trans "Branch" %}</th>
         <th>{% trans "Status" %}</th>
-        <th>{% trans "Last Update" %}</th>
     </tr>
     </thead>
     <tbody>
@@ -22,10 +21,9 @@
         <td>{{ protocol.id }}</td>
         <td>{{ protocol.device.vendor }} {{ protocol.device }}</td>
         <td>{{ protocol.firmware }}</td>
-        <td>{{ protocol.started }}</td>
         <td>{{ protocol.completed }}</td>
+        <td>{{ protocol.branch }}</td>
         <td>{{ protocol.status }}</td>
-        <td>{{ protocol.updated_at }} ({{ protocol.updated_by }})</td>
     </tr>
     {% endfor %}
     </tbody>

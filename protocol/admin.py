@@ -1,7 +1,5 @@
 from django.contrib import admin
-from .models import Branch, Resolution, Protocol, TestResult
+from .models import Branch, Protocol
 
 admin.site.register(Branch)
-admin.site.register(Resolution)
 admin.site.register(Protocol)
-admin.site.register(TestResult)
