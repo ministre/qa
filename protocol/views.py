@@ -2,14 +2,21 @@ from django.shortcuts import render
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
-from .models import Protocol, TestResult
-from .forms import ProtocolForm
+from .models import Branch, Protocol, TestResult
+from .forms import BranchForm, ProtocolForm
 from django.urls import reverse
 from testplan.models import Testplan, Category, Test
 from device.models import Device, Sample, Firmware
 from datetime import datetime
 from django import forms
 from django.shortcuts import get_object_or_404
+
+
+@method_decorator(login_required, name='dispatch')
+class BranchListView(ListView):
+    context_object_name = 'branches'
+    queryset = Branch.objects.all().order_by('id')
+    template_name = 'protocol/branches.html'
 
 
 @method_decorator(login_required, name='dispatch')
