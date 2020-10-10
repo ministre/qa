@@ -11,7 +11,6 @@
     <tr>
         <th>ID</th>
         <th>{% trans "Device" %}</th>
-        <th>{% trans "Firmware" %}</th>
         <th>{% trans "Completed" %}</th>
         <th>{% trans "Branch" %}</th>
         <th>{% trans "Status" %}</th>
@@ -22,7 +21,6 @@
     <tr data-href="{% url 'protocol_details' pk=protocol.id %}">
         <td>{{ protocol.id }}</td>
         <td>{{ protocol.device.vendor }} {{ protocol.device }}</td>
-        <td>{{ protocol.firmware }}</td>
         <td>{{ protocol.completed }}</td>
         <td>{{ protocol.branch }}</td>
         <td>{{ protocol.status }}</td>

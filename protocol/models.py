@@ -21,7 +21,7 @@ class Protocol(models.Model):
     started = models.DateField(default=datetime.now)
     completed = models.DateField(blank=True, null=True)
     status = models.IntegerField(default=0)
-    scan = models.FileField(upload_to="protocol/files/", blank=True, null=True)
+    # scan = models.FileField(upload_to="protocol/files/", blank=True, null=True)
     created_by = models.ForeignKey(User, related_name='protocol_c', on_delete=models.CASCADE, blank=True, null=True)
     created_at = models.DateTimeField(default=datetime.now)
     updated_by = models.ForeignKey(User, related_name='protocol_u', on_delete=models.CASCADE, blank=True, null=True)
