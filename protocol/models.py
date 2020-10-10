@@ -16,7 +16,7 @@ class Branch(models.Model):
 
 
 class Protocol(models.Model):
-    branch = models.ForeignKey(Branch, on_delete=models.RESTRICT, blank=True, null=True)
+    branch = models.ForeignKey(Branch, on_delete=models.RESTRICT)
     testplan = models.ForeignKey(Testplan, on_delete=models.CASCADE, blank=True, null=True)
     started = models.DateField(default=datetime.now)
     completed = models.DateField(blank=True, null=True)
