@@ -4,51 +4,39 @@
 
 {% block content %}
 
-<p><a href="{% url 'protocols' %}">{% trans "Protocols" %}</a> &raquo; {{ protocol.device.vendor }} {{ protocol.device }} ({{ protocol.device.hw }})</p>
+<p><a href="{% url 'protocols' %}">{% trans "Protocols" %}</a> &raquo; {{ protocol.id }}</p>
 
-<ul class="tabs" data-tabs id="example-tabs">
-    <li class="tabs-title"><a href="#panel1" aria-selected="true">{% trans "General" %}</a></li>
+<ul class="tabs" data-tabs id="protocol-tabs">
+    <li class="tabs-title"><a href="#general" aria-selected="true">{% trans "General" %}</a></li>
     <li class="tabs-title is-active"><a data-tabs-target="panel2" href="#panel2">{% trans "Results" %}</a></li>
     <li class="tabs-title"><a data-tabs-target="panel3" href="#panel3">{% trans "Statistics" %}</a></li>
     <li class="tabs-title"><a data-tabs-target="panel4" href="#panel4">{% trans "Docx" %}</a></li>
     <li class="tabs-title"><a data-tabs-target="panel5" href="#panel5">{% trans "Redmine" %}</a></li>
 </ul>
 
-<div class="tabs-content" data-tabs-content="example-tabs">
+<div class="tabs-content" data-tabs-content="protocol-tabs">
 
-    <div class="tabs-panel" id="panel1">
-        <a href="{% url 'protocol_update' device_id=protocol.device.id pk=protocol.id %}" class="button small">{% trans "Update" %}</a>
-        <a href="{% url 'protocol_delete' device_id=protocol.device.id pk=protocol.id %}" class="button alert small">{% trans "Delete" %}</a>
+    <div class="tabs-panel" id="general">
+        <a href="{% url 'protocol_update' pk=protocol.id %}" class="button small">{% trans "Update" %}</a>
+        <a href="{% url 'protocol_delete' pk=protocol.id %}" class="button alert small">{% trans "Delete" %}</a>
 
         <table class="hover unstriped">
             <tbody>
             <tr>
                 <td>{% trans "Device" %}:</td>
-                <td>{{ protocol.device.vendor }} {{ protocol.device.model }} ({{ protocol.device.hw }})</td>
+                <td></td>
             </tr>
             <tr>
                 <td>{% trans "Testplan" %}:</td>
-                <td>{{ protocol.testplan }} ({{ protocol.testplan.version }})</td>
+                <td></td>
             </tr>
             <tr>
                 <td>{% trans "Firmware" %}:</td>
-                <td>{{ protocol.firmware }}</td>
+                <td></td>
             </tr>
             <tr>
                 <td>{% trans "Status" %}:</td>
-                <td>{{ protocol.status }}</td>
-            </tr>
-            <tr>
-                <td>{% trans "Sample SN" %}:</td>
-                <td>{{ protocol.sample }}</td>
-            </tr>
-            <tr>
-                <td>{% trans "Sample User Password" %}:</td>
-                <td>{{ protocol.sample.user_password }}</td>
-            </tr>
-            <tr>
-                <td>{% trans "Sample Support Password" %}:</td>
-                <td>{{ protocol.sample.support_password }}</td>
+                <td></td>
             </tr>
             <tr>
                 <td>{% trans "Started at" %}:</td>

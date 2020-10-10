@@ -93,6 +93,12 @@ class ProtocolCreate(CreateView):
     def get_initial(self):
         return {'updated_by': self.request.user, 'updated_at': datetime.now}
 
+    def get_form(self, form_class=ProtocolForm):
+        form = super(ProtocolCreate, self).get_form(form_class)
+        form.fields['completed'].widget = forms.HiddenInput()
+        form.fields['status'].widget = forms.HiddenInput()
+        return form
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['back_url'] = reverse('protocols')
@@ -136,4 +142,4 @@ class ProtocolDelete(DeleteView):
 
 def protocol_details(request, pk):
     protocol = get_object_or_404(Protocol, id=pk)
-    return render(request, 'protocol/details.html', {'protocol': protocol})
+    return render(request, 'protocol/protocol_details.html', {'protocol': protocol})
