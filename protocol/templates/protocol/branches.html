@@ -4,6 +4,8 @@
 
 {% block content %}
 
+<a href="{% url 'branch_create' %}" class="button small">{% trans "Create" %}</a>
+
 <table id="branches" class="display" style="width:100%">
     <thead>
     <tr>
@@ -13,7 +15,7 @@
     </thead>
     <tbody>
     {% for branch in branches %}
-    <tr data-href="{# url 'branch_details' pk=branch.id #}">
+    <tr data-href="{% url 'branch_update' pk=branch.id %}">
         <td>{{ branch.id }}</td>
         <td>{{ branch.name }}</td>
     </tr>

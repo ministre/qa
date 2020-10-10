@@ -10,5 +10,7 @@ urlpatterns = [
 
     # branches
     path('branches/', views.BranchListView.as_view(), name='branches'),
-
+    path('branch/create/', views.BranchCreate.as_view(), name='branch_create'),
+    path('branch/update/<int:pk>/', views.BranchUpdate.as_view(), name='branch_update'),
+    path('branch/delete/<int:pk>/', views.BranchDelete.as_view(), name='branch_delete'),
 ]
