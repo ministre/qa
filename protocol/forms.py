@@ -21,8 +21,8 @@ class ProtocolForm(ModelForm):
         model = Protocol
         labels = {
             'testplan': _('Testplan'),
-            'started': _('Date of start'),
-            'completed': _('Date of completion'),
+            'started': _('Start date'),
+            'completed': _('Completion Date'),
             'status': _('Status'),
             'scan': _('Scan-copy of protocol'),
         }
