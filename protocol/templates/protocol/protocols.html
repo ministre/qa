@@ -23,7 +23,12 @@
         <td>{{ protocol.device.vendor }} {{ protocol.device }}</td>
         <td>{{ protocol.completed }}</td>
         <td>{{ protocol.branch }}</td>
-        <td>{{ protocol.status }}</td>
+        <td>
+            {% if protocol.status == 0 %}{% trans "In progress" %}{% endif %}
+            {% if protocol.status == 1 %}{% trans "Not recommended" %}{% endif %}
+            {% if protocol.status == 2 %}{% trans "Recommended with limitation" %}{% endif %}
+            {% if protocol.status == 3 %}{% trans "Recommended" %}{% endif %}
+        </td>
     </tr>
     {% endfor %}
     </tbody>

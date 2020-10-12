@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
 from testplan.models import Testplan
+from device.models import Device, Firmware
 
 
 class Branch(models.Model):
@@ -25,4 +26,14 @@ class Protocol(models.Model):
     created_by = models.ForeignKey(User, related_name='protocol_c', on_delete=models.CASCADE, blank=True, null=True)
     created_at = models.DateTimeField(default=datetime.now)
     updated_by = models.ForeignKey(User, related_name='protocol_u', on_delete=models.CASCADE, blank=True, null=True)
+    updated_at = models.DateTimeField(default=datetime.now)
+
+
+class ProtocolDevice(models.Model):
+    protocol = models.ForeignKey(Protocol, on_delete=models.CASCADE)
+    device = models.ForeignKey(Device, on_delete=models.CASCADE)
+    firmware = models.ForeignKey(Firmware, on_delete=models.CASCADE, blank=True, null=True)
+    created_by = models.ForeignKey(User, related_name='protocol_d_c', on_delete=models.CASCADE, blank=True, null=True)
+    created_at = models.DateTimeField(default=datetime.now)
+    updated_by = models.ForeignKey(User, related_name='protocol_d_u', on_delete=models.CASCADE, blank=True, null=True)
     updated_at = models.DateTimeField(default=datetime.now)
