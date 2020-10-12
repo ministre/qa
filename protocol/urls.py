@@ -13,4 +13,8 @@ urlpatterns = [
     path('branch/create/', views.BranchCreate.as_view(), name='branch_create'),
     path('branch/update/<int:pk>/', views.BranchUpdate.as_view(), name='branch_update'),
     path('branch/delete/<int:pk>/', views.BranchDelete.as_view(), name='branch_delete'),
+
+    # protocol devices
+    path('device/create/<int:p_id>/', views.ProtocolDeviceCreate.as_view(), name='protocol_device_create'),
+    path('device/delete/<int:pk>/', views.ProtocolDeviceDelete.as_view(), name='protocol_device_delete'),
 ]

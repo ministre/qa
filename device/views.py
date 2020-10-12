@@ -4,7 +4,7 @@ from .models import Vendor, DeviceChecklist, DeviceChecklistItem, DeviceChecklis
     DeviceIntegerFieldValue, DeviceTypeSpecification, DeviceType, Device, DeviceDocumentType, DeviceDocument, \
     DevicePhoto, Sample, DeviceSupport, Specification, Firmware, FirmwareAccount, FirmwareFile, FirmwareScreenshot, \
     FirmwareHowto
-from protocol.models import Protocol
+from protocol.models import ProtocolDevice
 from feature.models import FeatureList
 from contact.models import Contact
 from .forms import VendorForm, DeviceChecklistForm, DeviceChecklistItemForm, DeviceSlistForm, DeviceSlistItemForm, \
@@ -759,12 +759,12 @@ def device_details(request, pk, tab_id):
     photos = DevicePhoto.objects.filter(device=device)
     docs = DeviceDocument.objects.filter(device=device).order_by('id')
     samples = Sample.objects.filter(device=device)
-    protocols = Protocol.objects.filter(device=device)
+    protocol_devices = ProtocolDevice.objects.filter(device=device).order_by('id')
     supports = DeviceSupport.objects.filter(device=device).order_by('id')
     redmine_url = settings.REDMINE_URL
     return render(request, 'device/device_details.html', {'device': device, 'specs': specs, 'fws': fws,
                                                           'photos': photos, 'docs': docs, 'samples': samples,
-                                                          'protocols': protocols, 'supports': supports,
+                                                          'protocol_devices': protocol_devices, 'supports': supports,
                                                           'redmine_url': redmine_url,
                                                           'tab_id': tab_id})
 

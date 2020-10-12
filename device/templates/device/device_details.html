@@ -38,7 +38,9 @@
         </a>
     </li>
     <li class="tabs-title{% if tab_id == 7 %} is-active{% endif %}">
-        <a data-tabs-target="protocols" href="#protocols">{% trans "Protocols" %}</a>
+        <a data-tabs-target="protocols" href="#protocols">{% trans "Protocols" %}
+            {% if protocol_devices.count > 0 %}({{ protocol_devices.count }}){% endif %}
+        </a>
     </li>
     <li class="tabs-title{% if tab_id == 8 %} is-active{% endif %}">
         <a data-tabs-target="contacts" href="#contacts">{% trans "Contacts" %}
@@ -234,49 +236,15 @@
     </div>
 
     <div class="tabs-panel{% if tab_id == 7 %} is-active{% endif %}" id="protocols">
-        <a href="{% url 'protocol_create' device_id=device.id %}" class="button small">{% trans "Add" %}</a>
-        {% if protocols %}
-        <table id="t_protocols" class="display" style="width:100%">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>{% trans "Firmware" %}</th>
-                <th>{% trans "Status" %}</th>
-                <th>{% trans "Started" %}</th>
-                <th>{% trans "Completed" %}</th>
-                <th>{% trans "Created by" %}</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-        {% endif %}
-            {% for protocol in protocols %}
-        <tr data-href="{% url 'protocol_details' pk=protocol.id %}">
-            <td>{{ protocol.id }}</td>
-            <td>{{ protocol.firmware }}</td>
-            <td>
-                {% if protocol.status == None %}
-                Testing in progress
-                {% else %}
-                {{ protocol.status }}
-                {% endif %}
-            </td>
-            <td>{{ protocol.started }}</td>
-            <td>
-                {% if protocol.completed != None %}
-                {{ protocol.completed }}
-                {% endif %}
-            </td>
-            <td>{{ protocol.created_by }}</td>
-            <td>
-                <a href="{% url 'protocol_update' device_id=device.id pk=protocol.id %}"><i class="step fi-pencil"></i></a>
-                <a href="{% url 'protocol_delete' device_id=device.id pk=protocol.id %}"><i class="step fi-minus" style="color: #bc104b"></i></a>
-            </td>
-        </tr>
-            {% endfor %}
-        {% if protocols %}
-            </tbody>
-        </table>
+        {% if protocol_devices %}
+        {% for protocol_device in protocol_devices %}
+        <div class="callout secondary">
+            <h5>
+                <a href="{% url 'protocol_details' pk=protocol_device.protocol.id tab_id=1 %}">{{ protocol_device.protocol.id }}</a>
+            </h5>
+            <p>{{ protocol_device.protocol.branch }}</p>
+        </div>
+        {% endfor %}
         {% endif %}
     </div>
 

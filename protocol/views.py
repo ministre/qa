@@ -2,10 +2,9 @@ from django.shortcuts import render
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
-from .models import Branch, Protocol
-from .forms import BranchForm, ProtocolForm
+from .models import Branch, Protocol, ProtocolDevice
+from .forms import BranchForm, ProtocolForm, ProtocolDeviceForm
 from django.urls import reverse
-from device.models import Device, Sample, Firmware
 from datetime import datetime
 from django import forms
 from django.shortcuts import get_object_or_404
@@ -142,4 +141,39 @@ class ProtocolDelete(DeleteView):
 
 def protocol_details(request, pk, tab_id):
     protocol = get_object_or_404(Protocol, id=pk)
-    return render(request, 'protocol/protocol_details.html', {'protocol': protocol, 'tab_id': tab_id})
+    protocol_devices = ProtocolDevice.objects.filter(protocol=protocol).order_by('id')
+    return render(request, 'protocol/protocol_details.html', {'protocol': protocol,
+                                                              'protocol_devices': protocol_devices, 'tab_id': tab_id})
+
+
+@method_decorator(login_required, name='dispatch')
+class ProtocolDeviceCreate(CreateView):
+    model = ProtocolDevice
+    form_class = ProtocolDeviceForm
+    template_name = 'protocol/create.html'
+
+    def get_initial(self):
+        return {'protocol': self.kwargs.get('p_id'),
+                'created_by': self.request.user, 'updated_by': self.request.user}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('protocol_details', kwargs={'pk': self.kwargs.get('p_id'), 'tab_id': 2})
+        return context
+
+    def get_success_url(self):
+        return reverse('protocol_details', kwargs={'pk': self.kwargs.get('p_id'), 'tab_id': 2})
+
+
+@method_decorator(login_required, name='dispatch')
+class ProtocolDeviceDelete(DeleteView):
+    model = ProtocolDevice
+    template_name = 'protocol/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('protocol_details', kwargs={'pk': self.object.protocol.id, 'tab_id': 2})
+        return context
+
+    def get_success_url(self):
+        return reverse('protocol_details', kwargs={'pk': self.object.protocol.id, 'tab_id': 2})

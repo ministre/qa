@@ -11,13 +11,10 @@
         <a href="#general" aria-selected="true">{% trans "General" %}</a>
     </li>
     <li class="tabs-title{% if tab_id == 2 %} is-active{% endif %}">
-        <a data-tabs-target="devices" href="#devices">{% trans "Devices" %}</a>
+        <a data-tabs-target="devices" href="#devices">{% trans "Devices" %}
+            {% if protocol_devices.count > 0 %}({{ protocol_devices.count }}){% endif %}
+        </a>
     </li>
-
-    <li class="tabs-title is-active"><a data-tabs-target="panel2" href="#panel2">{% trans "Results" %}</a></li>
-    <li class="tabs-title"><a data-tabs-target="panel3" href="#panel3">{% trans "Statistics" %}</a></li>
-    <li class="tabs-title"><a data-tabs-target="panel4" href="#panel4">{% trans "Docx" %}</a></li>
-    <li class="tabs-title"><a data-tabs-target="panel5" href="#panel5">{% trans "Redmine" %}</a></li>
 </ul>
 
 <div class="tabs-content" data-tabs-content="protocol-tabs">
@@ -28,15 +25,7 @@
         <table class="hover unstriped">
             <tbody>
             <tr>
-                <td>{% trans "Device" %}:</td>
-                <td></td>
-            </tr>
-            <tr>
                 <td>{% trans "Testplan" %}:</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>{% trans "Firmware" %}:</td>
                 <td></td>
             </tr>
             <tr>
@@ -72,72 +61,30 @@
     </div>
 
     <div class="tabs-panel{% if tab_id == 2 %} is-active{% endif %}" id="devices">
-        <table id="results" class="display" style="width:100%">
-            <thead>
-            <tr>
-                <th width="1%">№</th>
-                <th width="50px">{% trans "Result" %}</th>
-                <th>{% trans "Test" %}</th>
-                <th width="20%">{% trans "Category" %}</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for result in results %}
-            <tr>
-                <td align="center">{{ result.id }}</td>
-                <td align="center">
-                    {% if result.result == 1 %}
-                      <img src="{% static '/img/nok.png' %}" width="25" height="25" alt="failed">
-                    {% endif %}
-                    {% if result.result == 2 %}
-                      <img src="{% static '/img/w_yellow.png' %}" width="25" height="25" alt="warning">
-                    {% endif %}
-                    {% if result.result == 3 %}
-                      <img src="{% static '/img/ok.png' %}" width="25" height="25" alt="ok">
-                    {% endif %}
-                    {% if not result.result %}
-                    <img src="{% static '/img/qu.png' %}" width="20" height="20" alt="untested">
-                    {% endif %}
-                </td>
-                <td>{{ result.test.name }}</td>
-                <td><span style="color:gray"><small><i>{{ result.test.category.name }}</i></small></span></td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
-    <div class="tabs-panel" id="panel3">
-        panel3
-    </div>
-
-    <div class="tabs-panel" id="panel4">
-        panel4
-    </div>
-
-    <div class="tabs-panel" id="panel5">
-        panel5
+        <a href="{% url 'protocol_device_create' p_id=protocol.id %}" class="button small">{% trans "Add" %}</a>
+        {% if protocol_devices %}
+        {% for protocol_device in protocol_devices %}
+        <div class="callout secondary">
+            <h5>
+                <a href="{% url 'device_details' pk=protocol_device.device.id tab_id=1 %}">{{ protocol_device.device.vendor }} {{ protocol_device.device }}</a>
+            </h5>
+            <p>{{ protocol_device.device.type }}</p>
+            <table>
+                <tr>
+                    <td width="5%">{% trans "Firmware" %}: </td>
+                    <td><a href="{# url 'device_details' pk=protocol_device.device.id tab_id=1 #}"><i class="step fi-pencil"></i></a></td>
+                </tr>
+                <tr>
+                    <td>{% trans "Sample" %}: </td>
+                    <td><a href="{# url 'device_details' pk=protocol_device.device.id tab_id=1 #}"><i class="step fi-pencil"></i></a></td>
+                </tr>
+            </table>
+            <a href="{% url 'protocol_device_delete' pk=protocol_device.id %}" class="button small alert">{% trans "Delete" %}</a>
+        </div>
+        {% endfor %}
+        {% endif %}
     </div>
 
 </div>
-
-<script>
-  $(document).ready(function() {
-      var table = $('#results').DataTable( {
-          "paging":  false,
-      {% if LANGUAGE_CODE == 'ru' %}
-          "language": { "url": "{% static '/DataTables/i18n/Russian.json' %}" },
-      {% endif %}
-          "order": [[ 0, "desc" ]]
-      } );
-
-      $('#results tbody').on('click', 'tr', function () {
-          var data = table.row( this ).data();
-		  window.open("/protocol/result/"+data[0]+"/","_self");
-      } );
-  } );
-</script>
-
-<script type="text/javascript" src="{% static 'DataTables/datatables.js' %}"></script>
 
 {% endblock %}
