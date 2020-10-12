@@ -140,6 +140,6 @@ class ProtocolDelete(DeleteView):
         return reverse('protocols')
 
 
-def protocol_details(request, pk):
+def protocol_details(request, pk, tab_id):
     protocol = get_object_or_404(Protocol, id=pk)
-    return render(request, 'protocol/protocol_details.html', {'protocol': protocol})
+    return render(request, 'protocol/protocol_details.html', {'protocol': protocol, 'tab_id': tab_id})

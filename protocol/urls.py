@@ -6,7 +6,7 @@ urlpatterns = [
     path('create/', views.ProtocolCreate.as_view(), name='protocol_create'),
     path('update/<int:pk>/', views.ProtocolUpdate.as_view(), name='protocol_update'),
     path('delete/<int:pk>/', views.ProtocolDelete.as_view(), name='protocol_delete'),
-    path('<int:pk>/', views.protocol_details, name='protocol_details'),
+    path('<int:pk>/<int:tab_id>/', views.protocol_details, name='protocol_details'),
 
     # branches
     path('branches/', views.BranchListView.as_view(), name='branches'),
