@@ -63,7 +63,6 @@ urlpatterns = [
     # devices
     path('create/', views.DeviceCreate.as_view(), name='device_create'),
     path('<int:pk>/update/', views.DeviceUpdate.as_view(), name='device_update'),
-    path('<int:pk>/update_spec/', views.device_update_spec, name='device_update_spec'),
     path('<int:pk>/delete/', views.DeviceDelete.as_view(), name='device_delete'),
     path('details/<int:pk>/<int:tab_id>/', views.device_details, name='device_details'),
     path('spec/update/', views.spec_update, name='spec_update'),
