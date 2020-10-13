@@ -943,17 +943,16 @@ class DeviceSampleCreate(CreateView):
     template_name = 'device/create.html'
 
     def get_initial(self):
-        return {'device': self.kwargs.get('device_id'),
+        return {'device': self.kwargs.get('d_id'),
                 'created_by': self.request.user, 'updated_by': self.request.user}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['device_id'] = self.kwargs.get('device_id')
-        context['back_url'] = reverse('device_details', kwargs={'pk': self.kwargs.get('device_id'), 'tab_id': 6})
+        context['back_url'] = reverse('device_details', kwargs={'pk': self.kwargs.get('d_id'), 'tab_id': 6})
         return context
 
     def get_success_url(self):
-        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id'), 'tab_id': 6})
+        return reverse('device_details', kwargs={'pk': self.kwargs.get('d_id'), 'tab_id': 6})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -967,8 +966,7 @@ class DeviceSampleUpdate(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['device_id'] = self.kwargs.get('device_id')
-        context['back_url'] = reverse('device_details', kwargs={'pk': self.kwargs.get('device_id'), 'tab_id': 6})
+        context['back_url'] = reverse('device_details', kwargs={'pk': self.object.device.id, 'tab_id': 6})
         return context
 
     def get_success_url(self):
@@ -982,12 +980,11 @@ class DeviceSampleDelete(DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['device_id'] = self.object.device.id
-        context['back_url'] = reverse('device_details', kwargs={'pk': self.kwargs.get('device_id'), 'tab_id': 6})
+        context['back_url'] = reverse('device_details', kwargs={'pk': self.object.device.id, 'tab_id': 6})
         return context
 
     def get_success_url(self):
-        return reverse('device_details', kwargs={'pk': self.kwargs.get('device_id'), 'tab_id': 6})
+        return reverse('device_details', kwargs={'pk': self.object.device.id, 'tab_id': 6})
 
 
 @method_decorator(login_required, name='dispatch')

@@ -84,9 +84,9 @@ urlpatterns = [
     path('doc/delete/<int:pk>/', views.DeviceDocumentDelete.as_view(), name='doc_delete'),
 
     # samples
-    path('sample/<int:device_id>/create/', views.DeviceSampleCreate.as_view(), name='sample_create'),
-    path('sample/<int:device_id>/update/<int:pk>/', views.DeviceSampleUpdate.as_view(), name='sample_update'),
-    path('sample/<int:device_id>/delete/<int:pk>/', views.DeviceSampleDelete.as_view(), name='sample_delete'),
+    path('sample/create/<int:d_id>', views.DeviceSampleCreate.as_view(), name='sample_create'),
+    path('sample/update/<int:pk>/', views.DeviceSampleUpdate.as_view(), name='sample_update'),
+    path('sample/delete/<int:pk>/', views.DeviceSampleDelete.as_view(), name='sample_delete'),
 
     # firmware
     path('fw/create/<int:d_id>/', views.FirmwareCreate.as_view(), name='fw_create'),

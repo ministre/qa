@@ -194,42 +194,27 @@
     </div>
 
     <div class="tabs-panel{% if tab_id == 6 %} is-active{% endif %}" id="samples">
-        <a href="{% url 'sample_create' device_id=device.id %}" class="button small">{% trans "Add" %}</a>
+        <a href="{% url 'sample_create' d_id=device.id %}" class="button small">{% trans "Add" %}</a>
         {% if samples %}
         <table id="t_samples" class="display" style="width:100%">
             <thead>
             <tr>
                 <th>ID</th>
                 <th>{% trans "Serial Number" %}</th>
-                <th>{% trans "User Login" %}</th>
-                <th>{% trans "User Password" %}</th>
-                <th>{% trans "Support Login" %}</th>
-                <th>{% trans "Support Password" %}</th>
                 <th>{% trans "Description" %}</th>
             </tr>
             </thead>
             <tbody>
-        {% endif %}
             {% for sample in samples %}
-        <tr data-href="{% url 'sample_update' device_id=device.id pk=sample.id %}">
-            <td>{{ sample.id }}</td>
-            <td>
-                {{ sample.sn }}
-                <a href="{% url 'sample_delete' device_id=device.id pk=sample.id %}">
-                    <i class="step fi-minus" style="color: #bc104b"></i>
-                </a>
-            </td>
-            <td>{{ sample.user_login }}</td>
-            <td>{{ sample.user_password }}</td>
-            <td>{{ sample.support_login }}</td>
-            <td>{{ sample.support_password }}</td>
-            <td>{% if sample.desc %}
-                  {{ sample.desc }}
-                {% endif %}
-            </td>
-        </tr>
+            <tr data-href="{% url 'sample_update' pk=sample.id %}">
+                <td>{{ sample.id }}</td>
+                <td>
+                    {{ sample.sn }}
+                    <a href="{% url 'sample_delete' pk=sample.id %}"><i class="step fi-minus" style="color: #bc104b"></i></a>
+                </td>
+                <td>{% if sample.desc %}{{ sample.desc }}{% endif %}</td>
+            </tr>
             {% endfor %}
-        {% if samples %}
             </tbody>
         </table>
         {% endif %}
