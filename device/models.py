@@ -210,9 +210,6 @@ class DeviceSample(models.Model):
     updated_by = models.ForeignKey(User, related_name='sample_u', on_delete=models.CASCADE, blank=True, null=True)
     updated_at = models.DateTimeField(default=datetime.now)
 
-    def __str__(self):
-        return self.sn
-
 
 class DeviceSupport(models.Model):
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
