@@ -46,6 +46,7 @@ class ProtocolDeviceForm(ModelForm):
         labels = {
             'device': _('Device'),
             'firmware': _('Firmware'),
+            'sample': _('Sample'),
         }
         fields = '__all__'
         widgets = {

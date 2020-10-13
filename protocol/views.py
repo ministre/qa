@@ -3,7 +3,7 @@ from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from .models import Branch, Protocol, ProtocolDevice
-from device.models import Firmware
+from device.models import Firmware, DeviceSample
 from .forms import BranchForm, ProtocolForm, ProtocolDeviceForm
 from django.urls import reverse
 from datetime import datetime
@@ -160,6 +160,7 @@ class ProtocolDeviceCreate(CreateView):
     def get_form(self, form_class=ProtocolDeviceForm):
         form = super(ProtocolDeviceCreate, self).get_form(form_class)
         form.fields['firmware'].widget = forms.HiddenInput()
+        form.fields['sample'].widget = forms.HiddenInput()
         return form
 
     def get_context_data(self, **kwargs):
@@ -178,11 +179,12 @@ class ProtocolDeviceUpdate(UpdateView):
     template_name = 'protocol/update.html'
 
     def get_initial(self):
-        return {'firmware': None, 'updated_by': self.request.user, 'updated_at': datetime.now}
+        return {'firmware': None, 'sample': None, 'updated_by': self.request.user, 'updated_at': datetime.now}
 
     def get_form(self, form_class=ProtocolDeviceForm):
         form = super(ProtocolDeviceUpdate, self).get_form(form_class)
         form.fields['firmware'].widget = forms.HiddenInput()
+        form.fields['sample'].widget = forms.HiddenInput()
         return form
 
     def get_context_data(self, **kwargs):
@@ -206,7 +208,33 @@ class ProtocolDeviceFwUpdate(UpdateView):
     def get_form(self, form_class=ProtocolDeviceForm):
         form = super(ProtocolDeviceFwUpdate, self).get_form(form_class)
         form.fields['device'].widget = forms.HiddenInput()
+        form.fields['sample'].widget = forms.HiddenInput()
         form.fields['firmware'].queryset = Firmware.objects.filter(device=self.object.device).order_by('id')
+        return form
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('protocol_details', kwargs={'pk': self.object.protocol.id, 'tab_id': 2})
+        return context
+
+    def get_success_url(self):
+        return reverse('protocol_details', kwargs={'pk': self.object.protocol.id, 'tab_id': 2})
+
+
+@method_decorator(login_required, name='dispatch')
+class ProtocolDeviceSampleUpdate(UpdateView):
+    model = ProtocolDevice
+    form_class = ProtocolDeviceForm
+    template_name = 'protocol/update.html'
+
+    def get_initial(self):
+        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+
+    def get_form(self, form_class=ProtocolDeviceForm):
+        form = super(ProtocolDeviceSampleUpdate, self).get_form(form_class)
+        form.fields['device'].widget = forms.HiddenInput()
+        form.fields['firmware'].widget = forms.HiddenInput()
+        form.fields['sample'].queryset = DeviceSample.objects.filter(device=self.object.device).order_by('id')
         return form
 
     def get_context_data(self, **kwargs):

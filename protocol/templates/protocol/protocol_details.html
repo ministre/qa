@@ -81,7 +81,12 @@
                 </tr>
                 <tr>
                     <td>{% trans "Sample" %}: </td>
-                    <td><a href="{# url 'device_details' pk=protocol_device.device.id tab_id=1 #}"><i class="step fi-pencil"></i></a></td>
+                    <td>
+                        {% if protocol_device.sample %}
+                        {{ protocol_device.sample.sn }}
+                        {% endif %}
+                        <a href="{% url 'protocol_device_sample_update' pk=protocol_device.id %}"><i class="step fi-pencil"></i></a>
+                    </td>
                 </tr>
             </table>
             <p>
