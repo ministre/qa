@@ -937,7 +937,7 @@ class DeviceDocumentDelete(DeleteView):
 
 
 @method_decorator(login_required, name='dispatch')
-class DeviceSampleSampleCreate(CreateView):
+class DeviceSampleCreate(CreateView):
     model = DeviceSample
     form_class = DeviceSampleForm
     template_name = 'device/create.html'
