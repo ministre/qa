@@ -210,6 +210,14 @@ class DeviceSample(models.Model):
     updated_by = models.ForeignKey(User, related_name='sample_u', on_delete=models.CASCADE, blank=True, null=True)
     updated_at = models.DateTimeField(default=datetime.now)
 
+    def __str__(self):
+        sample_name = '(ID: ' + str(self.id) + ')'
+        if self.sn:
+            sample_name += ' (SN: ' + str(self.sn) + ')'
+        if self.desc:
+            sample_name += ' (Description: ' + str(self.desc) + ')'
+        return sample_name
+
 
 class DeviceSupport(models.Model):
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
