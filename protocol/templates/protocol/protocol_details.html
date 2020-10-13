@@ -72,14 +72,22 @@
             <table>
                 <tr>
                     <td width="5%">{% trans "Firmware" %}: </td>
-                    <td><a href="{# url 'device_details' pk=protocol_device.device.id tab_id=1 #}"><i class="step fi-pencil"></i></a></td>
+                    <td>
+                        {% if protocol_device.firmware %}
+                        <a href="{% url 'fw_details' pk=protocol_device.firmware.id tab_id=1 %}">{{ protocol_device.firmware }}</a>
+                        {% endif %}
+                        <a href="{% url 'protocol_device_fw_update' pk=protocol_device.id %}"><i class="step fi-pencil"></i></a>
+                    </td>
                 </tr>
                 <tr>
                     <td>{% trans "Sample" %}: </td>
                     <td><a href="{# url 'device_details' pk=protocol_device.device.id tab_id=1 #}"><i class="step fi-pencil"></i></a></td>
                 </tr>
             </table>
-            <a href="{% url 'protocol_device_delete' pk=protocol_device.id %}" class="button small alert">{% trans "Delete" %}</a>
+            <p>
+                <a href="{% url 'protocol_device_update' pk=protocol_device.id %}" class="button small">{% trans "Update" %}</a>
+                <a href="{% url 'protocol_device_delete' pk=protocol_device.id %}" class="button small alert">{% trans "Delete" %}</a>
+            </p>
         </div>
         {% endfor %}
         {% endif %}

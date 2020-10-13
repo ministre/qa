@@ -1,7 +1,7 @@
 from django.forms import ModelForm, HiddenInput
 from device.models import Vendor, DeviceChecklist, DeviceChecklistItem, DeviceSlist, DeviceSlistItem, \
     DeviceTextField, DeviceIntegerField, DeviceType, DeviceTypeSpecification, Device, DeviceDocumentType, \
-    DeviceDocument, DevicePhoto, Sample, Firmware, FirmwareAccount, FirmwareFile, FirmwareScreenshot, FirmwareHowto, \
+    DeviceDocument, DevicePhoto, DeviceSample, Firmware, FirmwareAccount, FirmwareFile, FirmwareScreenshot, FirmwareHowto, \
     DeviceSupport
 from django.utils.translation import gettext_lazy as _
 from django import forms
@@ -188,9 +188,9 @@ class DevicePhotoForm(ModelForm):
                    'updated_by': HiddenInput(), 'updated_at': HiddenInput()}
 
 
-class SampleForm(ModelForm):
+class DeviceSampleForm(ModelForm):
     class Meta:
-        model = Sample
+        model = DeviceSample
         labels = {
             'sn': _('Serial Number'),
             'desc': _('Description'),

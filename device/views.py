@@ -2,14 +2,14 @@ from django.shortcuts import render
 from .models import Vendor, DeviceChecklist, DeviceChecklistItem, DeviceChecklistItemValue, DeviceSlist, \
     DeviceSlistItem, DeviceSlistItemValue, DeviceTextField, DeviceTextFieldValue, DeviceIntegerField, \
     DeviceIntegerFieldValue, DeviceTypeSpecification, DeviceType, Device, DeviceDocumentType, DeviceDocument, \
-    DevicePhoto, Sample, DeviceSupport, Specification, Firmware, FirmwareAccount, FirmwareFile, FirmwareScreenshot, \
+    DevicePhoto, DeviceSample, DeviceSupport, Firmware, FirmwareAccount, FirmwareFile, FirmwareScreenshot, \
     FirmwareHowto
 from protocol.models import ProtocolDevice
 from feature.models import FeatureList
 from contact.models import Contact
 from .forms import VendorForm, DeviceChecklistForm, DeviceChecklistItemForm, DeviceSlistForm, DeviceSlistItemForm, \
     DeviceTextFieldForm, DeviceIntegerFieldForm, DeviceTypeSpecificationForm, DeviceTypeForm, DeviceForm, \
-    DeviceDocumentTypeForm, DeviceDocumentForm, DevicePhotoForm, SampleForm, DeviceSupportForm, FirmwareForm, \
+    DeviceDocumentTypeForm, DeviceDocumentForm, DevicePhotoForm, DeviceSampleForm, DeviceSupportForm, FirmwareForm, \
     FirmwareAccountForm, FirmwareFileForm, FirmwareScreenshotForm, FirmwareHowtoForm
 from redmine.forms import ExportDeviceTypeForm, ImportDeviceTypeForm
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
@@ -758,7 +758,7 @@ def device_details(request, pk, tab_id):
     fws = Firmware.objects.filter(device=device)
     photos = DevicePhoto.objects.filter(device=device)
     docs = DeviceDocument.objects.filter(device=device).order_by('id')
-    samples = Sample.objects.filter(device=device)
+    samples = DeviceSample.objects.filter(device=device).order_by('id')
     protocol_devices = ProtocolDevice.objects.filter(device=device).order_by('id')
     supports = DeviceSupport.objects.filter(device=device).order_by('id')
     redmine_url = settings.REDMINE_URL
@@ -767,23 +767,6 @@ def device_details(request, pk, tab_id):
                                                           'protocol_devices': protocol_devices, 'supports': supports,
                                                           'redmine_url': redmine_url,
                                                           'tab_id': tab_id})
-
-
-@login_required
-def device_update_spec(request, pk):
-    device = get_object_or_404(Device, pk=pk)
-    s = Specification()
-    if request.method == 'POST':
-        for item in request.POST.dict().items():
-            if item[0] != 'csrfmiddlewaretoken' and not item[0].startswith('checkbox_'):
-                s.update_value(device, int(item[0]), item[1])
-            if item[0].startswith('checkbox_'):
-                checkbox_item = item[0].split('_')
-                s.update_checkbox(device, int(checkbox_item[1]), int(checkbox_item[2]))
-        return HttpResponseRedirect(reverse('device_details', kwargs={'pk': pk, 'tab_id': 2}))
-    else:
-        specs = s.get_form_metadata(device)
-        return render(request, 'device/update_spec.html', {'device': device, 'specs': specs})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -954,9 +937,9 @@ class DeviceDocumentDelete(DeleteView):
 
 
 @method_decorator(login_required, name='dispatch')
-class SampleCreate(CreateView):
-    model = Sample
-    form_class = SampleForm
+class DeviceSampleSampleCreate(CreateView):
+    model = DeviceSample
+    form_class = DeviceSampleForm
     template_name = 'device/create.html'
 
     def get_initial(self):
@@ -974,9 +957,9 @@ class SampleCreate(CreateView):
 
 
 @method_decorator(login_required, name='dispatch')
-class SampleUpdate(UpdateView):
-    model = Sample
-    form_class = SampleForm
+class DeviceSampleUpdate(UpdateView):
+    model = DeviceSample
+    form_class = DeviceSampleForm
     template_name = 'device/update.html'
 
     def get_initial(self):
@@ -993,8 +976,8 @@ class SampleUpdate(UpdateView):
 
 
 @method_decorator(login_required, name='dispatch')
-class SampleDelete(DeleteView):
-    model = Sample
+class DeviceSampleDelete(DeleteView):
+    model = DeviceSample
     template_name = 'device/delete.html'
 
     def get_context_data(self, **kwargs):

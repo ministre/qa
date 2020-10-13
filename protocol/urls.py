@@ -16,5 +16,7 @@ urlpatterns = [
 
     # protocol devices
     path('device/create/<int:p_id>/', views.ProtocolDeviceCreate.as_view(), name='protocol_device_create'),
+    path('device/update/<int:pk>/', views.ProtocolDeviceUpdate.as_view(), name='protocol_device_update'),
+    path('device/fw/update/<int:pk>/', views.ProtocolDeviceFwUpdate.as_view(), name='protocol_device_fw_update'),
     path('device/delete/<int:pk>/', views.ProtocolDeviceDelete.as_view(), name='protocol_device_delete'),
 ]

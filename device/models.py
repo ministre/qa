@@ -1,8 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
-from django.db.models import Q
-from django.core.exceptions import ObjectDoesNotExist
 
 
 class Vendor(models.Model):
@@ -80,31 +78,6 @@ class DeviceIntegerField(models.Model):
     created_by = models.ForeignKey(User, related_name='d_ifield_c', on_delete=models.CASCADE, blank=True, null=True)
     created_at = models.DateTimeField(default=datetime.now, blank=True)
     updated_by = models.ForeignKey(User, related_name='d_ifield_u', on_delete=models.CASCADE, blank=True, null=True)
-    updated_at = models.DateTimeField(default=datetime.now, blank=True)
-
-    def __str__(self):
-        return self.name
-
-
-class CustomField(models.Model):
-    name = models.CharField(max_length=500)
-    desc = models.CharField(max_length=1000, blank=True, null=True)
-    type = models.CharField(max_length=10, default='Text')
-    created_by = models.ForeignKey(User, related_name='field_c', on_delete=models.CASCADE, blank=True, null=True)
-    created_at = models.DateTimeField(default=datetime.now, blank=True)
-    updated_by = models.ForeignKey(User, related_name='field_u', on_delete=models.CASCADE, blank=True, null=True)
-    updated_at = models.DateTimeField(default=datetime.now, blank=True)
-
-    def __str__(self):
-        return self.name
-
-
-class CustomFieldItem(models.Model):
-    name = models.CharField(max_length=1000)
-    custom_field = models.ForeignKey(CustomField, on_delete=models.CASCADE)
-    created_by = models.ForeignKey(User, related_name='item_c', on_delete=models.CASCADE, blank=True, null=True)
-    created_at = models.DateTimeField(default=datetime.now, blank=True)
-    updated_by = models.ForeignKey(User, related_name='item_u', on_delete=models.CASCADE, blank=True, null=True)
     updated_at = models.DateTimeField(default=datetime.now, blank=True)
 
     def __str__(self):
@@ -196,13 +169,6 @@ class DeviceIntegerFieldValue(models.Model):
     value = models.IntegerField(blank=True, null=True)
 
 
-class CustomValue(models.Model):
-    field = models.ForeignKey(CustomField, on_delete=models.CASCADE)
-    item = models.ForeignKey(CustomFieldItem, on_delete=models.CASCADE, blank=True, null=True)
-    device = models.ForeignKey(Device, on_delete=models.CASCADE)
-    value = models.CharField(max_length=1000, blank=True, null=True)
-
-
 class DevicePhoto(models.Model):
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
     photo = models.ImageField(upload_to="device/photos/")
@@ -235,9 +201,9 @@ class DeviceDocument(models.Model):
     updated_at = models.DateTimeField(default=datetime.now, blank=True)
 
 
-class Sample(models.Model):
+class DeviceSample(models.Model):
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
-    sn = models.CharField(max_length=50)
+    sn = models.CharField(max_length=50, blank=True, null=True)
     desc = models.CharField(max_length=1000, blank=True, null=True)
     user_login = models.CharField(max_length=100, blank=True, null=True)
     user_password = models.CharField(max_length=100, blank=True, null=True)
@@ -259,72 +225,6 @@ class DeviceSupport(models.Model):
     created_at = models.DateTimeField(default=datetime.now, blank=True)
     updated_by = models.ForeignKey(User, related_name='d_support_u', on_delete=models.CASCADE, blank=True, null=True)
     updated_at = models.DateTimeField(default=datetime.now, blank=True)
-
-
-class Specification:
-    def __init__(self):
-        self.specs = []  # [{'name': <>, 'values': [<>, ]}]
-        self.form_metadata = []
-        # [{'name': <>, 'type': <>, 'id': <>, 'value': <>, 'items': [{'name': <>, 'id': <>, 'selected': <bool>}, ]}]
-
-    def get_values(self, device: Device):
-        for field in CustomField.objects.filter(custom_fields__id=device.type.id).order_by('id'):
-            values = []
-            for value in CustomValue.objects.filter(Q(field=field) & Q(device=device)):
-                if value.item:
-                    values.append(value.item)
-                else:
-                    values.append(value.value)
-            self.specs.append({'name': field.name, 'values': values})
-        return self.specs
-
-    def get_form_metadata(self, device: Device):
-        for field in CustomField.objects.filter(custom_fields__id=device.type.id).order_by('id'):
-            items = []
-            if field.type == 'text' or field.type == 'number':
-                try:
-                    value = CustomValue.objects.get(Q(field=field) & Q(device=device))
-                    self.form_metadata.append({'name': field.name, 'type': field.type, 'id': field.id,
-                                               'value': value.value, 'items': items})
-                except ObjectDoesNotExist:
-                    self.form_metadata.append({'name': field.name, 'type': field.type, 'id': field.id,
-                                               'value': '', 'items': items})
-            if field.type == 'listbox' or field.type == 'checkbox':
-                for item in CustomFieldItem.objects.filter(custom_field=field):
-                    try:
-                        CustomValue.objects.get(Q(item=item) & Q(device=device))
-                        items.append({'name': item.name, 'id': item.id, 'selected': True})
-                    except ObjectDoesNotExist:
-                        items.append({'name': item.name, 'id': item.id, 'selected': False})
-                self.form_metadata.append({'name': field.name, 'type': field.type, 'id': field.id, 'value': None,
-                                           'items': items})
-        return self.form_metadata
-
-    def update_value(self, device: Device, field_id: int, value: str):
-        field = CustomField.objects.get(id=field_id)
-        if field.type == 'text' or field.type == 'number':
-            if value:
-                CustomValue.objects.update_or_create(device=device, field=field, defaults={"value": value})
-            else:
-                CustomValue.objects.filter(Q(device=device) & Q(field=field)).delete()
-            return True
-        elif field.type == 'listbox':
-            if value:
-                CustomValue.objects.update_or_create(device=device, field=field,
-                                                     defaults={"item": CustomFieldItem.objects.get(id=value)})
-            else:
-                CustomValue.objects.filter(Q(device=device) & Q(field=field)).delete()
-        elif field.type == 'checkbox':
-            pass
-        return True
-
-    def update_checkbox(self, device: Device, field_id: int, item_id: int):
-        if item_id == 0:
-            CustomValue.objects.filter(Q(device=device) & Q(field=CustomField.objects.get(id=field_id))).delete()
-        else:
-            CustomValue.objects.create(device=device, field=CustomField.objects.get(id=field_id),
-                                       item=CustomFieldItem.objects.get(id=item_id))
-        return True
 
 
 class Firmware(models.Model):
