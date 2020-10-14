@@ -219,6 +219,18 @@ class DeviceSample(models.Model):
         return sample_name
 
 
+class DeviceSampleAccount(models.Model):
+    sample = models.ForeignKey(DeviceSample, on_delete=models.CASCADE)
+    username = models.CharField(max_length=50, blank=True, null=True)
+    password = models.CharField(max_length=50, blank=True, null=True)
+    created_by = models.ForeignKey(User, related_name='sample_account_c', on_delete=models.CASCADE, blank=True,
+                                   null=True)
+    created_at = models.DateTimeField(default=datetime.now)
+    updated_by = models.ForeignKey(User, related_name='sample_account_u', on_delete=models.CASCADE, blank=True,
+                                   null=True)
+    updated_at = models.DateTimeField(default=datetime.now)
+
+
 class DeviceSupport(models.Model):
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
     contact = models.ForeignKey('contact.Contact', on_delete=models.CASCADE)

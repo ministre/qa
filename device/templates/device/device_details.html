@@ -196,28 +196,44 @@
     <div class="tabs-panel{% if tab_id == 6 %} is-active{% endif %}" id="samples">
         <a href="{% url 'sample_create' d_id=device.id %}" class="button small">{% trans "Add" %}</a>
         {% if samples %}
-        <table id="t_samples" class="display" style="width:100%">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>{% trans "Serial Number" %}</th>
-                <th>{% trans "Description" %}</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for sample in samples %}
-            <tr data-href="{% url 'sample_update' pk=sample.id %}">
-                <td>{{ sample.id }}</td>
-                <td>
-                    {{ sample.sn }}
-                    <a href="{% url 'sample_delete' pk=sample.id %}"><i class="step fi-minus" style="color: #bc104b"></i></a>
-                </td>
-                <td>{% if sample.desc %}{{ sample.desc }}{% endif %}</td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+        {% for sample in samples %}
+        <div class="callout secondary">
+            <h5>{% trans "General" %}
+                <a href="{% url 'sample_update' pk=sample.id %}"><i class="step fi-pencil"></i></a>
+                <a href="{% url 'sample_delete' pk=sample.id %}"><i class="step fi-minus" style="color: #bc104b"></i></a>
+            </h5>
+            <table>
+                <tr>
+                    <td width="10%">ID:</td>
+                    <td>{{ sample.id }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Serial Number" %}:</td>
+                    <td>{% if sample.sn %}{{ sample.sn }}{% endif %}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Description" %}:</td>
+                    <td>{% if sample.desc %}{{ sample.desc }}{% endif %}</td>
+                </tr>
+            </table>
+            <h5>{% trans "Accounts" %}</h5>
+            <table>
+                <tr>
+                    <td width="10%">Username: </td>
+                    <td>111</td>
+                </tr>
+                <tr>
+                    <td>Password: </td>
+                    <td></td>
+                </tr>
+            </table>
+            <blockquote>
+                <a href="{# url 'test_create' category_id=t_category.id #}"><i class="step fi-plus"></i></a>
+            </blockquote>
+        </div>
+        {% endfor %}
         {% endif %}
+
     </div>
 
     <div class="tabs-panel{% if tab_id == 7 %} is-active{% endif %}" id="protocols">

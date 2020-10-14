@@ -83,7 +83,7 @@ urlpatterns = [
     path('doc/update/<int:pk>/', views.DeviceDocumentUpdate.as_view(), name='doc_update'),
     path('doc/delete/<int:pk>/', views.DeviceDocumentDelete.as_view(), name='doc_delete'),
 
-    # samples
+    # device samples
     path('sample/create/<int:d_id>', views.DeviceSampleCreate.as_view(), name='sample_create'),
     path('sample/update/<int:pk>/', views.DeviceSampleUpdate.as_view(), name='sample_update'),
     path('sample/delete/<int:pk>/', views.DeviceSampleDelete.as_view(), name='sample_delete'),
