@@ -65,30 +65,88 @@
         {% if protocol_devices %}
         {% for protocol_device in protocol_devices %}
         <div class="callout secondary">
-            <h5>
-                <a href="{% url 'device_details' pk=protocol_device.device.id tab_id=1 %}">{{ protocol_device.device.vendor }} {{ protocol_device.device }}</a>
-            </h5>
+
+            <h5><a href="{% url 'device_details' pk=protocol_device.device.id tab_id=1 %}">{{ protocol_device.device.vendor }} {{ protocol_device.device }}</a></h5>
             <p>{{ protocol_device.device.type }}</p>
-            <table>
-                <tr>
-                    <td width="5%">{% trans "Firmware" %}: </td>
-                    <td>
-                        {% if protocol_device.firmware %}
-                        <a href="{% url 'fw_details' pk=protocol_device.firmware.id tab_id=1 %}">{{ protocol_device.firmware }}</a>
-                        {% endif %}
-                        <a href="{% url 'protocol_device_fw_update' pk=protocol_device.id %}"><i class="step fi-pencil"></i></a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>{% trans "Sample" %}: </td>
-                    <td>
-                        {% if protocol_device.sample %}
-                        {{ protocol_device.sample.sn }}
-                        {% endif %}
-                        <a href="{% url 'protocol_device_sample_update' pk=protocol_device.id %}"><i class="step fi-pencil"></i></a>
-                    </td>
-                </tr>
-            </table>
+
+            <div class="grid-x grid-margin-x small-up-2 medium-up-2">
+                <div class="cell">
+                    <div class="card">
+                        <div class="card-section">
+                            <h5>{% trans "Firmware" %}</h5>
+                            {% if protocol_device.firmware %}
+
+                            <table>
+                                <tr>
+                                    <td width="50%">{% trans "Version" %}:</td>
+                                    <td>
+                                        <a href="{% url 'fw_details' pk=protocol_device.firmware.id tab_id=1 %}">{{ protocol_device.firmware }}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>{% trans "Description" %}:</td>
+                                    <td>
+                                        {% if protocol_device.firmware.description %}
+                                        {{ protocol_device.firmware.description }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <blockquote>
+                                <a href="{% url 'protocol_device_fw_update' pk=protocol_device.id %}"><i class="step fi-pencil"></i></a>
+                            </blockquote>
+
+                            {% else %}
+                            <blockquote>
+                                <a href="{% url 'protocol_device_fw_update' pk=protocol_device.id %}"><i class="step fi-plus"></i></a>
+                            </blockquote>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="cell">
+                    <div class="card">
+                        <div class="card-section">
+                            <h5>{% trans "Sample" %}</h5>
+                            {% if protocol_device.sample %}
+
+                            <table>
+                                <tr>
+                                    <td width="50%">SN:</td>
+                                    <td>{% if protocol_device.sample.sn %}{{ protocol_device.sample.sn }}{% endif %}</td>
+                                </tr>
+                            </table>
+
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th width="50%">{% trans "Username" %}</th>
+                                    <th>{% trans "Password" %}</th>
+                                </tr>
+                                </thead>
+                                {% for account in protocol_device.sample.sample_account.all|dictsort:"id" %}
+                                <tr>
+                                    <td>{% if account.username %}{{ account.username }}{% endif %}</td>
+                                    <td>{% if account.password %}{{ account.password }}{% endif %}</td>
+                                </tr>
+                                {% endfor %}
+                            </table>
+
+                            <blockquote>
+                                <a href="{% url 'protocol_device_sample_update' pk=protocol_device.id %}"><i class="step fi-pencil"></i></a>
+                            </blockquote>
+
+                            {% else %}
+                            <blockquote>
+                                <a href="{% url 'protocol_device_sample_update' pk=protocol_device.id %}"><i class="step fi-plus"></i></a>
+                            </blockquote>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <p>
                 <a href="{% url 'protocol_device_update' pk=protocol_device.id %}" class="button small">{% trans "Update" %}</a>
                 <a href="{% url 'protocol_device_delete' pk=protocol_device.id %}" class="button small alert">{% trans "Delete" %}</a>
