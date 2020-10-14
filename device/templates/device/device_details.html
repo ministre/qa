@@ -198,9 +198,7 @@
         {% if samples %}
         {% for sample in samples %}
         <div class="callout secondary">
-
             <div class="grid-x grid-margin-x small-up-2 medium-up-2">
-
                 <div class="cell">
                     <div class="card">
                         <div class="card-section">
@@ -226,12 +224,10 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="cell">
                     <div class="card">
                         <div class="card-section">
                             <h5>{% trans "Accounts" %}</h5>
-
                             {% for account in sample.sample_account.all|dictsort:"id" %}
                             <div class="callout secondary">
                                 <table>
@@ -256,8 +252,8 @@
                         </div>
                     </div>
                 </div>
-
             </div>
+        </div>
         {% endfor %}
         {% endif %}
     </div>
