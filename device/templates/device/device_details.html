@@ -200,6 +200,33 @@
         <div class="callout secondary">
 
             <div class="grid-x grid-margin-x small-up-2 medium-up-2">
+
+                <div class="cell">
+                    <div class="card">
+                        <div class="card-section">
+                            <h5>{% trans "General" %}</h5>
+                            <table>
+                                <tr>
+                                    <td>ID:</td>
+                                    <td>{{ sample.id }}</td>
+                                </tr>
+                                <tr>
+                                    <td>{% trans "Serial Number" %}:</td>
+                                    <td>{% if sample.sn %}{{ sample.sn }}{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <td>{% trans "Description" %}:</td>
+                                    <td>{% if sample.desc %}{{ sample.desc }}{% endif %}</td>
+                                </tr>
+                            </table>
+                            <p>
+                                <a href="{% url 'sample_update' pk=sample.id %}" class="button small">{% trans "Update" %}</a>
+                                <a href="{% url 'sample_delete' pk=sample.id %}" class="button small alert">{% trans "Delete" %}</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="cell">
                     <div class="card">
                         <div class="card-section">
@@ -229,31 +256,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="cell">
-                    <div class="card">
-                        <div class="card-section">
-                            <h5>{% trans "General" %}</h5>
-                            <table>
-                                <tr>
-                                    <td>ID:</td>
-                                    <td>{{ sample.id }}</td>
-                                </tr>
-                                <tr>
-                                    <td>{% trans "Serial Number" %}:</td>
-                                    <td>{% if sample.sn %}{{ sample.sn }}{% endif %}</td>
-                                </tr>
-                                <tr>
-                                    <td>{% trans "Description" %}:</td>
-                                    <td>{% if sample.desc %}{{ sample.desc }}{% endif %}</td>
-                                </tr>
-                            </table>
-                            <p>
-                                <a href="{% url 'sample_update' pk=sample.id %}" class="button small">{% trans "Update" %}</a>
-                                <a href="{% url 'sample_delete' pk=sample.id %}" class="button small alert">{% trans "Delete" %}</a>
-                            </p>
-                        </div>
-                    </div>
-                </div>
+
             </div>
         {% endfor %}
         {% endif %}
