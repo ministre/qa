@@ -198,47 +198,59 @@
         {% if samples %}
         {% for sample in samples %}
         <div class="callout secondary">
-            <h5>{% trans "General" %}
+
+            <blockquote>
                 <a href="{% url 'sample_update' pk=sample.id %}"><i class="step fi-pencil"></i></a>
                 <a href="{% url 'sample_delete' pk=sample.id %}"><i class="step fi-minus" style="color: #bc104b"></i></a>
-            </h5>
-            <table>
-                <tr>
-                    <td width="10%">ID:</td>
-                    <td>{{ sample.id }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Serial Number" %}:</td>
-                    <td>{% if sample.sn %}{{ sample.sn }}{% endif %}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Description" %}:</td>
-                    <td>{% if sample.desc %}{{ sample.desc }}{% endif %}</td>
-                </tr>
-            </table>
-            <h5>{% trans "Accounts" %}</h5>
-
-            {% for account in sample.sample_account.all|dictsort:"id" %}
-            1
-            {% endfor %}
-
-            <table>
-                <tr>
-                    <td width="10%">Username: </td>
-                    <td>111</td>
-                </tr>
-                <tr>
-                    <td>Password: </td>
-                    <td></td>
-                </tr>
-            </table>
-            <blockquote>
-                <a href="{% url 'sample_account_create' s_id=sample.id %}"><i class="step fi-plus"></i></a>
             </blockquote>
+
+            <div class="callout secondary">
+                <h5>{% trans "General" %}</h5>
+                <table>
+                    <tr>
+                        <td width="10%">ID:</td>
+                        <td>{{ sample.id }}</td>
+                    </tr>
+                    <tr>
+                        <td>{% trans "Serial Number" %}:</td>
+                        <td>{% if sample.sn %}{{ sample.sn }}{% endif %}</td>
+                    </tr>
+                    <tr>
+                        <td>{% trans "Description" %}:</td>
+                        <td>{% if sample.desc %}{{ sample.desc }}{% endif %}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="callout secondary">
+                <h5>{% trans "Accounts" %}</h5>
+                <blockquote>
+                    <a href="{% url 'sample_account_create' s_id=sample.id %}"><i class="step fi-plus"></i></a>
+                </blockquote>
+
+                {% for account in sample.sample_account.all|dictsort:"id" %}
+                <div class="callout secondary">
+                    <table>
+                        <tr>
+                            <td width="10%">{% trans "Username" %}: </td>
+                            <td>{{ account.username }}</td>
+                        </tr>
+                        <tr>
+                            <td width="10%">{% trans "Password" %}: </td>
+                            <td>{{ account.password }}</td>
+                        </tr>
+                    </table>
+
+                    <blockquote>
+                        <a href="{% url 'sample_account_update' pk=account.id %}"><i class="step fi-pencil"></i></a>
+                        <a href="{% url 'sample_account_delete' pk=account.id %}"><i class="step fi-minus" style="color: #bc104b"></i></a>
+                    </blockquote>
+                </div>
+                {% endfor %}
+            </div>
         </div>
         {% endfor %}
         {% endif %}
-
     </div>
 
     <div class="tabs-panel{% if tab_id == 7 %} is-active{% endif %}" id="protocols">

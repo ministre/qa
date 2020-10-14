@@ -1008,6 +1008,38 @@ class DeviceSampleAccountCreate(CreateView):
 
 
 @method_decorator(login_required, name='dispatch')
+class DeviceSampleAccountUpdate(UpdateView):
+    model = DeviceSampleAccount
+    form_class = DeviceSampleAccountForm
+    template_name = 'device/update.html'
+
+    def get_initial(self):
+        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('device_details', kwargs={'pk': self.object.sample.device.id, 'tab_id': 6})
+        return context
+
+    def get_success_url(self):
+        return reverse('device_details', kwargs={'pk': self.object.sample.device.id, 'tab_id': 6})
+
+
+@method_decorator(login_required, name='dispatch')
+class DeviceSampleAccountDelete(DeleteView):
+    model = DeviceSampleAccount
+    template_name = 'device/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('device_details', kwargs={'pk': self.object.sample.device.id, 'tab_id': 6})
+        return context
+
+    def get_success_url(self):
+        return reverse('device_details', kwargs={'pk': self.object.sample.device.id, 'tab_id': 6})
+
+
+@method_decorator(login_required, name='dispatch')
 class FirmwareCreate(CreateView):
     model = Firmware
     form_class = FirmwareForm
