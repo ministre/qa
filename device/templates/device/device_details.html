@@ -217,6 +217,11 @@
                 </tr>
             </table>
             <h5>{% trans "Accounts" %}</h5>
+
+            {% for account in sample.sample_account.all|dictsort:"id" %}
+            1
+            {% endfor %}
+
             <table>
                 <tr>
                     <td width="10%">Username: </td>
@@ -228,7 +233,7 @@
                 </tr>
             </table>
             <blockquote>
-                <a href="{# url 'test_create' category_id=t_category.id #}"><i class="step fi-plus"></i></a>
+                <a href="{% url 'sample_account_create' s_id=sample.id %}"><i class="step fi-plus"></i></a>
             </blockquote>
         </div>
         {% endfor %}

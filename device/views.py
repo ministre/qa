@@ -2,15 +2,15 @@ from django.shortcuts import render
 from .models import Vendor, DeviceChecklist, DeviceChecklistItem, DeviceChecklistItemValue, DeviceSlist, \
     DeviceSlistItem, DeviceSlistItemValue, DeviceTextField, DeviceTextFieldValue, DeviceIntegerField, \
     DeviceIntegerFieldValue, DeviceTypeSpecification, DeviceType, Device, DeviceDocumentType, DeviceDocument, \
-    DevicePhoto, DeviceSample, DeviceSupport, Firmware, FirmwareAccount, FirmwareFile, FirmwareScreenshot, \
-    FirmwareHowto
+    DevicePhoto, DeviceSample, DeviceSampleAccount, DeviceSupport, Firmware, FirmwareAccount, FirmwareFile, \
+    FirmwareScreenshot, FirmwareHowto
 from protocol.models import ProtocolDevice
 from feature.models import FeatureList
 from contact.models import Contact
 from .forms import VendorForm, DeviceChecklistForm, DeviceChecklistItemForm, DeviceSlistForm, DeviceSlistItemForm, \
     DeviceTextFieldForm, DeviceIntegerFieldForm, DeviceTypeSpecificationForm, DeviceTypeForm, DeviceForm, \
-    DeviceDocumentTypeForm, DeviceDocumentForm, DevicePhotoForm, DeviceSampleForm, DeviceSupportForm, FirmwareForm, \
-    FirmwareAccountForm, FirmwareFileForm, FirmwareScreenshotForm, FirmwareHowtoForm
+    DeviceDocumentTypeForm, DeviceDocumentForm, DevicePhotoForm, DeviceSampleForm, DeviceSampleAccountForm, \
+    DeviceSupportForm, FirmwareForm, FirmwareAccountForm, FirmwareFileForm, FirmwareScreenshotForm, FirmwareHowtoForm
 from redmine.forms import ExportDeviceTypeForm, ImportDeviceTypeForm
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.urls import reverse
@@ -985,6 +985,26 @@ class DeviceSampleDelete(DeleteView):
 
     def get_success_url(self):
         return reverse('device_details', kwargs={'pk': self.object.device.id, 'tab_id': 6})
+
+
+@method_decorator(login_required, name='dispatch')
+class DeviceSampleAccountCreate(CreateView):
+    model = DeviceSampleAccount
+    form_class = DeviceSampleAccountForm
+    template_name = 'device/create.html'
+
+    def get_initial(self):
+        return {'sample': self.kwargs.get('s_id'),
+                'created_by': self.request.user, 'updated_by': self.request.user}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        sample = get_object_or_404(DeviceSample, id=self.kwargs.get('s_id'))
+        context['back_url'] = reverse('device_details', kwargs={'pk': sample.device.id, 'tab_id': 6})
+        return context
+
+    def get_success_url(self):
+        return reverse('device_details', kwargs={'pk': self.object.sample.device.id, 'tab_id': 6})
 
 
 @method_decorator(login_required, name='dispatch')

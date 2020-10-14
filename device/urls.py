@@ -87,6 +87,7 @@ urlpatterns = [
     path('sample/create/<int:d_id>', views.DeviceSampleCreate.as_view(), name='sample_create'),
     path('sample/update/<int:pk>/', views.DeviceSampleUpdate.as_view(), name='sample_update'),
     path('sample/delete/<int:pk>/', views.DeviceSampleDelete.as_view(), name='sample_delete'),
+    path('sample/account/create/<int:s_id>', views.DeviceSampleAccountCreate.as_view(), name='sample_account_create'),
 
     # firmware
     path('fw/create/<int:d_id>/', views.FirmwareCreate.as_view(), name='fw_create'),

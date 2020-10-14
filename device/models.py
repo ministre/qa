@@ -220,7 +220,7 @@ class DeviceSample(models.Model):
 
 
 class DeviceSampleAccount(models.Model):
-    sample = models.ForeignKey(DeviceSample, on_delete=models.CASCADE)
+    sample = models.ForeignKey(DeviceSample, related_name='sample_account', on_delete=models.CASCADE)
     username = models.CharField(max_length=50, blank=True, null=True)
     password = models.CharField(max_length=50, blank=True, null=True)
     created_by = models.ForeignKey(User, related_name='sample_account_c', on_delete=models.CASCADE, blank=True,

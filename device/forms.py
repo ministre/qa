@@ -209,7 +209,7 @@ class DeviceSampleAccountForm(ModelForm):
             'password': _('Password'),
         }
         fields = '__all__'
-        widgets = {'device': HiddenInput(),
+        widgets = {'sample': HiddenInput(),
                    'created_by': HiddenInput(), 'created_at': HiddenInput(),
                    'updated_by': HiddenInput(), 'updated_at': HiddenInput()}
 
