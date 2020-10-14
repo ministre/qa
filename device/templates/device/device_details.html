@@ -199,56 +199,62 @@
         {% for sample in samples %}
         <div class="callout secondary">
 
-            <blockquote>
-                <a href="{% url 'sample_update' pk=sample.id %}"><i class="step fi-pencil"></i></a>
-                <a href="{% url 'sample_delete' pk=sample.id %}"><i class="step fi-minus" style="color: #bc104b"></i></a>
-            </blockquote>
+            <div class="grid-x grid-margin-x small-up-2 medium-up-2">
+                <div class="cell">
+                    <div class="card">
+                        <div class="card-section">
+                            <h5>{% trans "Accounts" %}</h5>
 
-            <div class="callout secondary">
-                <h5>{% trans "General" %}</h5>
-                <table>
-                    <tr>
-                        <td width="10%">ID:</td>
-                        <td>{{ sample.id }}</td>
-                    </tr>
-                    <tr>
-                        <td>{% trans "Serial Number" %}:</td>
-                        <td>{% if sample.sn %}{{ sample.sn }}{% endif %}</td>
-                    </tr>
-                    <tr>
-                        <td>{% trans "Description" %}:</td>
-                        <td>{% if sample.desc %}{{ sample.desc }}{% endif %}</td>
-                    </tr>
-                </table>
-            </div>
-
-            <div class="callout secondary">
-                <h5>{% trans "Accounts" %}</h5>
-                <blockquote>
-                    <a href="{% url 'sample_account_create' s_id=sample.id %}"><i class="step fi-plus"></i></a>
-                </blockquote>
-
-                {% for account in sample.sample_account.all|dictsort:"id" %}
-                <div class="callout secondary">
-                    <table>
-                        <tr>
-                            <td width="10%">{% trans "Username" %}: </td>
-                            <td>{{ account.username }}</td>
-                        </tr>
-                        <tr>
-                            <td width="10%">{% trans "Password" %}: </td>
-                            <td>{{ account.password }}</td>
-                        </tr>
-                    </table>
-
-                    <blockquote>
-                        <a href="{% url 'sample_account_update' pk=account.id %}"><i class="step fi-pencil"></i></a>
-                        <a href="{% url 'sample_account_delete' pk=account.id %}"><i class="step fi-minus" style="color: #bc104b"></i></a>
-                    </blockquote>
+                            {% for account in sample.sample_account.all|dictsort:"id" %}
+                            <div class="callout secondary">
+                                <table>
+                                    <tr>
+                                        <td width="10%">{% trans "Username" %}: </td>
+                                        <td>{% if account.username %}{{ account.username }}{% endif %}</td>
+                                    </tr>
+                                    <tr>
+                                        <td width="10%">{% trans "Password" %}: </td>
+                                        <td>{% if account.password %}{{ account.password }}{% endif %}</td>
+                                    </tr>
+                                </table>
+                                <p>
+                                    <a href="{% url 'sample_account_update' pk=account.id %}" class="button small">{% trans "Update" %}</a>
+                                    <a href="{% url 'sample_account_delete' pk=account.id %}" class="button small alert">{% trans "Delete" %}</a>
+                                </p>
+                            </div>
+                            {% endfor %}
+                            <blockquote>
+                                <a href="{% url 'sample_account_create' s_id=sample.id %}"><i class="step fi-plus"></i></a>
+                            </blockquote>
+                        </div>
+                    </div>
                 </div>
-                {% endfor %}
+                <div class="cell">
+                    <div class="card">
+                        <div class="card-section">
+                            <h5>{% trans "General" %}</h5>
+                            <table>
+                                <tr>
+                                    <td>ID:</td>
+                                    <td>{{ sample.id }}</td>
+                                </tr>
+                                <tr>
+                                    <td>{% trans "Serial Number" %}:</td>
+                                    <td>{% if sample.sn %}{{ sample.sn }}{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <td>{% trans "Description" %}:</td>
+                                    <td>{% if sample.desc %}{{ sample.desc }}{% endif %}</td>
+                                </tr>
+                            </table>
+                            <p>
+                                <a href="{% url 'sample_update' pk=sample.id %}" class="button small">{% trans "Update" %}</a>
+                                <a href="{% url 'sample_delete' pk=sample.id %}" class="button small alert">{% trans "Delete" %}</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
         {% endfor %}
         {% endif %}
     </div>
