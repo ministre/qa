@@ -184,8 +184,15 @@
         <a href="{% url 'protocol_scan_create' p_id=protocol.id %}" class="button small">{% trans "Add" %}</a>
 
         {% if protocol_scans %}
+        <ul>
+        {% for scan in protocol_scans %}
+        <li>
+            <a href="{% url 'protocol_scan_update' pk=scan.id %}">{{ scan.scan }}</a>
+            <a href="{% url 'protocol_scan_delete' pk=scan.id %}"><i class="step fi-minus" style="color: red"></i></a>
+        </li>
+        {% endfor %}
+        </ul>
         {% endif %}
-
     </div>
 
 </div>

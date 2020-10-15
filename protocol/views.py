@@ -286,3 +286,37 @@ class ProtocolScanCreate(CreateView):
     def get_success_url(self):
         Item.update_timestamp(foo=self.object.protocol, user=self.request.user)
         return reverse('protocol_details', kwargs={'pk': self.kwargs.get('p_id'), 'tab_id': 3})
+
+
+@method_decorator(login_required, name='dispatch')
+class ProtocolScanUpdate(UpdateView):
+    model = ProtocolScan
+    form_class = ProtocolScanForm
+    template_name = 'protocol/update.html'
+
+    def get_initial(self):
+        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('protocol_details', kwargs={'pk': self.object.protocol.id, 'tab_id': 3})
+        return context
+
+    def get_success_url(self):
+        Item.update_timestamp(foo=self.object.protocol, user=self.request.user)
+        return reverse('protocol_details', kwargs={'pk': self.object.protocol.id, 'tab_id': 3})
+
+
+@method_decorator(login_required, name='dispatch')
+class ProtocolScanDelete(DeleteView):
+    model = ProtocolScan
+    template_name = 'protocol/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('protocol_details', kwargs={'pk': self.object.protocol.id, 'tab_id': 3})
+        return context
+
+    def get_success_url(self):
+        Item.update_timestamp(foo=self.object.protocol, user=self.request.user)
+        return reverse('protocol_details', kwargs={'pk': self.object.protocol.id, 'tab_id': 3})
