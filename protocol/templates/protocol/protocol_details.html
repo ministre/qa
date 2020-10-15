@@ -62,9 +62,15 @@
 
     <div class="tabs-panel{% if tab_id == 2 %} is-active{% endif %}" id="devices">
         <a href="{% url 'protocol_device_create' p_id=protocol.id %}" class="button small">{% trans "Add" %}</a>
+
         {% if protocol_devices %}
         {% for protocol_device in protocol_devices %}
         <div class="callout secondary">
+
+            <div class="topcorner">
+                <a href="{% url 'protocol_device_update' pk=protocol_device.id %}"><i class="step fi-pencil"></i></a>
+                <a href="{% url 'protocol_device_delete' pk=protocol_device.id %}"><i class="step fi-minus" style="color: red"></i></a>
+            </div>
 
             <h5><a href="{% url 'device_details' pk=protocol_device.device.id tab_id=1 %}">{{ protocol_device.device.vendor }} {{ protocol_device.device }}</a></h5>
             <p>{{ protocol_device.device.type }}</p>
@@ -73,7 +79,7 @@
                 <div class="cell">
                     <div class="card">
                         <div class="card-section">
-                            <h5>{% trans "Firmware" %}</h5>
+                            <h4>{% trans "Firmware" %}</h4>
                             {% if protocol_device.firmware %}
 
                             <table>
@@ -93,69 +99,79 @@
                                 </tr>
                             </table>
 
-                            <blockquote>
-                                <a href="{% url 'protocol_device_fw_update' pk=protocol_device.id %}"><i class="step fi-pencil"></i></a>
-                            </blockquote>
-
+                            <p><a href="{% url 'protocol_device_fw_update' pk=protocol_device.id %}" class="button small">{% trans "Update" %}</a></p>
                             {% else %}
-                            <blockquote>
-                                <a href="{% url 'protocol_device_fw_update' pk=protocol_device.id %}"><i class="step fi-plus"></i></a>
-                            </blockquote>
+                            <p><a href="{% url 'protocol_device_fw_update' pk=protocol_device.id %}" class="button small">{% trans "Add" %}</a></p>
                             {% endif %}
                         </div>
                     </div>
                 </div>
+
+
                 <div class="cell">
                     <div class="card">
                         <div class="card-section">
-                            <h5>{% trans "Sample" %}</h5>
+                            <h4>{% trans "Sample" %}</h4>
                             {% if protocol_device.sample %}
 
-                            <table>
-                                <tr>
-                                    <td width="50%">SN:</td>
-                                    <td>{% if protocol_device.sample.sn %}{{ protocol_device.sample.sn }}{% endif %}</td>
-                                </tr>
-                            </table>
+                            {% if protocol_device.sample.sn %}
+                            <div class="input-group">
+                                <span class="input-group-label">SN</span>
+                                <input class="input-group-field" type="text" value="{{ protocol_device.sample.sn }}" id="myInputSN">
+                                <div class="input-group-button">
+                                    <button type="submit" class="button success" onclick="myFunctionSN()">
+                                        Copy
+                                    </button>
+                                </div>
+                            </div>
+                            {% endif %}
 
-                            <table>
-                                <thead>
-                                <tr>
-                                    <th width="50%">{% trans "Username" %}</th>
-                                    <th>{% trans "Password" %}</th>
-                                </tr>
-                                </thead>
-                                {% for account in protocol_device.sample.sample_account.all|dictsort:"id" %}
-                                <tr>
-                                    <td>{% if account.username %}{{ account.username }}{% endif %}</td>
-                                    <td>{% if account.password %}{{ account.password }}{% endif %}</td>
-                                </tr>
-                                {% endfor %}
-                            </table>
+                            <p style="color: #7700ff"><i>{% trans "Accounts" %}:</i></p>
 
-                            <blockquote>
-                                <a href="{% url 'protocol_device_sample_update' pk=protocol_device.id %}"><i class="step fi-pencil"></i></a>
-                            </blockquote>
+                            {% for account in protocol_device.sample.sample_account.all|dictsort:"id" %}
+                            <div class="input-group">
+                                <span class="input-group-label">{% if account.username %}{{ account.username }}{% endif %}</span>
+                                <input class="input-group-field" type="text" value="{% if account.password %}{{ account.password }}{% endif %}" id="myInput_{{ account.username }}">
+                                <div class="input-group-button">
+                                    <button type="submit" class="button success" onclick="myFunction_{{ account.username }}()">
+                                        Copy
+                                    </button>
+                                </div>
+                            </div>
 
+                            <script>
+                            function myFunction_{{ account.username }}() {
+                              var copyText = document.getElementById("myInput_{{ account.username }}");
+                              copyText.select();
+                              copyText.setSelectionRange(0, 99999);
+                              document.execCommand("copy");
+                            }
+                            </script>
+                            {% endfor %}
+
+                            <p><a href="{% url 'protocol_device_sample_update' pk=protocol_device.id %}" class="button small">{% trans "Update" %}</a></p>
                             {% else %}
-                            <blockquote>
-                                <a href="{% url 'protocol_device_sample_update' pk=protocol_device.id %}"><i class="step fi-plus"></i></a>
-                            </blockquote>
+                            <p><a href="{% url 'protocol_device_sample_update' pk=protocol_device.id %}" class="button small">{% trans "Add" %}</a></p>
                             {% endif %}
                         </div>
                     </div>
                 </div>
             </div>
 
-            <p>
-                <a href="{% url 'protocol_device_update' pk=protocol_device.id %}" class="button small">{% trans "Update" %}</a>
-                <a href="{% url 'protocol_device_delete' pk=protocol_device.id %}" class="button small alert">{% trans "Delete" %}</a>
-            </p>
         </div>
         {% endfor %}
         {% endif %}
     </div>
 
 </div>
+
+<script>
+function myFunctionSN() {
+  var copyText = document.getElementById("myInputSN");
+  copyText.select();
+  copyText.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+}
+</script>
 
 {% endblock %}
