@@ -22,7 +22,6 @@ class Protocol(models.Model):
     started = models.DateField(default=datetime.now)
     completed = models.DateField(blank=True, null=True)
     status = models.IntegerField(default=0)
-    # scan = models.FileField(upload_to="protocol/files/", blank=True, null=True)
     created_by = models.ForeignKey(User, related_name='protocol_c', on_delete=models.CASCADE, blank=True, null=True)
     created_at = models.DateTimeField(default=datetime.now)
     updated_by = models.ForeignKey(User, related_name='protocol_u', on_delete=models.CASCADE, blank=True, null=True)
@@ -37,4 +36,13 @@ class ProtocolDevice(models.Model):
     created_by = models.ForeignKey(User, related_name='protocol_d_c', on_delete=models.CASCADE, blank=True, null=True)
     created_at = models.DateTimeField(default=datetime.now)
     updated_by = models.ForeignKey(User, related_name='protocol_d_u', on_delete=models.CASCADE, blank=True, null=True)
+    updated_at = models.DateTimeField(default=datetime.now)
+
+
+class ProtocolScan(models.Model):
+    protocol = models.ForeignKey(Protocol, on_delete=models.CASCADE)
+    scan = models.FileField(upload_to="protocol/files/")
+    created_by = models.ForeignKey(User, related_name='protocol_scan_c', on_delete=models.CASCADE, blank=True, null=True)
+    created_at = models.DateTimeField(default=datetime.now)
+    updated_by = models.ForeignKey(User, related_name='protocol_scan_u', on_delete=models.CASCADE, blank=True, null=True)
     updated_at = models.DateTimeField(default=datetime.now)
