@@ -20,13 +20,26 @@
     {% for protocol in protocols %}
     <tr data-href="{% url 'protocol_details' pk=protocol.id tab_id=1 %}">
         <td>{{ protocol.id }}</td>
-        <td>{{ protocol.device.vendor }} {{ protocol.device }}</td>
+        <td>
+            {% for protocol_device in protocol.protocol_pd.all|dictsort:"id" %}
+            {{ protocol_device.device.vendor }} {{ protocol_device.device }}
+            {% if protocol_device.device.hw %} <span style="color: #7700ff"><i>({{ protocol_device.device.hw }})</i></span>{% endif %}<br>
+            {% endfor %}
+        </td>
         <td>{{ protocol.branch }}</td>
         <td>
-            {% if protocol.status == 0 %}{% trans "In progress" %}{% endif %}
-            {% if protocol.status == 1 %}{% trans "Not recommended" %}{% endif %}
-            {% if protocol.status == 2 %}{% trans "Partially recommended" %}{% endif %}
-            {% if protocol.status == 3 %}{% trans "Recommended" %}{% endif %}
+            {% if protocol.status == 0 %}
+            <span class="label primary" style="color: white">{% trans "In progress" %}</span>
+            {% endif %}
+            {% if protocol.status == 1 %}
+            <span class="label alert">{% trans "Not recommended" %}</span>
+            {% endif %}
+            {% if protocol.status == 2 %}
+            <span class="label warning">{% trans "Partially recommended" %}</span>
+            {% endif %}
+            {% if protocol.status == 3 %}
+            <span class="label success">{% trans "Recommended" %}</span>
+            {% endif %}
         </td>
         <td>
             {{ protocol.started }}
