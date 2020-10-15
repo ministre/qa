@@ -25,36 +25,48 @@
         <table class="hover unstriped">
             <tbody>
             <tr>
+                <td>{% trans "Branch" %}:</td>
+                <td>{{ protocol.branch }}</td>
+            </tr>
+            <tr>
                 <td>{% trans "Testplan" %}:</td>
-                <td></td>
+                <td>
+                    {% if protocol.testplan %}
+                    {{ protocol.testplan }}
+                    {% endif %}
+                </td>
             </tr>
             <tr>
                 <td>{% trans "Status" %}:</td>
-                <td></td>
+                <td>
+                    {% if protocol.status == 0 %}
+                    {% trans "In progress" %}
+                    {% endif %}
+                    {% if protocol.status == 1 %}
+                    {% trans "Not recommended" %}
+                    {% endif %}
+                    {% if protocol.status == 2 %}
+                    {% trans "Partially recommended" %}
+                    {% endif %}
+                    {% if protocol.status == 3 %}
+                    {% trans "Recommended" %}
+                    {% endif %}
+                </td>
             </tr>
             <tr>
-                <td>{% trans "Started at" %}:</td>
-                <td>{{ protocol.started }}</td>
+                <td>{% trans "Date" %}:</td>
+                <td>
+                    {{ protocol.started }}
+                    {% if protocol.completed %} - {{ protocol.completed }}{% endif %}
+                </td>
             </tr>
             <tr>
-                <td>{% trans "Completed at" %}:</td>
-                <td>{{ protocol.completed }}</td>
+                <td>{% trans "Created" %}:</td>
+                <td>{{ protocol.created_at }} ({{ protocol.created_by }})</td>
             </tr>
             <tr>
-                <td>{% trans "Created by" %}:</td>
-                <td>{{ protocol.created_by }}</td>
-            </tr>
-            <tr>
-                <td>{% trans "Created at" %}:</td>
-                <td>{{ protocol.created_at }}</td>
-            </tr>
-            <tr>
-                <td>{% trans "Updated by" %}:</td>
-                <td>{{ protocol.updated_by }}</td>
-            </tr>
-            <tr>
-                <td>{% trans "Updated at" %}:</td>
-                <td>{{ protocol.updated_at }}</td>
+                <td>{% trans "Last Update" %}:</td>
+                <td>{{ protocol.updated_at }} ({{ protocol.updated_by }})</td>
             </tr>
             </tbody>
         </table>

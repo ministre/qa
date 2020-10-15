@@ -30,7 +30,7 @@ class ProtocolForm(ModelForm):
         STATUS = (
             ('0', 'In progress'),
             ('1', 'Not recommended'),
-            ('2', 'Recommended with limitation'),
+            ('2', 'Partially recommended'),
             ('3', 'Recommended'),
         )
         widgets = {

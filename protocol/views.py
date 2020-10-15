@@ -91,7 +91,7 @@ class ProtocolCreate(CreateView):
     template_name = 'protocol/create.html'
 
     def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+        return {'created_by': self.request.user, 'updated_by': self.request.user, 'updated_at': datetime.now}
 
     def get_form(self, form_class=ProtocolForm):
         form = super(ProtocolCreate, self).get_form(form_class)
@@ -105,7 +105,7 @@ class ProtocolCreate(CreateView):
         return context
 
     def get_success_url(self):
-        return reverse('protocols')
+        return reverse('protocol_details', kwargs={'pk': self.object.id, 'tab_id': 1})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -119,11 +119,11 @@ class ProtocolUpdate(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('protocols')
+        context['back_url'] = reverse('protocol_details', kwargs={'pk': self.object.id, 'tab_id': 1})
         return context
 
     def get_success_url(self):
-        return reverse('protocols')
+        return reverse('protocol_details', kwargs={'pk': self.object.id, 'tab_id': 1})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -133,7 +133,7 @@ class ProtocolDelete(DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('protocols')
+        context['back_url'] = reverse('protocol_details', kwargs={'pk': self.object.id, 'tab_id': 1})
         return context
 
     def get_success_url(self):
@@ -169,6 +169,7 @@ class ProtocolDeviceCreate(CreateView):
         return context
 
     def get_success_url(self):
+        Item.update_timestamp(foo=self.object.protocol, user=self.request.user)
         return reverse('protocol_details', kwargs={'pk': self.kwargs.get('p_id'), 'tab_id': 2})
 
 
@@ -193,6 +194,7 @@ class ProtocolDeviceUpdate(UpdateView):
         return context
 
     def get_success_url(self):
+        Item.update_timestamp(foo=self.object.protocol, user=self.request.user)
         return reverse('protocol_details', kwargs={'pk': self.object.protocol.id, 'tab_id': 2})
 
 
@@ -218,6 +220,7 @@ class ProtocolDeviceFwUpdate(UpdateView):
         return context
 
     def get_success_url(self):
+        Item.update_timestamp(foo=self.object.protocol, user=self.request.user)
         return reverse('protocol_details', kwargs={'pk': self.object.protocol.id, 'tab_id': 2})
 
 
@@ -243,6 +246,7 @@ class ProtocolDeviceSampleUpdate(UpdateView):
         return context
 
     def get_success_url(self):
+        Item.update_timestamp(foo=self.object.protocol, user=self.request.user)
         return reverse('protocol_details', kwargs={'pk': self.object.protocol.id, 'tab_id': 2})
 
 
@@ -257,4 +261,5 @@ class ProtocolDeviceDelete(DeleteView):
         return context
 
     def get_success_url(self):
+        Item.update_timestamp(foo=self.object.protocol, user=self.request.user)
         return reverse('protocol_details', kwargs={'pk': self.object.protocol.id, 'tab_id': 2})
