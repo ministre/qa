@@ -15,6 +15,11 @@
             {% if protocol_devices.count > 0 %}({{ protocol_devices.count }}){% endif %}
         </a>
     </li>
+    <li class="tabs-title{% if tab_id == 3 %} is-active{% endif %}">
+        <a data-tabs-target="scans" href="#scans">{% trans "Scans" %}
+            {% if protocol_scans.count > 0 %}({{ protocol_scans.count }}){% endif %}
+        </a>
+    </li>
 </ul>
 
 <div class="tabs-content" data-tabs-content="protocol-tabs">
@@ -173,6 +178,14 @@
         </div>
         {% endfor %}
         {% endif %}
+    </div>
+
+    <div class="tabs-panel{% if tab_id == 3 %} is-active{% endif %}" id="scans">
+        <a href="{% url 'protocol_scan_create' p_id=protocol.id %}" class="button small">{% trans "Add" %}</a>
+
+        {% if protocol_scans %}
+        {% endif %}
+
     </div>
 
 </div>

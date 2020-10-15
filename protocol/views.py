@@ -2,9 +2,9 @@ from django.shortcuts import render
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
-from .models import Branch, Protocol, ProtocolDevice
+from .models import Branch, Protocol, ProtocolDevice, ProtocolScan
 from device.models import Firmware, DeviceSample
-from .forms import BranchForm, ProtocolForm, ProtocolDeviceForm
+from .forms import BranchForm, ProtocolForm, ProtocolDeviceForm, ProtocolScanForm
 from django.urls import reverse
 from datetime import datetime
 from django import forms
@@ -143,8 +143,11 @@ class ProtocolDelete(DeleteView):
 def protocol_details(request, pk, tab_id):
     protocol = get_object_or_404(Protocol, id=pk)
     protocol_devices = ProtocolDevice.objects.filter(protocol=protocol).order_by('id')
+    protocol_scans = ProtocolScan.objects.filter(protocol=protocol).order_by('id')
     return render(request, 'protocol/protocol_details.html', {'protocol': protocol,
-                                                              'protocol_devices': protocol_devices, 'tab_id': tab_id})
+                                                              'protocol_devices': protocol_devices,
+                                                              'protocol_scans': protocol_scans,
+                                                              'tab_id': tab_id})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -263,3 +266,23 @@ class ProtocolDeviceDelete(DeleteView):
     def get_success_url(self):
         Item.update_timestamp(foo=self.object.protocol, user=self.request.user)
         return reverse('protocol_details', kwargs={'pk': self.object.protocol.id, 'tab_id': 2})
+
+
+@method_decorator(login_required, name='dispatch')
+class ProtocolScanCreate(CreateView):
+    model = ProtocolScan
+    form_class = ProtocolScanForm
+    template_name = 'protocol/create.html'
+
+    def get_initial(self):
+        return {'protocol': self.kwargs.get('p_id'),
+                'created_by': self.request.user, 'updated_by': self.request.user}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('protocol_details', kwargs={'pk': self.kwargs.get('p_id'), 'tab_id': 3})
+        return context
+
+    def get_success_url(self):
+        Item.update_timestamp(foo=self.object.protocol, user=self.request.user)
+        return reverse('protocol_details', kwargs={'pk': self.kwargs.get('p_id'), 'tab_id': 3})

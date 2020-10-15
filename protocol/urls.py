@@ -21,4 +21,7 @@ urlpatterns = [
     path('device/sample/update/<int:pk>/', views.ProtocolDeviceSampleUpdate.as_view(),
          name='protocol_device_sample_update'),
     path('device/delete/<int:pk>/', views.ProtocolDeviceDelete.as_view(), name='protocol_device_delete'),
+
+    # protocol scans
+    path('scan/create/<int:p_id>/', views.ProtocolScanCreate.as_view(), name='protocol_scan_create'),
 ]

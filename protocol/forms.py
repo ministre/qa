@@ -1,5 +1,5 @@
 from django.forms import ModelForm, HiddenInput
-from .models import Branch, Protocol, ProtocolDevice
+from .models import Branch, Protocol, ProtocolDevice, ProtocolScan
 from django.utils.translation import gettext_lazy as _
 from django import forms
 
@@ -47,6 +47,20 @@ class ProtocolDeviceForm(ModelForm):
             'device': _('Device'),
             'firmware': _('Firmware'),
             'sample': _('Sample'),
+        }
+        fields = '__all__'
+        widgets = {
+            'protocol': HiddenInput(),
+            'created_by': HiddenInput(), 'created_at': HiddenInput(),
+            'updated_by': HiddenInput(), 'updated_at': HiddenInput()
+        }
+
+
+class ProtocolScanForm(ModelForm):
+    class Meta:
+        model = ProtocolScan
+        labels = {
+            'scan': _('Scan'),
         }
         fields = '__all__'
         widgets = {
