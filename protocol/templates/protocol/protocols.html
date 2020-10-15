@@ -11,9 +11,9 @@
     <tr>
         <th>ID</th>
         <th>{% trans "Device" %}</th>
-        <th>{% trans "Completed" %}</th>
         <th>{% trans "Branch" %}</th>
         <th>{% trans "Status" %}</th>
+        <th>{% trans "Date" %}</th>
     </tr>
     </thead>
     <tbody>
@@ -21,13 +21,16 @@
     <tr data-href="{% url 'protocol_details' pk=protocol.id tab_id=1 %}">
         <td>{{ protocol.id }}</td>
         <td>{{ protocol.device.vendor }} {{ protocol.device }}</td>
-        <td>{{ protocol.completed }}</td>
         <td>{{ protocol.branch }}</td>
         <td>
             {% if protocol.status == 0 %}{% trans "In progress" %}{% endif %}
             {% if protocol.status == 1 %}{% trans "Not recommended" %}{% endif %}
             {% if protocol.status == 2 %}{% trans "Partially recommended" %}{% endif %}
             {% if protocol.status == 3 %}{% trans "Recommended" %}{% endif %}
+        </td>
+        <td>
+            {{ protocol.started }}
+            {% if protocol.completed %} - {{ protocol.completed }}{% endif %}
         </td>
     </tr>
     {% endfor %}
