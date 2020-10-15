@@ -22,8 +22,15 @@
         <td>{{ protocol.id }}</td>
         <td>
             {% for protocol_device in protocol.protocol_pd.all|dictsort:"id" %}
-            {{ protocol_device.device.vendor }} {{ protocol_device.device }}
-            {% if protocol_device.device.hw %} <span style="color: #7700ff"><i>({{ protocol_device.device.hw }})</i></span>{% endif %}<br>
+            <ul style="list-style: none; margin-top: 0; margin-bottom: 0;">
+                <li>{{ protocol_device.device.vendor }} {{ protocol_device.device }}{% if protocol_device.device.hw %} / {{ protocol_device.device.hw }}{% endif %}
+                <ul style="list-style: none; color: #7700ff; font-style: italic;">
+                    {% if protocol_device.firmware %}
+                    <li>fw: {{ protocol_device.firmware }}</li>
+                    {% endif %}
+                </ul>
+                </li>
+            </ul>
             {% endfor %}
         </td>
         <td>{{ protocol.branch }}</td>
