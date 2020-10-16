@@ -146,7 +146,10 @@ class Device(models.Model):
         ordering = ["model"]
 
     def __str__(self):
-        return self.model
+        full_name = self.model
+        if self.hw:
+            full_name += ' (' + str(self.hw) + ')'
+        return full_name
 
 
 class DeviceChecklistItemValue(models.Model):
