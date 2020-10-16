@@ -4,9 +4,10 @@
 
 {% block content %}
 
-<a href="{{ back_url }}" class="button small">&laquo; {% trans "Back" %}</a>
-
 <form method="post" action="" enctype="multipart/form-data">
+    <a href="{{ back_url }}" class="button small">&laquo; {% trans "Back" %}</a>
+    <input type="submit" value='{% trans "Create" %}' class="button success small" />
+    {% csrf_token %}
 
     <ul class="tabs" data-tabs id="docx_profile-tabs">
         <li class="tabs-title is-active"><a data-tabs-target="general" href="#general">{% trans "General" %}</a></li>
@@ -19,10 +20,11 @@
         <li class="tabs-title"><a data-tabs-target="quote" href="#quote">{% trans "Quote" %}</a></li>
     </ul>
 
-    {% csrf_token %}
     <div class="tabs-content" data-tabs-content="docx_profile-tabs">
         <div class="tabs-panel is-active" id="general">
-            <input type="submit" value='{% trans "Create" %}' class="button small success" />
+
+            {{ form.created_at }}
+            {{ form.updated_at }}
 
             {{ form.type.label_tag }}
             {{ form.type }}
