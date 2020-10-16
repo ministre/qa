@@ -19,6 +19,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from datetime import datetime
+from django.utils import timezone
 from django import forms
 from qa import settings
 
@@ -725,7 +726,7 @@ class DeviceUpdate(UpdateView):
     template_name = 'device/update.html'
 
     def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+        return {'updated_by': self.request.user, 'updated_at': timezone.now()}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
