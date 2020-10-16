@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
+from django.utils import timezone
 
 
 class Vendor(models.Model):
@@ -138,9 +139,9 @@ class Device(models.Model):
     redmine_project = models.CharField(max_length=1000, blank=True, null=True)
     # members = models.ManyToManyField(User, related_name='device_members', blank=True)
     created_by = models.ForeignKey(User, related_name='device_c', on_delete=models.CASCADE, blank=True, null=True)
-    created_at = models.DateTimeField(default=datetime.now)
+    created_at = models.DateTimeField(default=timezone.now)
     updated_by = models.ForeignKey(User, related_name='device_u', on_delete=models.CASCADE, blank=True, null=True)
-    updated_at = models.DateTimeField(default=datetime.now)
+    updated_at = models.DateTimeField(default=timezone.now)
 
     class Meta:
         ordering = ["model"]

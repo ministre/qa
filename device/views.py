@@ -28,7 +28,7 @@ class Item(object):
     @staticmethod
     def update_timestamp(foo, user):
         foo.updated_by = user
-        foo.updated_at = datetime.now()
+        foo.updated_at = timezone.now()
         foo.save()
 
 
