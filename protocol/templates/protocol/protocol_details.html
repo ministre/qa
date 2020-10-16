@@ -134,13 +134,23 @@
                             {% if protocol_device.sample.sn %}
                             <div class="input-group">
                                 <span class="input-group-label">SN</span>
-                                <input class="input-group-field" type="text" value="{{ protocol_device.sample.sn }}" id="myInputSN">
+                                <input class="input-group-field" type="text" value="{{ protocol_device.sample.sn }}" id="myInputSN_{{ protocol_device.sample.id }}">
                                 <div class="input-group-button">
-                                    <button type="submit" class="button success" onclick="myFunctionSN()">
+                                    <button type="submit" class="button success" onclick="myFunctionSN_{{ protocol_device.sample.id }}()">
                                         Copy
                                     </button>
                                 </div>
                             </div>
+
+                            <script>
+                              function myFunctionSN_{{ protocol_device.sample.id }}() {
+                                var copyText = document.getElementById("myInputSN_{{ protocol_device.sample.id }}");
+                                copyText.select();
+                                copyText.setSelectionRange(0, 99999);
+                                document.execCommand("copy");
+                                }
+                            </script>
+
                             {% endif %}
 
                             <p style="color: #7700ff"><i>{% trans "Accounts" %}:</i></p>
@@ -148,17 +158,17 @@
                             {% for account in protocol_device.sample.sample_account.all|dictsort:"id" %}
                             <div class="input-group">
                                 <span class="input-group-label">{% if account.username %}{{ account.username }}{% endif %}</span>
-                                <input class="input-group-field" type="text" value="{% if account.password %}{{ account.password }}{% endif %}" id="myInput_{{ account.username }}">
+                                <input class="input-group-field" type="text" value="{% if account.password %}{{ account.password }}{% endif %}" id="myInput_{{ account.id }}_{{ account.username }}">
                                 <div class="input-group-button">
-                                    <button type="submit" class="button success" onclick="myFunction_{{ account.username }}()">
+                                    <button type="submit" class="button success" onclick="myFunction_{{ account.id }}_{{ account.username }}()">
                                         Copy
                                     </button>
                                 </div>
                             </div>
 
                             <script>
-                            function myFunction_{{ account.username }}() {
-                              var copyText = document.getElementById("myInput_{{ account.username }}");
+                            function myFunction_{{ account.id }}_{{ account.username }}() {
+                              var copyText = document.getElementById("myInput_{{ account.id }}_{{ account.username }}");
                               copyText.select();
                               copyText.setSelectionRange(0, 99999);
                               document.execCommand("copy");
@@ -196,14 +206,5 @@
     </div>
 
 </div>
-
-<script>
-function myFunctionSN() {
-  var copyText = document.getElementById("myInputSN");
-  copyText.select();
-  copyText.setSelectionRange(0, 99999);
-  document.execCommand("copy");
-}
-</script>
 
 {% endblock %}
