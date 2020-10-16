@@ -142,6 +142,9 @@ class Device(models.Model):
     updated_by = models.ForeignKey(User, related_name='device_u', on_delete=models.CASCADE, blank=True, null=True)
     updated_at = models.DateTimeField(default=datetime.now, blank=True)
 
+    class Meta:
+        ordering = ["name"]
+
     def __str__(self):
         return self.model
 

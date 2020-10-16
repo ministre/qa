@@ -755,8 +755,8 @@ class DeviceDelete(DeleteView):
 def device_details(request, pk, tab_id):
     device = get_object_or_404(Device, pk=pk)
     specs = Spec.get_values(device)
-    fws = Firmware.objects.filter(device=device)
-    photos = DevicePhoto.objects.filter(device=device)
+    fws = Firmware.objects.filter(device=device).order_by('-id')
+    photos = DevicePhoto.objects.filter(device=device).order_by('id')
     docs = DeviceDocument.objects.filter(device=device).order_by('id')
     samples = DeviceSample.objects.filter(device=device).order_by('id')
     protocol_devices = ProtocolDevice.objects.filter(device=device).order_by('id')
