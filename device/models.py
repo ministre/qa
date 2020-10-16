@@ -143,7 +143,7 @@ class Device(models.Model):
     updated_at = models.DateTimeField(default=datetime.now, blank=True)
 
     class Meta:
-        ordering = ["name"]
+        ordering = ["model"]
 
     def __str__(self):
         return self.model
