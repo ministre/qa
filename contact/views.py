@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from contact.models import Contact
 from contact.forms import ContactForm
 from django.urls import reverse
-from datetime import datetime
+from django.utils import timezone
 
 
 @method_decorator(login_required, name='dispatch')
@@ -34,7 +34,7 @@ class ContactUpdate(UpdateView):
     template_name = 'contact/update.html'
 
     def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+        return {'updated_by': self.request.user, 'updated_at': timezone.now()}
 
     def get_success_url(self):
         return reverse('contacts')
