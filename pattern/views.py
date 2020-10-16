@@ -6,7 +6,7 @@ from .models import Pattern, PatternCategory
 from .forms import PatternForm, PatternCategoryForm
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
-from datetime import datetime
+from django.utils import timezone
 from django.http import HttpResponseRedirect
 from django.db.models import Max, Min
 
@@ -15,7 +15,7 @@ class Item(object):
     @staticmethod
     def update_timestamp(foo, user):
         foo.updated_by = user
-        foo.updated_at = datetime.now()
+        foo.updated_at = timezone.now()
         foo.save()
 
     @staticmethod
@@ -56,7 +56,7 @@ class PatternUpdate(UpdateView):
     template_name = 'pattern/update.html'
 
     def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+        return {'updated_by': self.request.user, 'updated_at': timezone.now}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -118,7 +118,7 @@ class PatternCategoryUpdate(UpdateView):
     template_name = 'pattern/update.html'
 
     def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+        return {'updated_by': self.request.user, 'updated_at': timezone.now}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -8,7 +8,7 @@ from feature.models import FeatureList
 from django.utils.datastructures import MultiValueDictKeyError
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
-from datetime import datetime
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 
@@ -307,7 +307,7 @@ def import_testplan(request):
                                                                'redmine_wiki': chapter['redmine_wiki'],
                                                                'created_by': request.user,
                                                                'updated_by': request.user,
-                                                               'updated_at': datetime.now})
+                                                               'updated_at': timezone.now()})
             if is_tests:
                 categories = testplan_details[1]['categories']
                 for category in categories:
@@ -324,7 +324,7 @@ def import_testplan(request):
                                                                              'expected': test['expected'],
                                                                              'created_by': request.user,
                                                                              'updated_by': request.user,
-                                                                             'updated_at': datetime.now,
+                                                                             'updated_at': timezone.now(),
                                                                              'redmine_wiki': test['redmine_wiki']})
                         configs = test['configs']
                         if configs:

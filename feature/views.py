@@ -8,7 +8,7 @@ from .forms import FeatureListForm, FeatureListCategoryForm, FeatureListItemForm
 from docx_builder.forms import DocxFeatureListForm
 from redmine.forms import RedmineFeatureListForm
 from django.urls import reverse
-from datetime import datetime
+from django.utils import timezone
 from django.http import HttpResponseRedirect
 from qa import settings
 from django.utils.translation import gettext_lazy as _
@@ -47,7 +47,7 @@ class FeatureListUpdate(UpdateView):
     template_name = 'feature/update.html'
 
     def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+        return {'updated_by': self.request.user, 'updated_at': timezone.now()}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -98,9 +98,9 @@ def fl_clone(request, pk):
                                  version=request.POST['version'],
                                  device_type=get_object_or_404(DeviceType, id=request.POST['device_type']),
                                  created_by=request.user,
-                                 created_at=datetime.now(),
+                                 created_at=timezone.now(),
                                  updated_by=request.user,
-                                 updated_at=datetime.now(),
+                                 updated_at=timezone.now(),
                                  redmine_wiki=request.POST['redmine_wiki'])
             new_fl.save()
             src_fl = get_object_or_404(FeatureList, id=request.POST['src_fl'])
@@ -117,8 +117,8 @@ def fl_clone(request, pk):
         feature_list = get_object_or_404(FeatureList, id=pk)
         form = FeatureListForm(initial={'name': feature_list.name, 'version': feature_list.version,
                                         'device_type': feature_list.device_type.id, 'created_by': request.user,
-                                        'created_at': datetime.now(), 'updated_by': request.user,
-                                        'updated_at': datetime.now(), 'redmine_wiki': feature_list.redmine_wiki})
+                                        'created_at': timezone.now(), 'updated_by': request.user,
+                                        'updated_at': timezone.now(), 'redmine_wiki': feature_list.redmine_wiki})
         return render(request, 'feature/clone.html', {'form': form, 'fl_id': feature_list.id})
 
 
@@ -213,7 +213,7 @@ class FeatureListItemUpdate(UpdateView):
     template_name = 'feature/update.html'
 
     def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+        return {'updated_by': self.request.user, 'updated_at': timezone.now}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
