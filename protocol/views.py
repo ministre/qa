@@ -6,7 +6,7 @@ from .models import Branch, Protocol, ProtocolDevice, ProtocolScan
 from device.models import Firmware, DeviceSample
 from .forms import BranchForm, ProtocolForm, ProtocolDeviceForm, ProtocolScanForm
 from django.urls import reverse
-from datetime import datetime
+from django.utils import timezone
 from django import forms
 from django.shortcuts import get_object_or_404
 
@@ -15,7 +15,7 @@ class Item(object):
     @staticmethod
     def update_timestamp(foo, user):
         foo.updated_by = user
-        foo.updated_at = datetime.now()
+        foo.updated_at = timezone.now()
         foo.save()
 
 
@@ -51,7 +51,7 @@ class BranchUpdate(UpdateView):
     template_name = 'protocol/update.html'
 
     def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+        return {'updated_by': self.request.user, 'updated_at': timezone.now}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -91,7 +91,7 @@ class ProtocolCreate(CreateView):
     template_name = 'protocol/create.html'
 
     def get_initial(self):
-        return {'created_by': self.request.user, 'updated_by': self.request.user, 'updated_at': datetime.now}
+        return {'created_by': self.request.user, 'updated_by': self.request.user, 'updated_at': timezone.now}
 
     def get_form(self, form_class=ProtocolForm):
         form = super(ProtocolCreate, self).get_form(form_class)
@@ -115,7 +115,7 @@ class ProtocolUpdate(UpdateView):
     template_name = 'protocol/update.html'
 
     def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+        return {'updated_by': self.request.user, 'updated_at': timezone.now}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -183,7 +183,7 @@ class ProtocolDeviceUpdate(UpdateView):
     template_name = 'protocol/update.html'
 
     def get_initial(self):
-        return {'firmware': None, 'sample': None, 'updated_by': self.request.user, 'updated_at': datetime.now}
+        return {'firmware': None, 'sample': None, 'updated_by': self.request.user, 'updated_at': timezone.now}
 
     def get_form(self, form_class=ProtocolDeviceForm):
         form = super(ProtocolDeviceUpdate, self).get_form(form_class)
@@ -208,7 +208,7 @@ class ProtocolDeviceFwUpdate(UpdateView):
     template_name = 'protocol/update.html'
 
     def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+        return {'updated_by': self.request.user, 'updated_at': timezone.now}
 
     def get_form(self, form_class=ProtocolDeviceForm):
         form = super(ProtocolDeviceFwUpdate, self).get_form(form_class)
@@ -234,7 +234,7 @@ class ProtocolDeviceSampleUpdate(UpdateView):
     template_name = 'protocol/update.html'
 
     def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+        return {'updated_by': self.request.user, 'updated_at': timezone.now}
 
     def get_form(self, form_class=ProtocolDeviceForm):
         form = super(ProtocolDeviceSampleUpdate, self).get_form(form_class)
@@ -295,7 +295,7 @@ class ProtocolScanUpdate(UpdateView):
     template_name = 'protocol/update.html'
 
     def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+        return {'updated_by': self.request.user, 'updated_at': timezone.now}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
