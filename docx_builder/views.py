@@ -12,7 +12,7 @@ from testplan.models import Testplan, Chapter, Category, Test, TestLink, TestChe
 import os
 from django.conf import settings
 from django.http import HttpResponse, Http404
-from datetime import datetime
+from django.utils import timezone
 from docx import Document
 from docx.shared import Cm, Pt, Inches, RGBColor
 from docx.enum.table import WD_TABLE_ALIGNMENT
@@ -48,7 +48,7 @@ class DocxProfileUpdate(UpdateView):
     template_name = 'docx_builder/update.html'
 
     def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+        return {'updated_by': self.request.user, 'updated_at': timezone.now()}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

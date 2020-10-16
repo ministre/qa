@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from datetime import datetime
+from django.utils import timezone
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 
@@ -94,16 +94,16 @@ class DocxProfile(models.Model):
     quote_space_after = models.IntegerField(default=5, validators=[MinValueValidator(0), MaxValueValidator(40)])
     quote_alignment = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(3)])
 
-    created_by = models.ForeignKey(User, related_name='docx_profile_c', on_delete=models.CASCADE, blank=True, null=True)
-    created_at = models.DateTimeField(default=datetime.now, blank=True)
-    updated_by = models.ForeignKey(User, related_name='docx_profile_u', on_delete=models.CASCADE, blank=True, null=True)
-    updated_at = models.DateTimeField(default=datetime.now, blank=True)
+    created_by = models.ForeignKey(User, related_name='docx_profile_c', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_by = models.ForeignKey(User, related_name='docx_profile_u', on_delete=models.CASCADE)
+    updated_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.name
 
     def update_timestamp(self, user):
         self.updated_by = user
-        self.updated_at = datetime.now()
+        self.updated_at = timezone.now()
         self.save()
         return True
