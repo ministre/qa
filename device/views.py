@@ -18,7 +18,6 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
-from datetime import datetime
 from django.utils import timezone
 from django import forms
 from qa import settings
@@ -170,7 +169,7 @@ class VendorUpdate(UpdateView):
     template_name = 'device/update.html'
 
     def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+        return {'updated_by': self.request.user, 'updated_at': timezone.now()}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -234,7 +233,7 @@ class DeviceChecklistUpdate(UpdateView):
     template_name = 'device/update.html'
 
     def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+        return {'updated_by': self.request.user, 'updated_at': timezone.now()}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -352,7 +351,7 @@ class DeviceSlistUpdate(UpdateView):
     template_name = 'device/update.html'
 
     def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+        return {'updated_by': self.request.user, 'updated_at': timezone.now()}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -470,7 +469,7 @@ class DeviceTextFieldUpdate(UpdateView):
     template_name = 'device/update.html'
 
     def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+        return {'updated_by': self.request.user, 'updated_at': timezone.now()}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -534,7 +533,7 @@ class DeviceIntegerFieldUpdate(UpdateView):
     template_name = 'device/update.html'
 
     def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+        return {'updated_by': self.request.user, 'updated_at': timezone.now()}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -598,7 +597,7 @@ class DeviceTypeUpdate(UpdateView):
     template_name = 'device/update.html'
 
     def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+        return {'updated_by': self.request.user, 'updated_at': timezone.now()}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -802,7 +801,7 @@ class DeviceDocumentTypeUpdate(UpdateView):
     template_name = 'device/update.html'
 
     def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+        return {'updated_by': self.request.user, 'updated_at': timezone.now()}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -861,7 +860,7 @@ class DevicePhotoUpdate(UpdateView):
     template_name = 'device/update.html'
 
     def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+        return {'updated_by': self.request.user, 'updated_at': timezone.now()}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -912,7 +911,7 @@ class DeviceDocumentUpdate(UpdateView):
     template_name = 'device/update.html'
 
     def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+        return {'updated_by': self.request.user, 'updated_at': timezone.now()}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -963,7 +962,7 @@ class DeviceSampleUpdate(UpdateView):
     template_name = 'device/update.html'
 
     def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+        return {'updated_by': self.request.user, 'updated_at': timezone.now()}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1015,7 +1014,7 @@ class DeviceSampleAccountUpdate(UpdateView):
     template_name = 'device/update.html'
 
     def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+        return {'updated_by': self.request.user, 'updated_at': timezone.now()}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1066,7 +1065,7 @@ class FirmwareUpdate(UpdateView):
     template_name = 'device/update.html'
 
     def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+        return {'updated_by': self.request.user, 'updated_at': timezone.now()}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
