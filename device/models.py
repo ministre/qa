@@ -6,9 +6,9 @@ from django.utils import timezone
 class Vendor(models.Model):
     name = models.CharField(max_length=400)
     created_by = models.ForeignKey(User, related_name='vendor_c', on_delete=models.CASCADE)
-    created_at = models.DateTimeField(default=timezone.now())
+    created_at = models.DateTimeField(default=timezone.now)
     updated_by = models.ForeignKey(User, related_name='vendor_u', on_delete=models.CASCADE, blank=True, null=True)
-    updated_at = models.DateTimeField(default=timezone.now())
+    updated_at = models.DateTimeField(default=timezone.now)
 
     class Meta:
         ordering = ["name"]
@@ -22,9 +22,9 @@ class DeviceChecklist(models.Model):
     desc = models.CharField(max_length=1000, blank=True, null=True)
     items_order_by = models.CharField(max_length=10, default='id')
     created_by = models.ForeignKey(User, related_name='d_checklist_c', on_delete=models.CASCADE)
-    created_at = models.DateTimeField(default=timezone.now())
+    created_at = models.DateTimeField(default=timezone.now)
     updated_by = models.ForeignKey(User, related_name='d_checklist_u', on_delete=models.CASCADE, blank=True, null=True)
-    updated_at = models.DateTimeField(default=timezone.now())
+    updated_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.name
@@ -43,9 +43,9 @@ class DeviceSlist(models.Model):
     desc = models.CharField(max_length=1000, blank=True, null=True)
     items_order_by = models.CharField(max_length=10, default='id')
     created_by = models.ForeignKey(User, related_name='d_slist_c', on_delete=models.CASCADE)
-    created_at = models.DateTimeField(default=timezone.now())
+    created_at = models.DateTimeField(default=timezone.now)
     updated_by = models.ForeignKey(User, related_name='d_slist_u', on_delete=models.CASCADE, blank=True, null=True)
-    updated_at = models.DateTimeField(default=timezone.now())
+    updated_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.name
@@ -63,9 +63,9 @@ class DeviceTextField(models.Model):
     name = models.CharField(max_length=500)
     desc = models.CharField(max_length=1000, blank=True, null=True)
     created_by = models.ForeignKey(User, related_name='d_tfield_c', on_delete=models.CASCADE)
-    created_at = models.DateTimeField(default=timezone.now())
+    created_at = models.DateTimeField(default=timezone.now)
     updated_by = models.ForeignKey(User, related_name='d_tfield_u', on_delete=models.CASCADE, blank=True, null=True)
-    updated_at = models.DateTimeField(default=timezone.now())
+    updated_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.name
@@ -76,9 +76,9 @@ class DeviceIntegerField(models.Model):
     unit = models.CharField(max_length=100, blank=True, null=True)
     desc = models.CharField(max_length=1000, blank=True, null=True)
     created_by = models.ForeignKey(User, related_name='d_ifield_c', on_delete=models.CASCADE)
-    created_at = models.DateTimeField(default=timezone.now())
+    created_at = models.DateTimeField(default=timezone.now)
     updated_by = models.ForeignKey(User, related_name='d_ifield_u', on_delete=models.CASCADE, blank=True, null=True)
-    updated_at = models.DateTimeField(default=timezone.now())
+    updated_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.name
@@ -92,9 +92,9 @@ class DeviceType(models.Model):
     redmine_project = models.CharField(max_length=1000, blank=True, null=True)
     redmine_project_name = models.CharField(max_length=1000, blank=True, null=True)
     created_by = models.ForeignKey(User, related_name='type_c', on_delete=models.CASCADE)
-    created_at = models.DateTimeField(default=timezone.now())
+    created_at = models.DateTimeField(default=timezone.now)
     updated_by = models.ForeignKey(User, related_name='type_u', on_delete=models.CASCADE, blank=True, null=True)
-    updated_at = models.DateTimeField(default=timezone.now())
+    updated_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.desc
@@ -138,9 +138,9 @@ class Device(models.Model):
     redmine_project = models.CharField(max_length=1000, blank=True, null=True)
     # members = models.ManyToManyField(User, related_name='device_members', blank=True)
     created_by = models.ForeignKey(User, related_name='device_c', on_delete=models.CASCADE)
-    created_at = models.DateTimeField(default=timezone.now())
+    created_at = models.DateTimeField(default=timezone.now)
     updated_by = models.ForeignKey(User, related_name='device_u', on_delete=models.CASCADE, blank=True, null=True)
-    updated_at = models.DateTimeField(default=timezone.now())
+    updated_at = models.DateTimeField(default=timezone.now)
 
     class Meta:
         ordering = ["model"]
@@ -180,17 +180,17 @@ class DevicePhoto(models.Model):
     photo = models.ImageField(upload_to="device/photos/")
     desc = models.CharField(max_length=500)
     created_by = models.ForeignKey(User, related_name='photo_c', on_delete=models.CASCADE)
-    created_at = models.DateTimeField(default=timezone.now())
+    created_at = models.DateTimeField(default=timezone.now)
     updated_by = models.ForeignKey(User, related_name='photo_u', on_delete=models.CASCADE, blank=True, null=True)
-    updated_at = models.DateTimeField(default=timezone.now())
+    updated_at = models.DateTimeField(default=timezone.now)
 
 
 class DeviceDocumentType(models.Model):
     name = models.CharField(max_length=300)
     created_by = models.ForeignKey(User, related_name='doc_type_c', on_delete=models.CASCADE)
-    created_at = models.DateTimeField(default=timezone.now())
+    created_at = models.DateTimeField(default=timezone.now)
     updated_by = models.ForeignKey(User, related_name='doc_type_u', on_delete=models.CASCADE, blank=True, null=True)
-    updated_at = models.DateTimeField(default=timezone.now())
+    updated_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.name
@@ -202,9 +202,9 @@ class DeviceDocument(models.Model):
     file = models.FileField(upload_to="device/docs/")
     desc = models.CharField(max_length=300, blank=True, null=True)
     created_by = models.ForeignKey(User, related_name='doc_c', on_delete=models.CASCADE)
-    created_at = models.DateTimeField(default=timezone.now())
+    created_at = models.DateTimeField(default=timezone.now)
     updated_by = models.ForeignKey(User, related_name='doc_u', on_delete=models.CASCADE, blank=True, null=True)
-    updated_at = models.DateTimeField(default=timezone.now())
+    updated_at = models.DateTimeField(default=timezone.now)
 
 
 class DeviceSample(models.Model):
@@ -212,9 +212,9 @@ class DeviceSample(models.Model):
     sn = models.CharField(max_length=50, blank=True, null=True)
     desc = models.CharField(max_length=1000, blank=True, null=True)
     created_by = models.ForeignKey(User, related_name='sample_c', on_delete=models.CASCADE)
-    created_at = models.DateTimeField(default=timezone.now())
+    created_at = models.DateTimeField(default=timezone.now)
     updated_by = models.ForeignKey(User, related_name='sample_u', on_delete=models.CASCADE, blank=True, null=True)
-    updated_at = models.DateTimeField(default=timezone.now())
+    updated_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         sample_name = '(ID: ' + str(self.id) + ')'
@@ -230,19 +230,19 @@ class DeviceSampleAccount(models.Model):
     username = models.CharField(max_length=50, blank=True, null=True)
     password = models.CharField(max_length=50, blank=True, null=True)
     created_by = models.ForeignKey(User, related_name='sample_account_c', on_delete=models.CASCADE)
-    created_at = models.DateTimeField(default=timezone.now())
+    created_at = models.DateTimeField(default=timezone.now)
     updated_by = models.ForeignKey(User, related_name='sample_account_u', on_delete=models.CASCADE, blank=True,
                                    null=True)
-    updated_at = models.DateTimeField(default=timezone.now())
+    updated_at = models.DateTimeField(default=timezone.now)
 
 
 class DeviceSupport(models.Model):
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
     contact = models.ForeignKey('contact.Contact', on_delete=models.CASCADE)
     created_by = models.ForeignKey(User, related_name='d_support_c', on_delete=models.CASCADE)
-    created_at = models.DateTimeField(default=timezone.now())
+    created_at = models.DateTimeField(default=timezone.now)
     updated_by = models.ForeignKey(User, related_name='d_support_u', on_delete=models.CASCADE, blank=True, null=True)
-    updated_at = models.DateTimeField(default=timezone.now())
+    updated_at = models.DateTimeField(default=timezone.now)
 
 
 class Firmware(models.Model):
@@ -253,9 +253,9 @@ class Firmware(models.Model):
     changelog = models.TextField(null=True, blank=True)
     sysinfo = models.TextField(null=True, blank=True)
     created_by = models.ForeignKey(User, related_name='fw_c', on_delete=models.CASCADE)
-    created_at = models.DateTimeField(default=timezone.now())
+    created_at = models.DateTimeField(default=timezone.now)
     updated_by = models.ForeignKey(User, related_name='fw_u', on_delete=models.CASCADE, blank=True, null=True)
-    updated_at = models.DateTimeField(default=timezone.now())
+    updated_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.version
