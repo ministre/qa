@@ -30,6 +30,11 @@ class Item(object):
         foo.updated_at = timezone.now()
         foo.save()
 
+    @staticmethod
+    def set_priority(foo, priority: int):
+        foo.priority = priority
+        foo.save()
+
 
 class Spec(object):
     @staticmethod

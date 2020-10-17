@@ -19,12 +19,6 @@ class Testplan(models.Model):
     def __str__(self):
         return str(self.name) + ' (' + str(self.version) + ')'
 
-    def update_timestamp(self, user):
-        self.updated_by = user
-        self.updated_at = timezone.now()
-        self.save()
-        return True
-
     def tests_count(self):
         count = 0
         for category in Category.objects.filter(testplan=self):
@@ -51,17 +45,12 @@ class Chapter(models.Model):
     def __str__(self):
         return self.name
 
-    def update_timestamp(self, user):
-        self.updated_by = user
-        self.updated_at = timezone.now()
-        self.save()
-        return True
-
     def update_details(self, name: str, text: str, user):
         self.name = name
         self.text = text
+        self.updated_at = timezone.now
+        self.updated_by = user
         self.save()
-        self.update_timestamp(user=user)
         return [True, 'Data updated']
 
 
@@ -89,19 +78,13 @@ class Test(models.Model):
     expected = models.TextField(null=True, blank=True)
     priority = models.IntegerField(default=0)
     created_by = models.ForeignKey(User, related_name='t_t_c', on_delete=models.CASCADE, blank=True, null=True)
-    created_at = models.DateTimeField(default=timezone.now, blank=True)
+    created_at = models.DateTimeField(default=timezone.now)
     updated_by = models.ForeignKey(User, related_name='t_t_u', on_delete=models.CASCADE, blank=True, null=True)
-    updated_at = models.DateTimeField(default=timezone.now, blank=True)
+    updated_at = models.DateTimeField(default=timezone.now)
     redmine_wiki = models.CharField(max_length=1000, null=True, blank=True)
 
     def __str__(self):
         return self.name
-
-    def update_timestamp(self, user):
-        self.updated_by = user
-        self.updated_at = timezone.now()
-        self.save()
-        return True
 
     def update_details(self, name: str, purpose: str, procedure: str, expected: str, clear_configs: bool, configs: list,
                        images: list, files: list, clear_checklists: bool, checklists: list, clear_links: bool,

@@ -16,19 +16,7 @@ from qa import settings
 from django.utils.translation import gettext_lazy as _
 from django.db.models import Max, Min
 from django import forms
-
-
-class Item(object):
-    @staticmethod
-    def update_timestamp(foo, user):
-        foo.updated_by = user
-        foo.updated_at = datetime.now()
-        foo.save()
-
-    @staticmethod
-    def set_priority(foo, priority: int):
-        foo.priority = priority
-        foo.save()
+from device.views import Item
 
 
 @login_required
@@ -84,7 +72,7 @@ class TestplanUpdate(UpdateView):
         return context
 
     def get_success_url(self):
-        self.object.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object, user=self.request.user)
         return reverse('testplan_details', kwargs={'pk': self.object.id, 'tab_id': 1})
 
 
@@ -305,7 +293,7 @@ class TestCreate(CreateView):
 
     def get_success_url(self):
         Item.set_priority(foo=self.object, priority=self.object.id)
-        self.object.category.testplan.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.category.testplan, user=self.request.user)
         return reverse('testplan_details', kwargs={'pk': self.object.category.testplan.id, 'tab_id': 3})
 
 
@@ -321,7 +309,7 @@ class TestDelete(DeleteView):
 
     def get_success_url(self):
         testplan = self.object.category.testplan
-        testplan.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=testplan, user=self.request.user)
         return reverse('testplan_details', kwargs={'pk': testplan.id, 'tab_id': 3})
 
 
@@ -340,7 +328,7 @@ class TestUpdate(UpdateView):
         return context
 
     def get_success_url(self):
-        self.object.category.testplan.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.category.testplan, user=self.request.user)
         return reverse('test_details', kwargs={'pk': self.object.id, 'tab_id': 1})
 
 
@@ -468,7 +456,7 @@ class ChapterCreate(CreateView):
         return context
 
     def get_success_url(self):
-        self.object.testplan.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.testplan, user=self.request.user)
         return reverse('testplan_details', kwargs={'pk': self.object.testplan.id, 'tab_id': 2})
 
 
@@ -483,7 +471,7 @@ class ChapterDelete(DeleteView):
         return context
 
     def get_success_url(self):
-        self.object.testplan.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.testplan, user=self.request.user)
         return reverse('testplan_details', kwargs={'pk': self.object.testplan.id, 'tab_id': 2})
 
 
@@ -502,7 +490,7 @@ class ChapterUpdate(UpdateView):
         return {'updated_by': self.request.user, 'updated_at': datetime.now}
 
     def get_success_url(self):
-        self.object.testplan.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.self.object.testplan, user=self.request.user)
         return reverse('chapter_details', kwargs={'pk': self.object.id, 'tab_id': 1})
 
 
@@ -528,7 +516,7 @@ def clear_chapters(request, tp_id):
     testplan = get_object_or_404(Testplan, id=tp_id)
     if request.method == 'POST':
         Chapter.objects.filter(testplan=testplan).delete()
-        testplan.update_timestamp(user=request.user)
+        Item.update_timestamp(foo=testplan, user=request.user)
         return HttpResponseRedirect(reverse('testplan_details', kwargs={'pk': tp_id, 'tab_id': 2}))
     else:
         back_url = reverse('testplan_details', kwargs={'pk': tp_id, 'tab_id': 2})
@@ -541,7 +529,7 @@ def clear_tests(request, tp_id):
     testplan = get_object_or_404(Testplan, id=tp_id)
     if request.method == 'POST':
         Category.objects.filter(testplan=testplan).delete()
-        testplan.update_timestamp(user=request.user)
+        Item.update_timestamp(foo=testplan, user=request.user)
         return HttpResponseRedirect(reverse('testplan_details', kwargs={'pk': tp_id, 'tab_id': 3}))
     else:
         back_url = reverse('testplan_details', kwargs={'pk': tp_id, 'tab_id': 3})
@@ -564,8 +552,8 @@ class TestConfigCreate(CreateView):
         return context
 
     def get_success_url(self):
-        self.object.test.update_timestamp(user=self.request.user)
-        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.test, user=self.request.user)
+        Item.update_timestamp(foo=self.object.test.category, user=self.request.user)
         return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 5})
 
 
@@ -580,8 +568,8 @@ class TestConfigDelete(DeleteView):
         return context
 
     def get_success_url(self):
-        self.object.test.update_timestamp(user=self.request.user)
-        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.test, user=self.request.user)
+        Item.update_timestamp(foo=self.object.test.category.testplan, user=self.request.user)
         return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 5})
 
 
@@ -600,8 +588,8 @@ class TestConfigUpdate(UpdateView):
         return context
 
     def get_success_url(self):
-        self.object.test.update_timestamp(user=self.request.user)
-        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.test, user=self.request.user)
+        Item.update_timestamp(foo=self.object.test.category.testplan, user=self.request.user)
         return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 5})
 
 
@@ -620,8 +608,8 @@ class TestImageCreate(CreateView):
         return context
 
     def get_success_url(self):
-        self.object.test.update_timestamp(user=self.request.user)
-        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.test, user=self.request.user)
+        Item.update_timestamp(foo=self.object.test.category.testplan, user=self.request.user)
         return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 6})
 
 
@@ -636,8 +624,8 @@ class TestImageDelete(DeleteView):
         return context
 
     def get_success_url(self):
-        self.object.test.update_timestamp(user=self.request.user)
-        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.test, user=self.request.user)
+        Item.update_timestamp(foo=self.object.test.category.testplan, user=self.request.user)
         return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 6})
 
 
@@ -656,8 +644,8 @@ class TestImageUpdate(UpdateView):
         return context
 
     def get_success_url(self):
-        self.object.test.update_timestamp(user=self.request.user)
-        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.test, user=self.request.user)
+        Item.update_timestamp(foo=self.object.test.category.testplan, user=self.request.user)
         return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 6})
 
 
@@ -676,8 +664,8 @@ class TestFileCreate(CreateView):
         return context
 
     def get_success_url(self):
-        self.object.test.update_timestamp(user=self.request.user)
-        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.test, user=self.request.user)
+        Item.update_timestamp(foo=self.object.test.category.testplan, user=self.request.user)
         return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 7})
 
 
@@ -692,8 +680,8 @@ class TestFileDelete(DeleteView):
         return context
 
     def get_success_url(self):
-        self.object.test.update_timestamp(user=self.request.user)
-        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.test, user=self.request.user)
+        Item.update_timestamp(foo=self.object.test.category.testplan, user=self.request.user)
         return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 7})
 
 
@@ -712,8 +700,8 @@ class TestFileUpdate(UpdateView):
         return context
 
     def get_success_url(self):
-        self.object.test.update_timestamp(user=self.request.user)
-        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.test, user=self.request.user)
+        Item.update_timestamp(foo=self.object.test.category.testplan, user=self.request.user)
         return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 7})
 
 
@@ -732,8 +720,8 @@ class TestChecklistCreate(CreateView):
         return context
 
     def get_success_url(self):
-        self.object.test.update_timestamp(user=self.request.user)
-        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.test, user=self.request.user)
+        Item.update_timestamp(foo=self.object.test.category.testplan, user=self.request.user)
         return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 8})
 
 
@@ -748,8 +736,8 @@ class TestChecklistDelete(DeleteView):
         return context
 
     def get_success_url(self):
-        self.object.test.update_timestamp(user=self.request.user)
-        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.test, user=self.request.user)
+        Item.update_timestamp(foo=self.object.test.category.testplan, user=self.request.user)
         return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 8})
 
 
@@ -768,8 +756,8 @@ class TestChecklistUpdate(UpdateView):
         return context
 
     def get_success_url(self):
-        self.object.test.update_timestamp(user=self.request.user)
-        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.test, user=self.request.user)
+        Item.update_timestamp(foo=self.object.test.category, user=self.request.user)
         return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 8})
 
 
@@ -789,8 +777,8 @@ class TestChecklistItemCreate(CreateView):
         return context
 
     def get_success_url(self):
-        self.object.checklist.test.update_timestamp(user=self.request.user)
-        self.object.checklist.test.category.testplan.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.test, user=self.request.user)
+        Item.update_timestamp(foo=self.object.checklist.test.category, user=self.request.user)
         return reverse('test_details', kwargs={'pk': self.object.checklist.test.id, 'tab_id': 8})
 
 
@@ -805,8 +793,8 @@ class TestChecklistItemDelete(DeleteView):
         return context
 
     def get_success_url(self):
-        self.object.checklist.test.update_timestamp(user=self.request.user)
-        self.object.checklist.test.category.testplan.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.checklist.test, user=self.request.user)
+        Item.update_timestamp(foo=self.object.checklist.test.category, user=self.request.user)
         return reverse('test_details', kwargs={'pk': self.object.checklist.test.id, 'tab_id': 8})
 
 
@@ -825,8 +813,8 @@ class TestChecklistItemUpdate(UpdateView):
         return context
 
     def get_success_url(self):
-        self.object.checklist.test.update_timestamp(user=self.request.user)
-        self.object.checklist.test.category.testplan.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.checklist.test, user=self.request.user)
+        Item.update_timestamp(foo=self.object.checklist.test.category, user=self.request.user)
         return reverse('test_details', kwargs={'pk': self.object.checklist.test.id, 'tab_id': 8})
 
 
@@ -845,8 +833,8 @@ class TestIntegerValueCreate(CreateView):
         return context
 
     def get_success_url(self):
-        self.object.test.update_timestamp(user=self.request.user)
-        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.test, user=self.request.user)
+        Item.update_timestamp(foo=self.object.test.category.testplan, user=self.request.user)
         return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 8})
 
 
@@ -861,8 +849,8 @@ class TestIntegerValueDelete(DeleteView):
         return context
 
     def get_success_url(self):
-        self.object.test.update_timestamp(user=self.request.user)
-        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.test, user=self.request.user)
+        Item.update_timestamp(foo=self.object.test.category.testplan, user=self.request.user)
         return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 8})
 
 
@@ -881,8 +869,8 @@ class TestIntegerValueUpdate(UpdateView):
         return context
 
     def get_success_url(self):
-        self.object.test.update_timestamp(user=self.request.user)
-        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.test, user=self.request.user)
+        Item.update_timestamp(foo=self.object.test.category.testplan, user=self.request.user)
         return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 8})
 
 
@@ -901,8 +889,8 @@ class TestLinkCreate(CreateView):
         return context
 
     def get_success_url(self):
-        self.object.test.update_timestamp(user=self.request.user)
-        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.test, user=self.request.user)
+        Item.update_timestamp(foo=self.object.test.category.testplan, user=self.request.user)
         return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 9})
 
 
@@ -917,8 +905,8 @@ class TestLinkDelete(DeleteView):
         return context
 
     def get_success_url(self):
-        self.object.test.update_timestamp(user=self.request.user)
-        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.test, user=self.request.user)
+        Item.update_timestamp(foo=self.object.test.category.testplan, user=self.request.user)
         return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 9})
 
 
@@ -937,8 +925,8 @@ class TestLinkUpdate(UpdateView):
         return context
 
     def get_success_url(self):
-        self.object.test.update_timestamp(user=self.request.user)
-        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.test, user=self.request.user)
+        Item.update_timestamp(foo=self.object.test.category.testplan, user=self.request.user)
         return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 9})
 
 
@@ -957,8 +945,8 @@ class TestCommentCreate(CreateView):
         return context
 
     def get_success_url(self):
-        self.object.test.update_timestamp(user=self.request.user)
-        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.test, user=self.request.user)
+        Item.update_timestamp(foo=self.object.test.category.testplan, user=self.request.user)
         return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 10})
 
 
@@ -973,8 +961,8 @@ class TestCommentDelete(DeleteView):
         return context
 
     def get_success_url(self):
-        self.object.test.update_timestamp(user=self.request.user)
-        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.test, user=self.request.user)
+        Item.update_timestamp(foo=self.object.test.category.testplan, user=self.request.user)
         return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 10})
 
 
@@ -993,6 +981,6 @@ class TestCommentUpdate(UpdateView):
         return context
 
     def get_success_url(self):
-        self.object.test.update_timestamp(user=self.request.user)
-        self.object.test.category.testplan.update_timestamp(user=self.request.user)
+        Item.update_timestamp(foo=self.object.test, user=self.request.user)
+        Item.update_timestamp(foo=self.object.test.category.testplan, user=self.request.user)
         return reverse('test_details', kwargs={'pk': self.object.test.id, 'tab_id': 10})
