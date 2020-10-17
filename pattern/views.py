@@ -9,19 +9,7 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.http import HttpResponseRedirect
 from django.db.models import Max, Min
-
-
-class Item(object):
-    @staticmethod
-    def update_timestamp(foo, user):
-        foo.updated_by = user
-        foo.updated_at = timezone.now()
-        foo.save()
-
-    @staticmethod
-    def set_priority(foo, priority: int):
-        foo.priority = priority
-        foo.save()
+from device.views import Item
 
 
 @method_decorator(login_required, name='dispatch')

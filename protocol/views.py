@@ -9,14 +9,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django import forms
 from django.shortcuts import get_object_or_404
-
-
-class Item(object):
-    @staticmethod
-    def update_timestamp(foo, user):
-        foo.updated_by = user
-        foo.updated_at = timezone.now()
-        foo.save()
+from device.views import Item
 
 
 @method_decorator(login_required, name='dispatch')
