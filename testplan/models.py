@@ -1,7 +1,7 @@
 from django.db import models
 from device.models import DeviceType
 from django.contrib.auth.models import User
-from datetime import datetime
+from django.utils import timezone
 
 
 class Testplan(models.Model):
@@ -9,19 +9,19 @@ class Testplan(models.Model):
     version = models.CharField(max_length=300)
     device_type = models.ForeignKey(DeviceType, on_delete=models.CASCADE, null=True)
     created_by = models.ForeignKey(User, related_name='testplan_c', on_delete=models.CASCADE, blank=True, null=True)
-    created_at = models.DateTimeField(default=datetime.now, blank=True)
+    created_at = models.DateTimeField(default=timezone.now)
     updated_by = models.ForeignKey(User, related_name='testplan_u', on_delete=models.CASCADE, blank=True, null=True)
-    updated_at = models.DateTimeField(default=datetime.now, blank=True)
+    updated_at = models.DateTimeField(default=timezone.now)
     redmine_parent = models.CharField(max_length=1000, blank=True, null=True)
     redmine_project = models.CharField(max_length=1000, blank=True, null=True)
     members = models.ManyToManyField(User, related_name='members', blank=True)
 
     def __str__(self):
-        return self.name
+        return str(self.name) + ' (' + str(self.version) + ')'
 
     def update_timestamp(self, user):
         self.updated_by = user
-        self.updated_at = datetime.now()
+        self.updated_at = timezone.now()
         self.save()
         return True
 
@@ -43,9 +43,9 @@ class Chapter(models.Model):
     name = models.CharField(max_length=1000)
     text = models.TextField(max_length=100000, blank=True, null=True)
     created_by = models.ForeignKey(User, related_name='chapter_c', on_delete=models.CASCADE, blank=True, null=True)
-    created_at = models.DateTimeField(default=datetime.now, blank=True)
+    created_at = models.DateTimeField(default=timezone.now)
     updated_by = models.ForeignKey(User, related_name='chapter_u', on_delete=models.CASCADE, blank=True, null=True)
-    updated_at = models.DateTimeField(default=datetime.now, blank=True)
+    updated_at = models.DateTimeField(default=timezone.now)
     redmine_wiki = models.CharField(max_length=1000, blank=True, null=True)
 
     def __str__(self):
@@ -53,7 +53,7 @@ class Chapter(models.Model):
 
     def update_timestamp(self, user):
         self.updated_by = user
-        self.updated_at = datetime.now()
+        self.updated_at = timezone.now()
         self.save()
         return True
 
@@ -70,9 +70,9 @@ class Category(models.Model):
     name = models.CharField(max_length=1000)
     priority = models.IntegerField(default=0)
     created_by = models.ForeignKey(User, related_name='t_c_c', on_delete=models.CASCADE, blank=True, null=True)
-    created_at = models.DateTimeField(default=datetime.now)
+    created_at = models.DateTimeField(default=timezone.now)
     updated_by = models.ForeignKey(User, related_name='t_c_u', on_delete=models.CASCADE, blank=True, null=True)
-    updated_at = models.DateTimeField(default=datetime.now)
+    updated_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.name
@@ -89,9 +89,9 @@ class Test(models.Model):
     expected = models.TextField(null=True, blank=True)
     priority = models.IntegerField(default=0)
     created_by = models.ForeignKey(User, related_name='t_t_c', on_delete=models.CASCADE, blank=True, null=True)
-    created_at = models.DateTimeField(default=datetime.now, blank=True)
+    created_at = models.DateTimeField(default=timezone.now, blank=True)
     updated_by = models.ForeignKey(User, related_name='t_t_u', on_delete=models.CASCADE, blank=True, null=True)
-    updated_at = models.DateTimeField(default=datetime.now, blank=True)
+    updated_at = models.DateTimeField(default=timezone.now, blank=True)
     redmine_wiki = models.CharField(max_length=1000, null=True, blank=True)
 
     def __str__(self):
@@ -99,7 +99,7 @@ class Test(models.Model):
 
     def update_timestamp(self, user):
         self.updated_by = user
-        self.updated_at = datetime.now()
+        self.updated_at = timezone.now()
         self.save()
         return True
 
