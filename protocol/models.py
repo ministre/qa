@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
-from testplan.models import Testplan
+from testplan.models import Testplan, Test
 from device.models import Device, Firmware, DeviceSample
 
 
@@ -45,4 +45,14 @@ class ProtocolScan(models.Model):
     created_by = models.ForeignKey(User, related_name='protocol_scan_c', on_delete=models.CASCADE)
     created_at = models.DateTimeField(default=timezone.now)
     updated_by = models.ForeignKey(User, related_name='protocol_scan_u', on_delete=models.CASCADE)
+    updated_at = models.DateTimeField(default=timezone.now)
+
+
+class ProtocolTestResult(models.Model):
+    protocol = models.ForeignKey(Protocol, on_delete=models.CASCADE)
+    test = models.ForeignKey(Test, on_delete=models.CASCADE)
+    result = models.IntegerField(default=0)
+    created_by = models.ForeignKey(User, related_name='protocol_test_result_c', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_by = models.ForeignKey(User, related_name='protocol_test_result_u', on_delete=models.CASCADE)
     updated_at = models.DateTimeField(default=timezone.now)
