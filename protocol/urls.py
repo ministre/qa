@@ -3,6 +3,8 @@ from . import views
 
 urlpatterns = [
     path('', views.ProtocolListView.as_view(), name='protocols'),
+
+    # protocols
     path('create/', views.ProtocolCreate.as_view(), name='protocol_create'),
     path('update/<int:pk>/', views.ProtocolUpdate.as_view(), name='protocol_update'),
     path('delete/<int:pk>/', views.ProtocolDelete.as_view(), name='protocol_delete'),
@@ -22,7 +24,7 @@ urlpatterns = [
          name='protocol_device_sample_update'),
     path('device/delete/<int:pk>/', views.ProtocolDeviceDelete.as_view(), name='protocol_device_delete'),
 
-    # protocol scans
+    # protocol files
     path('scan/create/<int:p_id>/', views.ProtocolScanCreate.as_view(), name='protocol_scan_create'),
     path('scan/update/<int:pk>/', views.ProtocolScanUpdate.as_view(), name='protocol_scan_update'),
     path('scan/delete/<int:pk>/', views.ProtocolScanDelete.as_view(), name='protocol_scan_delete'),

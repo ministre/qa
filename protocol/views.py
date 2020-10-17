@@ -2,8 +2,9 @@ from django.shortcuts import render
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
-from .models import Branch, Protocol, ProtocolDevice, ProtocolScan
+from .models import Branch, Protocol, ProtocolDevice, ProtocolScan, ProtocolTestResult
 from device.models import Firmware, DeviceSample
+from testplan.models import Category, Test
 from .forms import BranchForm, ProtocolForm, ProtocolDeviceForm, ProtocolScanForm
 from django.urls import reverse
 from django.utils import timezone
@@ -136,9 +137,11 @@ class ProtocolDelete(DeleteView):
 def protocol_details(request, pk, tab_id):
     protocol = get_object_or_404(Protocol, id=pk)
     protocol_devices = ProtocolDevice.objects.filter(protocol=protocol).order_by('id')
+    protocol_test_results = get_protocol_test_results(protocol)
     protocol_scans = ProtocolScan.objects.filter(protocol=protocol).order_by('id')
     return render(request, 'protocol/protocol_details.html', {'protocol': protocol,
                                                               'protocol_devices': protocol_devices,
+                                                              'protocol_test_results': protocol_test_results,
                                                               'protocol_scans': protocol_scans,
                                                               'tab_id': tab_id})
 
@@ -313,3 +316,19 @@ class ProtocolScanDelete(DeleteView):
     def get_success_url(self):
         Item.update_timestamp(foo=self.object.protocol, user=self.request.user)
         return reverse('protocol_details', kwargs={'pk': self.object.protocol.id, 'tab_id': 3})
+
+
+def get_protocol_test_results(protocol: Protocol):
+    results = []
+    categories = Category.objects.filter(testplan=protocol.testplan).order_by('priority')
+    for category in categories:
+        tests = Test.objects.filter(category=category).order_by('priority')
+        for test in tests:
+            result_status = 0
+            test_results = ProtocolTestResult.objects.filter(protocol=protocol, test=test)
+            for test_result in test_results:
+                result_status = test_result.result
+            result = {'category_id': category.id, 'category_name': category.name, 'test_id': test.id,
+                      'test_name': test.name, 'test_result_status': result_status}
+            results.append(result)
+    return results

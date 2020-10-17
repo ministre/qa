@@ -195,6 +195,23 @@
 
     <div class="tabs-panel{% if tab_id == 3 %} is-active{% endif %}" id="tests">
         {% if protocol.testplan %}
+
+        <p>===</p>
+
+        <table>
+            {% for test_result in protocol_test_results %}
+            <tr>
+                <td>{{ test_result.category_id }}</td>
+                <td>{{ test_result.category_name }}</td>
+                <td>{{ test_result.test_id }}</td>
+                <td>{{ test_result.test_name }}</td>
+                <td>{{ test_result.test_result_status }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <p>===</p>
+
         {% for category in protocol.testplan.testplan_category.all|dictsort:"priority" %}
         <table>
             <thead>
