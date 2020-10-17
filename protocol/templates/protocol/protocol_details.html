@@ -195,7 +195,32 @@
 
     <div class="tabs-panel{% if tab_id == 3 %} is-active{% endif %}" id="tests">
         {% if protocol.testplan %}
-        {{ testplan.categories }}
+        {% for category in protocol.testplan.testplan_category.all|dictsort:"priority" %}
+        <table>
+            <thead>
+            <tr>
+                <td width="60px">{{ forloop.counter }}.</td>
+                <td width="130px"></td>
+                <td>{{ category }}</td>
+            </tr>
+            </thead>
+
+            {% for test in category.category_test.all|dictsort:"priority" %}
+            <tbody>
+            <tr>
+                <td>{{ forloop.parentloop.counter}}.{{ forloop.counter }}.</td>
+                <td align="center">Result</td>
+                <td>{{ test.name }}</td>
+            </tr>
+            </tbody>
+            {% endfor %}
+        </table>
+
+        {% endfor %}
+        {% else %}
+        <p>{% trans "Testplan not set" %}</p>
+        <p><a href="{% url 'protocol_update' pk=protocol.id %}" class="button small">{% trans "Update" %}</a></p>
+
         {% endif %}
     </div>
 
