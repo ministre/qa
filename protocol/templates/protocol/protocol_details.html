@@ -45,16 +45,16 @@
                 <td>{% trans "Status" %}:</td>
                 <td>
                     {% if protocol.status == 0 %}
-                    {% trans "In progress" %}
+                    <span class="label primary" style="color: white">{% trans "In progress" %}</span>
                     {% endif %}
                     {% if protocol.status == 1 %}
-                    {% trans "Not recommended" %}
+                    <span class="label alert">{% trans "Not recommended" %}</span>
                     {% endif %}
                     {% if protocol.status == 2 %}
-                    {% trans "Partially recommended" %}
+                    <span class="label warning">{% trans "Partially recommended" %}</span>
                     {% endif %}
                     {% if protocol.status == 3 %}
-                    {% trans "Recommended" %}
+                    <span class="label success">{% trans "Recommended" %}</span>
                     {% endif %}
                 </td>
             </tr>
