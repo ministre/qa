@@ -55,7 +55,7 @@ class Chapter(models.Model):
 
 
 class Category(models.Model):
-    testplan = models.ForeignKey(Testplan, on_delete=models.CASCADE)
+    testplan = models.ForeignKey(Testplan, related_name='testplan_category', on_delete=models.CASCADE)
     name = models.CharField(max_length=1000)
     priority = models.IntegerField(default=0)
     created_by = models.ForeignKey(User, related_name='t_c_c', on_delete=models.CASCADE, blank=True, null=True)

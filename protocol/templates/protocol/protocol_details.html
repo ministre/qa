@@ -16,7 +16,10 @@
         </a>
     </li>
     <li class="tabs-title{% if tab_id == 3 %} is-active{% endif %}">
-        <a data-tabs-target="scans" href="#scans">{% trans "Scans" %}
+        <a data-tabs-target="tests" href="#tests">{% trans "Tests" %}</a>
+    </li>
+    <li class="tabs-title{% if tab_id == 4 %} is-active{% endif %}">
+        <a data-tabs-target="files" href="#files">{% trans "Files" %}
             {% if protocol_scans.count > 0 %}({{ protocol_scans.count }}){% endif %}
         </a>
     </li>
@@ -61,8 +64,8 @@
             <tr>
                 <td>{% trans "Date" %}:</td>
                 <td>
-                    {{ protocol.started }}
-                    {% if protocol.completed %} - {{ protocol.completed }}{% endif %}
+                    {{ protocol.started|date:"d.m.Y" }}
+                    {% if protocol.completed %} - {{ protocol.completed|date:"d.m.Y" }}{% endif %}
                 </td>
             </tr>
             <tr>
@@ -190,7 +193,13 @@
         {% endif %}
     </div>
 
-    <div class="tabs-panel{% if tab_id == 3 %} is-active{% endif %}" id="scans">
+    <div class="tabs-panel{% if tab_id == 3 %} is-active{% endif %}" id="tests">
+        {% if protocol.testplan %}
+        {{ testplan.categories }}
+        {% endif %}
+    </div>
+
+    <div class="tabs-panel{% if tab_id == 4 %} is-active{% endif %}" id="files">
         <a href="{% url 'protocol_scan_create' p_id=protocol.id %}" class="button small">{% trans "Add" %}</a>
 
         {% if protocol_scans %}

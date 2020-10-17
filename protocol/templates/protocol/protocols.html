@@ -53,8 +53,8 @@
             {% if protocol.testplan %}{{ protocol.testplan }}{% endif %}
         </td>
         <td width="15%">
-            {{ protocol.started }}
-            {% if protocol.completed %} - {{ protocol.completed }}{% endif %}
+            {{ protocol.started|date:"d.m.Y" }}
+            {% if protocol.completed %} - {{ protocol.completed|date:"d.m.Y" }}{% endif %}
         </td>
     </tr>
     {% endfor %}
