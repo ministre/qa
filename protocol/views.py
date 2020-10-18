@@ -330,12 +330,14 @@ def get_protocol_test_results(protocol: Protocol):
         for test in tests:
             l2_num += 1
             status = 0
+            result_id = 0
             test_results = ProtocolTestResult.objects.filter(protocol=protocol, test=test)
             for test_result in test_results:
                 status = test_result.result
+                result_id = test_result.id
             result = {'l1_num': l1_num, 'l2_num': l2_num,
                       'category_id': category.id, 'category_name': category.name,
-                      'test_id': test.id, 'test_name': test.name, 'status': status}
+                      'test_id': test.id, 'test_name': test.name, 'status': status, 'result_id': result_id}
             results.append(result)
     return results
 
@@ -344,7 +346,14 @@ def get_protocol_test_results(protocol: Protocol):
 def protocol_test_result_create(request, protocol_id: int, test_id: int):
     protocol = get_object_or_404(Protocol, id=protocol_id)
     test = get_object_or_404(Test, id=test_id)
-    protocol_test_result = ProtocolTestResult.objects.update_or_create(protocol=protocol, test=test,
-                                                                       defaults={'created_by': request.user,
-                                                                                 'updated_by': request.user})
-    return HttpResponseRedirect(reverse('protocol_details', kwargs={'pk': protocol.id, 'tab_id': 3}))
+    protocol_test_result, create = ProtocolTestResult.objects.update_or_create(protocol=protocol, test=test,
+                                                                               defaults={'created_by': request.user,
+                                                                                         'updated_by': request.user})
+    return HttpResponseRedirect(reverse('protocol_test_result_details', kwargs={'pk': protocol_test_result.id,
+                                                                                'tab_id': 2}))
+
+
+@login_required
+def protocol_test_result_details(request, pk, tab_id):
+    test_result = get_object_or_404(ProtocolTestResult, id=pk)
+    return render(request, 'protocol/test_result_details.html', {'test_result': test_result, 'tab_id': tab_id})

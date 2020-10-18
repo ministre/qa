@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<p><a href="{% url 'protocols' %}">{% trans "Protocols" %}</a> &raquo; #{{ protocol.id }}</p>
+<p><a href="{% url 'protocols' %}">{% trans "Protocols" %}</a> &raquo; {{ protocol.id }}</p>
 
 <ul class="tabs" data-tabs id="protocol-tabs">
     <li class="tabs-title{% if tab_id == 1 %} is-active{% endif %}">
@@ -208,20 +208,24 @@
         </thead>
         <tbody>
             {% for test_result in protocol_test_results %}
-            <tr data-href="{% url 'protocol_test_result_create' protocol_id=protocol.id test_id=test_result.test_id %}">
+            <tr {% if test_result.status == 0 %}
+                data-href="{% url 'protocol_test_result_create' protocol_id=protocol.id test_id=test_result.test_id %}"
+                {% else %}
+                data-href="{% url 'protocol_test_result_details' pk=test_result.result_id tab_id=2 %}"
+                {% endif %}>
                 <td>{{ forloop.counter }}</td>
                 <td align="right" width="60px">
                     {% if test_result.status == 1 %}
                     F
                     {% endif %}
                     {% if test_result.status == 2 %}
-                    <span class="label alert">{% trans "Fail" %}</span>
+                    <span class="label alert">{% trans "Failed" %}</span>
                     {% endif %}
                     {% if test_result.status == 3 %}
                     <span class="label warning">{% trans "Issue" %}</span>
                     {% endif %}
                     {% if test_result.status == 4 %}
-                    <span class="label success">{% trans "Ok" %}</span>
+                    <span class="label success">{% trans "Success" %}</span>
                     {% endif %}
                 </td>
                 <td><i>{{ test_result.l1_num }}.{{ test_result.l2_num }}.&#160; {{ test_result.test_name }}</i></td>

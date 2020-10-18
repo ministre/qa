@@ -1,0 +1,21 @@
+{% extends "device/wrapper.html" %}
+
+{% load i18n static %}
+
+{% block content %}
+
+<p><a href="{% url 'protocols' %}">{% trans "Protocols" %}</a> &raquo;
+    <a href="{% url 'protocol_details' pk=test_result.protocol.id tab_id=3 %}">{{ test_result.protocol.id }}</a> &raquo;
+    {{ test_result.test.name }}
+</p>
+
+<ul class="tabs" data-tabs id="test_result-tabs">
+    <li class="tabs-title{% if tab_id == 1 %} is-active{% endif %}">
+        <a href="#general" aria-selected="true">{% trans "General" %}</a>
+    </li>
+    <li class="tabs-title{% if tab_id == 2 %} is-active{% endif %}">
+        <a data-tabs-target="result" href="#devices">{% trans "Result" %}</a>
+    </li>
+</ul>
+
+{% endblock %}

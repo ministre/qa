@@ -32,5 +32,6 @@ urlpatterns = [
     # test results
     path('test/result/create/<int:protocol_id>/<int:test_id>/', views.protocol_test_result_create,
          name='protocol_test_result_create'),
-
+    path('test/result/details/<int:pk>/<int:tab_id>/', views.protocol_test_result_details,
+         name='protocol_test_result_details'),
 ]
