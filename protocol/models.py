@@ -51,7 +51,7 @@ class ProtocolScan(models.Model):
 class ProtocolTestResult(models.Model):
     protocol = models.ForeignKey(Protocol, on_delete=models.CASCADE)
     test = models.ForeignKey(Test, on_delete=models.CASCADE)
-    result = models.IntegerField(default=0)
+    result = models.IntegerField(default=1)
     created_by = models.ForeignKey(User, related_name='protocol_test_result_c', on_delete=models.CASCADE)
     created_at = models.DateTimeField(default=timezone.now)
     updated_by = models.ForeignKey(User, related_name='protocol_test_result_u', on_delete=models.CASCADE)

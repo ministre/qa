@@ -28,4 +28,9 @@ urlpatterns = [
     path('scan/create/<int:p_id>/', views.ProtocolScanCreate.as_view(), name='protocol_scan_create'),
     path('scan/update/<int:pk>/', views.ProtocolScanUpdate.as_view(), name='protocol_scan_update'),
     path('scan/delete/<int:pk>/', views.ProtocolScanDelete.as_view(), name='protocol_scan_delete'),
+
+    # test results
+    path('test/result/create/<int:protocol_id>/<int:test_id>/', views.protocol_test_result_create,
+         name='protocol_test_result_create'),
+
 ]

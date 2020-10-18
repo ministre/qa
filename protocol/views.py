@@ -11,6 +11,7 @@ from django.utils import timezone
 from django import forms
 from django.shortcuts import get_object_or_404
 from device.views import Item
+from django.http import HttpResponseRedirect
 
 
 @method_decorator(login_required, name='dispatch')
@@ -337,3 +338,13 @@ def get_protocol_test_results(protocol: Protocol):
                       'test_id': test.id, 'test_name': test.name, 'status': status}
             results.append(result)
     return results
+
+
+@login_required
+def protocol_test_result_create(request, protocol_id: int, test_id: int):
+    protocol = get_object_or_404(Protocol, id=protocol_id)
+    test = get_object_or_404(Test, id=test_id)
+    protocol_test_result = ProtocolTestResult.objects.update_or_create(protocol=protocol, test=test,
+                                                                       defaults={'created_by': request.user,
+                                                                                 'updated_by': request.user})
+    return HttpResponseRedirect(reverse('protocol_details', kwargs={'pk': protocol.id, 'tab_id': 3}))
