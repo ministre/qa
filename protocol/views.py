@@ -320,15 +320,20 @@ class ProtocolScanDelete(DeleteView):
 
 def get_protocol_test_results(protocol: Protocol):
     results = []
+    l1_num = 0
     categories = Category.objects.filter(testplan=protocol.testplan).order_by('priority')
     for category in categories:
+        l1_num += 1
+        l2_num = 0
         tests = Test.objects.filter(category=category).order_by('priority')
         for test in tests:
-            result_status = 0
+            l2_num += 1
+            status = 0
             test_results = ProtocolTestResult.objects.filter(protocol=protocol, test=test)
             for test_result in test_results:
-                result_status = test_result.result
-            result = {'category_id': category.id, 'category_name': category.name, 'test_id': test.id,
-                      'test_name': test.name, 'test_result_status': result_status}
+                status = test_result.result
+            result = {'l1_num': l1_num, 'l2_num': l2_num,
+                      'category_id': category.id, 'category_name': category.name,
+                      'test_id': test.id, 'test_name': test.name, 'status': status}
             results.append(result)
     return results
