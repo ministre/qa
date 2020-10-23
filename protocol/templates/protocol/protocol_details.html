@@ -215,9 +215,6 @@
                 {% endif %}>
                 <td>{{ forloop.counter }}</td>
                 <td align="right" width="60px">
-                    {% if test_result.status == 1 %}
-                    F
-                    {% endif %}
                     {% if test_result.status == 2 %}
                     <span class="label alert">{% trans "Failed" %}</span>
                     {% endif %}

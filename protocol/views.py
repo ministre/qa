@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Branch, Protocol, ProtocolDevice, ProtocolScan, ProtocolTestResult
 from device.models import Firmware, DeviceSample
 from testplan.models import Category, Test
-from .forms import BranchForm, ProtocolForm, ProtocolDeviceForm, ProtocolScanForm
+from .forms import BranchForm, ProtocolForm, ProtocolDeviceForm, ProtocolScanForm, ProtocolTestResultForm
 from django.urls import reverse
 from django.utils import timezone
 from django import forms
@@ -356,4 +356,14 @@ def protocol_test_result_create(request, protocol_id: int, test_id: int):
 @login_required
 def protocol_test_result_details(request, pk, tab_id):
     test_result = get_object_or_404(ProtocolTestResult, id=pk)
-    return render(request, 'protocol/test_result_details.html', {'test_result': test_result, 'tab_id': tab_id})
+    if request.method == "POST":
+        form = ProtocolTestResultForm(request.POST, instance=test_result)
+        if form.is_valid():
+            test = form.save(commit=False)
+            test.save()
+        return HttpResponseRedirect(reverse('protocol_details', kwargs={'pk': test_result.protocol.id,
+                                                                        'tab_id': 3}))
+    else:
+        form = ProtocolTestResultForm(instance=test_result)
+        return render(request, 'protocol/test_result_details.html', {'test_result': test_result, 'tab_id': tab_id,
+                                                                     'form': form})
