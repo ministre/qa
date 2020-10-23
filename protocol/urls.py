@@ -38,7 +38,15 @@ urlpatterns = [
          name='protocol_test_result_delete'),
 
     # test result issues
-    path('issue/create/<int:tr>/', views.TestResultIssueCreate.as_view(), name='test_result_issue_create'),
-    path('issue/update/<int:pk>/', views.TestResultIssueUpdate.as_view(), name='test_result_issue_update'),
-    path('issue/delete/<int:pk>/', views.TestResultIssueDelete.as_view(), name='test_result_issue_delete'),
+    path('test/result/issue/create/<int:tr>/', views.TestResultIssueCreate.as_view(), name='test_result_issue_create'),
+    path('test/result/issue/update/<int:pk>/', views.TestResultIssueUpdate.as_view(), name='test_result_issue_update'),
+    path('test/result/issue/delete/<int:pk>/', views.TestResultIssueDelete.as_view(), name='test_result_issue_delete'),
+
+    # test result comments
+    path('test/result/comment/create/<int:tr>/', views.TestResultCommentCreate.as_view(),
+         name='test_result_comment_create'),
+    path('test/result/comment/update/<int:pk>/', views.TestResultCommentUpdate.as_view(),
+         name='test_result_comment_update'),
+    path('test/result/comment/delete/<int:pk>/', views.TestResultCommentDelete.as_view(),
+         name='test_result_comment_delete'),
 ]
