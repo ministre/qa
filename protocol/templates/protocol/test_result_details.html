@@ -20,8 +20,21 @@
 
 <div class="tabs-content" data-tabs-content="test_result-tabs">
     <div class="tabs-panel{% if tab_id == 1 %} is-active{% endif %}" id="general">
-        <a href="{# url 'device_update' pk=device.id #}" class="button small">{% trans "Update" %}</a>
-        <a href="{# url 'device_delete' pk=device.id #}" class="button alert small">{% trans "Delete" %}</a>
+        <a href="{% url 'protocol_test_result_delete' pk=test_result.id %}" class="button alert small">{% trans "Delete" %}</a>
+
+        <table class="hover unstriped">
+            <tbody>
+            <tr>
+                <td>{% trans "Created" %}:</td>
+                <td>{{ test_result.created_at }} ({{ test_result.created_by }})</td>
+            </tr>
+            <tr>
+                <td>{% trans "Last Update" %}:</td>
+                <td>{{ test_result.updated_at }} ({{ test_result.updated_by }})</td>
+            </tr>
+            </tbody>
+        </table>
+
     </div>
     <div class="tabs-panel{% if tab_id == 2 %} is-active{% endif %}" id="result">
         <form method="post" action="">
