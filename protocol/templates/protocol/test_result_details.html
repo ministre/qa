@@ -14,7 +14,19 @@
         <a href="#general" aria-selected="true">{% trans "General" %}</a>
     </li>
     <li class="tabs-title{% if tab_id == 2 %} is-active{% endif %}">
-        <a data-tabs-target="result" href="#devices">{% trans "Result" %}</a>
+        <a data-tabs-target="details" href="#details">{% trans "Details" %}</a>
+    </li>
+    <li class="tabs-title{% if tab_id == 3 %} is-active{% endif %}">
+        <a data-tabs-target="configs" href="#configs">{% trans "Configurations" %}</a>
+    </li>
+    <li class="tabs-title{% if tab_id == 4 %} is-active{% endif %}">
+        <a data-tabs-target="images" href="#images">{% trans "Images" %}</a>
+    </li>
+    <li class="tabs-title{% if tab_id == 5 %} is-active{% endif %}">
+        <a data-tabs-target="files" href="#files">{% trans "Files" %}</a>
+    </li>
+    <li class="tabs-title{% if tab_id == 6 %} is-active{% endif %}">
+        <a data-tabs-target="result" href="#result">{% trans "Result" %}</a>
     </li>
 </ul>
 
@@ -36,12 +48,70 @@
         </table>
 
     </div>
-    <div class="tabs-panel{% if tab_id == 2 %} is-active{% endif %}" id="result">
-        <form method="post" action="">
-            {% csrf_token %}
-            {{ form }}
-            <input type="submit" value='{% trans "Update" %}' class="button small success" />
-        </form>
+
+    <div class="tabs-panel{% if tab_id == 2 %} is-active{% endif %}" id="details">
+        <h4>{% trans "Purpose" %}</h4>
+        <p>{{ test_result.test.purpose }}</p>
+        <h4>{% trans "Procedure" %}</h4>
+        <p>{{ test_result.test.procedure }}</p>
+        <h4>{% trans "Expected result" %}</h4>
+        <p>{{ test_result.test.expected }}</p>
+    </div>
+
+    <div class="tabs-panel{% if tab_id == 3 %} is-active{% endif %}" id="configs">
+        configs
+    </div>
+
+    <div class="tabs-panel{% if tab_id == 4 %} is-active{% endif %}" id="images">
+        images
+    </div>
+
+    <div class="tabs-panel{% if tab_id == 5 %} is-active{% endif %}" id="files">
+        files
+    </div>
+
+    <div class="tabs-panel{% if tab_id == 6 %} is-active{% endif %}" id="result">
+
+
+
+
+
+        <div class="grid-x grid-margin-x">
+            <div class="cell">
+                <div class="card">
+                    <div class="card-section">
+                        <h4>{% trans "Test result" %}</h4>
+                        <form method="post" action="">
+                            {% csrf_token %}
+                            {{ form }}
+                            <input type="submit" value='{% trans "Update" %}' class="button small success" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-x grid-margin-x">
+            <div class="cell">
+                <div class="card">
+                    <div class="card-section">
+                        <h4>{% trans "Issues" %}</h4>
+                        <p><a href="{# url 'test_result_issue_create' tr=test_result.id #}" class="button small">{% trans "Add" %}</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-x grid-margin-x">
+            <div class="cell">
+                <div class="card">
+                    <div class="card-section">
+                        <h4>{% trans "Comments" %}</h4>
+                        <p><a href="{# url 'test_result_comment_create' tr=test_result.id #}" class="button small">{% trans "Add" %}</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     </div>
 </div>

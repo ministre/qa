@@ -211,7 +211,7 @@
             <tr {% if test_result.status == 0 %}
                 data-href="{% url 'protocol_test_result_create' protocol_id=protocol.id test_id=test_result.test_id %}"
                 {% else %}
-                data-href="{% url 'protocol_test_result_details' pk=test_result.result_id tab_id=2 %}"
+                data-href="{% url 'protocol_test_result_details' pk=test_result.result_id tab_id=6 %}"
                 {% endif %}>
                 <td>{{ forloop.counter }}</td>
                 <td align="right" width="60px">

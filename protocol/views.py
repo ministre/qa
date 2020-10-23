@@ -350,7 +350,7 @@ def protocol_test_result_create(request, protocol_id: int, test_id: int):
                                                                                defaults={'created_by': request.user,
                                                                                          'updated_by': request.user})
     return HttpResponseRedirect(reverse('protocol_test_result_details', kwargs={'pk': protocol_test_result.id,
-                                                                                'tab_id': 2}))
+                                                                                'tab_id': 6}))
 
 
 @method_decorator(login_required, name='dispatch')
