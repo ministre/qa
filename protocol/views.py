@@ -375,6 +375,8 @@ def protocol_test_result_details(request, pk, tab_id):
         form = ProtocolTestResultForm(request.POST, instance=test_result)
         if form.is_valid():
             test = form.save(commit=False)
+            test.updated_at = timezone.now()
+            test.updated_by = request.user
             test.save()
         return HttpResponseRedirect(reverse('protocol_details', kwargs={'pk': test_result.protocol.id,
                                                                         'tab_id': 3}))
