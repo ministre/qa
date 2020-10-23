@@ -67,6 +67,9 @@ class TestResultIssue(models.Model):
     updated_by = models.ForeignKey(User, related_name='tr_issue_u', on_delete=models.CASCADE)
     updated_at = models.DateTimeField(default=timezone.now)
 
+    def __str__(self):
+        return self.text
+
 
 class TestResultComment(models.Model):
     result = models.ForeignKey(ProtocolTestResult, related_name='result_comment', on_delete=models.CASCADE)
@@ -75,3 +78,6 @@ class TestResultComment(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     updated_by = models.ForeignKey(User, related_name='tr_comment_u', on_delete=models.CASCADE)
     updated_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.text

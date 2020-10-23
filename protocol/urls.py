@@ -39,4 +39,6 @@ urlpatterns = [
 
     # test result issues
     path('issue/create/<int:tr>/', views.TestResultIssueCreate.as_view(), name='test_result_issue_create'),
+    path('issue/update/<int:pk>/', views.TestResultIssueUpdate.as_view(), name='test_result_issue_update'),
+    path('issue/delete/<int:pk>/', views.TestResultIssueDelete.as_view(), name='test_result_issue_delete'),
 ]
