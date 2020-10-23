@@ -56,3 +56,22 @@ class ProtocolTestResult(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     updated_by = models.ForeignKey(User, related_name='protocol_test_result_u', on_delete=models.CASCADE)
     updated_at = models.DateTimeField(default=timezone.now)
+
+
+class TestResultIssue(models.Model):
+    result = models.ForeignKey(ProtocolTestResult, on_delete=models.CASCADE)
+    text = models.TextField(max_length=100000)
+    ticket = models.CharField(max_length=1000, blank=True, null=True)
+    created_by = models.ForeignKey(User, related_name='tr_issue_c', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_by = models.ForeignKey(User, related_name='tr_issue_u', on_delete=models.CASCADE)
+    updated_at = models.DateTimeField(default=timezone.now)
+
+
+class TestResultComment(models.Model):
+    result = models.ForeignKey(ProtocolTestResult, on_delete=models.CASCADE)
+    text = models.TextField(max_length=100000)
+    created_by = models.ForeignKey(User, related_name='tr_comment_c', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_by = models.ForeignKey(User, related_name='tr_comment_u', on_delete=models.CASCADE)
+    updated_at = models.DateTimeField(default=timezone.now)
