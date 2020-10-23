@@ -29,9 +29,10 @@ class TestplanCategoryForm(ModelForm):
         model = Category
         labels = {
             'name': _('Name'),
+            'priority': _('Priority'),
         }
         fields = '__all__'
-        widgets = {'testplan': HiddenInput(), 'priority': HiddenInput(),
+        widgets = {'testplan': HiddenInput(),
                    'created_by': HiddenInput(), 'created_at': HiddenInput(),
                    'updated_by': HiddenInput(), 'updated_at': HiddenInput()}
 

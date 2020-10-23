@@ -11,7 +11,7 @@ from docx_builder.forms import DocxTestplanForm
 from redmine.forms import RedmineChapterForm, RedmineTestForm, RedmineExportTestplanForm, RedmineImportTestplanForm
 from django.http import HttpResponseRedirect
 import textile
-from datetime import datetime
+from django.utils import timezone
 from qa import settings
 from django.utils.translation import gettext_lazy as _
 from django.db.models import Max, Min
@@ -64,7 +64,7 @@ class TestplanUpdate(UpdateView):
     template_name = 'testplan/update.html'
 
     def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+        return {'updated_by': self.request.user, 'updated_at': timezone.now}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -114,9 +114,9 @@ def testplan_clone(request, pk):
                                     version=request.POST['version'],
                                     device_type=get_object_or_404(DeviceType, id=request.POST['device_type']),
                                     created_by=request.user,
-                                    created_at=datetime.now(),
+                                    created_at=timezone.now(),
                                     updated_by=request.user,
-                                    updated_at=datetime.now(),
+                                    updated_at=timezone.now(),
                                     redmine_parent=request.POST['redmine_parent'],
                                     redmine_project=request.POST['redmine_project']
                                     )
@@ -132,8 +132,8 @@ def testplan_clone(request, pk):
                 for src_test in src_tests:
                     new_test = Test(category=new_category, name=src_test.name, purpose=src_test.purpose,
                                     procedure=src_test.procedure, expected=src_test.expected,
-                                    created_by=request.user, created_at=datetime.now(),
-                                    updated_by=request.user, updated_at=datetime.now(),
+                                    created_by=request.user, created_at=timezone.now(),
+                                    updated_by=request.user, updated_at=timezone.now(),
                                     redmine_wiki=src_test.redmine_wiki)
                     new_test.save()
 
@@ -181,9 +181,9 @@ def testplan_clone(request, pk):
                                      'version': testplan.version,
                                      'device_type': testplan.device_type.id,
                                      'created_by': request.user,
-                                     'created_at': datetime.now(),
+                                     'created_at': timezone.now(),
                                      'updated_by': request.user,
-                                     'updated_at': datetime.now(),
+                                     'updated_at': timezone.now(),
                                      'redmine_parent': testplan.redmine_parent,
                                      'redmine_project': testplan.redmine_project})
         return render(request, 'testplan/clone.html', {'form': form, 'tp_id': testplan.id})
@@ -217,7 +217,7 @@ class TestplanCategoryUpdate(UpdateView):
     template_name = 'testplan/update.html'
 
     def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+        return {'updated_by': self.request.user, 'updated_at': timezone.now}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -320,7 +320,7 @@ class TestUpdate(UpdateView):
     template_name = 'testplan/update.html'
 
     def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+        return {'updated_by': self.request.user, 'updated_at': timezone.now}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -487,7 +487,7 @@ class ChapterUpdate(UpdateView):
         return context
 
     def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': datetime.now}
+        return {'updated_by': self.request.user, 'updated_at': timezone.now()}
 
     def get_success_url(self):
         Item.update_timestamp(foo=self.self.object.testplan, user=self.request.user)

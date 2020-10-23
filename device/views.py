@@ -1060,7 +1060,7 @@ class FirmwareCreate(CreateView):
         return context
 
     def get_success_url(self):
-        return reverse('device_details', kwargs={'pk': self.kwargs.get('d_id'), 'tab_id': 3})
+        return reverse('fw_details', kwargs={'pk': self.object.id, 'tab_id': 1})
 
 
 @method_decorator(login_required, name='dispatch')

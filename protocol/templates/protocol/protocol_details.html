@@ -123,7 +123,7 @@
 
                             <p><a href="{% url 'protocol_device_fw_update' pk=protocol_device.id %}" class="button small">{% trans "Update" %}</a></p>
                             {% else %}
-                            <p><a href="{% url 'protocol_device_fw_update' pk=protocol_device.id %}" class="button small">{% trans "Add" %}</a></p>
+                            <p><a href="{% url 'protocol_device_fw_update' pk=protocol_device.id %}" class="button small">{% trans "Select" %}</a></p>
                             {% endif %}
                         </div>
                     </div>
@@ -183,7 +183,7 @@
 
                             <p><a href="{% url 'protocol_device_sample_update' pk=protocol_device.id %}" class="button small">{% trans "Update" %}</a></p>
                             {% else %}
-                            <p><a href="{% url 'protocol_device_sample_update' pk=protocol_device.id %}" class="button small">{% trans "Add" %}</a></p>
+                            <p><a href="{% url 'protocol_device_sample_update' pk=protocol_device.id %}" class="button small">{% trans "Select" %}</a></p>
                             {% endif %}
                         </div>
                     </div>
