@@ -1,5 +1,6 @@
 from django.forms import ModelForm, HiddenInput
-from .models import Branch, Protocol, ProtocolDevice, ProtocolScan, ProtocolTestResult
+from .models import Branch, Protocol, ProtocolDevice, ProtocolScan, ProtocolTestResult, TestResultIssue, \
+    TestResultComment
 from django.utils.translation import gettext_lazy as _
 from django import forms
 
@@ -86,6 +87,35 @@ class ProtocolTestResultForm(ModelForm):
         widgets = {
             'protocol': HiddenInput(), 'test': HiddenInput(),
             'result': forms.Select(choices=RESULT, attrs={'class': 'form-control'}),
+            'created_by': HiddenInput(), 'created_at': HiddenInput(),
+            'updated_by': HiddenInput(), 'updated_at': HiddenInput()
+        }
+
+
+class TestResultIssueForm(ModelForm):
+    class Meta:
+        model = TestResultIssue
+        labels = {
+            'text': _('Text'),
+            'ticket': _('Ticket'),
+        }
+        fields = '__all__'
+        widgets = {
+            'result': HiddenInput(),
+            'created_by': HiddenInput(), 'created_at': HiddenInput(),
+            'updated_by': HiddenInput(), 'updated_at': HiddenInput()
+        }
+
+
+class TestResultCommentForm(ModelForm):
+    class Meta:
+        model = TestResultComment
+        labels = {
+            'text': _('Text'),
+        }
+        fields = '__all__'
+        widgets = {
+            'result': HiddenInput(),
             'created_by': HiddenInput(), 'created_at': HiddenInput(),
             'updated_by': HiddenInput(), 'updated_at': HiddenInput()
         }

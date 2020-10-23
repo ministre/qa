@@ -96,7 +96,7 @@
                 <div class="card">
                     <div class="card-section">
                         <h4>{% trans "Issues" %}</h4>
-                        <p><a href="{# url 'test_result_issue_create' tr=test_result.id #}" class="button small">{% trans "Add" %}</a></p>
+                        <p><a href="{% url 'test_result_issue_create' tr=test_result.id %}" class="button small">{% trans "Add" %}</a></p>
                     </div>
                 </div>
             </div>

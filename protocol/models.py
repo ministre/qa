@@ -59,7 +59,7 @@ class ProtocolTestResult(models.Model):
 
 
 class TestResultIssue(models.Model):
-    result = models.ForeignKey(ProtocolTestResult, on_delete=models.CASCADE)
+    result = models.ForeignKey(ProtocolTestResult, related_name='result_issue', on_delete=models.CASCADE)
     text = models.TextField(max_length=100000)
     ticket = models.CharField(max_length=1000, blank=True, null=True)
     created_by = models.ForeignKey(User, related_name='tr_issue_c', on_delete=models.CASCADE)
@@ -69,7 +69,7 @@ class TestResultIssue(models.Model):
 
 
 class TestResultComment(models.Model):
-    result = models.ForeignKey(ProtocolTestResult, on_delete=models.CASCADE)
+    result = models.ForeignKey(ProtocolTestResult, related_name='result_comment', on_delete=models.CASCADE)
     text = models.TextField(max_length=100000)
     created_by = models.ForeignKey(User, related_name='tr_comment_c', on_delete=models.CASCADE)
     created_at = models.DateTimeField(default=timezone.now)
