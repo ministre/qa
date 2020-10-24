@@ -99,7 +99,7 @@ class TestResultImage(models.Model):
 class TestResultFile(models.Model):
     result = models.ForeignKey(ProtocolTestResult, related_name='result_file', on_delete=models.CASCADE)
     desc = models.CharField(max_length=1000, blank=True, null=True)
-    file = models.ImageField(upload_to="protocol/test_results/files/")
+    file = models.FileField(upload_to="protocol/test_results/files/")
     created_by = models.ForeignKey(User, related_name='tr_file_c', on_delete=models.CASCADE)
     created_at = models.DateTimeField(default=timezone.now)
     updated_by = models.ForeignKey(User, related_name='tr_file_u', on_delete=models.CASCADE)
