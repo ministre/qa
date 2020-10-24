@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from testplan.models import Testplan, Test
 from device.models import Device, Firmware, DeviceSample
+from django.core.validators import MinValueValidator
 
 
 class Branch(models.Model):
@@ -87,6 +88,8 @@ class TestResultImage(models.Model):
     result = models.ForeignKey(ProtocolTestResult, related_name='result_image', on_delete=models.CASCADE)
     desc = models.CharField(max_length=1000, blank=True, null=True)
     image = models.ImageField(upload_to="protocol/test_results/images/")
+    width = models.IntegerField(validators=[MinValueValidator(0)], blank=True, null=True)
+    height = models.IntegerField(validators=[MinValueValidator(0)], blank=True, null=True)
     created_by = models.ForeignKey(User, related_name='tr_image_c', on_delete=models.CASCADE)
     created_at = models.DateTimeField(default=timezone.now)
     updated_by = models.ForeignKey(User, related_name='tr_image_u', on_delete=models.CASCADE)

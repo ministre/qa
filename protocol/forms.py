@@ -127,6 +127,8 @@ class TestResultImageForm(ModelForm):
         labels = {
             'desc': _('Description'),
             'image': _('Image'),
+            'width': _('Width'),
+            'height': _('Height'),
         }
         fields = '__all__'
         widgets = {
