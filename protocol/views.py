@@ -396,8 +396,7 @@ def protocol_test_result_details(request, pk, tab_id):
             test.updated_at = timezone.now()
             test.updated_by = request.user
             test.save()
-        return HttpResponseRedirect(reverse('protocol_details', kwargs={'pk': test_result.protocol.id,
-                                                                        'tab_id': 3}))
+        return HttpResponseRedirect(reverse('protocol_test_result_details', kwargs={'pk': pk, 'tab_id': 6}))
     else:
         form = ProtocolTestResultForm(instance=test_result)
         return render(request, 'protocol/test_result_details.html', {'test_result': test_result, 'tab_id': tab_id,
