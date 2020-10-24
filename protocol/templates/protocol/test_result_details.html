@@ -20,7 +20,9 @@
         <a data-tabs-target="configs" href="#configs">{% trans "Configurations" %}</a>
     </li>
     <li class="tabs-title{% if tab_id == 4 %} is-active{% endif %}">
-        <a data-tabs-target="images" href="#images">{% trans "Images" %}</a>
+        <a data-tabs-target="images" href="#images">{% trans "Images" %}
+            {% if test_result.result_image.all.count > 0 %}({{ test_result.result_image.all.count }}){% endif %}
+        </a>
     </li>
     <li class="tabs-title{% if tab_id == 5 %} is-active{% endif %}">
         <a data-tabs-target="files" href="#files">{% trans "Files" %}</a>
@@ -63,7 +65,17 @@
     </div>
 
     <div class="tabs-panel{% if tab_id == 4 %} is-active{% endif %}" id="images">
-        <p><a href="{% url 'test_result_image_create' tr=test_result.id %}" class="button small">{% trans "Add" %}</a></p>
+        <p>
+            <a href="{% url 'test_result_image_create' tr=test_result.id %}" class="button small">{% trans "Add" %}</a>
+        </p>
+
+        {% for image in test_result.result_image.all|dictsort:"id" %}
+        <h5>{{ image.desc }}</h5>
+        <p>
+            <img src="{{ image.image.url }}">
+        </p>
+        {% endfor %}
+
     </div>
 
     <div class="tabs-panel{% if tab_id == 5 %} is-active{% endif %}" id="files">
