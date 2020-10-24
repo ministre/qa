@@ -53,4 +53,8 @@ urlpatterns = [
     # test result images
     path('test/result/image/create/<int:tr>/', views.TestResultImageCreate.as_view(),
          name='test_result_image_create'),
+    path('test/result/image/update/<int:pk>/', views.TestResultImageUpdate.as_view(),
+         name='test_result_image_update'),
+    path('test/result/image/delete/<int:pk>/', views.TestResultImageDelete.as_view(),
+         name='test_result_image_delete'),
 ]
