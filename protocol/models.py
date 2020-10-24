@@ -4,6 +4,7 @@ from django.utils import timezone
 from testplan.models import Testplan, Test
 from device.models import Device, Firmware, DeviceSample
 from django.core.validators import MinValueValidator
+import os
 
 
 class Branch(models.Model):
@@ -104,3 +105,6 @@ class TestResultFile(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     updated_by = models.ForeignKey(User, related_name='tr_file_u', on_delete=models.CASCADE)
     updated_at = models.DateTimeField(default=timezone.now)
+
+    def filename(self):
+        return os.path.basename(self.file.name)

@@ -243,6 +243,10 @@
                     <br><i class="step fi-photo" style="color: #7700ff"></i>
                     <span style="color: #7700ff">({{ test_result.test_images_count}})</span>
                     {% endif %}
+                    {% if test_result.test_files_count %}
+                    <br><i class="step fi-page" style="color: #7700ff"></i>
+                    <span style="color: #7700ff">({{ test_result.test_files_count}})</span>
+                    {% endif %}
                 </td>
                 <td>{{ test_result.category_name }}</td>
                 <td>
