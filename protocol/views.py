@@ -3,11 +3,11 @@ from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from .models import Branch, Protocol, ProtocolDevice, ProtocolScan, ProtocolTestResult, TestResultIssue, \
-    TestResultComment
+    TestResultComment, TestResultImage
 from device.models import Firmware, DeviceSample
 from testplan.models import Category, Test
 from .forms import BranchForm, ProtocolForm, ProtocolDeviceForm, ProtocolScanForm, ProtocolTestResultForm, \
-    TestResultIssueForm, TestResultCommentForm
+    TestResultIssueForm, TestResultCommentForm, TestResultImageForm
 from django.urls import reverse
 from django.utils import timezone
 from django import forms
@@ -506,3 +506,23 @@ class TestResultCommentDelete(DeleteView):
     def get_success_url(self):
         Item.update_timestamp(foo=self.object.result, user=self.request.user)
         return reverse('protocol_test_result_details', kwargs={'pk': self.object.result.id, 'tab_id': 6})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestResultImageCreate(CreateView):
+    model = TestResultImage
+    form_class = TestResultImageForm
+    template_name = 'protocol/create.html'
+
+    def get_initial(self):
+        return {'result': self.kwargs.get('tr'),
+                'created_by': self.request.user, 'updated_by': self.request.user}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('protocol_test_result_details', kwargs={'pk': self.kwargs.get('tr'), 'tab_id': 4})
+        return context
+
+    def get_success_url(self):
+        Item.update_timestamp(foo=self.object.result, user=self.request.user)
+        return reverse('protocol_test_result_details', kwargs={'pk': self.kwargs.get('tr'), 'tab_id': 4})

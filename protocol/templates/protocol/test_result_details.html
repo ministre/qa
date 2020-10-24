@@ -63,7 +63,7 @@
     </div>
 
     <div class="tabs-panel{% if tab_id == 4 %} is-active{% endif %}" id="images">
-        images
+        <p><a href="{% url 'test_result_image_create' tr=test_result.id %}" class="button small">{% trans "Add" %}</a></p>
     </div>
 
     <div class="tabs-panel{% if tab_id == 5 %} is-active{% endif %}" id="files">

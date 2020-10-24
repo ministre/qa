@@ -1,6 +1,6 @@
 from django.forms import ModelForm, HiddenInput
 from .models import Branch, Protocol, ProtocolDevice, ProtocolScan, ProtocolTestResult, TestResultIssue, \
-    TestResultComment
+    TestResultComment, TestResultImage
 from django.utils.translation import gettext_lazy as _
 from django import forms
 
@@ -112,6 +112,21 @@ class TestResultCommentForm(ModelForm):
         model = TestResultComment
         labels = {
             'text': _('Text'),
+        }
+        fields = '__all__'
+        widgets = {
+            'result': HiddenInput(),
+            'created_by': HiddenInput(), 'created_at': HiddenInput(),
+            'updated_by': HiddenInput(), 'updated_at': HiddenInput()
+        }
+
+
+class TestResultImageForm(ModelForm):
+    class Meta:
+        model = TestResultImage
+        labels = {
+            'desc': _('Description'),
+            'image': _('Image'),
         }
         fields = '__all__'
         widgets = {

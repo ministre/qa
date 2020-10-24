@@ -49,4 +49,8 @@ urlpatterns = [
          name='test_result_comment_update'),
     path('test/result/comment/delete/<int:pk>/', views.TestResultCommentDelete.as_view(),
          name='test_result_comment_delete'),
+
+    # test result images
+    path('test/result/image/create/<int:tr>/', views.TestResultImageCreate.as_view(),
+         name='test_result_image_create'),
 ]
