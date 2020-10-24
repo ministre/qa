@@ -28,7 +28,12 @@
         <a data-tabs-target="files" href="#files">{% trans "Files" %}</a>
     </li>
     <li class="tabs-title{% if tab_id == 6 %} is-active{% endif %}">
-        <a data-tabs-target="result" href="#result">{% trans "Result" %}</a>
+        <a data-tabs-target="result" href="#result">{% trans "Result" %}
+            {% if test_result.result == 1 %}(?){% endif %}
+            {% if test_result.result == 2 %}(-){% endif %}
+            {% if test_result.result == 3 %}(&#177;){% endif %}
+            {% if test_result.result == 4 %}(&#8730;){% endif %}
+        </a>
     </li>
 </ul>
 
@@ -86,10 +91,6 @@
     </div>
 
     <div class="tabs-panel{% if tab_id == 6 %} is-active{% endif %}" id="result">
-
-
-
-
 
         <div class="grid-x grid-margin-x">
             <div class="cell">
