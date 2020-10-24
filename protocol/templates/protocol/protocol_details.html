@@ -4,7 +4,14 @@
 
 {% block content %}
 
-<p><a href="{% url 'protocols' %}">{% trans "Protocols" %}</a> &raquo; {{ protocol.id }}</p>
+<p>
+    <a href="{% url 'protocols' %}">{% trans "Protocols" %}</a> &raquo; {{ protocol.id }}
+    {% if protocol_devices.count > 0 %}
+    {% for protocol_device in protocol_devices %}
+    <i class="step fi-star" style="color: red"></i> {{ protocol_device.device.vendor }} {{ protocol_device.device.model }} / {{ protocol_device.device.hw }}
+    {% endfor %}
+    {% endif %}
+</p>
 
 <ul class="tabs" data-tabs id="protocol-tabs">
     <li class="tabs-title{% if tab_id == 1 %} is-active{% endif %}">
