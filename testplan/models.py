@@ -137,9 +137,6 @@ class TestConfig(models.Model):
     test = models.ForeignKey(Test, related_name='test_config', on_delete=models.CASCADE)
     config = models.TextField(null=True, blank=True)
 
-    def __str__(self):
-        return self.name
-
 
 class TestImage(models.Model):
     name = models.CharField(max_length=1000, blank=True, null=True)
@@ -147,9 +144,6 @@ class TestImage(models.Model):
     image = models.ImageField(upload_to="testplan/images/")
     width = models.IntegerField(blank=True, null=True)
     height = models.IntegerField(blank=True, null=True)
-
-    def __str__(self):
-        return self.name
 
 
 class TestFile(models.Model):

@@ -37,6 +37,24 @@ urlpatterns = [
     path('test/result/delete/<int:pk>/', views.ProtocolTestResultDelete.as_view(),
          name='protocol_test_result_delete'),
 
+    # test result configs
+    path('test/result/config/create/<int:tr>/', views.TestResultConfigCreate.as_view(),
+         name='test_result_config_create'),
+    path('test/result/config/update/<int:pk>/', views.TestResultConfigUpdate.as_view(),
+         name='test_result_config_update'),
+    path('test/result/config/delete/<int:pk>/', views.TestResultConfigDelete.as_view(),
+         name='test_result_config_delete'),
+
+    # test result images
+    path('test/result/image/create/<int:tr>/', views.TestResultImageCreate.as_view(), name='test_result_image_create'),
+    path('test/result/image/update/<int:pk>/', views.TestResultImageUpdate.as_view(), name='test_result_image_update'),
+    path('test/result/image/delete/<int:pk>/', views.TestResultImageDelete.as_view(), name='test_result_image_delete'),
+
+    # test result files
+    path('test/result/file/create/<int:tr>/', views.TestResultFileCreate.as_view(), name='test_result_file_create'),
+    path('test/result/file/update/<int:pk>/', views.TestResultFileUpdate.as_view(), name='test_result_file_update'),
+    path('test/result/file/delete/<int:pk>/', views.TestResultFileDelete.as_view(), name='test_result_file_delete'),
+
     # test result issues
     path('test/result/issue/create/<int:tr>/', views.TestResultIssueCreate.as_view(), name='test_result_issue_create'),
     path('test/result/issue/update/<int:pk>/', views.TestResultIssueUpdate.as_view(), name='test_result_issue_update'),
@@ -49,14 +67,4 @@ urlpatterns = [
          name='test_result_comment_update'),
     path('test/result/comment/delete/<int:pk>/', views.TestResultCommentDelete.as_view(),
          name='test_result_comment_delete'),
-
-    # test result images
-    path('test/result/image/create/<int:tr>/', views.TestResultImageCreate.as_view(), name='test_result_image_create'),
-    path('test/result/image/update/<int:pk>/', views.TestResultImageUpdate.as_view(), name='test_result_image_update'),
-    path('test/result/image/delete/<int:pk>/', views.TestResultImageDelete.as_view(), name='test_result_image_delete'),
-
-    # test result files
-    path('test/result/file/create/<int:tr>/', views.TestResultFileCreate.as_view(), name='test_result_file_create'),
-    path('test/result/file/update/<int:pk>/', views.TestResultFileUpdate.as_view(), name='test_result_file_update'),
-    path('test/result/file/delete/<int:pk>/', views.TestResultFileDelete.as_view(), name='test_result_file_delete'),
 ]

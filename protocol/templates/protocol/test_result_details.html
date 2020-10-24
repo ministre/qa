@@ -17,7 +17,9 @@
         <a data-tabs-target="details" href="#details">{% trans "Details" %}</a>
     </li>
     <li class="tabs-title{% if tab_id == 3 %} is-active{% endif %}">
-        <a data-tabs-target="configs" href="#configs">{% trans "Configurations" %}</a>
+        <a data-tabs-target="configs" href="#configs">{% trans "Configurations" %}
+            {% if test_result.result_config.all.count > 0 %}({{ test_result.result_config.all.count }}){% endif %}
+        </a>
     </li>
     <li class="tabs-title{% if tab_id == 4 %} is-active{% endif %}">
         <a data-tabs-target="images" href="#images">{% trans "Images" %}
@@ -68,7 +70,9 @@
     </div>
 
     <div class="tabs-panel{% if tab_id == 3 %} is-active{% endif %}" id="configs">
-        configs
+        <p>
+            <a href="{% url 'test_result_config_create' tr=test_result.id %}" class="button small">{% trans "Add" %}</a>
+        </p>
     </div>
 
     <div class="tabs-panel{% if tab_id == 4 %} is-active{% endif %}" id="images">

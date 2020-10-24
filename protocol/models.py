@@ -60,29 +60,15 @@ class ProtocolTestResult(models.Model):
     updated_at = models.DateTimeField(default=timezone.now)
 
 
-class TestResultIssue(models.Model):
-    result = models.ForeignKey(ProtocolTestResult, related_name='result_issue', on_delete=models.CASCADE)
-    text = models.TextField(max_length=100000)
-    ticket = models.CharField(max_length=1000, blank=True, null=True)
-    created_by = models.ForeignKey(User, related_name='tr_issue_c', on_delete=models.CASCADE)
+class TestResultConfig(models.Model):
+    result = models.ForeignKey(ProtocolTestResult, related_name='result_config', on_delete=models.CASCADE)
+    desc = models.CharField(max_length=1000, blank=True, null=True)
+    lang = models.CharField(max_length=40, blank=True, null=True)
+    config = models.TextField()
+    created_by = models.ForeignKey(User, related_name='tr_config_c', on_delete=models.CASCADE)
     created_at = models.DateTimeField(default=timezone.now)
-    updated_by = models.ForeignKey(User, related_name='tr_issue_u', on_delete=models.CASCADE)
+    updated_by = models.ForeignKey(User, related_name='tr_config_u', on_delete=models.CASCADE)
     updated_at = models.DateTimeField(default=timezone.now)
-
-    def __str__(self):
-        return self.text
-
-
-class TestResultComment(models.Model):
-    result = models.ForeignKey(ProtocolTestResult, related_name='result_comment', on_delete=models.CASCADE)
-    text = models.TextField(max_length=100000)
-    created_by = models.ForeignKey(User, related_name='tr_comment_c', on_delete=models.CASCADE)
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_by = models.ForeignKey(User, related_name='tr_comment_u', on_delete=models.CASCADE)
-    updated_at = models.DateTimeField(default=timezone.now)
-
-    def __str__(self):
-        return self.text
 
 
 class TestResultImage(models.Model):
@@ -108,3 +94,28 @@ class TestResultFile(models.Model):
 
     def filename(self):
         return os.path.basename(self.file.name)
+
+
+class TestResultIssue(models.Model):
+    result = models.ForeignKey(ProtocolTestResult, related_name='result_issue', on_delete=models.CASCADE)
+    text = models.TextField(max_length=100000)
+    ticket = models.CharField(max_length=1000, blank=True, null=True)
+    created_by = models.ForeignKey(User, related_name='tr_issue_c', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_by = models.ForeignKey(User, related_name='tr_issue_u', on_delete=models.CASCADE)
+    updated_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.text
+
+
+class TestResultComment(models.Model):
+    result = models.ForeignKey(ProtocolTestResult, related_name='result_comment', on_delete=models.CASCADE)
+    text = models.TextField(max_length=100000)
+    created_by = models.ForeignKey(User, related_name='tr_comment_c', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_by = models.ForeignKey(User, related_name='tr_comment_u', on_delete=models.CASCADE)
+    updated_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.text

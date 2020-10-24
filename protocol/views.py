@@ -2,12 +2,12 @@ from django.shortcuts import render
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
-from .models import Branch, Protocol, ProtocolDevice, ProtocolScan, ProtocolTestResult, TestResultIssue, \
-    TestResultComment, TestResultImage, TestResultFile
+from .models import Branch, Protocol, ProtocolDevice, ProtocolScan, ProtocolTestResult, TestResultConfig, \
+    TestResultImage, TestResultFile, TestResultIssue, TestResultComment
 from device.models import Firmware, DeviceSample
 from testplan.models import Category, Test
 from .forms import BranchForm, ProtocolForm, ProtocolDeviceForm, ProtocolScanForm, ProtocolTestResultForm, \
-    TestResultIssueForm, TestResultCommentForm, TestResultImageForm, TestResultFileForm
+    TestResultConfigForm, TestResultImageForm, TestResultFileForm, TestResultIssueForm, TestResultCommentForm
 from django.urls import reverse
 from django.utils import timezone
 from django import forms
@@ -406,9 +406,9 @@ def protocol_test_result_details(request, pk, tab_id):
 
 
 @method_decorator(login_required, name='dispatch')
-class TestResultIssueCreate(CreateView):
-    model = TestResultIssue
-    form_class = TestResultIssueForm
+class TestResultConfigCreate(CreateView):
+    model = TestResultConfig
+    form_class = TestResultConfigForm
     template_name = 'protocol/create.html'
 
     def get_initial(self):
@@ -417,18 +417,18 @@ class TestResultIssueCreate(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('protocol_test_result_details', kwargs={'pk': self.kwargs.get('tr'), 'tab_id': 6})
+        context['back_url'] = reverse('protocol_test_result_details', kwargs={'pk': self.kwargs.get('tr'), 'tab_id': 3})
         return context
 
     def get_success_url(self):
         Item.update_timestamp(foo=self.object.result, user=self.request.user)
-        return reverse('protocol_test_result_details', kwargs={'pk': self.kwargs.get('tr'), 'tab_id': 6})
+        return reverse('protocol_test_result_details', kwargs={'pk': self.kwargs.get('tr'), 'tab_id': 3})
 
 
 @method_decorator(login_required, name='dispatch')
-class TestResultIssueUpdate(UpdateView):
-    model = TestResultIssue
-    form_class = TestResultIssueForm
+class TestResultConfigUpdate(UpdateView):
+    model = TestResultConfig
+    form_class = TestResultConfigForm
     template_name = 'protocol/update.html'
 
     def get_initial(self):
@@ -436,81 +436,27 @@ class TestResultIssueUpdate(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('protocol_test_result_details', kwargs={'pk': self.object.result.id, 'tab_id': 6})
+        context['back_url'] = reverse('protocol_test_result_details', kwargs={'pk': self.object.result.id, 'tab_id': 3})
         return context
 
     def get_success_url(self):
         Item.update_timestamp(foo=self.object.result, user=self.request.user)
-        return reverse('protocol_test_result_details', kwargs={'pk': self.object.result.id, 'tab_id': 6})
+        return reverse('protocol_test_result_details', kwargs={'pk': self.object.result.id, 'tab_id': 3})
 
 
 @method_decorator(login_required, name='dispatch')
-class TestResultIssueDelete(DeleteView):
-    model = TestResultIssue
+class TestResultConfigDelete(DeleteView):
+    model = TestResultConfig
     template_name = 'protocol/delete.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('protocol_test_result_details', kwargs={'pk': self.object.result.id, 'tab_id': 6})
+        context['back_url'] = reverse('protocol_test_result_details', kwargs={'pk': self.object.result.id, 'tab_id': 3})
         return context
 
     def get_success_url(self):
         Item.update_timestamp(foo=self.object.result, user=self.request.user)
-        return reverse('protocol_test_result_details', kwargs={'pk': self.object.result.id, 'tab_id': 6})
-
-
-@method_decorator(login_required, name='dispatch')
-class TestResultCommentCreate(CreateView):
-    model = TestResultComment
-    form_class = TestResultCommentForm
-    template_name = 'protocol/create.html'
-
-    def get_initial(self):
-        return {'result': self.kwargs.get('tr'),
-                'created_by': self.request.user, 'updated_by': self.request.user}
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('protocol_test_result_details', kwargs={'pk': self.kwargs.get('tr'), 'tab_id': 6})
-        return context
-
-    def get_success_url(self):
-        Item.update_timestamp(foo=self.object.result, user=self.request.user)
-        return reverse('protocol_test_result_details', kwargs={'pk': self.kwargs.get('tr'), 'tab_id': 6})
-
-
-@method_decorator(login_required, name='dispatch')
-class TestResultCommentUpdate(UpdateView):
-    model = TestResultComment
-    form_class = TestResultCommentForm
-    template_name = 'protocol/update.html'
-
-    def get_initial(self):
-        return {'updated_by': self.request.user, 'updated_at': timezone.now}
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('protocol_test_result_details', kwargs={'pk': self.object.result.id, 'tab_id': 6})
-        return context
-
-    def get_success_url(self):
-        Item.update_timestamp(foo=self.object.result, user=self.request.user)
-        return reverse('protocol_test_result_details', kwargs={'pk': self.object.result.id, 'tab_id': 6})
-
-
-@method_decorator(login_required, name='dispatch')
-class TestResultCommentDelete(DeleteView):
-    model = TestResultComment
-    template_name = 'protocol/delete.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['back_url'] = reverse('protocol_test_result_details', kwargs={'pk': self.object.result.id, 'tab_id': 6})
-        return context
-
-    def get_success_url(self):
-        Item.update_timestamp(foo=self.object.result, user=self.request.user)
-        return reverse('protocol_test_result_details', kwargs={'pk': self.object.result.id, 'tab_id': 6})
+        return reverse('protocol_test_result_details', kwargs={'pk': self.object.result.id, 'tab_id': 3})
 
 
 @method_decorator(login_required, name='dispatch')
@@ -619,3 +565,111 @@ class TestResultFileDelete(DeleteView):
     def get_success_url(self):
         Item.update_timestamp(foo=self.object.result, user=self.request.user)
         return reverse('protocol_test_result_details', kwargs={'pk': self.object.result.id, 'tab_id': 5})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestResultIssueCreate(CreateView):
+    model = TestResultIssue
+    form_class = TestResultIssueForm
+    template_name = 'protocol/create.html'
+
+    def get_initial(self):
+        return {'result': self.kwargs.get('tr'),
+                'created_by': self.request.user, 'updated_by': self.request.user}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('protocol_test_result_details', kwargs={'pk': self.kwargs.get('tr'), 'tab_id': 6})
+        return context
+
+    def get_success_url(self):
+        Item.update_timestamp(foo=self.object.result, user=self.request.user)
+        return reverse('protocol_test_result_details', kwargs={'pk': self.kwargs.get('tr'), 'tab_id': 6})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestResultIssueUpdate(UpdateView):
+    model = TestResultIssue
+    form_class = TestResultIssueForm
+    template_name = 'protocol/update.html'
+
+    def get_initial(self):
+        return {'updated_by': self.request.user, 'updated_at': timezone.now}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('protocol_test_result_details', kwargs={'pk': self.object.result.id, 'tab_id': 6})
+        return context
+
+    def get_success_url(self):
+        Item.update_timestamp(foo=self.object.result, user=self.request.user)
+        return reverse('protocol_test_result_details', kwargs={'pk': self.object.result.id, 'tab_id': 6})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestResultIssueDelete(DeleteView):
+    model = TestResultIssue
+    template_name = 'protocol/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('protocol_test_result_details', kwargs={'pk': self.object.result.id, 'tab_id': 6})
+        return context
+
+    def get_success_url(self):
+        Item.update_timestamp(foo=self.object.result, user=self.request.user)
+        return reverse('protocol_test_result_details', kwargs={'pk': self.object.result.id, 'tab_id': 6})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestResultCommentCreate(CreateView):
+    model = TestResultComment
+    form_class = TestResultCommentForm
+    template_name = 'protocol/create.html'
+
+    def get_initial(self):
+        return {'result': self.kwargs.get('tr'),
+                'created_by': self.request.user, 'updated_by': self.request.user}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('protocol_test_result_details', kwargs={'pk': self.kwargs.get('tr'), 'tab_id': 6})
+        return context
+
+    def get_success_url(self):
+        Item.update_timestamp(foo=self.object.result, user=self.request.user)
+        return reverse('protocol_test_result_details', kwargs={'pk': self.kwargs.get('tr'), 'tab_id': 6})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestResultCommentUpdate(UpdateView):
+    model = TestResultComment
+    form_class = TestResultCommentForm
+    template_name = 'protocol/update.html'
+
+    def get_initial(self):
+        return {'updated_by': self.request.user, 'updated_at': timezone.now}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('protocol_test_result_details', kwargs={'pk': self.object.result.id, 'tab_id': 6})
+        return context
+
+    def get_success_url(self):
+        Item.update_timestamp(foo=self.object.result, user=self.request.user)
+        return reverse('protocol_test_result_details', kwargs={'pk': self.object.result.id, 'tab_id': 6})
+
+
+@method_decorator(login_required, name='dispatch')
+class TestResultCommentDelete(DeleteView):
+    model = TestResultComment
+    template_name = 'protocol/delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['back_url'] = reverse('protocol_test_result_details', kwargs={'pk': self.object.result.id, 'tab_id': 6})
+        return context
+
+    def get_success_url(self):
+        Item.update_timestamp(foo=self.object.result, user=self.request.user)
+        return reverse('protocol_test_result_details', kwargs={'pk': self.object.result.id, 'tab_id': 6})

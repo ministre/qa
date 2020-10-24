@@ -1,6 +1,6 @@
 from django.forms import ModelForm, HiddenInput
 from .models import Branch, Protocol, ProtocolDevice, ProtocolScan, ProtocolTestResult, TestResultIssue, \
-    TestResultComment, TestResultImage, TestResultFile
+    TestResultComment, TestResultConfig, TestResultImage, TestResultFile
 from django.utils.translation import gettext_lazy as _
 from django import forms
 
@@ -92,30 +92,37 @@ class ProtocolTestResultForm(ModelForm):
         }
 
 
-class TestResultIssueForm(ModelForm):
+class TestResultConfigForm(ModelForm):
     class Meta:
-        model = TestResultIssue
+        model = TestResultConfig
         labels = {
-            'text': _('Text'),
-            'ticket': _('Ticket'),
+            'desc': _('Description'),
+            'lang': _('Style'),
+            'config': _('Configuration'),
         }
         fields = '__all__'
+        LANG = (
+            ('json', 'JSON'),
+            ('c', 'C'),
+            ('coffee', 'Coffeescript'),
+            ('csharp', 'C#'),
+            ('css', 'CSS'),
+            ('d', 'D'),
+            ('go', 'Go'),
+            ('haskell', 'Haskell'),
+            ('html', 'HTML'),
+            ('javascript', 'JavaScript'),
+            ('lua', 'Lua'),
+            ('php', 'PHP'),
+            ('python', 'Python'),
+            ('r', 'R'),
+            ('ruby', 'Ruby'),
+            ('scheme', 'Scheme'),
+            ('shell', 'Shell'),
+        )
         widgets = {
             'result': HiddenInput(),
-            'created_by': HiddenInput(), 'created_at': HiddenInput(),
-            'updated_by': HiddenInput(), 'updated_at': HiddenInput()
-        }
-
-
-class TestResultCommentForm(ModelForm):
-    class Meta:
-        model = TestResultComment
-        labels = {
-            'text': _('Text'),
-        }
-        fields = '__all__'
-        widgets = {
-            'result': HiddenInput(),
+            'lang': forms.Select(choices=LANG, attrs={'class': 'form-control'}),
             'created_by': HiddenInput(), 'created_at': HiddenInput(),
             'updated_by': HiddenInput(), 'updated_at': HiddenInput()
         }
@@ -151,3 +158,33 @@ class TestResultFileForm(ModelForm):
             'created_by': HiddenInput(), 'created_at': HiddenInput(),
             'updated_by': HiddenInput(), 'updated_at': HiddenInput()
         }
+
+
+class TestResultIssueForm(ModelForm):
+    class Meta:
+        model = TestResultIssue
+        labels = {
+            'text': _('Text'),
+            'ticket': _('Ticket'),
+        }
+        fields = '__all__'
+        widgets = {
+            'result': HiddenInput(),
+            'created_by': HiddenInput(), 'created_at': HiddenInput(),
+            'updated_by': HiddenInput(), 'updated_at': HiddenInput()
+        }
+
+
+class TestResultCommentForm(ModelForm):
+    class Meta:
+        model = TestResultComment
+        labels = {
+            'text': _('Text'),
+        }
+        fields = '__all__'
+        widgets = {
+            'result': HiddenInput(),
+            'created_by': HiddenInput(), 'created_at': HiddenInput(),
+            'updated_by': HiddenInput(), 'updated_at': HiddenInput()
+        }
+
