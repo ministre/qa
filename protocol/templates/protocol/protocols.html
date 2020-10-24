@@ -19,7 +19,7 @@
     </thead>
     <tbody>
     {% for protocol in protocols %}
-    <tr data-href="{% url 'protocol_details' pk=protocol.id tab_id=1 %}">
+    <tr data-href="{% url 'protocol_details' pk=protocol.id tab_id=3 %}">
         <td>{{ protocol.id }}</td>
         <td>
             {% for protocol_device in protocol.protocol_pd.all|dictsort:"id" %}

@@ -201,9 +201,11 @@
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Result</th>
-                <th>Test</th>
-                <th>Category</th>
+                <th width="70px">{% trans "Results" %}</th>
+                <th>{% trans "Tests" %}</th>
+                <th>{% trans "Category" %}</th>
+                <th>{% trans "Issues" %}</th>
+                <th>{% trans "Comments" %}</th>
             </tr>
         </thead>
         <tbody>
@@ -214,19 +216,39 @@
                 data-href="{% url 'protocol_test_result_details' pk=test_result.result_id tab_id=6 %}"
                 {% endif %}>
                 <td>{{ forloop.counter }}</td>
-                <td align="right" width="60px">
+                <td width="70px">
+                    {% if test_result.status < 2 %}
+                    <span class="label" style="width:65px; text-align: center; background-color: gray; color: white">{% trans "Not tested" %}</span>
+                    {% endif %}
                     {% if test_result.status == 2 %}
-                    <span class="label alert">{% trans "Failed" %}</span>
+                    <span class="label alert" style="width:65px; text-align: center">{% trans "Failed" %}</span>
                     {% endif %}
                     {% if test_result.status == 3 %}
-                    <span class="label warning">{% trans "Issue" %}</span>
+                    <span class="label warning" style="width:65px; text-align: center">{% trans "Warning" %}</span>
                     {% endif %}
                     {% if test_result.status == 4 %}
-                    <span class="label success">{% trans "Success" %}</span>
+                    <span class="label success" style="width:65px; text-align: center; background-color: green; color: white">{% trans "Success" %}</span>
                     {% endif %}
                 </td>
                 <td><i>{{ test_result.l1_num }}.{{ test_result.l2_num }}.&#160; {{ test_result.test_name }}</i></td>
                 <td><b>{{ test_result.category_name }}</b></td>
+                <td>
+                    <ul style="list-style: none">
+                    {% for test_issue in test_result.test_issues %}
+                        <li>
+                            {{ test_issue.text }}
+                            {% if test_issue.ticket %}<span style="color: #7700ff"><i>{{ test_issue.ticket }}</i></span>{% endif %}
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </td>
+                <td>
+                    <ul style="list-style: none">
+                    {% for test_comment in test_result.test_comments %}
+                        <li>{{ test_comment }}</li>
+                    {% endfor %}
+                    </ul>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

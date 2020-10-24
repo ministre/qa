@@ -81,7 +81,7 @@ class ProtocolTestResultForm(ModelForm):
         RESULT = (
             ('1', 'Not tested'),
             ('2', 'Failed'),
-            ('3', 'Issue'),
+            ('3', 'Warning'),
             ('4', 'Success'),
         )
         widgets = {

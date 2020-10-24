@@ -333,13 +333,25 @@ def get_protocol_test_results(protocol: Protocol):
             l2_num += 1
             status = 0
             result_id = 0
+            test_issues = []
+            test_comments = []
             test_results = ProtocolTestResult.objects.filter(protocol=protocol, test=test)
             for test_result in test_results:
                 status = test_result.result
                 result_id = test_result.id
+
+                issues = TestResultIssue.objects.filter(result=test_result)
+                for issue in issues:
+                    test_issues.append({'text': issue.text, 'ticket': issue.ticket})
+
+                comments = TestResultComment.objects.filter(result=test_result)
+                for comment in comments:
+                    test_comments.append(comment.text)
+
             result = {'l1_num': l1_num, 'l2_num': l2_num,
                       'category_id': category.id, 'category_name': category.name,
-                      'test_id': test.id, 'test_name': test.name, 'status': status, 'result_id': result_id}
+                      'test_id': test.id, 'test_name': test.name, 'status': status, 'result_id': result_id,
+                      'test_issues': test_issues, 'test_comments': test_comments}
             results.append(result)
     return results
 

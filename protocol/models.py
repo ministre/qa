@@ -81,3 +81,13 @@ class TestResultComment(models.Model):
 
     def __str__(self):
         return self.text
+
+
+class TestResultImage(models.Model):
+    result = models.ForeignKey(ProtocolTestResult, related_name='result_image', on_delete=models.CASCADE)
+    desc = models.CharField(max_length=1000, blank=True, null=True)
+    image = models.ImageField(upload_to="protocol/test_results/images/")
+    created_by = models.ForeignKey(User, related_name='tr_image_c', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_by = models.ForeignKey(User, related_name='tr_image_u', on_delete=models.CASCADE)
+    updated_at = models.DateTimeField(default=timezone.now)
