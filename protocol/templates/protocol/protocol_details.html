@@ -230,7 +230,13 @@
                     <span class="label success" style="width:65px; text-align: center; background-color: green; color: white">{% trans "Success" %}</span>
                     {% endif %}
                 </td>
-                <td><i>{{ test_result.l1_num }}.{{ test_result.l2_num }}.&#160; {{ test_result.test_name }}</i></td>
+                <td>
+                    <i>{{ test_result.l1_num }}.{{ test_result.l2_num }}.&#160; {{ test_result.test_name }}</i>
+                    {% if test_result.test_images_count %}
+                    <br><i class="step fi-photo" style="color: #7700ff"></i>
+                    <span style="color: #7700ff">({{ test_result.test_images_count}})</span>
+                    {% endif %}
+                </td>
                 <td><b>{{ test_result.category_name }}</b></td>
                 <td>
                     <ul style="list-style: none">
