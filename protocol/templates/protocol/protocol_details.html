@@ -9,6 +9,7 @@
     {% if protocol_devices.count > 0 %}
     {% for protocol_device in protocol_devices %}
     <i class="step fi-star" style="color: red"></i> {{ protocol_device.device.vendor }} {{ protocol_device.device.model }} / {{ protocol_device.device.hw }}
+    {% if protocol_device.firmware %}({{ protocol_device.firmware }}){% endif %}
     {% endfor %}
     {% endif %}
 </p>
@@ -239,6 +240,10 @@
                 </td>
                 <td>
                     <i>{{ test_result.l1_num }}.{{ test_result.l2_num }}.&#160; {{ test_result.test_name }}</i>
+                    {% if test_result.test_configs_count %}
+                    <br><i class="step fi-widget" style="color: #7700ff"></i>
+                    <span style="color: #7700ff">({{ test_result.test_configs_count}})</span>
+                    {% endif %}
                     {% if test_result.test_images_count %}
                     <br><i class="step fi-photo" style="color: #7700ff"></i>
                     <span style="color: #7700ff">({{ test_result.test_images_count}})</span>

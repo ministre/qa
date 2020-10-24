@@ -335,6 +335,7 @@ def get_protocol_test_results(protocol: Protocol):
             result_id = 0
             test_issues = []
             test_comments = []
+            configs_count = 0
             images_count = 0
             files_count = 0
             test_results = ProtocolTestResult.objects.filter(protocol=protocol, test=test)
@@ -350,6 +351,7 @@ def get_protocol_test_results(protocol: Protocol):
                 for comment in comments:
                     test_comments.append(comment.text)
 
+                configs_count = TestResultConfig.objects.filter(result=test_result).count
                 images_count = TestResultImage.objects.filter(result=test_result).count
                 files_count = TestResultFile.objects.filter(result=test_result).count
 
@@ -357,7 +359,8 @@ def get_protocol_test_results(protocol: Protocol):
                       'category_id': category.id, 'category_name': category.name,
                       'test_id': test.id, 'test_name': test.name, 'status': status, 'result_id': result_id,
                       'test_issues': test_issues, 'test_comments': test_comments,
-                      'test_images_count': images_count, 'test_files_count': files_count}
+                      'test_configs_count': configs_count, 'test_images_count': images_count,
+                      'test_files_count': files_count}
             results.append(result)
     return results
 
