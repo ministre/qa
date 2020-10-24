@@ -51,10 +51,12 @@ urlpatterns = [
          name='test_result_comment_delete'),
 
     # test result images
-    path('test/result/image/create/<int:tr>/', views.TestResultImageCreate.as_view(),
-         name='test_result_image_create'),
-    path('test/result/image/update/<int:pk>/', views.TestResultImageUpdate.as_view(),
-         name='test_result_image_update'),
-    path('test/result/image/delete/<int:pk>/', views.TestResultImageDelete.as_view(),
-         name='test_result_image_delete'),
+    path('test/result/image/create/<int:tr>/', views.TestResultImageCreate.as_view(), name='test_result_image_create'),
+    path('test/result/image/update/<int:pk>/', views.TestResultImageUpdate.as_view(), name='test_result_image_update'),
+    path('test/result/image/delete/<int:pk>/', views.TestResultImageDelete.as_view(), name='test_result_image_delete'),
+
+    # test result files
+    path('test/result/file/create/<int:tr>/', views.TestResultFileCreate.as_view(), name='test_result_file_create'),
+    path('test/result/file/update/<int:pk>/', views.TestResultFileUpdate.as_view(), name='test_result_file_update'),
+    path('test/result/file/delete/<int:pk>/', views.TestResultFileDelete.as_view(), name='test_result_file_delete'),
 ]

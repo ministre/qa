@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Branch, Protocol, ProtocolDevice, ProtocolScan, ProtocolTestResult, TestResultIssue, \
-    TestResultComment, TestResultImage
+    TestResultComment, TestResultImage, TestResultFile
 
 admin.site.register(Branch)
 admin.site.register(Protocol)
@@ -10,3 +10,4 @@ admin.site.register(ProtocolTestResult)
 admin.site.register(TestResultIssue)
 admin.site.register(TestResultComment)
 admin.site.register(TestResultImage)
+admin.site.register(TestResultFile)
