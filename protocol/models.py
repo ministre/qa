@@ -31,7 +31,7 @@ class Protocol(models.Model):
 
 class ProtocolDevice(models.Model):
     protocol = models.ForeignKey(Protocol, related_name='protocol_pd', on_delete=models.CASCADE)
-    device = models.ForeignKey(Device, on_delete=models.CASCADE)
+    device = models.ForeignKey(Device, related_name='device_pd', on_delete=models.CASCADE)
     firmware = models.ForeignKey(Firmware, on_delete=models.CASCADE, blank=True, null=True)
     sample = models.ForeignKey(DeviceSample, on_delete=models.CASCADE, blank=True, null=True)
     created_by = models.ForeignKey(User, related_name='protocol_d_c', on_delete=models.CASCADE)

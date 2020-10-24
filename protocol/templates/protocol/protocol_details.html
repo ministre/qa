@@ -50,16 +50,16 @@
                 <td>{% trans "Status" %}:</td>
                 <td>
                     {% if protocol.status == 0 %}
-                    <span class="label primary" style="color: white">{% trans "In progress" %}</span>
+                    <span class="label" style="width:110px; text-align: center; background-color: gray; color: white">{% trans "In progress" %}</span>
                     {% endif %}
                     {% if protocol.status == 1 %}
-                    <span class="label alert">{% trans "Not recommended" %}</span>
+                    <span class="label alert" style="width:110px; text-align: center">{% trans "Not recommended" %}</span>
                     {% endif %}
                     {% if protocol.status == 2 %}
-                    <span class="label warning">{% trans "Partially recommended" %}</span>
+                    <span class="label warning" style="width:110px; text-align: center">{% trans "Limited" %}</span>
                     {% endif %}
                     {% if protocol.status == 3 %}
-                    <span class="label success">{% trans "Recommended" %}</span>
+                    <span class="label success" style="width:110px; text-align: center; background-color: green; color: white">{% trans "Recommended" %}</span>
                     {% endif %}
                 </td>
             </tr>
@@ -197,9 +197,9 @@
 
     <div class="tabs-panel{% if tab_id == 3 %} is-active{% endif %}" id="tests">
         {% if protocol.testplan %}
-        <table id="results" class="display" style="width:100%">
+        <table id="results" class="unstriped hover" style="width:100%;">
         <thead>
-            <tr>
+            <tr style="background-color: #E8E8E8">
                 <th>ID</th>
                 <th width="70px">{% trans "Results" %}</th>
                 <th>{% trans "Tests" %}</th>
@@ -237,7 +237,7 @@
                     <span style="color: #7700ff">({{ test_result.test_images_count}})</span>
                     {% endif %}
                 </td>
-                <td><b>{{ test_result.category_name }}</b></td>
+                <td>{{ test_result.category_name }}</td>
                 <td>
                     <ul style="list-style: none">
                     {% for test_issue in test_result.test_issues %}
@@ -301,7 +301,7 @@ $(document).ready(function() {
             api.column(groupColumn, {page:'current'} ).data().each( function ( group, i ) {
                 if ( last !== group ) {
                     $(rows).eq( i ).before(
-                        '<tr class="group"><td colspan="5">'+group+'</td></tr>'
+                        '<tr class="group" style="background-color: #F5F5F5; font-weight: bold"><td colspan="5">'+group+'</td></tr>'
                     );
 
                     last = group;

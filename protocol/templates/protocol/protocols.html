@@ -6,7 +6,7 @@
 
 <a href="{% url 'protocol_create' %}" class="button small">{% trans "Create" %}</a>
 
-<table id="protocols" class="display" style="width:100%">
+<table id="protocols" class="hover unstriped" style="width:100%">
     <thead>
     <tr>
         <th>ID</th>
@@ -37,16 +37,16 @@
         <td>{{ protocol.branch }}</td>
         <td width="10%">
             {% if protocol.status == 0 %}
-            <span class="label primary" style="color: white">{% trans "In progress" %}</span>
+            <span class="label" style="width:110px; text-align: center; background-color: gray; color: white">{% trans "In progress" %}</span>
             {% endif %}
             {% if protocol.status == 1 %}
-            <span class="label alert">{% trans "Not recommended" %}</span>
+            <span class="label alert" style="width:110px; text-align: center">{% trans "Not recommended" %}</span>
             {% endif %}
             {% if protocol.status == 2 %}
-            <span class="label warning">{% trans "Partially recommended" %}</span>
+            <span class="label warning" style="width:110px; text-align: center">{% trans "Limited" %}</span>
             {% endif %}
             {% if protocol.status == 3 %}
-            <span class="label success">{% trans "Recommended" %}</span>
+            <span class="label success" style="width:110px; text-align: center; background-color: green; color: white">{% trans "Recommended" %}</span>
             {% endif %}
         </td>
         <td width="30%">
