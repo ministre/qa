@@ -176,7 +176,7 @@ class DeviceIntegerFieldValue(models.Model):
 
 
 class DevicePhoto(models.Model):
-    device = models.ForeignKey(Device, on_delete=models.CASCADE)
+    device = models.ForeignKey(Device, related_name='device_photo', on_delete=models.CASCADE)
     photo = models.ImageField(upload_to="device/photos/")
     desc = models.CharField(max_length=500)
     created_by = models.ForeignKey(User, related_name='photo_c', on_delete=models.CASCADE)
@@ -197,7 +197,7 @@ class DeviceDocumentType(models.Model):
 
 
 class DeviceDocument(models.Model):
-    device = models.ForeignKey(Device, on_delete=models.CASCADE)
+    device = models.ForeignKey(Device, related_name='device_document', on_delete=models.CASCADE)
     type = models.ForeignKey(DeviceDocumentType, on_delete=models.CASCADE)
     file = models.FileField(upload_to="device/docs/")
     desc = models.CharField(max_length=300, blank=True, null=True)
