@@ -246,7 +246,7 @@ class DeviceSupport(models.Model):
 
 
 class Firmware(models.Model):
-    device = models.ForeignKey(Device, on_delete=models.CASCADE)
+    device = models.ForeignKey(Device, related_name='device_firmware', on_delete=models.CASCADE)
     version = models.CharField(max_length=300)
     description = models.CharField(max_length=1000, blank=True, null=True)
     checksum = models.CharField(max_length=300, blank=True, null=True)

@@ -13,6 +13,7 @@
         <th>{% trans "Vendor" %}</th>
         <th>{% trans "Model" %}</th>
         <th>{% trans "HW" %}</th>
+        <th></th>
         <th>{% trans "Type" %}</th>
         <th>{% trans "Tag" %}</th>
     </tr>
@@ -24,6 +25,18 @@
         <td>{{ device.vendor }}</td>
         <td>{{ device.model }}</td>
         <td>{% if device.hw %}{{ device.hw }}{% endif %}</td>
+        <td>
+            {% if device.device_photo.all.count > 0 %}
+            <span class="step fi-photo" style="color: #7700ff"> ({{ device.device_photo.all.count }})</span>
+            {% else %}
+            <span class="step fi-photo" style="color: gray"> (0)</span>
+            {% endif %}
+            {% if device.device_document.all.count > 0 %}
+            <span class="step fi-book" style="color: #7700ff"> ({{ device.device_document.all.count }})</span>
+            {% else %}
+            <span class="step fi-book" style="color: gray"> (0)</span>
+            {% endif %}
+        </td>
         <td>{{ device.type }}</td>
         <td>{{ device.type.tag }}</td>
     </tr>
