@@ -58,16 +58,16 @@
                 <td>{% trans "Status" %}:</td>
                 <td>
                     {% if protocol.status == 0 %}
-                    <span class="label" style="width:110px; text-align: center; background-color: gray; color: white">{% trans "In progress" %}</span>
+                    <span class="label" style="width:125px; text-align: center; background-color: gray; color: white">{% trans "In progress" %}</span>
                     {% endif %}
                     {% if protocol.status == 1 %}
-                    <span class="label alert" style="width:110px; text-align: center">{% trans "Not recommended" %}</span>
+                    <span class="label alert" style="width:125px; text-align: center">{% trans "Not recommended" %}</span>
                     {% endif %}
                     {% if protocol.status == 2 %}
-                    <span class="label warning" style="width:110px; text-align: center">{% trans "Limited" %}</span>
+                    <span class="label warning" style="width:125px; text-align: center">{% trans "Limited" %}</span>
                     {% endif %}
                     {% if protocol.status == 3 %}
-                    <span class="label success" style="width:110px; text-align: center; background-color: green; color: white">{% trans "Recommended" %}</span>
+                    <span class="label success" style="width:125px; text-align: center; background-color: green; color: white">{% trans "Recommended" %}</span>
                     {% endif %}
                 </td>
             </tr>
