@@ -26,6 +26,11 @@
         <td>{{ device.model }}</td>
         <td>{% if device.hw %}{{ device.hw }}{% endif %}</td>
         <td>
+            {% if device.device_firmware.all.count > 0 %}
+            <span class="step fi-usb" style="color: #7700ff"> ({{ device.device_firmware.all.count }})</span>
+            {% else %}
+            <span class="step fi-usb" style="color: gray"> (0)</span>
+            {% endif %}
             {% if device.device_photo.all.count > 0 %}
             <span class="step fi-photo" style="color: #7700ff"> ({{ device.device_photo.all.count }})</span>
             {% else %}
