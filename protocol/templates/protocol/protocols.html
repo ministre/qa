@@ -12,6 +12,7 @@
         <th>ID</th>
         <th>{% trans "Device" %}</th>
         <th>{% trans "Branch" %}</th>
+        <th></th>
         <th>{% trans "Status" %}</th>
         <th>{% trans "Testplan" %}</th>
         <th>{% trans "Date" %}</th>
@@ -35,6 +36,9 @@
             {% endfor %}
         </td>
         <td>{{ protocol.branch }}</td>
+        <td>
+            <span class="step fi-page" style="color: #7700ff"> (0)</span>
+        </td>
         <td width="10%">
             {% if protocol.status == 0 %}
             <span class="label" style="width:110px; text-align: center; background-color: gray; color: white">{% trans "In progress" %}</span>

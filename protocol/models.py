@@ -42,7 +42,7 @@ class ProtocolDevice(models.Model):
 
 
 class ProtocolScan(models.Model):
-    protocol = models.ForeignKey(Protocol, on_delete=models.CASCADE)
+    protocol = models.ForeignKey(Protocol, related_name='protocol_file', on_delete=models.CASCADE)
     scan = models.FileField(upload_to="protocol/files/")
     created_by = models.ForeignKey(User, related_name='protocol_scan_c', on_delete=models.CASCADE)
     created_at = models.DateTimeField(default=timezone.now)
