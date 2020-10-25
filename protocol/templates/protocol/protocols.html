@@ -37,7 +37,11 @@
         </td>
         <td>{{ protocol.branch }}</td>
         <td>
-            <span class="step fi-page" style="color: #7700ff"> (0)</span>
+            {% if protocol.protocol_file.all.count > 0 %}
+            <span class="step fi-page" style="color: #7700ff"> ({{ protocol.protocol_file.all.count }})</span>
+            {% else %}
+            <span class="step fi-page" style="color: gray"> (0)</span>
+            {% endif %}
         </td>
         <td width="10%">
             {% if protocol.status == 0 %}
