@@ -33,6 +33,9 @@
             {% if protocol_scans.count > 0 %}({{ protocol_scans.count }}){% endif %}
         </a>
     </li>
+    <li class="tabs-title{% if tab_id == 5 %} is-active{% endif %}">
+        <a data-tabs-target="docx" href="#docx">{% trans "Docx" %}</a>
+    </li>
 </ul>
 
 <div class="tabs-content" data-tabs-content="protocol-tabs">
@@ -295,6 +298,10 @@
         {% endfor %}
         </ul>
         {% endif %}
+    </div>
+
+    <div class="tabs-panel{% if tab_id == 5 %} is-active{% endif %}" id="docx">
+        {{ form }}
     </div>
 
 </div>
