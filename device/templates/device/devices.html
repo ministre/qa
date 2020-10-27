@@ -41,6 +41,11 @@
             {% else %}
             <span class="step fi-book" style="color: gray"> (0)</span>
             {% endif %}
+            {% if device.device_sample.all.count > 0 %}
+            <span class="step fi-laptop" style="color: #7700ff"> ({{ device.device_sample.all.count }})</span>
+            {% else %}
+            <span class="step fi-laptop" style="color: gray"> (0)</span>
+            {% endif %}
         </td>
         <td>{{ device.type }}</td>
         <td>{{ device.type.tag }}</td>
