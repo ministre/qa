@@ -208,7 +208,7 @@ class DeviceDocument(models.Model):
 
 
 class DeviceSample(models.Model):
-    device = models.ForeignKey(Device, on_delete=models.CASCADE)
+    device = models.ForeignKey(Device, related_name='device_sample', on_delete=models.CASCADE)
     sn = models.CharField(max_length=50, blank=True, null=True)
     desc = models.CharField(max_length=1000, blank=True, null=True)
     created_by = models.ForeignKey(User, related_name='sample_c', on_delete=models.CASCADE)
