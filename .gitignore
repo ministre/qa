@@ -4,12 +4,11 @@
 .idea/
 /qa/settings/local.py
 /qa/static/
-/qa/assets/
-**/migrations/*
 /qa/media/device/firmware/
 /qa/media/docx_builder/files/
 /qa/media/protocol/
 /qa/media/testplan/images/
+**/migrations/*
 
 # Byte-compiled / optimized / DLL files
 *.py[cod]
