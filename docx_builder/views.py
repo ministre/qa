@@ -8,7 +8,8 @@ from django.shortcuts import get_object_or_404
 from feature.models import FeatureList, FeatureListCategory, FeatureListItem
 from testplan.models import Testplan, Chapter, Category, Test, TestLink, TestChecklist, TestChecklistItem, TestConfig, \
     TestImage, TestComment
-from protocol.models import Protocol, ProtocolTestResult, TestResultIssue, TestResultComment
+from protocol.models import Protocol, ProtocolDevice, ProtocolTestResult, TestResultIssue, TestResultComment
+from device.models import Device
 import os
 from django.conf import settings
 from django.http import HttpResponse, Http404
@@ -516,7 +517,34 @@ def build_protocol(request):
         profile = DocxProfile.objects.get(id=request.POST['profile_id'])
 
         document = build_document(profile=profile)
+        sections = document.sections
+        for section in sections:
+            section.left_margin = Cm(2)
+            section.right_margin = Cm(1.5)
+            section.top_margin = Cm(1)
+            section.bottom_margin = Cm(1)
+
         document.add_heading('Протокол испытаний', level=1)
+
+        # devices information
+        try:
+            if request.POST['devices']:
+                document.add_heading('Состав тестируемого оборудования', level=2)
+
+                protocol_devices = ProtocolDevice.objects.filter(protocol=protocol).order_by('id')
+                for protocol_device in protocol_devices:
+
+                    table = document.add_table(rows=0, cols=2)
+                    row_cells = table.add_row().cells
+                    paragraph = row_cells[0].paragraphs[0]
+                    run = paragraph.add_run()
+                    run.add_text('Производитель:')
+                    paragraph = row_cells[1].paragraphs[0]
+                    run = paragraph.add_run()
+                    run.add_text(protocol_device.device.vendor.name)
+
+        except MultiValueDictKeyError:
+            pass
 
         # results table
         try:
