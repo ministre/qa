@@ -191,3 +191,4 @@ class DocxProtocolForm(forms.Form):
     protocol_id = forms.IntegerField()
     profile_id = forms.ModelChoiceField(queryset=DocxProfile.objects.all().order_by('id'))
     results_table = forms.BooleanField(label=_('Results Table'), required=False)
+    issues = forms.BooleanField(label=_('List of issues'), required=False)

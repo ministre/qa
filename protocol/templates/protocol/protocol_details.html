@@ -305,7 +305,7 @@
         <form method="post" action="{% url 'build_protocol' %}">
             <input type="submit" value='{% trans "Build" %}' class="button success small" />
             {% csrf_token %}
-            {{ docx_form }}
+            {{ docx_form.as_p }}
         </form>
         {% else %}
         <p>{% trans "There is no testplan for this protocol" %}</p>

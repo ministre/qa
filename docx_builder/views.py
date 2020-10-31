@@ -516,10 +516,9 @@ def build_protocol(request):
         profile = DocxProfile.objects.get(id=request.POST['profile_id'])
 
         document = build_document(profile=profile)
-
         document.add_heading('Протокол испытаний', level=1)
 
-        # results_table
+        # results table
         try:
             if request.POST['results_table']:
 
@@ -614,6 +613,24 @@ def build_protocol(request):
                             result = 'Пропущен'
                             run.add_text(result)
 
+        except MultiValueDictKeyError:
+            pass
+
+        # list of issues
+        try:
+            if request.POST['issues']:
+                issues = []
+                test_results = ProtocolTestResult.objects.filter(protocol=protocol).order_by('id')
+                for test_result in test_results:
+                    test_result_issues = TestResultIssue.objects.filter(result=test_result)
+                    for test_result_issue in test_result_issues:
+                        issues.append(test_result_issue.text)
+                if len(issues) > 0:
+                    document.add_paragraph('По результатам испытаний выявлены следующие замечания:', style='Normal')
+                    for issue in issues:
+                        document.add_paragraph(issue, style='List Number')
+                else:
+                    document.add_paragraph('По результатам испытаний замечаний не выявлено.', style='Normal')
         except MultiValueDictKeyError:
             pass
 
