@@ -526,7 +526,7 @@ def build_protocol(request):
         except MultiValueDictKeyError:
             pass
 
-        protocol_filename = settings.MEDIA_ROOT + '/protocol_' + str(protocol.id) + '.docx'
+        protocol_filename = settings.MEDIA_ROOT + '/protocol/protocol_' + str(protocol.id) + '.docx'
         document.save(protocol_filename)
 
         file_path = os.path.join(settings.MEDIA_ROOT, protocol_filename)
