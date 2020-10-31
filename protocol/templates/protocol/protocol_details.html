@@ -279,7 +279,7 @@
         </tbody>
         </table>
         {% else %}
-        <p>{% trans "Testplan not set" %}</p>
+        <p>{% trans "There is no testplan for this protocol" %}</p>
         <p><a href="{% url 'protocol_update' pk=protocol.id %}" class="button small">{% trans "Update" %}</a></p>
         {% endif %}
 
@@ -301,11 +301,16 @@
     </div>
 
     <div class="tabs-panel{% if tab_id == 5 %} is-active{% endif %}" id="docx">
+        {% if protocol.testplan %}
         <form method="post" action="{% url 'build_protocol' %}">
             <input type="submit" value='{% trans "Build" %}' class="button success small" />
             {% csrf_token %}
             {{ docx_form }}
         </form>
+        {% else %}
+        <p>{% trans "There is no testplan for this protocol" %}</p>
+        <p><a href="{% url 'protocol_update' pk=protocol.id %}" class="button small">{% trans "Update" %}</a></p>
+        {% endif %}
     </div>
 
 </div>

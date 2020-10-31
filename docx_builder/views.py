@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404
 from feature.models import FeatureList, FeatureListCategory, FeatureListItem
 from testplan.models import Testplan, Chapter, Category, Test, TestLink, TestChecklist, TestChecklistItem, TestConfig, \
     TestImage, TestComment
-from protocol.models import Protocol
+from protocol.models import Protocol, ProtocolTestResult, TestResultIssue, TestResultComment
 import os
 from django.conf import settings
 from django.http import HttpResponse, Http404
@@ -522,7 +522,98 @@ def build_protocol(request):
         # results_table
         try:
             if request.POST['results_table']:
-                document.add_heading('Results Table', level=2)
+
+                document.add_heading('Результаты тестов', level=2)
+
+                table = document.add_table(rows=0, cols=4)
+                row_cells = table.add_row().cells
+                paragraph = row_cells[0].paragraphs[0]
+                paragraph.style = 'Heading 2'
+                run = paragraph.add_run()
+                run.add_text('№')
+                paragraph = row_cells[1].paragraphs[0]
+                paragraph.style = 'Heading 2'
+                run = paragraph.add_run()
+                run.add_text('Название теста')
+                paragraph = row_cells[2].paragraphs[0]
+                paragraph.style = 'Heading 2'
+                run = paragraph.add_run()
+                run.add_text('Результат')
+                paragraph = row_cells[3].paragraphs[0]
+                paragraph.style = 'Heading 2'
+                run = paragraph.add_run()
+                run.add_text('Комментарии')
+
+                categories = Category.objects.filter(testplan=protocol.testplan).order_by('priority')
+
+                for i, category in enumerate(categories):
+                    row_cells = table.add_row().cells
+
+                    paragraph = row_cells[0].paragraphs[0]
+                    paragraph.style = 'Heading 2'
+                    run = paragraph.add_run()
+                    run.add_text(str(i+1))
+
+                    paragraph = row_cells[1].paragraphs[0]
+                    paragraph.style = 'Heading 2'
+                    run = paragraph.add_run()
+                    run.add_text(category.name)
+
+                    row_cells[1].merge(row_cells[2]).merge(row_cells[3])
+
+                    tests = Test.objects.filter(category=category).order_by('priority')
+                    for j, test in enumerate(tests):
+                        row_cells = table.add_row().cells
+
+                        paragraph = row_cells[0].paragraphs[0]
+                        run = paragraph.add_run()
+                        run.add_text(str(i + 1) + '.' + str(j + 1))
+
+                        paragraph = row_cells[1].paragraphs[0]
+                        run = paragraph.add_run()
+                        run.add_text(test.name)
+
+                        paragraph = row_cells[2].paragraphs[0]
+                        paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+                        run = paragraph.add_run()
+
+                        try:
+                            obj = ProtocolTestResult.objects.get(protocol=protocol, test=test)
+                            if obj.result == 1:
+                                result = 'Пропущен'
+                                run.add_text(result)
+
+                            elif obj.result == 2:
+                                result = 'X'
+                                run.font.bold = True
+                                run.font.color.rgb = RGBColor(0xFF, 0x00, 0x00)
+                                run.add_text(result)
+
+                            elif obj.result == 3:
+                                result = u'\u00b1'
+                                run.font.bold = True
+                                run.add_text(result)
+
+                            else:
+                                result = u'\u221a'
+                                run.font.bold = True
+                                run.font.color.rgb = RGBColor(0x00, 0x80, 0x00)
+                                run.add_text(result)
+
+                            paragraph = row_cells[3].paragraphs[0]
+                            run = paragraph.add_run()
+                            issues = TestResultIssue.objects.filter(result=obj).order_by('id')
+                            for issue in issues:
+                                run.add_text(issue.text)
+
+                            comments = TestResultComment.objects.filter(result=obj).order_by('id')
+                            for comment in comments:
+                                run.add_text(comment.text)
+
+                        except ProtocolTestResult.DoesNotExist:
+                            result = 'Пропущен'
+                            run.add_text(result)
+
         except MultiValueDictKeyError:
             pass
 
