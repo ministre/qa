@@ -6,10 +6,10 @@
 /qa/static/
 /qa/assets/
 **/migrations/*
-/qa/media/device/firmware/*
-/qa/media/device/docx_builder/files/*
-/qa/media/protocol/*
-/qa/media/testplan/images/*
+/qa/media/device/firmware/
+/qa/media/docx_builder/files/
+/qa/media/protocol/
+/qa/media/testplan/images/
 
 # Byte-compiled / optimized / DLL files
 *.py[cod]
@@ -25,3 +25,4 @@ myvenv/*
 # C extensions
 *.so
 /venv/
+
