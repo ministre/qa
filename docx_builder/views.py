@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404
 from feature.models import FeatureList, FeatureListCategory, FeatureListItem
 from testplan.models import Testplan, Chapter, Category, Test, TestLink, TestChecklist, TestChecklistItem, TestConfig, \
     TestImage, TestComment
+from protocol.models import Protocol
 import os
 from django.conf import settings
 from django.http import HttpResponse, Http404
@@ -505,4 +506,36 @@ def build_testplan(request):
                 response = HttpResponse(fh.read(), content_type="application/vnd.ms-word")
                 response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
                 return response
+        raise Http404
+
+
+@login_required
+def build_protocol(request):
+    if request.method == 'POST':
+        protocol = get_object_or_404(Protocol, id=request.POST['protocol_id'])
+        profile = DocxProfile.objects.get(id=request.POST['profile_id'])
+
+        document = build_document(profile=profile)
+
+        document.add_heading('Протокол испытаний', level=1)
+
+        # results_table
+        try:
+            if request.POST['results_table']:
+                document.add_heading('Results Table', level=2)
+        except MultiValueDictKeyError:
+            pass
+
+        protocol_filename = settings.MEDIA_ROOT + '/protocol_' + str(protocol.id) + '.docx'
+        document.save(protocol_filename)
+
+        file_path = os.path.join(settings.MEDIA_ROOT, protocol_filename)
+        if os.path.exists(file_path):
+            with open(file_path, 'rb') as fh:
+                response = HttpResponse(fh.read(), content_type="application/vnd.ms-word")
+                response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+                return response
+        raise Http404
+
+    else:
         raise Http404

@@ -301,7 +301,11 @@
     </div>
 
     <div class="tabs-panel{% if tab_id == 5 %} is-active{% endif %}" id="docx">
-        {{ form }}
+        <form method="post" action="{% url 'build_protocol' %}">
+            <input type="submit" value='{% trans "Build" %}' class="button success small" />
+            {% csrf_token %}
+            {{ docx_form }}
+        </form>
     </div>
 
 </div>

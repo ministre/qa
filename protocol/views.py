@@ -8,7 +8,7 @@ from device.models import Firmware, DeviceSample
 from testplan.models import Category, Test
 from .forms import BranchForm, ProtocolForm, ProtocolDeviceForm, ProtocolScanForm, ProtocolTestResultForm, \
     TestResultConfigForm, TestResultImageForm, TestResultFileForm, TestResultIssueForm, TestResultCommentForm
-from docx_builder.forms import DocxProfilesForm
+from docx_builder.forms import DocxProtocolForm
 from django.urls import reverse
 from django.utils import timezone
 from django import forms
@@ -143,12 +143,12 @@ def protocol_details(request, pk, tab_id):
     protocol_devices = ProtocolDevice.objects.filter(protocol=protocol).order_by('id')
     protocol_test_results = get_protocol_test_results(protocol)
     protocol_files = ProtocolScan.objects.filter(protocol=protocol).order_by('id')
-    form = DocxProfilesForm()
+    docx_form = DocxProtocolForm(initial={'protocol_id': protocol.id, 'results_table': True})
     return render(request, 'protocol/protocol_details.html', {'protocol': protocol,
                                                               'protocol_devices': protocol_devices,
                                                               'protocol_test_results': protocol_test_results,
                                                               'protocol_scans': protocol_files,
-                                                              'form': form,
+                                                              'docx_form': docx_form,
                                                               'tab_id': tab_id})
 
 

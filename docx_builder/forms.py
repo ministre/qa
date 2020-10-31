@@ -4,10 +4,6 @@ from django.forms import ModelForm, HiddenInput
 from docx_builder.models import DocxProfile
 
 
-class DocxProfilesForm(forms.Form):
-    profile = forms.ModelChoiceField(queryset=DocxProfile.objects.all().order_by('id'))
-
-
 class DocxProfileForm(ModelForm):
     class Meta:
         model = DocxProfile
@@ -189,3 +185,9 @@ class DocxTestplanForm(forms.Form):
 
 class DocxFeatureListForm(forms.Form):
     profile = forms.ModelChoiceField(queryset=DocxProfile.objects.filter(type=0).order_by('id'))
+
+
+class DocxProtocolForm(forms.Form):
+    protocol_id = forms.IntegerField()
+    profile_id = forms.ModelChoiceField(queryset=DocxProfile.objects.all().order_by('id'))
+    results_table = forms.BooleanField(label=_('Results Table'), required=False)
