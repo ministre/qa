@@ -9,8 +9,8 @@ from feature.models import FeatureList, FeatureListCategory, FeatureListItem
 from testplan.models import Testplan, Chapter, Category, Test, TestLink, TestChecklist, TestChecklistItem, TestConfig, \
     TestImage, TestComment
 from protocol.models import Protocol, ProtocolDevice, ProtocolTestResult, TestResultIssue, TestResultComment
-from device.models import DeviceTypeSpecification, DeviceSlistItem, DeviceSlistItemValue, DeviceTextFieldValue, \
-    DeviceIntegerFieldValue
+from device.models import DeviceTypeSpecification, DeviceChecklistItem, DeviceChecklistItemValue, DeviceSlistItem, \
+    DeviceSlistItemValue, DeviceTextFieldValue, DeviceIntegerFieldValue
 import os
 from django.conf import settings
 from django.http import HttpResponse, Http404
@@ -530,7 +530,7 @@ def build_protocol(request):
         # devices information
         try:
             if request.POST['devices']:
-                document.add_heading('Состав тестируемого оборудования', level=2)
+                document.add_heading('Информация о тестируемом оборудовании', level=2)
 
                 protocol_devices = ProtocolDevice.objects.filter(protocol=protocol).order_by('id')
                 for protocol_device in protocol_devices:
@@ -591,8 +591,18 @@ def build_protocol(request):
                     spec_name = ''
                     for spec in specs:
                         spec_value = ''
+                        spec_values = []
                         if spec.checklist:
                             spec_name = spec.checklist.name
+                            field_items = DeviceChecklistItem.objects.filter(checklist=spec.checklist)
+                            for field_item in field_items:
+                                try:
+                                    field_value = DeviceChecklistItemValue.objects.get(device=protocol_device.device,
+                                                                                       item=field_item)
+                                    spec_values.append({'item': field_value.item.name, 'checked': True})
+                                except DeviceChecklistItemValue.DoesNotExist:
+                                    spec_values.append({'item': field_item.name, 'checked': False})
+
                         if spec.slist:
                             spec_name = spec.slist.name
                             field_items = DeviceSlistItem.objects.filter(slist=spec.slist)
@@ -626,9 +636,22 @@ def build_protocol(request):
                         paragraph = row_cells[0].paragraphs[0]
                         run = paragraph.add_run()
                         run.add_text(spec_name + ':')
-                        paragraph = row_cells[1].paragraphs[0]
-                        run = paragraph.add_run()
-                        run.add_text(spec_value)
+
+                        if spec_value:
+                            paragraph = row_cells[1].paragraphs[0]
+                            run = paragraph.add_run()
+                            run.add_text(spec_value)
+                        if spec_values:
+                            for i, value in enumerate(spec_values):
+                                paragraph = row_cells[1].paragraphs[0]
+                                run = paragraph.add_run()
+                                if value['checked']:
+                                    run.add_text(u'\u2612 ')
+                                else:
+                                    run.add_text(u'\u2610 ')
+                                run.add_text(value['item'])
+                                if i != len(spec_values)-1:
+                                    run.add_break()
 
                     document.add_paragraph()
 
