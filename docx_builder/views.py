@@ -22,6 +22,7 @@ from docx.enum.style import WD_STYLE_TYPE
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT
 from docx.oxml.shared import OxmlElement, qn
+from docx.enum.text import WD_BREAK
 from django.utils.datastructures import MultiValueDictKeyError
 
 
@@ -785,6 +786,12 @@ def build_protocol(request):
 
         except MultiValueDictKeyError:
             pass
+
+        p = document.add_paragraph()
+        run = p.add_run()
+        run.add_break(WD_BREAK.PAGE)
+
+        document.add_heading('Выводы', level=2)
 
         # list of issues
         try:
