@@ -578,13 +578,14 @@ def build_protocol(request):
                     run = paragraph.add_run()
                     run.add_text(protocol_device.firmware.version)
 
-                    row_cells = table.add_row().cells
-                    paragraph = row_cells[0].paragraphs[0]
-                    run = paragraph.add_run()
-                    run.add_text('Контрольная сумма ПО:')
-                    paragraph = row_cells[1].paragraphs[0]
-                    run = paragraph.add_run()
-                    run.add_text(protocol_device.firmware.checksum)
+                    if protocol_device.firmware.checksum:
+                        row_cells = table.add_row().cells
+                        paragraph = row_cells[0].paragraphs[0]
+                        run = paragraph.add_run()
+                        run.add_text('Контрольная сумма ПО:')
+                        paragraph = row_cells[1].paragraphs[0]
+                        run = paragraph.add_run()
+                        run.add_text(protocol_device.firmware.checksum)
 
                     # specifications
                     specs = DeviceTypeSpecification.objects.filter(type=protocol_device.device.type).order_by('id')
