@@ -680,7 +680,7 @@ def build_protocol(request):
                     for device_photo in device_photos:
                         document.add_heading(device_photo.desc, level=3)
 
-                        document.add_picture(device_photo.photo)
+                        document.add_picture(device_photo.photo, width=Cm(17))
 
                 pass
         except MultiValueDictKeyError:
