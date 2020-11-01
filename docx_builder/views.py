@@ -10,7 +10,7 @@ from testplan.models import Testplan, Chapter, Category, Test, TestLink, TestChe
     TestImage, TestComment
 from protocol.models import Protocol, ProtocolDevice, ProtocolTestResult, TestResultIssue, TestResultComment
 from device.models import DeviceTypeSpecification, DeviceChecklistItem, DeviceChecklistItemValue, DeviceSlistItem, \
-    DeviceSlistItemValue, DeviceTextFieldValue, DeviceIntegerFieldValue
+    DeviceSlistItemValue, DeviceTextFieldValue, DeviceIntegerFieldValue, DevicePhoto
 import os
 from django.conf import settings
 from django.http import HttpResponse, Http404
@@ -658,11 +658,41 @@ def build_protocol(request):
         except MultiValueDictKeyError:
             pass
 
+        # date of testing
+        try:
+            if request.POST['date']:
+                full_date = protocol.started.strftime("%d.%m.%Y")
+                if protocol.completed:
+                    full_date += ' - ' + protocol.completed.strftime("%d.%m.%Y")
+                document.add_paragraph('Дата проведения испытаний: ' + str(full_date), style='Normal')
+
+                pass
+        except MultiValueDictKeyError:
+            pass
+
+        # devices photos
+        try:
+            if request.POST['photos']:
+                document.add_heading('Фото тестируемого оборудования', level=2)
+                protocol_devices = ProtocolDevice.objects.filter(protocol=protocol).order_by('id')
+                for protocol_device in protocol_devices:
+                    device_photos = DevicePhoto.objects.filter(device=protocol_device.device).order_by('id')
+                    for device_photo in device_photos:
+                        document.add_heading(device_photo.desc, level=3)
+
+                        p = document.add_paragraph()
+                        run = p.add_run()
+                        run.add_picture(device_photo.photo)
+
+                pass
+        except MultiValueDictKeyError:
+            pass
+
         # results table
         try:
             if request.POST['results_table']:
 
-                document.add_heading('Результаты тестов', level=2)
+                document.add_heading('Результаты испытаний', level=2)
 
                 table = document.add_table(rows=0, cols=4)
                 table.style = 'TableGrid'

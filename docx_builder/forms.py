@@ -190,6 +190,8 @@ class DocxFeatureListForm(forms.Form):
 class DocxProtocolForm(forms.Form):
     protocol_id = forms.IntegerField()
     profile_id = forms.ModelChoiceField(queryset=DocxProfile.objects.all().order_by('id'))
-    devices = forms.BooleanField(label=_('Devices information'), required=False)
+    devices = forms.BooleanField(label=_('Device information'), required=False)
+    date = forms.BooleanField(label=_('Date of testing'), required=False)
+    photos = forms.BooleanField(label=_('Photos'), required=False)
     results_table = forms.BooleanField(label=_('Table of results'), required=False)
     issues = forms.BooleanField(label=_('List of issues'), required=False)

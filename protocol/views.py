@@ -143,8 +143,8 @@ def protocol_details(request, pk, tab_id):
     protocol_devices = ProtocolDevice.objects.filter(protocol=protocol).order_by('id')
     protocol_test_results = get_protocol_test_results(protocol)
     protocol_files = ProtocolScan.objects.filter(protocol=protocol).order_by('id')
-    docx_form = DocxProtocolForm(initial={'protocol_id': protocol.id, 'devices': True, 'results_table': True,
-                                          'issues': True})
+    docx_form = DocxProtocolForm(initial={'protocol_id': protocol.id, 'devices': True, 'date': True, 'photos': True,
+                                          'results_table': True, 'issues': True})
     docx_form.fields['protocol_id'].widget = forms.HiddenInput()
     return render(request, 'protocol/protocol_details.html', {'protocol': protocol,
                                                               'protocol_devices': protocol_devices,
