@@ -9,7 +9,8 @@ from feature.models import FeatureList, FeatureListCategory, FeatureListItem
 from testplan.models import Testplan, Chapter, Category, Test, TestLink, TestChecklist, TestChecklistItem, TestConfig, \
     TestImage, TestComment
 from protocol.models import Protocol, ProtocolDevice, ProtocolTestResult, TestResultIssue, TestResultComment
-from device.models import Device
+from device.models import DeviceTypeSpecification, DeviceSlistItem, DeviceSlistItemValue, DeviceTextFieldValue, \
+    DeviceIntegerFieldValue
 import os
 from django.conf import settings
 from django.http import HttpResponse, Http404
@@ -535,6 +536,16 @@ def build_protocol(request):
                 for protocol_device in protocol_devices:
 
                     table = document.add_table(rows=0, cols=2)
+                    table.style = 'TableGrid'
+
+                    row_cells = table.add_row().cells
+                    paragraph = row_cells[0].paragraphs[0]
+                    run = paragraph.add_run()
+                    run.add_text('Тип:')
+                    paragraph = row_cells[1].paragraphs[0]
+                    run = paragraph.add_run()
+                    run.add_text(protocol_device.device.type.desc)
+
                     row_cells = table.add_row().cells
                     paragraph = row_cells[0].paragraphs[0]
                     run = paragraph.add_run()
@@ -542,6 +553,84 @@ def build_protocol(request):
                     paragraph = row_cells[1].paragraphs[0]
                     run = paragraph.add_run()
                     run.add_text(protocol_device.device.vendor.name)
+
+                    row_cells = table.add_row().cells
+                    paragraph = row_cells[0].paragraphs[0]
+                    run = paragraph.add_run()
+                    run.add_text('Модель:')
+                    paragraph = row_cells[1].paragraphs[0]
+                    run = paragraph.add_run()
+                    run.add_text(protocol_device.device.model)
+
+                    row_cells = table.add_row().cells
+                    paragraph = row_cells[0].paragraphs[0]
+                    run = paragraph.add_run()
+                    run.add_text('Аппаратная ревизия:')
+                    paragraph = row_cells[1].paragraphs[0]
+                    run = paragraph.add_run()
+                    run.add_text(protocol_device.device.hw)
+
+                    row_cells = table.add_row().cells
+                    paragraph = row_cells[0].paragraphs[0]
+                    run = paragraph.add_run()
+                    run.add_text('Версия ПО:')
+                    paragraph = row_cells[1].paragraphs[0]
+                    run = paragraph.add_run()
+                    run.add_text(protocol_device.firmware.version)
+
+                    row_cells = table.add_row().cells
+                    paragraph = row_cells[0].paragraphs[0]
+                    run = paragraph.add_run()
+                    run.add_text('Контрольная сумма ПО:')
+                    paragraph = row_cells[1].paragraphs[0]
+                    run = paragraph.add_run()
+                    run.add_text(protocol_device.firmware.checksum)
+
+                    # specifications
+                    specs = DeviceTypeSpecification.objects.filter(type=protocol_device.device.type).order_by('id')
+                    spec_name = ''
+                    for spec in specs:
+                        spec_value = ''
+                        if spec.checklist:
+                            spec_name = spec.checklist.name
+                        if spec.slist:
+                            spec_name = spec.slist.name
+                            field_items = DeviceSlistItem.objects.filter(slist=spec.slist)
+                            for field_item in field_items:
+                                try:
+                                    field_value = DeviceSlistItemValue.objects.get(device=protocol_device.device,
+                                                                                   value=field_item)
+                                    spec_value = field_value.value.name
+                                except DeviceSlistItemValue.DoesNotExist:
+                                    pass
+
+                        if spec.text_field:
+                            spec_name = spec.text_field.name
+                            try:
+                                field_value = DeviceTextFieldValue.objects.get(device=protocol_device.device,
+                                                                               field=spec.text_field)
+                                spec_value = field_value.value
+                            except DeviceTextFieldValue.DoesNotExist:
+                                pass
+
+                        if spec.integer_field:
+                            spec_name = spec.integer_field.name
+                            try:
+                                field_value = DeviceIntegerFieldValue.objects.get(device=protocol_device.device,
+                                                                                  field=spec.integer_field)
+                                spec_value = str(field_value.value) + ' ' + spec.integer_field.unit
+                            except DeviceIntegerFieldValue.DoesNotExist:
+                                pass
+
+                        row_cells = table.add_row().cells
+                        paragraph = row_cells[0].paragraphs[0]
+                        run = paragraph.add_run()
+                        run.add_text(spec_name + ':')
+                        paragraph = row_cells[1].paragraphs[0]
+                        run = paragraph.add_run()
+                        run.add_text(spec_value)
+
+                    document.add_paragraph()
 
         except MultiValueDictKeyError:
             pass
@@ -553,6 +642,7 @@ def build_protocol(request):
                 document.add_heading('Результаты тестов', level=2)
 
                 table = document.add_table(rows=0, cols=4)
+                table.style = 'TableGrid'
                 row_cells = table.add_row().cells
                 paragraph = row_cells[0].paragraphs[0]
                 paragraph.style = 'Heading 2'

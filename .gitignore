@@ -20,7 +20,7 @@
 # dotenv
 .env
 myvenv/*
+/venv/
 
 # C extensions
 *.so
-/venv/
