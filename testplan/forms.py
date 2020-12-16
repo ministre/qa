@@ -61,7 +61,7 @@ class TestForm(ModelForm):
             'redmine_wiki': _('Redmine Wiki'),
         }
         fields = '__all__'
-        widgets = {'category': HiddenInput(), 'priority': HiddenInput(),
+        widgets = {'category': HiddenInput(),
                    'created_by': HiddenInput(), 'created_at': HiddenInput(),
                    'updated_by': HiddenInput(), 'updated_at': HiddenInput()}
 
